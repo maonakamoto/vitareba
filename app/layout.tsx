@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { COMPANY } from "@/lib/config/company";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -15,10 +16,14 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
+const SITE_URL = "https://vitareba.vercel.app";
+const TITLE = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
+const DESCRIPTION =
+  "We go beyond diagnosis. We decode the biology behind your mind — and the environment around it — to design a personalised path to sustained high performance, longevity and wellbeing.";
+
 export const metadata: Metadata = {
-  title: "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich",
-  description:
-    "We go beyond diagnosis. We decode the biology behind your mind — and the environment around it — to design a personalised path to sustained high performance, longevity and wellbeing.",
+  title: TITLE,
+  description: DESCRIPTION,
   keywords: [
     "ADHD",
     "Metabolic Psychiatry",
@@ -28,6 +33,26 @@ export const metadata: Metadata = {
     "Burnout",
     "High Performance",
   ],
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: COMPANY.name,
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -35,8 +60,36 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    name: COMPANY.name,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    email: COMPANY.email,
+    foundingDate: String(COMPANY.foundingYear),
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: COMPANY.address.street,
+      postalCode: COMPANY.address.zip,
+      addressLocality: COMPANY.address.city,
+      addressCountry: "CH",
+    },
+    medicalSpecialty: [
+      "Psychiatry",
+      "Metabolic Medicine",
+      "Longevity Medicine",
+    ],
+  };
+
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

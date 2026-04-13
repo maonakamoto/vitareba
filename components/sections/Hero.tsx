@@ -23,12 +23,12 @@ export default function Hero({ onAssessmentOpen }: HeroProps) {
         <div className={styles.eyebrow}>
           Zürich · 8008 · International Patients Welcome
         </div>
-        <div className={styles.title}>
+        <h1 className={styles.title}>
           Metabolic
           <br />
           Psychiatry &<br />
           <em>Systemic Longevity.</em>
-        </div>
+        </h1>
         <p className={styles.sub}>
           We go beyond diagnosis. We decode the biology behind your mind — and
           the environment around it — to design a personalised path to sustained
@@ -60,7 +60,7 @@ export default function Hero({ onAssessmentOpen }: HeroProps) {
           powerful ocean — and you were never taught to surf it.&rdquo;
         </div>
         <div className={styles.btns}>
-          <button className={styles.btnDark} onClick={onAssessmentOpen}>
+          <button type="button" className={styles.btnDark} onClick={onAssessmentOpen}>
             Take the Inflection Edge →
           </button>
           <a href={`mailto:${COMPANY.email}`} className={styles.btnOutline}>

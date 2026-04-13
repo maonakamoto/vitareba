@@ -4,12 +4,8 @@
   background: var(--ink);
   z-index: 200;
   overflow-y: auto;
-  display: none;
-  flex-direction: column;
-}
-
-.open {
   display: flex;
+  flex-direction: column;
 }
 
 .ovPb {
@@ -52,6 +48,11 @@
   color: var(--teal);
 }
 
+.ovClose:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
 .ovScreen {
   display: none;
   max-width: 700px;
@@ -76,7 +77,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: 3.5rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--white);
   line-height: 1.1;
 }
 
@@ -110,7 +111,7 @@
 .ovStatN {
   font-family: var(--font-cormorant), serif;
   font-size: 1.8rem;
-  color: #fff;
+  color: var(--white);
 }
 
 .ovStatL {
@@ -122,7 +123,7 @@
 
 .ovDims {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 0.5rem;
   margin-top: 2rem;
 }
@@ -148,7 +149,7 @@
 
 .ovStartBtn {
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   border: none;
   padding: 1rem 2.5rem;
   font-size: 0.7rem;
@@ -163,6 +164,11 @@
 
 .ovStartBtn:hover {
   background: var(--teal-dark);
+}
+
+.ovStartBtn:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
 }
 
 .ovDisc {
@@ -204,7 +210,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: 1.5rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--white);
   line-height: 1.4;
   margin-bottom: 2rem;
 }
@@ -234,10 +240,15 @@
   color: var(--teal);
 }
 
+.qBtn:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
 .selected {
   background: var(--teal);
   border-color: var(--teal);
-  color: #fff;
+  color: var(--white);
 }
 
 .qScale {
@@ -273,6 +284,21 @@
   color: var(--teal);
 }
 
+.qPrev:focus-visible,
+.qNext:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.qPrev:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.qNext:disabled {
+  cursor: default;
+}
+
 .qNext {
   background: rgba(255, 255, 255, 0.05);
   border: none;
@@ -289,7 +315,7 @@
 
 .enabled {
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   cursor: pointer;
 }
 
@@ -318,7 +344,7 @@
 .vName {
   font-family: var(--font-cormorant), serif;
   font-size: 1.3rem;
-  color: #fff;
+  color: var(--white);
   margin: 0.5rem 0;
 }
 
@@ -426,13 +452,13 @@
 .rCtaTitle {
   font-family: var(--font-cormorant), serif;
   font-size: 1.4rem;
-  color: #fff;
+  color: var(--white);
   margin-bottom: 0.5rem;
 }
 
 .rCtaSub {
   font-size: 0.83rem;
-  color: #8090b0;
+  color: var(--muted);
   margin-bottom: 1.5rem;
 }
 
@@ -445,7 +471,7 @@
 
 .rBtnP {
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   border: none;
   padding: 0.8rem 2rem;
   font-size: 0.7rem;
@@ -484,10 +510,6 @@
 
 @media (min-width: 768px) {
   .rScores {
-    grid-template-columns: repeat(5, 1fr);
-  }
-
-  .ovDims {
     grid-template-columns: repeat(5, 1fr);
   }
 }

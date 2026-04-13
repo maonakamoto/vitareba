@@ -39,11 +39,11 @@ export default function ImpactStats() {
             The Numbers No One Talks About
           </div>
         </div>
-        <div className={`sec-title ${styles.secTitle}`} style={{ textAlign: "center" }}>
+        <h2 className={`sec-title ${styles.secTitle}`}>
           ADHD is not just a performance issue.
           <br />
           <em>It&apos;s a longevity issue.</em>
-        </div>
+        </h2>
 
         <div className={styles.grid}>
           {STATS.map((stat) => (

@@ -14,6 +14,8 @@
   --border: #e5e0d8;
   --warn: #d4820a;
   --danger: #e05a5a;
+  --white: #ffffff;
+  --footer-bg: #111118;
   --section-pad-y: 6rem;
   --section-pad-x: 3rem;
 }
@@ -62,6 +64,34 @@ body {
 .sec-title em {
   font-style: italic;
   color: var(--teal);
+}
+
+/* Dark section overrides — for sections with dark/ink backgrounds */
+.sec-title-light {
+  color: #fff;
+}
+
+.sec-title-light em {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.eyebrow-gold {
+  color: rgba(184, 150, 10, 0.7);
+}
+
+/* Centred section headers */
+.section-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.sec-title-center {
+  text-align: center;
+}
+
+.sec-sub-mt {
+  margin-top: 1rem;
 }
 
 .sec-sub {

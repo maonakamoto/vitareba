@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   DIMENSIONS,
   QUESTIONS,
-  scoreColor,
   type DimensionId,
 } from "@/lib/assessment/data";
 import ResultsScreen from "./ResultsScreen";
 import styles from "./Assessment.module.css";
 
 interface Props {
-  isOpen: boolean;
   onClose: () => void;
 }
 
@@ -19,14 +17,10 @@ type Screen = "intro" | "question" | "results";
 
 const emptyAnswers = () => Array<number | null>(QUESTIONS.length).fill(null);
 
-export default function Assessment({ isOpen, onClose }: Props) {
+export default function Assessment({ onClose }: Props) {
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(emptyAnswers());
-
-  useEffect(() => {
-    if (!isOpen) setScreen("intro");
-  }, [isOpen]);
 
   const start = useCallback(() => {
     setCurrentQ(0);
@@ -101,10 +95,38 @@ export default function Assessment({ isOpen, onClose }: Props) {
   const progress = ((currentQ + 1) / QUESTIONS.length) * 100;
   const dimIndex = DIMENSIONS.findIndex((d) => d.id === q?.dimension);
 
-  if (!isOpen) return null;
+  const handleAnswerKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        setAnswers((prev) => {
+          const next = [...prev];
+          const cur = prev[currentQ];
+          next[currentQ] = cur === null ? 1 : Math.min(5, cur + 1);
+          return next;
+        });
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        setAnswers((prev) => {
+          const next = [...prev];
+          const cur = prev[currentQ];
+          next[currentQ] = cur === null ? 5 : Math.max(1, cur - 1);
+          return next;
+        });
+      } else if (e.key === "Enter" && answered !== null) {
+        goNext();
+      }
+    },
+    [currentQ, answered, goNext]
+  );
 
   return (
-    <div className={`${styles.overlay} ${styles.open}`}>
+    <div
+      className={styles.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="assessment-title"
+    >
       <div className={styles.ovPb}>
         <div
           className={styles.ovPbFill}
@@ -118,7 +140,12 @@ export default function Assessment({ isOpen, onClose }: Props) {
           }}
         />
       </div>
-      <button className={styles.ovClose} onClick={onClose}>
+      <button
+        type="button"
+        className={styles.ovClose}
+        onClick={onClose}
+        aria-label="Close assessment"
+      >
         ×
       </button>
 
@@ -128,7 +155,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
           <div className={styles.ovEyebrow}>
             VitaReBa · ADHD Performance Instrument
           </div>
-          <div className={styles.ovH1}>
+          <div className={styles.ovH1} id="assessment-title">
             Inflection
             <br />
             <em>Edge</em>
@@ -161,7 +188,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
               </div>
             ))}
           </div>
-          <button className={styles.ovStartBtn} onClick={start}>
+          <button type="button" className={styles.ovStartBtn} onClick={start}>
             Begin Assessment
           </button>
           <p className={styles.ovDisc}>
@@ -176,7 +203,11 @@ export default function Assessment({ isOpen, onClose }: Props) {
           <div className={styles.qDimLabel}>
             {dim.icon} {dim.name}
           </div>
-          <div className={styles.qProg}>
+          <div
+            className={styles.qProg}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {currentQ + 1} / {QUESTIONS.length} · Dimension {dimIndex + 1} of{" "}
             {DIMENSIONS.length}
           </div>
@@ -187,12 +218,15 @@ export default function Assessment({ isOpen, onClose }: Props) {
             />
           </div>
           <div className={styles.qText}>{q.text}</div>
-          <div className={styles.qBtns}>
+          <div className={styles.qBtns} onKeyDown={handleAnswerKey}>
             {[1, 2, 3, 4, 5].map((v) => (
               <button
                 key={v}
+                type="button"
                 className={`${styles.qBtn}${answered === v ? ` ${styles.selected}` : ""}`}
                 onClick={() => selectAnswer(v)}
+                aria-label={`Rate ${v} out of 5`}
+                aria-pressed={answered === v}
               >
                 {v}
               </button>
@@ -204,6 +238,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
           </div>
           <div className={styles.qNav}>
             <button
+              type="button"
               className={styles.qPrev}
               onClick={goPrev}
               disabled={currentQ === 0}
@@ -211,8 +246,10 @@ export default function Assessment({ isOpen, onClose }: Props) {
               ← Back
             </button>
             <button
+              type="button"
               className={`${styles.qNext}${answered !== null ? ` ${styles.enabled}` : ""}`}
-              onClick={answered !== null ? goNext : undefined}
+              onClick={goNext}
+              disabled={answered === null}
             >
               {currentQ === QUESTIONS.length - 1 ? "See Results →" : "Next →"}
             </button>

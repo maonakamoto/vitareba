@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /.next/
+
+Sitemap: https://vitareba.vercel.app/sitemap.xml

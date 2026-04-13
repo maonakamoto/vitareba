@@ -34,7 +34,7 @@
 
 .navBtn {
   background: var(--ink);
-  color: #fff;
+  color: var(--white);
   border: none;
   padding: 0.55rem 1.4rem;
   font-size: 0.66rem;

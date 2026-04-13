@@ -60,12 +60,12 @@ export default function Programs() {
   return (
     <section id="pricing" className={styles.section}>
       <div className="section-inner">
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <div className="section-header">
           <div className="eyebrow">Programme Architecture</div>
         </div>
-        <div className="sec-title" style={{ textAlign: "center" }}>
+        <h2 className="sec-title sec-title-center">
           Three entry points. <em>One destination.</em>
-        </div>
+        </h2>
 
         <div className={styles.grid}>
           {PROGRAMS.map((prog) => (
@@ -74,10 +74,7 @@ export default function Programs() {
               className={`${styles.prog} ${prog.featured ? styles.featured : ""}`}
             >
               {prog.badge && <div className={styles.badge}>{prog.badge}</div>}
-              <div
-                className={styles.name}
-                style={prog.featured ? { marginTop: ".5rem" } : {}}
-              >
+              <div className={`${styles.name}${prog.featured ? ` ${styles.nameFeatured}` : ""}`}>
                 {prog.name}
               </div>
               <div className={styles.price}>{prog.price}</div>

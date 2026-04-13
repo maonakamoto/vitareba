@@ -27,7 +27,7 @@ export default function Nav({ onAssessmentOpen }: NavProps) {
           </a>
         ))}
       </div>
-      <button className={styles.navBtn} onClick={onAssessmentOpen}>
+      <button type="button" className={styles.navBtn} onClick={onAssessmentOpen}>
         Take the Inflection Edge
       </button>
     </nav>

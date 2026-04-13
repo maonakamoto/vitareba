@@ -97,7 +97,7 @@ export default function ResultsScreen({
           <a href={`mailto:${COMPANY.email}`} className={styles.rBtnP}>
             Book a Discovery Call
           </a>
-          <button className={styles.rBtnO} onClick={onRestart}>
+          <button type="button" className={styles.rBtnO} onClick={onRestart}>
             Retake Assessment
           </button>
         </div>

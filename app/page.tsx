@@ -66,10 +66,9 @@ export default function Home() {
 
       <Footer />
 
-      <Assessment
-        isOpen={assessmentOpen}
-        onClose={() => setAssessmentOpen(false)}
-      />
+      {assessmentOpen && (
+        <Assessment onClose={() => setAssessmentOpen(false)} />
+      )}
     </>
   );
 }

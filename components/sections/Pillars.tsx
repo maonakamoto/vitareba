@@ -40,16 +40,13 @@ export default function Pillars() {
   return (
     <section id="pillars" className={styles.section}>
       <div className="section-inner">
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <div className="section-header">
           <div className="eyebrow">Our Three Pillars</div>
         </div>
-        <div className="sec-title" style={{ textAlign: "center" }}>
+        <h2 className="sec-title sec-title-center">
           Three programmes. <em>One integrated approach.</em>
-        </div>
-        <p
-          className="sec-sub"
-          style={{ textAlign: "center", margin: "1rem auto 0" }}
-        >
+        </h2>
+        <p className={`sec-sub ${styles.secSub}`}>
           Each programme addresses a different entry point — but all share the
           same metabolic foundation, the same clinical rigour, and the same
           commitment to treating root causes, not symptoms.

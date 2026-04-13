@@ -25,12 +25,12 @@ export default function PsychedelicReadiness() {
         <div className={styles.grid}>
           <div>
             <div className="eyebrow">Psychedelic Readiness Programme</div>
-            <div className="sec-title">
+            <h2 className="sec-title">
               Three months.
               <br />
               <em>Complete preparation.</em>
-            </div>
-            <p className="sec-sub" style={{ marginTop: "1rem" }}>
+            </h2>
+            <p className="sec-sub sec-sub-mt">
               A structured protocol for anyone considering psychedelic-assisted
               therapy — whether with us or with a referral partner clinic. We
               ensure your body, metabolism and mind are optimally prepared.

@@ -26,22 +26,14 @@ export default function Addiction() {
       <div className="section-inner">
         <div className={styles.grid}>
           <div>
-            <div
-              className="eyebrow"
-              style={{ color: "rgba(184,150,10,.7)" }}
-            >
-              Addiction Treatment
-            </div>
-            <div className="sec-title" style={{ color: "#fff" }}>
+            <div className="eyebrow eyebrow-gold">Addiction Treatment</div>
+            <h2 className="sec-title sec-title-light">
               Where ADHD ends
               <br />
-              and addiction{" "}
-              <em style={{ fontStyle: "italic", color: "rgba(255,255,255,.35)" }}>
-                begins
-              </em>
+              and addiction <em>begins</em>
               <br />
               is rarely obvious.
-            </div>
+            </h2>
           </div>
 
           <div>
@@ -51,7 +43,7 @@ export default function Addiction() {
               alcohol, stimulants, prescription medications — begins as
               self-medication for an undiagnosed or undertreated ADHD brain.
             </p>
-            <p className={styles.body} style={{ marginBottom: "2rem" }}>
+            <p className={`${styles.body} ${styles.bodyMb}`}>
               We offer exclusive, fully private addiction treatment in
               Switzerland — integrated with the complete metabolic and
               psychiatric picture. Not a clinic setting. Not an institutional

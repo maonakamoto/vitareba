@@ -1,5 +1,5 @@
 .section {
-  background: #fff;
+  background: var(--white);
   padding: 4rem 1.5rem;
 }
 

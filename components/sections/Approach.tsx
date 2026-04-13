@@ -30,12 +30,12 @@ export default function Approach() {
         <div className={styles.grid}>
           <div className={styles.sticky}>
             <div className="eyebrow">Our Approach</div>
-            <div className="sec-title">
+            <h2 className="sec-title">
               We diagnose
               <br />
               and <em>design.</em>
-            </div>
-            <p className="sec-sub" style={{ marginTop: "1rem" }}>
+            </h2>
+            <p className="sec-sub sec-sub-mt">
               Standard psychiatry diagnoses and prescribes. We map the full
               biological picture and build a personalised architecture for your
               mind and body.

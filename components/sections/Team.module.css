@@ -1,5 +1,5 @@
 .section {
-  background: #fff;
+  background: var(--white);
   padding: 4rem 1.5rem;
 }
 
@@ -26,7 +26,7 @@
   justify-content: center;
   font-family: var(--font-cormorant), serif;
   font-size: 1.4rem;
-  color: #fff;
+  color: var(--white);
 }
 
 .name {

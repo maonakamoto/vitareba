@@ -29,17 +29,14 @@ export default function SylClock() {
       <div className="section-inner">
         <div className={styles.grid}>
           <div>
-            <div
-              className="eyebrow"
-              style={{ color: "rgba(42,122,138,.7)" }}
-            >
+            <div className={`eyebrow ${styles.eyebrowDim}`}>
               Proprietary Instrument
             </div>
-            <div className="sec-title" style={{ color: "#fff" }}>
+            <h2 className="sec-title sec-title-light">
               The SYL Clock.
               <br />
               <em>Four dimensions. One picture.</em>
-            </div>
+            </h2>
             <p className={styles.body}>
               The Surf Your Life Clock maps your ADHD symptoms across the four
               dimensions that matter most. Not just how your brain works — but

@@ -3,6 +3,11 @@
   padding: 4rem 1.5rem;
 }
 
+.secSub {
+  text-align: center;
+  margin: 1rem auto 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;

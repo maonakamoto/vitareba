@@ -17,6 +17,10 @@
   margin-bottom: 1.5rem;
 }
 
+.bodyMb {
+  margin-bottom: 2rem;
+}
+
 .cards {
   display: grid;
   grid-template-columns: 1fr;

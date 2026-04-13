@@ -55,12 +55,12 @@ export default function Pathway() {
   return (
     <section className={styles.section}>
       <div className="section-inner">
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <div className="section-header">
           <div className="eyebrow">Clinical Pathway</div>
         </div>
-        <div className="sec-title" style={{ textAlign: "center" }}>
+        <h2 className="sec-title sec-title-center">
           Six layers. <em>One integrated protocol.</em>
-        </div>
+        </h2>
         <div className={styles.grid}>
           {STEPS.map((step) => (
             <div key={step.n} className={styles.card}>

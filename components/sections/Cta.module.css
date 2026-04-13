@@ -16,7 +16,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: 2.4rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--white);
   line-height: 1.2;
 }
 
@@ -42,7 +42,7 @@
 
 .btnPrimary {
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   border: none;
   padding: 0.8rem 2rem;
   font-size: 0.68rem;

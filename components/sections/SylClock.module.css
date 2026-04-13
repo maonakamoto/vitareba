@@ -3,6 +3,10 @@
   padding: 4rem 1.5rem;
 }
 
+.eyebrowDim {
+  color: rgba(42, 122, 138, 0.7);
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;

@@ -25,12 +25,12 @@ export default function Team() {
   return (
     <section id="team" className={styles.section}>
       <div className="section-inner">
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <div className="section-header">
           <div className="eyebrow">Clinical Team</div>
         </div>
-        <div className="sec-title" style={{ textAlign: "center" }}>
+        <h2 className="sec-title sec-title-center">
           Built around <em>precision.</em>
-        </div>
+        </h2>
         <div className={styles.grid}>
           {TEAM.map((member) => (
             <div key={member.name} className={styles.card}>

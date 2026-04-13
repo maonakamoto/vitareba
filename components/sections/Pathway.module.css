@@ -11,7 +11,7 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.4rem;
   padding: 2rem;

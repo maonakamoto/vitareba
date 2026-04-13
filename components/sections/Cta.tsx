@@ -23,7 +23,7 @@ export default function Cta({ onAssessmentOpen }: CtaProps) {
         new chapter.
       </p>
       <div className={styles.btns}>
-        <button className={styles.btnPrimary} onClick={onAssessmentOpen}>
+        <button type="button" className={styles.btnPrimary} onClick={onAssessmentOpen}>
           Take the Inflection Edge →
         </button>
         <a
