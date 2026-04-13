@@ -6,6 +6,7 @@ import {
   QUESTIONS,
   type DimensionId,
 } from "@/lib/assessment/data";
+import { COMPANY } from "@/lib/config/company";
 import ResultsScreen from "./ResultsScreen";
 import styles from "./Assessment.module.css";
 
@@ -161,7 +162,7 @@ export default function Assessment({ onClose }: Props) {
       {screen === "intro" && (
         <div className={`${styles.ovScreen} ${styles.active}`}>
           <div className={styles.ovEyebrow}>
-            VitaReBa · ADHD Performance Instrument
+            {COMPANY.shortName} · ADHD Performance Instrument
           </div>
           <div className={styles.ovH1} id="assessment-title">
             Inflection
