@@ -48,7 +48,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 3rem;
+  padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
@@ -1589,9 +1589,14 @@ footer {
 
 /* ─── RESPONSIVE ───────────────────────────────────────── */
 
-/* Touch target minimums (mobile) */
-@media (max-width: 768px) {
-  .nav-btn,
+/* Mobile overrides */
+@media (max-width: 767px) {
+  /* Hide nav CTA on mobile — CTA appears in hero and bottom section */
+  .nav-btn {
+    display: none;
+  }
+
+  /* Touch target minimums */
   .btn-dark,
   .btn-outline,
   .ov-close,
@@ -1609,6 +1614,10 @@ footer {
 
 /* Desktop overrides (min-width: 768px) */
 @media (min-width: 768px) {
+  .vitareba-nav {
+    padding: 1.2rem 3rem;
+  }
+
   .vitareba-nav .nav-links {
     display: flex;
   }
