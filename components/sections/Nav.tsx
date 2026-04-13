@@ -1,5 +1,8 @@
 "use client";
 
+import Logo from "@/components/Logo";
+import styles from "./Nav.module.css";
+
 const NAV_LINKS = [
   { href: "#pillars", label: "Programmes" },
   { href: "#approach", label: "Approach" },
@@ -15,18 +18,16 @@ interface NavProps {
 
 export default function Nav({ onAssessmentOpen }: NavProps) {
   return (
-    <nav className="vitareba-nav">
-      <div className="logo">
-        Vita<span>Re</span>Ba
-      </div>
-      <div className="nav-links">
+    <nav className={styles.nav}>
+      <Logo />
+      <div className={styles.navLinks}>
         {NAV_LINKS.map((link) => (
           <a key={link.href} href={link.href}>
             {link.label}
           </a>
         ))}
       </div>
-      <button className="nav-btn" onClick={onAssessmentOpen}>
+      <button className={styles.navBtn} onClick={onAssessmentOpen}>
         Take the Inflection Edge
       </button>
     </nav>

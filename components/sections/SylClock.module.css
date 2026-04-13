@@ -1,0 +1,65 @@
+.section {
+  background: var(--ink);
+  padding: 4rem 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.body {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.85;
+  margin-top: 1.2rem;
+  max-width: 28rem;
+}
+
+.dims {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.dim {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.3rem;
+  padding: 1.2rem;
+}
+
+.dimIcon {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.dimName {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(184, 150, 10, 0.7);
+  margin-bottom: 0.4rem;
+}
+
+.dimText {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 6rem 3rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dims {
+    grid-template-columns: 1fr 1fr;
+  }
+}

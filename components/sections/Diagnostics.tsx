@@ -1,3 +1,5 @@
+import styles from "./Diagnostics.module.css";
+
 const DIAGNOSTIC_CATEGORIES = [
   {
     cat: "Gut · Brain Axis",
@@ -57,9 +59,9 @@ const DIAGNOSTIC_CATEGORIES = [
 
 export default function Diagnostics() {
   return (
-    <section id="diagnostics" className="diagnostics-section">
+    <section id="diagnostics" className={styles.section}>
       <div className="section-inner">
-        <div className="diag-intro">
+        <div className={styles.intro}>
           <div>
             <div className="eyebrow">Diagnostic Depth</div>
             <div className="sec-title">
@@ -79,13 +81,13 @@ export default function Diagnostics() {
           </div>
         </div>
 
-        <div className="diag-grid">
+        <div className={styles.grid}>
           {DIAGNOSTIC_CATEGORIES.map((category) => (
-            <div key={category.cat} className="dc">
-              <div className="dc-cat">{category.cat}</div>
+            <div key={category.cat} className={styles.dc}>
+              <div className={styles.cat}>{category.cat}</div>
               {category.items.map((item) => (
-                <div key={item} className="dc-item">
-                  <div className="dc-dot" />
+                <div key={item} className={styles.item}>
+                  <div className={styles.dot} />
                   {item}
                 </div>
               ))}

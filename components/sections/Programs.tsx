@@ -1,4 +1,5 @@
 import { COMPANY } from "@/lib/config/company";
+import styles from "./Programs.module.css";
 
 const PROGRAMS = [
   {
@@ -57,7 +58,7 @@ const PROGRAMS = [
 
 export default function Programs() {
   return (
-    <section id="pricing" className="pricing-section">
+    <section id="pricing" className={styles.section}>
       <div className="section-inner">
         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
           <div className="eyebrow">Programme Architecture</div>
@@ -66,36 +67,33 @@ export default function Programs() {
           Three entry points. <em>One destination.</em>
         </div>
 
-        <div className="prog-grid">
+        <div className={styles.grid}>
           {PROGRAMS.map((prog) => (
             <div
               key={prog.name}
-              className={`prog${prog.featured ? " featured" : ""}`}
+              className={`${styles.prog} ${prog.featured ? styles.featured : ""}`}
             >
-              {prog.badge && <div className="prog-badge">{prog.badge}</div>}
+              {prog.badge && <div className={styles.badge}>{prog.badge}</div>}
               <div
-                className="prog-name"
+                className={styles.name}
                 style={prog.featured ? { marginTop: ".5rem" } : {}}
               >
                 {prog.name}
               </div>
-              <div className="prog-price">{prog.price}</div>
-              <div className="prog-note">{prog.note}</div>
-              <p className="prog-desc">{prog.desc}</p>
+              <div className={styles.price}>{prog.price}</div>
+              <div className={styles.note}>{prog.note}</div>
+              <p className={styles.desc}>{prog.desc}</p>
               {prog.items.map((item) => (
-                <div key={item} className="prog-item">
-                  <span className="prog-check">✦</span>
+                <div key={item} className={styles.item}>
+                  <span className={styles.check}>✦</span>
                   {item}
                 </div>
               ))}
               <a
                 href={`mailto:${COMPANY.email}`}
-                className={`prog-btn ${
-                  prog.btnStyle === "primary"
-                    ? "prog-btn-primary"
-                    : "prog-btn-outline"
+                className={`${styles.btn} ${
+                  prog.btnStyle === "primary" ? styles.btnPrimary : styles.btnOutline
                 }`}
-                style={{ display: "block", textAlign: "center", textDecoration: "none" }}
               >
                 {prog.btnLabel}
               </a>

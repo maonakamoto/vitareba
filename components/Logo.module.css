@@ -1,0 +1,18 @@
+.logo {
+  font-family: var(--font-cormorant), serif;
+  font-weight: 300;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.accent {
+  color: var(--teal);
+}
+
+.light {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.small {
+  font-size: 0.9rem;
+}

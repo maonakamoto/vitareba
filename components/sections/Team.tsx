@@ -1,3 +1,5 @@
+import styles from "./Team.module.css";
+
 const TEAM = [
   {
     initials: "M",
@@ -21,7 +23,7 @@ const TEAM = [
 
 export default function Team() {
   return (
-    <section id="team" className="team-section">
+    <section id="team" className={styles.section}>
       <div className="section-inner">
         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
           <div className="eyebrow">Clinical Team</div>
@@ -29,13 +31,13 @@ export default function Team() {
         <div className="sec-title" style={{ textAlign: "center" }}>
           Built around <em>precision.</em>
         </div>
-        <div className="team-grid">
+        <div className={styles.grid}>
           {TEAM.map((member) => (
-            <div key={member.name} className="team-card">
-              <div className="team-avatar">{member.initials}</div>
-              <div className="team-name">{member.name}</div>
-              <div className="team-role">{member.role}</div>
-              <p className="team-bio">{member.bio}</p>
+            <div key={member.name} className={styles.card}>
+              <div className={styles.avatar}>{member.initials}</div>
+              <div className={styles.name}>{member.name}</div>
+              <div className={styles.role}>{member.role}</div>
+              <p className={styles.bio}>{member.bio}</p>
             </div>
           ))}
         </div>

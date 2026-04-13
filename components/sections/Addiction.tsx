@@ -1,4 +1,5 @@
 import { COMPANY } from "@/lib/config/company";
+import styles from "./Addiction.module.css";
 
 const CARDS = [
   {
@@ -21,9 +22,9 @@ const CARDS = [
 
 export default function Addiction() {
   return (
-    <section className="addiction-section">
+    <section className={styles.section}>
       <div className="section-inner">
-        <div className="addiction-grid">
+        <div className={styles.grid}>
           <div>
             <div
               className="eyebrow"
@@ -44,31 +45,31 @@ export default function Addiction() {
           </div>
 
           <div>
-            <p className="addiction-body">
+            <p className={styles.body}>
               ADHD and addiction are among the most frequently co-occurring
               conditions in high-performing adults. For many, substance use —
               alcohol, stimulants, prescription medications — begins as
               self-medication for an undiagnosed or undertreated ADHD brain.
             </p>
-            <p className="addiction-body" style={{ marginBottom: "2rem" }}>
+            <p className={styles.body} style={{ marginBottom: "2rem" }}>
               We offer exclusive, fully private addiction treatment in
               Switzerland — integrated with the complete metabolic and
               psychiatric picture. Not a clinic setting. Not an institutional
               programme. A discreet, evidence-based, deeply personal process.
             </p>
 
-            <div className="addiction-cards">
+            <div className={styles.cards}>
               {CARDS.map((card) => (
-                <div key={card.label} className="addiction-card">
-                  <div className="addiction-card-label">{card.label}</div>
-                  <div className="addiction-card-text">{card.text}</div>
+                <div key={card.label} className={styles.card}>
+                  <div className={styles.cardLabel}>{card.label}</div>
+                  <div className={styles.cardText}>{card.text}</div>
                 </div>
               ))}
             </div>
 
             <a
               href={`mailto:${COMPANY.email}`}
-              className="addiction-enquire-link"
+              className={styles.enquireLink}
             >
               Enquire Confidentially
             </a>

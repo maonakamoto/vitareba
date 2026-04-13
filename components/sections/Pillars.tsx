@@ -1,3 +1,5 @@
+import styles from "./Pillars.module.css";
+
 const PILLARS = [
   {
     icon: "🧬",
@@ -36,7 +38,7 @@ const PILLARS = [
 
 export default function Pillars() {
   return (
-    <section id="pillars" className="pillars-section">
+    <section id="pillars" className={styles.section}>
       <div className="section-inner">
         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
           <div className="eyebrow">Our Three Pillars</div>
@@ -52,15 +54,15 @@ export default function Pillars() {
           same metabolic foundation, the same clinical rigour, and the same
           commitment to treating root causes, not symptoms.
         </p>
-        <div className="pillars-grid">
+        <div className={styles.grid}>
           {PILLARS.map((pillar) => (
             <div
               key={pillar.name}
-              className={`pillar${pillar.featured ? " pillar--featured" : ""}`}
+              className={`${styles.pillar} ${pillar.featured ? styles.featured : ""}`}
             >
-              <div className="pillar-icon">{pillar.icon}</div>
-              <div className="pillar-name">{pillar.name}</div>
-              <p className="pillar-desc">{pillar.desc}</p>
+              <div className={styles.icon}>{pillar.icon}</div>
+              <div className={styles.name}>{pillar.name}</div>
+              <p className={styles.desc}>{pillar.desc}</p>
               <div className="tags">
                 {pillar.tags.map((tag) => (
                   <span key={tag} className="tag">

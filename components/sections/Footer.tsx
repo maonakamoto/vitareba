@@ -1,12 +1,12 @@
 import { COMPANY } from "@/lib/config/company";
+import Logo from "@/components/Logo";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
   return (
-    <footer>
-      <div className="foot-logo">
-        Vita<span>Re</span>Ba · Surf Your Life
-      </div>
-      <div className="foot-legal">
+    <footer className={styles.footer}>
+      <Logo variant="light" tagline="Surf Your Life" small />
+      <div className={styles.legal}>
         © {COMPANY.foundingYear} {COMPANY.name} · All psychedelic therapies
         within Swiss regulatory frameworks
       </div>

@@ -1,3 +1,5 @@
+import styles from "./PsychedelicReadiness.module.css";
+
 const PHASES = [
   {
     n: "1",
@@ -18,9 +20,9 @@ const PHASES = [
 
 export default function PsychedelicReadiness() {
   return (
-    <section className="psy-section">
+    <section className={styles.section}>
       <div className="section-inner">
-        <div className="psy-grid">
+        <div className={styles.grid}>
           <div>
             <div className="eyebrow">Psychedelic Readiness Programme</div>
             <div className="sec-title">
@@ -34,11 +36,11 @@ export default function PsychedelicReadiness() {
               ensure your body, metabolism and mind are optimally prepared.
             </p>
 
-            <div className="longevity-callout">
-              <div className="longevity-callout-title">
+            <div className={styles.callout}>
+              <div className={styles.calloutTitle}>
                 Beyond neuroplasticity: the longevity dimension
               </div>
-              <div className="longevity-callout-text">
+              <div className={styles.calloutText}>
                 A 2025 study published in Nature&apos;s npj Aging found that
                 psilocybin extended human cellular lifespan by up to 57%,
                 preserved telomere length, and increased survival of aged mice
@@ -48,7 +50,7 @@ export default function PsychedelicReadiness() {
                 potent geroprotective agents, making metabolic preparation even
                 more critical.
               </div>
-              <div className="longevity-callout-cite">
+              <div className={styles.calloutCite}>
                 Kato et al., npj Aging, 2025 · Emory University / Baylor
                 College of Medicine
               </div>
@@ -56,18 +58,18 @@ export default function PsychedelicReadiness() {
           </div>
 
           <div>
-            <div className="psy-phases">
+            <div className={styles.phases}>
               {PHASES.map((phase) => (
-                <div key={phase.n} className="psy-phase">
-                  <div className="psy-phase-n">{phase.n}</div>
+                <div key={phase.n} className={styles.phase}>
+                  <div className={styles.phaseN}>{phase.n}</div>
                   <div>
-                    <div className="psy-phase-title">{phase.title}</div>
-                    <div className="psy-phase-text">{phase.text}</div>
+                    <div className={styles.phaseTitle}>{phase.title}</div>
+                    <div className={styles.phaseText}>{phase.text}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <p className="psy-body">
+            <p className={styles.body}>
               Available for individual clients and referral partners —
               psychedelic clinics, retreat centres, and medical practitioners
               seeking thorough pre-treatment preparation for their patients.

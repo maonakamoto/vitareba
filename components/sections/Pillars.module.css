@@ -1,0 +1,55 @@
+.section {
+  background: var(--off);
+  padding: 4rem 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.pillar {
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding: 2.5rem 2rem;
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.pillar:hover {
+  border-color: var(--teal);
+}
+
+.featured {
+  border-color: var(--teal);
+}
+
+.icon {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.name {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.3rem;
+  font-weight: 300;
+  margin-bottom: 0.6rem;
+}
+
+.desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 6rem 3rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,101 @@
+.section {
+  background: var(--off);
+  padding: 4rem 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.callout {
+  background: linear-gradient(
+    135deg,
+    rgba(42, 122, 138, 0.08),
+    rgba(184, 150, 10, 0.06)
+  );
+  border: 1px solid rgba(42, 122, 138, 0.15);
+  border-radius: 0.4rem;
+  padding: 2rem 2.5rem;
+  margin-top: 2rem;
+}
+
+.calloutTitle {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.calloutText {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.calloutCite {
+  font-size: 0.6rem;
+  color: var(--faint);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.phases {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.phase {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.phaseN {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(42, 122, 138, 0.1);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.phaseTitle {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1rem;
+  font-weight: 300;
+  margin-bottom: 0.2rem;
+}
+
+.phaseText {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.body {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 6rem 3rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,3 +1,5 @@
+import styles from "./ImpactStats.module.css";
+
 const STATS = [
   {
     number: "13",
@@ -30,38 +32,35 @@ const STATS = [
 
 export default function ImpactStats() {
   return (
-    <section className="impact-section">
+    <section className={styles.section}>
       <div className="section-inner">
-        <div className="impact-header">
-          <div className="eyebrow eyebrow-dim">
+        <div className={styles.header}>
+          <div className={`eyebrow ${styles.eyebrowDim}`}>
             The Numbers No One Talks About
           </div>
         </div>
-        <div
-          className="sec-title"
-          style={{ textAlign: "center", color: "#fff" }}
-        >
+        <div className={`sec-title ${styles.secTitle}`} style={{ textAlign: "center" }}>
           ADHD is not just a performance issue.
           <br />
           <em>It&apos;s a longevity issue.</em>
         </div>
 
-        <div className="impact-grid">
+        <div className={styles.grid}>
           {STATS.map((stat) => (
-            <div key={stat.label} className="impact-card">
-              <div className="impact-n">
+            <div key={stat.label} className={styles.card}>
+              <div className={styles.n}>
                 {stat.number}
                 {stat.unit && (
-                  <span className="impact-unit">{stat.unit}</span>
+                  <span className={styles.unit}>{stat.unit}</span>
                 )}
               </div>
-              <div className="impact-label">{stat.label}</div>
-              <div className="impact-source">{stat.source}</div>
+              <div className={styles.label}>{stat.label}</div>
+              <div className={styles.source}>{stat.source}</div>
             </div>
           ))}
         </div>
 
-        <div className="impact-text">
+        <div className={styles.text}>
           <p>
             These are not just cognitive challenges. Untreated ADHD drives
             metabolic dysfunction, accelerated cellular aging, chronic

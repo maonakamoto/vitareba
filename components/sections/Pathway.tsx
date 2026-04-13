@@ -1,3 +1,5 @@
+import styles from "./Pathway.module.css";
+
 const STEPS = [
   {
     n: "1",
@@ -51,7 +53,7 @@ const STEPS = [
 
 export default function Pathway() {
   return (
-    <section className="pathway-section">
+    <section className={styles.section}>
       <div className="section-inner">
         <div style={{ textAlign: "center", marginBottom: "1rem" }}>
           <div className="eyebrow">Clinical Pathway</div>
@@ -59,13 +61,13 @@ export default function Pathway() {
         <div className="sec-title" style={{ textAlign: "center" }}>
           Six layers. <em>One integrated protocol.</em>
         </div>
-        <div className="pw-grid">
+        <div className={styles.grid}>
           {STEPS.map((step) => (
-            <div key={step.n} className="pw-card">
-              <div className="pw-n">{step.n}</div>
-              <div className="pw-sub">{step.sub}</div>
-              <div className="pw-title">{step.title}</div>
-              <p className="pw-text">{step.text}</p>
+            <div key={step.n} className={styles.card}>
+              <div className={styles.n}>{step.n}</div>
+              <div className={styles.sub}>{step.sub}</div>
+              <div className={styles.title}>{step.title}</div>
+              <p className={styles.text}>{step.text}</p>
               <div className="tags">
                 {step.tags.map((tag) => (
                   <span key={tag} className="tag">

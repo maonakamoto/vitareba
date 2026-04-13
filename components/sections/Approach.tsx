@@ -1,3 +1,5 @@
+import styles from "./Approach.module.css";
+
 const ITEMS = [
   {
     n: "01",
@@ -23,10 +25,10 @@ const ITEMS = [
 
 export default function Approach() {
   return (
-    <section id="approach" className="approach-section">
+    <section id="approach" className={styles.section}>
       <div className="section-inner">
-        <div className="approach-grid">
-          <div className="approach-sticky">
+        <div className={styles.grid}>
+          <div className={styles.sticky}>
             <div className="eyebrow">Our Approach</div>
             <div className="sec-title">
               We diagnose
@@ -39,12 +41,12 @@ export default function Approach() {
               mind and body.
             </p>
           </div>
-          <div className="approach-items">
+          <div className={styles.items}>
             {ITEMS.map((item) => (
-              <div key={item.n} className="approach-item">
-                <div className="approach-item-n">{item.n}</div>
-                <div className="approach-item-title">{item.title}</div>
-                <p className="approach-item-body">{item.body}</p>
+              <div key={item.n} className={styles.item}>
+                <div className={styles.itemN}>{item.n}</div>
+                <div className={styles.itemTitle}>{item.title}</div>
+                <p className={styles.itemBody}>{item.body}</p>
               </div>
             ))}
           </div>
