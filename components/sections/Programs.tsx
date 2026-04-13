@@ -1,3 +1,5 @@
+import { COMPANY } from "@/lib/config/company";
+
 const PROGRAMS = [
   {
     name: "Edge Diagnostic",
@@ -87,7 +89,7 @@ export default function Programs() {
                 </div>
               ))}
               <a
-                href="mailto:manuel@surfyourlife.org"
+                href={`mailto:${COMPANY.email}`}
                 className={`prog-btn ${
                   prog.btnStyle === "primary"
                     ? "prog-btn-primary"

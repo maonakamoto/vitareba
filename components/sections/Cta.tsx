@@ -1,5 +1,7 @@
 "use client";
 
+import { COMPANY } from "@/lib/config/company";
+
 interface CtaProps {
   onAssessmentOpen: () => void;
 }
@@ -24,15 +26,15 @@ export default function Cta({ onAssessmentOpen }: CtaProps) {
           Take the Inflection Edge →
         </button>
         <a
-          href="mailto:manuel@surfyourlife.org"
+          href={`mailto:${COMPANY.email}`}
           className="cta-btn-outline"
         >
           Book a Discovery Call
         </a>
       </div>
       <p className="cta-note">
-        VitaReBa GmbH · Zollikerstrasse 183 · 8008 Zürich ·
-        manuel@surfyourlife.org
+        {COMPANY.name} · {COMPANY.address.street} · {COMPANY.address.zip}{" "}
+        {COMPANY.address.city} · {COMPANY.email}
       </p>
     </div>
   );

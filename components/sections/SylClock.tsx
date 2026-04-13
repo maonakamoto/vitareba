@@ -1,4 +1,4 @@
-const DIMENSIONS = [
+const SYL_DIMENSIONS = [
   {
     icon: "💚",
     name: "Health",
@@ -38,15 +38,7 @@ export default function SylClock() {
               <br />
               <em>Four dimensions. One picture.</em>
             </div>
-            <p
-              style={{
-                fontSize: ".85rem",
-                color: "rgba(255,255,255,.4)",
-                lineHeight: "1.85",
-                marginTop: "1.2rem",
-                maxWidth: "28rem",
-              }}
-            >
+            <p className="syl-body">
               The Surf Your Life Clock maps your ADHD symptoms across the four
               dimensions that matter most. Not just how your brain works — but
               how it shows up in every area of your life. The result is the most
@@ -56,7 +48,7 @@ export default function SylClock() {
 
           <div>
             <div className="syl-dims">
-              {DIMENSIONS.map((dim) => (
+              {SYL_DIMENSIONS.map((dim) => (
                 <div key={dim.name} className="syl-dim">
                   <div className="syl-dim-icon">{dim.icon}</div>
                   <div className="syl-dim-name">{dim.name}</div>

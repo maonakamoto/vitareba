@@ -14,6 +14,7 @@ import Addiction from "@/components/sections/Addiction";
 import Programs from "@/components/sections/Programs";
 import Team from "@/components/sections/Team";
 import Cta from "@/components/sections/Cta";
+import Footer from "@/components/sections/Footer";
 import Assessment from "@/components/Assessment";
 
 export default function Home() {
@@ -52,10 +53,7 @@ export default function Home() {
 
         <Addiction />
 
-        <hr
-          className="hr-rule"
-          style={{ margin: 0, borderColor: "rgba(255,255,255,.05)" }}
-        />
+        <hr className="hr-dark" />
 
         <Programs />
 
@@ -66,15 +64,7 @@ export default function Home() {
         <Cta onAssessmentOpen={() => setAssessmentOpen(true)} />
       </main>
 
-      <footer>
-        <div className="foot-logo">
-          Vita<span>Re</span>Ba · Surf Your Life
-        </div>
-        <div className="foot-legal">
-          © 2026 VitaReBa GmbH · All psychedelic therapies within Swiss
-          regulatory frameworks
-        </div>
-      </footer>
+      <Footer />
 
       <Assessment
         isOpen={assessmentOpen}

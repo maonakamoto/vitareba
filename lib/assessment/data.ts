@@ -183,7 +183,7 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
       text: "You have partial control over your activation but it's inconsistent. Some days you can self-start; others you can't. The variability itself is the signal — it points to biological fluctuation that can be stabilised.",
     },
     {
-      maxScore: 101,
+      maxScore: 100,
       text: "Your arousal system is well-regulated. You can reliably get yourself into a productive state. The remaining work is optimising your peak windows and reducing the energy cost of activation.",
     },
   ],
@@ -197,7 +197,7 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
       text: "You generate substantial creative output but struggle to convert it into finished work. The gap between ideation and execution is your highest-leverage intervention point.",
     },
     {
-      maxScore: 101,
+      maxScore: 100,
       text: "Your divergent thinking is a well-deployed asset. The work now is building systems that protect and channel this capacity so it compounds rather than scatters.",
     },
   ],
@@ -211,7 +211,7 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
       text: "You experience hyperfocus regularly but can't always direct it. The work is building triggers, protection and exit strategies so you can deploy this capacity strategically.",
     },
     {
-      maxScore: 101,
+      maxScore: 100,
       text: "Hyperfocus is a well-understood, regularly deployed asset. The refinement now is building better protection for these states once they are activated.",
     },
   ],
@@ -225,7 +225,7 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
       text: "Your volatility is manageable but costly in ways others absorb more than you see. The work is raising your baseline floor through biological stabilisation and structural support.",
     },
     {
-      maxScore: 101,
+      maxScore: 100,
       text: "You have reasonable control over your performance variation. The remaining work is building a more consistent baseline so the people around you can rely on which version of you shows up.",
     },
   ],
@@ -239,7 +239,7 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
       text: "You understand your environmental needs partially but haven't fully designed around them. Deliberate redesign of your workspace, schedule and team structure will compound every other intervention.",
     },
     {
-      maxScore: 101,
+      maxScore: 100,
       text: "You have built an environment that works with your neurotype. The task now is protecting it as the complexity of your life and business increases.",
     },
   ],
@@ -252,6 +252,12 @@ export interface VerdictTier {
   color: string;
   text: string;
 }
+
+export const scoreColor = (score: number): string => {
+  if (score >= 60) return "var(--teal)";
+  if (score >= 40) return "var(--warn)";
+  return "var(--danger)";
+};
 
 export const VERDICT_TIERS: VerdictTier[] = [
   {

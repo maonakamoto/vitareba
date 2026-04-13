@@ -67,14 +67,7 @@ export default function PsychedelicReadiness() {
                 </div>
               ))}
             </div>
-            <p
-              style={{
-                fontSize: ".75rem",
-                color: "var(--muted)",
-                marginTop: "1.5rem",
-                lineHeight: "1.7",
-              }}
-            >
+            <p className="psy-body">
               Available for individual clients and referral partners —
               psychedelic clinics, retreat centres, and medical practitioners
               seeking thorough pre-treatment preparation for their patients.

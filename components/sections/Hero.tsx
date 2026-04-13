@@ -1,5 +1,16 @@
 "use client";
 
+import { COMPANY } from "@/lib/config/company";
+
+const SPECIALTIES = [
+  "ADHD",
+  "Longevity",
+  "Addiction",
+  "Burnout",
+  "High Performance",
+  "Psychedelic Therapy",
+] as const;
+
 interface HeroProps {
   onAssessmentOpen: () => void;
 }
@@ -23,14 +34,7 @@ export default function Hero({ onAssessmentOpen }: HeroProps) {
           high performance, longevity and wellbeing.
         </p>
         <div className="spec-pills">
-          {[
-            "ADHD",
-            "Longevity",
-            "Addiction",
-            "Burnout",
-            "High Performance",
-            "Psychedelic Therapy",
-          ].map((pill) => (
+          {SPECIALTIES.map((pill) => (
             <span key={pill} className="spec-pill">
               {pill}
             </span>
@@ -59,7 +63,7 @@ export default function Hero({ onAssessmentOpen }: HeroProps) {
             Take the Inflection Edge →
           </button>
           <a
-            href="mailto:manuel@surfyourlife.org"
+            href={`mailto:${COMPANY.email}`}
             className="btn-outline"
           >
             Book Consultation

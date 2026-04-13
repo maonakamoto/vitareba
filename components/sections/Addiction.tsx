@@ -1,3 +1,5 @@
+import { COMPANY } from "@/lib/config/company";
+
 const CARDS = [
   {
     label: "Fully Private",
@@ -42,27 +44,13 @@ export default function Addiction() {
           </div>
 
           <div>
-            <p
-              style={{
-                fontSize: ".88rem",
-                color: "rgba(255,255,255,.4)",
-                lineHeight: "1.85",
-                marginBottom: "1.5rem",
-              }}
-            >
+            <p className="addiction-body">
               ADHD and addiction are among the most frequently co-occurring
               conditions in high-performing adults. For many, substance use —
               alcohol, stimulants, prescription medications — begins as
               self-medication for an undiagnosed or undertreated ADHD brain.
             </p>
-            <p
-              style={{
-                fontSize: ".88rem",
-                color: "rgba(255,255,255,.4)",
-                lineHeight: "1.85",
-                marginBottom: "2rem",
-              }}
-            >
+            <p className="addiction-body" style={{ marginBottom: "2rem" }}>
               We offer exclusive, fully private addiction treatment in
               Switzerland — integrated with the complete metabolic and
               psychiatric picture. Not a clinic setting. Not an institutional
@@ -78,26 +66,12 @@ export default function Addiction() {
               ))}
             </div>
 
-            <div style={{ marginTop: "1.5rem" }}>
-              <a
-                href="mailto:manuel@surfyourlife.org"
-                style={{
-                  display: "inline-block",
-                  border: "1px solid rgba(255,255,255,.18)",
-                  color: "rgba(255,255,255,.55)",
-                  padding: ".85rem 2rem",
-                  fontSize: ".7rem",
-                  letterSpacing: ".16em",
-                  textTransform: "uppercase",
-                  textDecoration: "none",
-                  fontFamily: "var(--font-dm-sans), sans-serif",
-                  borderRadius: ".2rem",
-                  transition: "all .3s",
-                }}
-              >
-                Enquire Confidentially
-              </a>
-            </div>
+            <a
+              href={`mailto:${COMPANY.email}`}
+              className="addiction-enquire-link"
+            >
+              Enquire Confidentially
+            </a>
           </div>
         </div>
       </div>

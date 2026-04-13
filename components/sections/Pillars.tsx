@@ -56,8 +56,7 @@ export default function Pillars() {
           {PILLARS.map((pillar) => (
             <div
               key={pillar.name}
-              className="pillar"
-              style={pillar.featured ? { borderColor: "var(--teal)" } : {}}
+              className={`pillar${pillar.featured ? " pillar--featured" : ""}`}
             >
               <div className="pillar-icon">{pillar.icon}</div>
               <div className="pillar-name">{pillar.name}</div>

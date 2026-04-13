@@ -32,11 +32,8 @@ export default function ImpactStats() {
   return (
     <section className="impact-section">
       <div className="section-inner">
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <div
-            className="eyebrow"
-            style={{ color: "rgba(42,122,138,.7)" }}
-          >
+        <div className="impact-header">
+          <div className="eyebrow eyebrow-dim">
             The Numbers No One Talks About
           </div>
         </div>

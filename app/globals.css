@@ -12,6 +12,10 @@
   --off: #f8f7f4;
   --light: #f1ede7;
   --border: #e5e0d8;
+  --warn: #d4820a;
+  --danger: #e05a5a;
+  --section-pad-y: 6rem;
+  --section-pad-x: 3rem;
 }
 
 /* ─── Base ─────────────────────────────────────────────── */
@@ -62,7 +66,7 @@ body {
 }
 
 .vitareba-nav .nav-links {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 2rem;
 }
@@ -137,6 +141,68 @@ body {
   margin: 0 3rem;
 }
 
+.hr-dark {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 0;
+}
+
+/* ─── COMPONENT CLASSES ────────────────────────────────── */
+.eyebrow-dim {
+  color: rgba(42, 122, 138, 0.7);
+}
+
+.impact-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pillar--featured {
+  border-color: var(--teal);
+}
+
+.syl-body {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.85;
+  margin-top: 1.2rem;
+  max-width: 28rem;
+}
+
+.addiction-body {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.85;
+  margin-bottom: 1.5rem;
+}
+
+.addiction-enquire-link {
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.55);
+  padding: 0.85rem 2rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-family: var(--font-dm-sans), sans-serif;
+  border-radius: 0.2rem;
+  transition: all 0.3s;
+  margin-top: 1.5rem;
+}
+
+.addiction-enquire-link:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.psy-body {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  line-height: 1.7;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -157,7 +223,7 @@ body {
 /* ─── HERO ─────────────────────────────────────────────── */
 .hero {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   min-height: 100vh;
 }
 
@@ -166,7 +232,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 8rem 4rem 5rem;
+  padding: 6rem 2rem 3rem;
   position: relative;
   overflow: hidden;
 }
@@ -187,7 +253,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 8rem 4rem 5rem;
+  padding: 3rem 2rem;
 }
 
 .hero-eyebrow {
@@ -202,7 +268,7 @@ body {
 
 .hero-title {
   font-family: var(--font-cormorant), serif;
-  font-size: 3.6rem;
+  font-size: 2.4rem;
   font-weight: 300;
   line-height: 1.15;
   color: #fff;
@@ -254,7 +320,7 @@ body {
 
 .hero-r-title {
   font-family: var(--font-cormorant), serif;
-  font-size: 2.6rem;
+  font-size: 1.8rem;
   font-weight: 300;
   line-height: 1.2;
   color: var(--ink);
@@ -333,12 +399,12 @@ body {
 /* ─── IMPACT STATS ─────────────────────────────────────── */
 .impact-section {
   background: var(--ink);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .impact-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 3rem;
   margin-top: 2.5rem;
@@ -431,12 +497,12 @@ body {
 /* ─── THREE PILLARS ────────────────────────────────────── */
 .pillars-section {
   background: var(--off);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .pillars-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 2rem;
   margin-top: 3rem;
 }
@@ -474,19 +540,18 @@ body {
 /* ─── APPROACH ─────────────────────────────────────────── */
 .approach-section {
   background: #fff;
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .approach-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   align-items: start;
 }
 
 .approach-sticky {
-  position: sticky;
-  top: 8rem;
+  position: static;
 }
 
 .approach-items {
@@ -523,12 +588,12 @@ body {
 /* ─── CLINICAL PATHWAY ─────────────────────────────────── */
 .pathway-section {
   background: var(--off);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .pw-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-top: 3rem;
 }
@@ -579,12 +644,12 @@ body {
 /* ─── DIAGNOSTICS ──────────────────────────────────────── */
 .diagnostics-section {
   background: #fff;
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .diag-intro {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 3rem;
   align-items: center;
   margin-bottom: 3rem;
@@ -592,7 +657,7 @@ body {
 
 .diag-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -631,19 +696,19 @@ body {
 /* ─── SYL CLOCK ────────────────────────────────────────── */
 .syl-section {
   background: var(--ink);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .syl-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 4rem;
   align-items: center;
 }
 
 .syl-dims {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
   margin-top: 2rem;
 }
@@ -676,12 +741,12 @@ body {
 /* ─── PSYCHEDELIC READINESS ────────────────────────────── */
 .psy-section {
   background: var(--off);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .psy-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 4rem;
   align-items: center;
 }
@@ -729,19 +794,19 @@ body {
 /* ─── ADDICTION ────────────────────────────────────────── */
 .addiction-section {
   background: var(--ink);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .addiction-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   align-items: center;
 }
 
 .addiction-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.8rem;
 }
 
@@ -768,12 +833,12 @@ body {
 /* ─── PROGRAMMES / PRICING ─────────────────────────────── */
 .pricing-section {
   background: var(--off);
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .prog-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-top: 3rem;
 }
@@ -884,12 +949,12 @@ body {
 /* ─── TEAM ─────────────────────────────────────────────── */
 .team-section {
   background: #fff;
-  padding: 6rem 3rem;
+  padding: 4rem 1.5rem;
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 2rem;
   margin-top: 3rem;
 }
@@ -1173,7 +1238,7 @@ footer {
 
 .ov-dims {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-top: 2rem;
 }
@@ -1383,7 +1448,7 @@ footer {
 
 .r-scores {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.8rem;
   margin-bottom: 2.5rem;
 }
@@ -1523,33 +1588,49 @@ footer {
 }
 
 /* ─── RESPONSIVE ───────────────────────────────────────── */
-@media (max-width: 768px) {
-  .vitareba-nav {
-    padding: 1rem 1.5rem;
-  }
 
+/* Touch target minimums (mobile) */
+@media (max-width: 768px) {
+  .nav-btn,
+  .btn-dark,
+  .btn-outline,
+  .ov-close,
+  .prog-btn,
+  .cta-btn-primary,
+  .cta-btn-outline,
+  .q-prev,
+  .q-next,
+  .ov-start-btn,
+  .r-btn-p,
+  .r-btn-o {
+    min-height: 2.75rem;
+  }
+}
+
+/* Desktop overrides (min-width: 768px) */
+@media (min-width: 768px) {
   .vitareba-nav .nav-links {
-    display: none;
+    display: flex;
   }
 
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .hero-l {
-    padding: 6rem 2rem 3rem;
+    padding: 8rem 4rem 5rem;
   }
 
   .hero-r {
-    padding: 3rem 2rem;
+    padding: 8rem 4rem 5rem;
   }
 
   .hero-title {
-    font-size: 2.4rem;
+    font-size: 3.6rem;
   }
 
   .hero-r-title {
-    font-size: 1.8rem;
+    font-size: 2.6rem;
   }
 
   .impact-section,
@@ -1562,54 +1643,73 @@ footer {
   .addiction-section,
   .pricing-section,
   .team-section {
-    padding: 4rem 1.5rem;
+    padding: 6rem 3rem;
   }
 
-  .pillars-grid,
-  .prog-grid,
-  .team-grid {
-    grid-template-columns: 1fr;
+  .pillars-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .approach-grid,
-  .pw-grid,
-  .diag-intro,
-  .syl-grid,
-  .psy-grid,
-  .addiction-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .approach-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
   }
 
   .approach-sticky {
-    position: static;
+    position: sticky;
+    top: 8rem;
   }
 
-  .diag-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .syl-dims {
-    grid-template-columns: 1fr;
-  }
-
-  .addiction-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .impact-grid {
+  .pw-grid {
     grid-template-columns: 1fr 1fr;
   }
 
-  .r-scores {
+  .diag-intro {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .diag-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .syl-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .syl-dims {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .psy-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .addiction-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+
+  .addiction-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .prog-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .impact-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .r-scores {
+    grid-template-columns: repeat(5, 1fr);
   }
 
   .ov-dims {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .cta-title {
-    font-size: 1.8rem;
+    grid-template-columns: repeat(5, 1fr);
   }
 }

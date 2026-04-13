@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   DIMENSIONS,
   QUESTIONS,
   INTERPRETATIONS,
   VERDICT_TIERS,
+  scoreColor,
   type DimensionId,
 } from "@/lib/assessment/data";
 
@@ -16,16 +17,20 @@ interface Props {
 
 type Screen = "intro" | "question" | "results";
 
+const emptyAnswers = () => Array<number | null>(QUESTIONS.length).fill(null);
+
 export default function Assessment({ isOpen, onClose }: Props) {
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(
-    Array(QUESTIONS.length).fill(null)
-  );
+  const [answers, setAnswers] = useState<(number | null)[]>(emptyAnswers());
+
+  useEffect(() => {
+    if (!isOpen) setScreen("intro");
+  }, [isOpen]);
 
   const start = useCallback(() => {
     setCurrentQ(0);
-    setAnswers(Array(QUESTIONS.length).fill(null));
+    setAnswers(emptyAnswers());
     setScreen("question");
   }, []);
 
@@ -52,19 +57,13 @@ export default function Assessment({ isOpen, onClose }: Props) {
   const restart = useCallback(() => {
     setScreen("intro");
     setCurrentQ(0);
-    setAnswers(Array(QUESTIONS.length).fill(null));
+    setAnswers(emptyAnswers());
   }, []);
 
-  const handleClose = useCallback(() => {
-    onClose();
-    // Reset after animation
-    setTimeout(() => setScreen("intro"), 300);
-  }, [onClose]);
-
   // Score computation
-  const dimScores = useCallback((): Record<DimensionId, number> => {
-    const totals: Record<string, number> = {};
-    const counts: Record<string, number> = {};
+  const dimScores = useMemo((): Record<DimensionId, number> => {
+    const totals = {} as Record<DimensionId, number>;
+    const counts = {} as Record<DimensionId, number>;
 
     DIMENSIONS.forEach((d) => {
       totals[d.id] = 0;
@@ -79,19 +78,18 @@ export default function Assessment({ isOpen, onClose }: Props) {
       counts[q.dimension] += 1;
     });
 
-    const result: Record<string, number> = {};
+    const result = {} as Record<DimensionId, number>;
     DIMENSIONS.forEach((d) => {
       result[d.id] =
         counts[d.id] > 0
           ? Math.round((totals[d.id] / (counts[d.id] * 5)) * 100)
           : 0;
     });
-    return result as Record<DimensionId, number>;
+    return result;
   }, [answers]);
 
-  const overallScore = useCallback((): number => {
-    const scores = dimScores();
-    const vals = Object.values(scores);
+  const overallScore = useMemo((): number => {
+    const vals = Object.values(dimScores);
     return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
   }, [dimScores]);
 
@@ -104,7 +102,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className={`overlay${isOpen ? " open" : ""}`}>
+    <div className="overlay open">
       <div className="ov-pb">
         <div
           className="ov-pb-fill"
@@ -118,7 +116,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
           }}
         />
       </div>
-      <button className="ov-close" onClick={handleClose}>
+      <button className="ov-close" onClick={onClose}>
         ×
       </button>
 
@@ -212,7 +210,7 @@ export default function Assessment({ isOpen, onClose }: Props) {
       )}
 
       {/* RESULTS */}
-      {screen === "results" && <ResultsScreen scores={dimScores()} overall={overallScore()} onRestart={restart} />}
+      {screen === "results" && <ResultsScreen scores={dimScores} overall={overallScore} onRestart={restart} />}
     </div>
   );
 }
@@ -243,14 +241,14 @@ function ResultsScreen({
 
       <div className="r-scores">
         {DIMENSIONS.map((dim) => {
-          const score = scores[dim.id as DimensionId];
+          const score = scores[dim.id];
           return (
             <div key={dim.id} className="r-score-card">
               <div className="r-sc-icon">{dim.icon}</div>
               <div className="r-sc-name">{dim.name}</div>
               <div
                 className="r-sc-n"
-                style={{ color: score >= 60 ? "#2a7a8a" : score >= 40 ? "#d4820a" : "#e05a5a" }}
+                style={{ color: scoreColor(score) }}
               >
                 {score}
               </div>
@@ -259,7 +257,7 @@ function ResultsScreen({
                   className="r-sc-fill"
                   style={{
                     width: `${score}%`,
-                    background: score >= 60 ? "#2a7a8a" : score >= 40 ? "#d4820a" : "#e05a5a",
+                    background: scoreColor(score),
                   }}
                 />
               </div>
@@ -270,10 +268,9 @@ function ResultsScreen({
 
       <div>
         {DIMENSIONS.map((dim) => {
-          const score = scores[dim.id as DimensionId];
-          const interp = INTERPRETATIONS[dim.id as DimensionId].find(
-            (i) => score < i.maxScore
-          ) ?? INTERPRETATIONS[dim.id as DimensionId][INTERPRETATIONS[dim.id as DimensionId].length - 1];
+          const score = scores[dim.id];
+          const bands = INTERPRETATIONS[dim.id];
+          const interp = bands.find((i) => score <= i.maxScore) ?? bands[bands.length - 1];
           return (
             <div key={dim.id} className="r-dim">
               <div className="r-dim-top">
@@ -282,9 +279,7 @@ function ResultsScreen({
                 </div>
                 <div
                   className="r-dim-score"
-                  style={{
-                    color: score >= 60 ? "#2a7a8a" : score >= 40 ? "#d4820a" : "#e05a5a",
-                  }}
+                  style={{ color: scoreColor(score) }}
                 >
                   {score}
                 </div>
@@ -294,7 +289,7 @@ function ResultsScreen({
                   className="r-dim-fill"
                   style={{
                     width: `${score}%`,
-                    background: score >= 60 ? "#2a7a8a" : score >= 40 ? "#d4820a" : "#e05a5a",
+                    background: scoreColor(score),
                   }}
                 />
               </div>
