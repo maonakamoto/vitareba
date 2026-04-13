@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Logo from "@/components/Logo";
 import styles from "./Nav.module.css";
 
@@ -19,7 +20,9 @@ interface NavProps {
 export default function Nav({ onAssessmentOpen }: NavProps) {
   return (
     <nav className={styles.nav}>
-      <Logo />
+      <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
+        <Logo />
+      </Link>
       <div className={styles.navLinks}>
         {NAV_LINKS.map((link) => (
           <a key={link.href} href={link.href}>

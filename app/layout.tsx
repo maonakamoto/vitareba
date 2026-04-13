@@ -16,12 +16,13 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-const SITE_URL = "https://vitareba.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitareba.vercel.app";
 const TITLE = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
 const DESCRIPTION =
   "We go beyond diagnosis. We decode the biology behind your mind — and the environment around it — to design a personalised path to sustained high performance, longevity and wellbeing.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
   keywords: [

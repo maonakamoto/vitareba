@@ -12,33 +12,39 @@
 
 ```
 app/
-  page.tsx           → Landing page (client component — holds assessmentOpen state)
-  layout.tsx         → Root layout: fonts (Cormorant Garamond + DM Sans), metadata
-  globals.css        → SSOT for ALL design tokens, component CSS, responsive rules
+  page.tsx              → Landing page (client component — holds assessmentOpen state)
+  layout.tsx            → Root layout: fonts, metadata, OG/Twitter/JSON-LD
+  globals.css           → Design tokens (:root vars), base resets, shared utilities only
+  opengraph-image.tsx   → Dynamic OG image (edge runtime, ImageResponse)
+  sitemap.ts            → Sitemap route
 
 components/
-  sections/          → One file per page section (13 sections, each ~100–200 lines)
-    Nav.tsx          → Fixed nav with CTA button (hidden on mobile via CSS)
-    Hero.tsx         → Two-panel hero: clinical left, coaching right
-    ImpactStats.tsx  → Stat row (hardcoded config array at file top)
-    Pillars.tsx      → 3-pillar grid
-    Approach.tsx     → Sticky-scroll approach steps
-    Pathway.tsx      → Patient pathway steps
-    Diagnostics.tsx  → Diagnostic tools overview
-    SylClock.tsx     → SYL Clock 4-dimension framework
-    PsychedelicReadiness.tsx → Psychedelic therapy section
-    Addiction.tsx    → Addiction/dependency care section
-    Programs.tsx     → 3-tier pricing cards (PROGRAMS config array)
-    Team.tsx         → Team bios (TEAM config array)
-    Cta.tsx          → Bottom CTA driving assessment open
-    Footer.tsx       → Links, address, copyright
-  Assessment.tsx     → Inflection Edge assessment overlay (30Q, 5 dimensions, scoring)
+  Logo.tsx              → Brand logo (presentational — wrap in <a> at call site if clickable)
+  sections/             → One file per page section, each with co-located .module.css
+    Nav.tsx             → Fixed nav with CTA button (hidden on mobile via CSS)
+    Hero.tsx            → Two-panel hero: clinical left, coaching right
+    ImpactStats.tsx     → Stat row (STATS config array)
+    Pillars.tsx         → 3-pillar grid (PILLARS config array)
+    Approach.tsx        → Sticky-scroll approach steps (ITEMS config array)
+    Pathway.tsx         → Patient pathway steps (STEPS config array)
+    Diagnostics.tsx     → Diagnostic tools overview (DIAGNOSTIC_CATEGORIES config array)
+    SylClock.tsx        → SYL Clock 4-dimension framework (SYL_DIMENSIONS config array)
+    PsychedelicReadiness.tsx → Psychedelic therapy section (PHASES config array)
+    Addiction.tsx       → Addiction/dependency care section (CARDS config array)
+    Programs.tsx        → 3-tier pricing cards (PROGRAMS config array)
+    Team.tsx            → Team bios (TEAM config array)
+    Cta.tsx             → Bottom CTA driving assessment open
+    Footer.tsx          → Links, address, copyright
+  Assessment/
+    index.tsx           → Overlay controller: intro → question → results flow
+    ResultsScreen.tsx   → Results display (scores, dimension interpretations, CTA)
+    Assessment.module.css → All overlay CSS
 
 lib/
   assessment/
-    data.ts          → SSOT: questions, DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS, scoreColor()
+    data.ts             → SSOT: QUESTIONS, DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS, scoreColor()
   config/
-    company.ts       → SSOT: company name, email, address, foundingYear
+    company.ts          → SSOT: company name, email, address, foundingYear
 ```
 
 ---
@@ -51,9 +57,11 @@ This is a static marketing site. There is no database. The SSOTs are:
 
 | What | Where | Never in |
 |------|-------|----------|
-| All CSS / design tokens | `app/globals.css` | Component `style={}` props, inline hex values |
+| Design tokens (colors, spacing) | `app/globals.css` `:root` | Hardcoded hex values anywhere |
+| Shared utility CSS (eyebrow, sec-title, etc.) | `app/globals.css` | Duplicated across modules |
+| Component-specific CSS | Co-located `.module.css` file | `globals.css` or `style={}` props |
 | Company info (name, email, address) | `lib/config/company.ts` | Hardcoded in any component |
-| Assessment content (questions, scoring) | `lib/assessment/data.ts` | `Assessment.tsx` or any section |
+| Assessment content (questions, scoring) | `lib/assessment/data.ts` | Any component |
 | Section content (team bios, programs, stats) | Config array at top of each section file | Scattered inline in JSX |
 | Assessment open/close state | `app/page.tsx` | Any section component |
 
@@ -76,7 +84,7 @@ const PROGRAMS = [
 <div>Riding the Wave · CHF 8,500</div>
 ```
 
-**Shared utilities:** `scoreColor()` is defined once in `lib/assessment/data.ts` and imported by `Assessment.tsx`. Never duplicate color logic.
+**Shared utilities:** `scoreColor()` is defined once in `lib/assessment/data.ts` and imported by `Assessment/index.tsx`. Never duplicate color logic.
 
 ### SoC — Each Layer's Job
 
@@ -86,7 +94,7 @@ const PROGRAMS = [
 | `lib/assessment/data.ts` | Assessment questions, scoring, interpretations | Rendering, state |
 | `lib/config/company.ts` | Company metadata | Formatting, rendering |
 | Section components (`components/sections/`) | Render one section of the page | Business logic, state |
-| `Assessment.tsx` | Assessment overlay flow (intro → questions → results) | Section content |
+| `Assessment/index.tsx` | Assessment overlay flow (intro → questions → results) | Section content |
 | `app/page.tsx` | Compose sections, hold assessment open/close state | Render content |
 
 **Section components must not:**
@@ -96,7 +104,7 @@ const PROGRAMS = [
 
 **Page size limits:**
 - Section components: ≤ 200 lines. If over, extract a sub-component.
-- `Assessment.tsx`: currently ~300 lines; acceptable for a self-contained overlay. Do not let it grow further — extract sub-components if features are added.
+- `Assessment/index.tsx` + `ResultsScreen.tsx`: combined ~300 lines across 2 files. Keep each under 200 lines.
 - `globals.css`: no hard limit, but each section's CSS should be clearly labeled with a `/* ─── SECTION NAME ─ */` comment.
 
 ### YAGNI — What Doesn't Exist Yet (Don't Add Prematurely)
@@ -222,7 +230,7 @@ lib/assessment/data.ts
   INTERPRETATIONS        → per-dimension interpretation text (3 tiers each)
   scoreColor(score)      → returns CSS var string for score colouring
 
-Assessment.tsx
+Assessment/index.tsx
   answers: Record<string, number>    → { [questionId]: 1–5 }
   screen: "intro" | "q" | "results"  → overlay flow state
   dimScores (useMemo)    → { [dimensionId]: 0–100 }
@@ -233,7 +241,7 @@ Assessment.tsx
 
 **To add a question:** Edit only `lib/assessment/data.ts`. Nothing else changes.
 **To change interpretations:** Edit only `lib/assessment/data.ts`. Nothing else changes.
-**To change the overlay design:** Edit only `Assessment.tsx` CSS classes + `globals.css`.
+**To change the overlay design:** Edit `Assessment/index.tsx` + `Assessment/Assessment.module.css`.
 
 ---
 
@@ -295,7 +303,7 @@ pnpm lint       # eslint
 
 - Adding a color hex directly in a component (`color: #2a7a8a`) → use `var(--teal)`
 - Writing the same JSX structure more than twice → extract a component or config array
-- Putting assessment content in `Assessment.tsx` → belongs in `lib/assessment/data.ts`
+- Putting assessment content in `Assessment/index.tsx` → belongs in `lib/assessment/data.ts`
 - Using `useEffect` to compute a derived value → use `useMemo`
 - Adding a `max-width: 768px` query → use `max-width: 767px` (or rethink: is mobile-first better?)
 - A section component importing from another section component → never, they're siblings

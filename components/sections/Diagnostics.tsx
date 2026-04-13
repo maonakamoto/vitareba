@@ -64,13 +64,13 @@ export default function Diagnostics() {
         <div className={styles.intro}>
           <div>
             <div className="eyebrow">Diagnostic Depth</div>
-            <div className="sec-title">
+            <h2 className="sec-title">
               The most complete
               <br />
               biological picture
               <br />
               <em>available.</em>
-            </div>
+            </h2>
           </div>
           <div>
             <p className="sec-sub">

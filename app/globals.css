@@ -68,7 +68,7 @@ body {
 
 /* Dark section overrides — for sections with dark/ink backgrounds */
 .sec-title-light {
-  color: #fff;
+  color: var(--white);
 }
 
 .sec-title-light em {
