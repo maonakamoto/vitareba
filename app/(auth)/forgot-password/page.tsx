@@ -7,20 +7,28 @@ import styles from "../auth.module.css";
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Password reset email flow — wire up with Resend when ready
+    setLoading(true);
+    await fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    // Always show "sent" — prevents email enumeration
     setSent(true);
+    setLoading(false);
   }
 
   if (sent) {
     return (
       <>
-        <h1 className={styles.title}>Check your email</h1>
+        <h1 className={styles.title}>Check your inbox</h1>
         <p className={styles.subtitle}>
           If an account exists for <strong>{email}</strong>, you will receive a
-          password reset link shortly.
+          password reset link within a few minutes.
         </p>
         <div className={styles.linkRow}>
           <Link className={styles.link} href="/login">← Back to sign in</Link>
@@ -50,7 +58,9 @@ export default function ForgotPasswordPage() {
             autoComplete="email"
           />
         </div>
-        <button type="submit" className={styles.submit}>Send reset link</button>
+        <button type="submit" className={styles.submit} disabled={loading}>
+          {loading ? "Sending…" : "Send reset link"}
+        </button>
       </form>
 
       <div className={styles.linkRow}>

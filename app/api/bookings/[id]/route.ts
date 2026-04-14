@@ -5,11 +5,15 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { bookings } from "@/lib/db/schema";
+import { bookings, users } from "@/lib/db/schema";
+import { sendEmail } from "@/lib/email";
+import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
 
 const patchSchema = z.object({
   status: z.enum(["pending", "confirmed", "cancelled"]),
 });
+
+const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
 
 export async function PATCH(
   req: Request,
@@ -32,6 +36,26 @@ export async function PATCH(
     .set({ status: parsed.data.status })
     .where(eq(bookings.id, id))
     .returning();
+
+  // Notify patient of status change (fire-and-forget)
+  if (parsed.data.status === "confirmed" || parsed.data.status === "cancelled") {
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, updated.userId),
+      columns: { name: true, email: true },
+    });
+    if (patient?.email) {
+      const html = parsed.data.status === "confirmed"
+        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${APP_URL}/bookings` })
+        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${APP_URL}/bookings` });
+      sendEmail({
+        to: patient.email,
+        subject: parsed.data.status === "confirmed"
+          ? "Your consultation has been confirmed — VitaReBa"
+          : "Your consultation request — VitaReBa",
+        html,
+      }).catch(console.error);
+    }
+  }
 
   return NextResponse.json({ success: true, data: updated });
 }

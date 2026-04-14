@@ -5,12 +5,16 @@ import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { bookings } from "@/lib/db/schema";
+import { bookings, users } from "@/lib/db/schema";
+import { sendEmail } from "@/lib/email";
+import { bookingRequestAdminEmail } from "@/lib/email/templates";
 
 const createSchema = z.object({
   preferredDate: z.string().optional(),
   notes: z.string().optional(),
 });
+
+const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
 
 export async function GET() {
   const session = await auth();
@@ -43,6 +47,26 @@ export async function POST(req: Request) {
     .insert(bookings)
     .values({ userId: session.user.id, ...parsed.data })
     .returning();
+
+  // Notify admin of new booking request (fire-and-forget — don't block the response)
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim()).filter(Boolean);
+  if (adminEmails.length > 0) {
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { name: true, email: true },
+    });
+    sendEmail({
+      to: adminEmails,
+      subject: `New consultation request — ${patient?.name ?? session.user.email}`,
+      html: bookingRequestAdminEmail({
+        patientName: patient?.name ?? "Unknown",
+        patientEmail: patient?.email ?? "",
+        notes: parsed.data.notes,
+        preferredDate: parsed.data.preferredDate,
+        adminUrl: `${APP_URL}/admin/patients`,
+      }),
+    }).catch(console.error);
+  }
 
   return NextResponse.json({ success: true, data: booking }, { status: 201 });
 }
