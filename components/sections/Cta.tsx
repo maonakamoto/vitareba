@@ -1,13 +1,8 @@
-"use client";
-
+import Link from "next/link";
 import { COMPANY } from "@/lib/config/company";
 import styles from "./Cta.module.css";
 
-interface CtaProps {
-  onAssessmentOpen: () => void;
-}
-
-export default function Cta({ onAssessmentOpen }: CtaProps) {
+export default function Cta() {
   return (
     <div className={styles.section}>
       <div className={styles.eyebrow}>Begin Here</div>
@@ -23,9 +18,9 @@ export default function Cta({ onAssessmentOpen }: CtaProps) {
         new chapter.
       </p>
       <div className={styles.btns}>
-        <button type="button" className={styles.btnPrimary} onClick={onAssessmentOpen}>
+        <Link href="/assessment" className={styles.btnPrimary}>
           Take the Inflection Edge →
-        </button>
+        </Link>
         <a
           href={`mailto:${COMPANY.email}`}
           className={styles.btnOutline}

@@ -13,11 +13,7 @@ const NAV_LINKS = [
   { href: "#team", label: "Team" },
 ] as const;
 
-interface NavProps {
-  onAssessmentOpen: () => void;
-}
-
-export default function Nav({ onAssessmentOpen }: NavProps) {
+export default function Nav() {
   return (
     <nav className={styles.nav}>
       <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
@@ -30,9 +26,9 @@ export default function Nav({ onAssessmentOpen }: NavProps) {
           </a>
         ))}
       </div>
-      <button type="button" className={styles.navBtn} onClick={onAssessmentOpen}>
+      <Link href="/assessment" className={styles.navBtn}>
         Take the Inflection Edge
-      </button>
+      </Link>
     </nav>
   );
 }

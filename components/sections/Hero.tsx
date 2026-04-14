@@ -1,5 +1,4 @@
-"use client";
-
+import Link from "next/link";
 import { COMPANY } from "@/lib/config/company";
 import styles from "./Hero.module.css";
 
@@ -12,11 +11,7 @@ const SPECIALTIES = [
   "Psychedelic Therapy",
 ] as const;
 
-interface HeroProps {
-  onAssessmentOpen: () => void;
-}
-
-export default function Hero({ onAssessmentOpen }: HeroProps) {
+export default function Hero() {
   return (
     <div className={styles.hero}>
       <div className={styles.heroL}>
@@ -60,9 +55,9 @@ export default function Hero({ onAssessmentOpen }: HeroProps) {
           powerful ocean — and you were never taught to surf it.&rdquo;
         </div>
         <div className={styles.btns}>
-          <button type="button" className={styles.btnDark} onClick={onAssessmentOpen}>
+          <Link href="/assessment" className={styles.btnDark}>
             Take the Inflection Edge →
-          </button>
+          </Link>
           <a href={`mailto:${COMPANY.email}`} className={styles.btnOutline}>
             Book Consultation
           </a>

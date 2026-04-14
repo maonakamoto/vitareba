@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   DIMENSIONS,
   QUESTIONS,
@@ -12,13 +12,14 @@ import styles from "./Assessment.module.css";
 
 interface Props {
   onClose: () => void;
+  onComplete?: (scores: Record<DimensionId, number>, overallScore: number) => void;
 }
 
 type Screen = "intro" | "question" | "results";
 
 const emptyAnswers = () => Array<number | null>(QUESTIONS.length).fill(null);
 
-export default function Assessment({ onClose }: Props) {
+export default function Assessment({ onClose, onComplete }: Props) {
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(emptyAnswers());
@@ -55,6 +56,7 @@ export default function Assessment({ onClose }: Props) {
       setScreen("results");
     }
   }, [currentQ]);
+
 
   const goPrev = useCallback(() => {
     if (currentQ > 0) setCurrentQ((q) => q - 1);
@@ -97,6 +99,15 @@ export default function Assessment({ onClose }: Props) {
     const vals = Object.values(dimScores);
     return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
   }, [dimScores]);
+
+  // Call onComplete once when results appear — use ref to avoid stale closure
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+  useEffect(() => {
+    if (screen === "results") {
+      onCompleteRef.current?.(dimScores, overallScore);
+    }
+  }, [screen, dimScores, overallScore]);
 
   const q = QUESTIONS[currentQ];
   const dim = DIMENSIONS.find((d) => d.id === q?.dimension);

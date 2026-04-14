@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Nav from "@/components/sections/Nav";
 import Hero from "@/components/sections/Hero";
 import ImpactStats from "@/components/sections/ImpactStats";
@@ -15,17 +12,14 @@ import Programs from "@/components/sections/Programs";
 import Team from "@/components/sections/Team";
 import Cta from "@/components/sections/Cta";
 import Footer from "@/components/sections/Footer";
-import Assessment from "@/components/Assessment";
 
 export default function Home() {
-  const [assessmentOpen, setAssessmentOpen] = useState(false);
-
   return (
     <>
-      <Nav onAssessmentOpen={() => setAssessmentOpen(true)} />
+      <Nav />
 
       <main>
-        <Hero onAssessmentOpen={() => setAssessmentOpen(true)} />
+        <Hero />
 
         <ImpactStats />
 
@@ -61,14 +55,10 @@ export default function Home() {
 
         <Team />
 
-        <Cta onAssessmentOpen={() => setAssessmentOpen(true)} />
+        <Cta />
       </main>
 
       <Footer />
-
-      {assessmentOpen && (
-        <Assessment onClose={() => setAssessmentOpen(false)} />
-      )}
     </>
   );
 }

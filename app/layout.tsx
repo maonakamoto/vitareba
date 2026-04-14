@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { COMPANY } from "@/lib/config/company";
+import { SessionProvider } from "@/components/portal/SessionProvider";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -91,7 +92,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>{children}</body>
+      <body><SessionProvider>{children}</SessionProvider></body>
     </html>
   );
 }
