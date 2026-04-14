@@ -38,8 +38,21 @@ export default async function AssessmentsPage({
       <p className={styles.pageSub}>Your Inflection Edge assessment history</p>
 
       {justSaved && (
-        <div style={{ background: "color-mix(in srgb, var(--teal) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--teal) 30%, transparent)", borderRadius: "0.75rem", padding: "1rem 1.25rem", marginBottom: "1.5rem", fontSize: "0.85rem", color: "var(--teal)" }}>
-          Assessment saved — your results are now stored in your account.
+        <div style={{ background: "var(--ink)", borderRadius: "0.75rem", padding: "1.75rem 2rem", marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div>
+            <p style={{ color: "var(--faint)", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.4rem" }}>Results saved</p>
+            <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.6rem", fontWeight: 300, color: "#fff", lineHeight: 1.2 }}>
+              Your Inflection Edge results are now in your account.
+            </p>
+          </div>
+          <p style={{ fontSize: "0.85rem", color: "var(--faint)", lineHeight: 1.6, maxWidth: "480px" }}>
+            A consultation with Manuel gives you a personalised roadmap based on your specific profile — turning your scores into a concrete plan.
+          </p>
+          <div>
+            <Link href="/bookings" className="btn-dark" style={{ display: "inline-block", padding: "0.75rem 1.75rem", fontSize: "0.8rem" }}>
+              Book a consultation →
+            </Link>
+          </div>
         </div>
       )}
 
