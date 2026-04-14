@@ -21,6 +21,15 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const patientId = searchParams.get("patientId");
 
+  // Admin with no patientId filter → return all documents with user info
+  if (session.user.role === "admin" && !patientId) {
+    const results = await db.query.documents.findMany({
+      orderBy: [desc(documents.createdAt)],
+      with: { user: { columns: { id: true, name: true, email: true } } },
+    });
+    return NextResponse.json({ success: true, data: results });
+  }
+
   const targetId =
     session.user.role === "admin" && patientId ? patientId : session.user.id;
 

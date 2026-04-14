@@ -166,6 +166,15 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   sentMessages: many(threadMessages),
 }));
 
+export const bookingsRelations = relations(bookings, ({ one }) => ({
+  user: one(users, { fields: [bookings.userId], references: [users.id] }),
+}));
+
+export const documentsRelations = relations(documents, ({ one }) => ({
+  user: one(users, { fields: [documents.userId], references: [users.id] }),
+  uploadedByUser: one(users, { fields: [documents.uploadedBy], references: [users.id], relationName: "uploaded_by" }),
+}));
+
 export const threadsRelations = relations(threads, ({ one, many }) => ({
   patient: one(users, {
     fields: [threads.patientId],

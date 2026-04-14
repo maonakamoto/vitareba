@@ -3,13 +3,13 @@ import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
-import { DIMENSIONS } from "@/lib/assessment/data";
+import { DIMENSIONS, INTERPRETATIONS, scoreColor } from "@/lib/assessment/data";
 import styles from "../portal.module.css";
 
-function scoreColor(score: number) {
-  if (score >= 60) return "var(--teal)";
-  if (score >= 40) return "var(--warn)";
-  return "var(--danger)";
+function getInterpretation(dimId: string, score: number): string {
+  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
+  if (!tiers) return "";
+  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
 }
 
 export default async function AssessmentsPage({
@@ -87,7 +87,7 @@ export default async function AssessmentsPage({
                     <p style={{ fontSize: "0.7rem", color: "var(--muted)", letterSpacing: "0.08em" }}>overall</p>
                   </div>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.75rem" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.75rem", marginBottom: "1.5rem" }}>
                   {DIMENSIONS.map((dim) => {
                     const score = scores[dim.id] ?? 0;
                     return (
@@ -102,6 +102,23 @@ export default async function AssessmentsPage({
                         <div style={{ height: "3px", background: "var(--border)", borderRadius: "2px", marginTop: "0.4rem" }}>
                           <div style={{ height: "100%", width: `${score}%`, background: scoreColor(score), borderRadius: "2px" }} />
                         </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  {DIMENSIONS.map((dim) => {
+                    const score = scores[dim.id] ?? 0;
+                    const interpretation = getInterpretation(dim.id, score);
+                    return (
+                      <div key={dim.id} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", alignItems: "baseline" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", minWidth: "140px" }}>
+                          <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.3rem", fontWeight: 300, color: scoreColor(score) }}>{score}</span>
+                          <span style={{ fontSize: "0.65rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{dim.name}</span>
+                        </div>
+                        <p style={{ fontSize: "0.8rem", color: "var(--ink2)", lineHeight: 1.65, margin: 0 }}>
+                          {interpretation}
+                        </p>
                       </div>
                     );
                   })}

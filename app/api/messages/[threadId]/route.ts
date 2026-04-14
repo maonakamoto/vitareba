@@ -67,50 +67,42 @@ export async function POST(
     .where(eq(threads.id, threadId));
 
   // Notify the other party (fire-and-forget)
-  const recipientId = session.user.role === "admin" ? thread.patientId : null;
-  if (recipientId || session.user.role !== "admin") {
-    const notifyId = session.user.role === "admin" ? thread.patientId : null;
-    const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim()).filter(Boolean);
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim()).filter(Boolean);
 
-    if (session.user.role === "admin" && notifyId) {
-      // Admin sent → notify patient
-      const patient = await db.query.users.findFirst({
-        where: eq(users.id, notifyId),
-        columns: { name: true, email: true },
-      });
-      const sender = await db.query.users.findFirst({
-        where: eq(users.id, session.user.id),
-        columns: { name: true },
-      });
-      if (patient?.email) {
-        sendEmail({
-          to: patient.email,
-          subject: `New message: ${thread.subject} — VitaReBa`,
-          html: newMessageEmail({
-            recipientName: patient.name ?? "there",
-            senderName: sender?.name ?? "VitaReBa",
-            subject: thread.subject,
-            portalUrl: `${APP_URL}/messages/${threadId}`,
-          }),
-        }).catch(console.error);
-      }
-    } else if (session.user.role !== "admin" && adminEmails.length > 0) {
-      // Patient sent → notify admin(s)
-      const patient = await db.query.users.findFirst({
-        where: eq(users.id, session.user.id),
-        columns: { name: true, email: true },
-      });
+  if (session.user.role === "admin") {
+    // Admin sent → notify patient
+    const [patient, sender] = await Promise.all([
+      db.query.users.findFirst({ where: eq(users.id, thread.patientId), columns: { name: true, email: true } }),
+      db.query.users.findFirst({ where: eq(users.id, session.user.id), columns: { name: true } }),
+    ]);
+    if (patient?.email) {
       sendEmail({
-        to: adminEmails,
-        subject: `New message from ${patient?.name ?? "patient"}: ${thread.subject}`,
+        to: patient.email,
+        subject: `New message: ${thread.subject} — VitaReBa`,
         html: newMessageEmail({
-          recipientName: "Manuel",
-          senderName: patient?.name ?? "Patient",
+          recipientName: patient.name ?? "there",
+          senderName: sender?.name ?? "VitaReBa",
           subject: thread.subject,
-          portalUrl: `${APP_URL}/admin/patients`,
+          portalUrl: `${APP_URL}/messages/${threadId}`,
         }),
       }).catch(console.error);
     }
+  } else if (adminEmails.length > 0) {
+    // Patient sent → notify admin(s)
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { name: true, email: true },
+    });
+    sendEmail({
+      to: adminEmails,
+      subject: `New message from ${patient?.name ?? "patient"}: ${thread.subject}`,
+      html: newMessageEmail({
+        recipientName: "Manuel",
+        senderName: patient?.name ?? "Patient",
+        subject: thread.subject,
+        portalUrl: `${APP_URL}/admin/messages/${threadId}`,
+      }),
+    }).catch(console.error);
   }
 
   return NextResponse.json({ success: true, data: message }, { status: 201 });

@@ -8,6 +8,7 @@ import { SignOutButton } from "@/components/portal/SignOutButton";
 const NAV_ITEMS = [
   { href: "/admin/patients", label: "Patients" },
   { href: "/admin/bookings", label: "Bookings" },
+  { href: "/admin/messages", label: "Messages" },
   { href: "/admin/documents", label: "Documents" },
 ] as const;
 

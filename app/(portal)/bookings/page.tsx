@@ -25,6 +25,8 @@ export default function BookingsPage() {
   const [preferredDate, setPreferredDate] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   async function load() {
     const res = await fetch("/api/bookings");
@@ -38,15 +40,23 @@ export default function BookingsPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    await fetch("/api/bookings", {
+    setSubmitError("");
+    const res = await fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ preferredDate, notes }),
     });
+    const data = await res.json();
+    setSubmitting(false);
+    if (!data.success) {
+      setSubmitError("Failed to submit booking. Please try again.");
+      return;
+    }
     setPreferredDate("");
     setNotes("");
     setShowForm(false);
-    setSubmitting(false);
+    setSubmitSuccess(true);
+    setTimeout(() => setSubmitSuccess(false), 5000);
     load();
   }
 
@@ -63,6 +73,12 @@ export default function BookingsPage() {
           + Request booking
         </button>
       </div>
+
+      {submitSuccess && (
+        <div style={{ background: "color-mix(in srgb, var(--teal) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--teal) 25%, transparent)", borderRadius: "0.75rem", padding: "1rem 1.5rem", marginBottom: "1.25rem", fontSize: "0.85rem", color: "var(--teal)" }}>
+          Booking request submitted. Manuel will be in touch to confirm.
+        </div>
+      )}
 
       {showForm && (
         <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
@@ -82,6 +98,7 @@ export default function BookingsPage() {
                 placeholder="What would you like to discuss?"
               />
             </div>
+            {submitError && <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{submitError}</p>}
             <div style={{ display: "flex", gap: "0.75rem" }}>
               <button type="submit" className={authStyles.submit} style={{ marginTop: 0, flex: 1 }} disabled={submitting}>
                 {submitting ? "Submitting…" : "Submit request"}
