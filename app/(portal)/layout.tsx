@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import styles from "./portal.module.css";
-import { SignOutButton } from "@/components/portal/SignOutButton";
+import { UserDropdown } from "@/components/portal/UserDropdown";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -26,7 +26,8 @@ export default async function PortalLayout({ children }: { children: React.React
     columns: { name: true },
   });
 
-  const displayName = dbUser?.name ?? session.user.email ?? "Patient";
+  const name = dbUser?.name ?? "";
+  const email = session.user.email ?? "";
 
   return (
     <div className={styles.shell}>
@@ -40,23 +41,16 @@ export default async function PortalLayout({ children }: { children: React.React
               {item.label}
             </Link>
           ))}
-          {session.user.role === "admin" && (
-            <Link href="/admin" className={styles.navItem} style={{ color: "var(--gold)", marginTop: "0.5rem" }}>
-              Admin Panel ↗
-            </Link>
-          )}
         </nav>
-        <div className={styles.sidebarFooter}>
-          <div className={styles.userInfo}>
-            <span className={styles.userName}>{displayName}</span>
-            <span className={styles.userRole}>
-              {session.user.role === "admin" ? "Admin" : "Patient"}
-            </span>
-          </div>
-          <SignOutButton />
-        </div>
       </aside>
-      <main className={styles.main}>{children}</main>
+
+      <div className={styles.mainWrap}>
+        <header className={styles.header}>
+          <div />
+          <UserDropdown name={name} email={email} role={session.user.role as "admin" | "patient"} />
+        </header>
+        <main className={styles.main}>{children}</main>
+      </div>
     </div>
   );
 }

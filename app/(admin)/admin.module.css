@@ -52,27 +52,31 @@
   color: #fff;
 }
 
-.sidebarFooter {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 1rem;
-  margin-top: 1rem;
+
+.mainWrap {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  min-height: 100vh;
+  background: var(--off);
 }
 
-.userEmail {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.4);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.header {
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
 .main {
-  background: var(--off);
-  padding: 3rem 2.5rem;
-  min-height: 100vh;
+  padding: 2.5rem;
+  flex: 1;
 }
 
 /* Shared admin UI */

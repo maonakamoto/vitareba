@@ -36,6 +36,19 @@
   color: var(--ink);
 }
 
+.navSignIn {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navSignIn:hover {
+  color: var(--ink);
+}
+
 .navBtn {
   background: var(--ink);
   color: var(--white);
@@ -48,6 +61,8 @@
   font-family: var(--font-dm-sans), sans-serif;
   border-radius: 0.2rem;
   transition: background 0.3s;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .navBtn:hover {
@@ -56,6 +71,10 @@
 
 @media (max-width: 767px) {
   .navBtn {
+    display: none;
+  }
+
+  .navSignIn {
     display: none;
   }
 }

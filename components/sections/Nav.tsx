@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import styles from "./Nav.module.css";
+import { useSession } from "next-auth/react";
 
 const NAV_LINKS = [
   { href: "#pillars", label: "Programmes" },
@@ -14,6 +15,8 @@ const NAV_LINKS = [
 ] as const;
 
 export default function Nav() {
+  const { data: session } = useSession();
+
   return (
     <nav className={styles.nav}>
       <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
@@ -26,9 +29,20 @@ export default function Nav() {
           </a>
         ))}
       </div>
-      <Link href="/assessment" className={styles.navBtn}>
-        Take the Inflection Edge
-      </Link>
+      {session ? (
+        <Link href="/dashboard" className={styles.navBtn}>
+          Dashboard &rarr;
+        </Link>
+      ) : (
+        <>
+          <Link href="/login" className={styles.navSignIn}>
+            Sign in
+          </Link>
+          <Link href="/assessment" className={styles.navBtn}>
+            Take the Inflection Edge
+          </Link>
+        </>
+      )}
     </nav>
   );
 }

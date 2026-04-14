@@ -45,42 +45,35 @@
   color: #fff;
 }
 
-.sidebarFooter {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 1.25rem;
-  margin-top: 1rem;
+/* ─── Main area ───────────────────────────────────────────────────────────── */
+
+.mainWrap {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  min-height: 100vh;
+  background: var(--off);
 }
 
-.userInfo {
+.header {
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.userName {
-  font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 400;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.userRole {
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--teal);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
 .main {
-  background: var(--off);
-  padding: 3rem 2.5rem;
-  min-height: 100vh;
+  padding: 2.5rem;
+  flex: 1;
 }
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {
   .shell {
@@ -115,17 +108,8 @@
     padding: 0.4rem 0.65rem;
   }
 
-  .sidebarFooter {
-    border-top: none;
-    padding-top: 0;
-    margin-top: 0;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .userRole {
-    display: none;
+  .header {
+    padding: 0 1.25rem;
   }
 
   .main {
