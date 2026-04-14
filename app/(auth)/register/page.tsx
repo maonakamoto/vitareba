@@ -11,7 +11,6 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo") ?? "/dashboard";
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -25,7 +24,7 @@ function RegisterForm() {
     const res = await fetch("/api/account", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
@@ -48,24 +47,10 @@ function RegisterForm() {
 
   return (
     <>
-      <h1 className={styles.title}>Create account</h1>
-      <p className={styles.subtitle}>Start your journey with VitaReBa</p>
+      <h2 className={styles.title}>Create<br />your account</h2>
+      <p className={styles.subtitle}>Email and password — nothing more</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="name">Full name</label>
-          <input
-            id="name"
-            className={styles.input}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            required
-            autoComplete="name"
-          />
-          {errors.name && <p className={styles.error}>{errors.name[0]}</p>}
-        </div>
         <div className={styles.field}>
           <label className={styles.label} htmlFor="email">Email</label>
           <input
@@ -77,6 +62,7 @@ function RegisterForm() {
             placeholder="you@example.com"
             required
             autoComplete="email"
+            autoFocus
           />
           {errors.email && <p className={styles.error}>{errors.email[0]}</p>}
         </div>

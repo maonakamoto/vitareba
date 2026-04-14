@@ -34,8 +34,8 @@ function LoginForm() {
 
   return (
     <>
-      <h1 className={styles.title}>Welcome back</h1>
-      <p className={styles.subtitle}>Sign in to your VitaReBa patient portal</p>
+      <h2 className={styles.title}>Welcome<br />back</h2>
+      <p className={styles.subtitle}>Sign in to continue</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>

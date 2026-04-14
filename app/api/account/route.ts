@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { name, email, password } = parsed.data;
+  const { email, password } = parsed.data;
 
   const existing = await db.query.users.findFirst({
     where: eq(users.email, email),
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   }
 
   const hashed = await bcrypt.hash(password, 12);
-  await db.insert(users).values({ name, email, password: hashed });
+  await db.insert(users).values({ email, password: hashed });
 
   return NextResponse.json({ success: true }, { status: 201 });
 }
