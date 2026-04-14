@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { COMPANY } from "@/lib/config/company";
 import { SessionProvider } from "@/components/portal/SessionProvider";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -57,11 +58,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("NEXT_LOCALE")?.value ?? "de";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MedicalBusiness",
@@ -85,7 +89,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang={locale} className={`${cormorant.variable} ${dmSans.variable}`}>
       <head>
         <script
           type="application/ld+json"

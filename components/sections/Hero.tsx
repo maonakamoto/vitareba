@@ -1,36 +1,26 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/config/company";
 import styles from "./Hero.module.css";
 
-const SPECIALTIES = [
-  "ADHD",
-  "Longevity",
-  "Addiction",
-  "Burnout",
-  "High Performance",
-  "Psychedelic Therapy",
-] as const;
+export default async function Hero() {
+  const t = await getTranslations("hero");
+  const specialties = t.raw("specialties") as string[];
 
-export default function Hero() {
   return (
     <div className={styles.hero}>
       <div className={styles.heroL}>
-        <div className={styles.eyebrow}>
-          Zürich · 8008 · International Patients Welcome
-        </div>
+        <div className={styles.eyebrow}>{t("eyebrow")}</div>
         <h1 className={styles.title}>
-          Metabolic
+          {t("titleLine1")}
           <br />
-          Psychiatry &<br />
-          <em>Systemic Longevity.</em>
+          {t("titleLine2")}
+          <br />
+          <em>{t("titleEm")}</em>
         </h1>
-        <p className={styles.sub}>
-          We go beyond diagnosis. We decode the biology behind your mind — and
-          the environment around it — to design a personalised path to sustained
-          high performance, longevity and wellbeing.
-        </p>
+        <p className={styles.sub}>{t("sub")}</p>
         <div className={styles.pills}>
-          {SPECIALTIES.map((pill) => (
+          {specialties.map((pill) => (
             <span key={pill} className={styles.pill}>
               {pill}
             </span>
@@ -39,27 +29,20 @@ export default function Hero() {
       </div>
 
       <div className={styles.heroR}>
-        <div className={styles.rightEyebrow}>Our Flagship Programme</div>
+        <div className={styles.rightEyebrow}>{t("flagship")}</div>
         <div className={styles.rightTitle}>
-          ADHD & the
+          {t("flagshipTitle")}
           <br />
-          <em>High-Performing Mind</em>
+          <em>{t("flagshipTitleEm")}</em>
         </div>
-        <p className={styles.rightSub}>
-          A world-first integrated programme combining formal ADHD diagnostics,
-          metabolic medicine, longevity technologies, psychedelic-state
-          therapies and personalised Surf Your Life performance coaching.
-        </p>
-        <div className={styles.quoteBar}>
-          &ldquo;The ADHD brain is not a broken lake that needs calming. It is a
-          powerful ocean — and you were never taught to surf it.&rdquo;
-        </div>
+        <p className={styles.rightSub}>{t("flagshipSub")}</p>
+        <div className={styles.quoteBar}>&ldquo;{t("quote")}&rdquo;</div>
         <div className={styles.btns}>
           <Link href="/assessment" className={styles.btnDark}>
-            Take the Inflection Edge →
+            {t("ctaPrimary")}
           </Link>
           <a href={`mailto:${COMPANY.email}`} className={styles.btnOutline}>
-            Book Consultation
+            {t("ctaSecondary")}
           </a>
         </div>
       </div>

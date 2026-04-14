@@ -1,31 +1,31 @@
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { COMPANY } from "@/lib/config/company";
 import styles from "./Cta.module.css";
 
-export default function Cta() {
+export default async function Cta() {
+  const t = await getTranslations("cta");
+
   return (
     <div className={styles.section}>
-      <div className={styles.eyebrow}>Begin Here</div>
+      <div className={styles.eyebrow}>{t("eyebrow")}</div>
       <div className={styles.title}>
-        Your ocean.
+        {t("heading")}
         <br />
-        <em>Precisely mapped.</em>
+        <em>{t("headingEm")}</em>
       </div>
       <p className={styles.sub}>
-        Start with the Inflection Edge — our free ADHD performance assessment.
-        In 8 minutes you will have the most precise picture of your neurotype
-        you have ever seen. Your results are your Epoch — the beginning of a
-        new chapter.
+        {t("sub")}
       </p>
       <div className={styles.btns}>
         <Link href="/assessment" className={styles.btnPrimary}>
-          Take the Inflection Edge →
+          {t("ctaPrimary")}
         </Link>
         <a
           href={`mailto:${COMPANY.email}`}
           className={styles.btnOutline}
         >
-          Book a Discovery Call
+          {t("ctaSecondary")}
         </a>
       </div>
       <p className={styles.note}>

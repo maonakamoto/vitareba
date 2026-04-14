@@ -1,43 +1,32 @@
+import { getTranslations } from "next-intl/server";
 import styles from "./Team.module.css";
 
-const TEAM = [
-  {
-    initials: "M",
-    name: "Manuel",
-    role: "Founder · Surf Your Life",
-    bio: "The architect behind VitaReBa's integrated approach. Combining performance coaching with metabolic psychiatry to build the life architecture high-performing minds need.",
-  },
-  {
-    initials: "DM",
-    name: "Dr. Montagna",
-    role: "Metabolic Psychiatrist",
-    bio: "Specialist in metabolic psychiatry with deep expertise in ADHD, addiction and the biological substrates of cognitive performance.",
-  },
-  {
-    initials: "DK",
-    name: "Dr. Kondratiuk",
-    role: "Clinical Lead",
-    bio: "Leading the clinical diagnostic protocol and overseeing the integration of metabolic workups with psychiatric assessment and treatment planning.",
-  },
+const TEAM_META = [
+  { initials: "M", name: "Manuel" },
+  { initials: "DM", name: "Dr. Montagna" },
+  { initials: "DK", name: "Dr. Kondratiuk" },
 ];
 
-export default function Team() {
+export default async function Team() {
+  const t = await getTranslations("team");
+  const members = t.raw("members") as Array<{ role: string; bio: string }>;
+
   return (
     <section id="team" className={styles.section}>
       <div className="section-inner">
         <div className="section-header">
-          <div className="eyebrow">Clinical Team</div>
+          <div className="eyebrow">{t("eyebrow")}</div>
         </div>
         <h2 className="sec-title sec-title-center">
-          Built around <em>precision.</em>
+          {t("heading")} <em>{t("headingEm")}</em>
         </h2>
         <div className={styles.grid}>
-          {TEAM.map((member) => (
-            <div key={member.name} className={styles.card}>
-              <div className={styles.avatar}>{member.initials}</div>
-              <div className={styles.name}>{member.name}</div>
-              <div className={styles.role}>{member.role}</div>
-              <p className={styles.bio}>{member.bio}</p>
+          {TEAM_META.map((meta, i) => (
+            <div key={meta.name} className={styles.card}>
+              <div className={styles.avatar}>{meta.initials}</div>
+              <div className={styles.name}>{meta.name}</div>
+              <div className={styles.role}>{members[i].role}</div>
+              <p className={styles.bio}>{members[i].bio}</p>
             </div>
           ))}
         </div>

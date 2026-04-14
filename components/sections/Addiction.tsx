@@ -1,57 +1,36 @@
+import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/config/company";
 import styles from "./Addiction.module.css";
 
-const CARDS = [
-  {
-    label: "Fully Private",
-    text: "No clinical setting. No institutional record. Complete discretion from first contact to final session.",
-  },
-  {
-    label: "Dual Diagnosis",
-    text: "ADHD and addiction treated together — not sequentially. The metabolic root causes of both are addressed simultaneously.",
-  },
-  {
-    label: "Switzerland-Based",
-    text: "Access to world-class Swiss medical infrastructure, legal therapeutic frameworks, and an environment of absolute safety.",
-  },
-  {
-    label: "International Clients",
-    text: "Full concierge coordination. We receive clients from across Europe, the Middle East and beyond.",
-  },
-];
+export default async function Addiction() {
+  const t = await getTranslations("addiction");
+  const cards = t.raw("cards") as Array<{ label: string; text: string }>;
 
-export default function Addiction() {
   return (
     <section className={styles.section}>
       <div className="section-inner">
         <div className={styles.grid}>
           <div>
-            <div className="eyebrow eyebrow-gold">Addiction Treatment</div>
+            <div className="eyebrow eyebrow-gold">{t("eyebrow")}</div>
             <h2 className="sec-title sec-title-light">
-              Where ADHD ends
+              {t("heading")}
               <br />
-              and addiction <em>begins</em>
+              {t("headingMid")} <em>{t("headingEm")}</em>
               <br />
-              is rarely obvious.
+              {t("headingEnd")}
             </h2>
           </div>
 
           <div>
             <p className={styles.body}>
-              ADHD and addiction are among the most frequently co-occurring
-              conditions in high-performing adults. For many, substance use —
-              alcohol, stimulants, prescription medications — begins as
-              self-medication for an undiagnosed or undertreated ADHD brain.
+              {t("body1")}
             </p>
             <p className={`${styles.body} ${styles.bodyMb}`}>
-              We offer exclusive, fully private addiction treatment in
-              Switzerland — integrated with the complete metabolic and
-              psychiatric picture. Not a clinic setting. Not an institutional
-              programme. A discreet, evidence-based, deeply personal process.
+              {t("body2")}
             </p>
 
             <div className={styles.cards}>
-              {CARDS.map((card) => (
+              {cards.map((card) => (
                 <div key={card.label} className={styles.card}>
                   <div className={styles.cardLabel}>{card.label}</div>
                   <div className={styles.cardText}>{card.text}</div>
@@ -63,7 +42,7 @@ export default function Addiction() {
               href={`mailto:${COMPANY.email}`}
               className={styles.enquireLink}
             >
-              Enquire Confidentially
+              {t("enquire")}
             </a>
           </div>
         </div>

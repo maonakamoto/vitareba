@@ -1,14 +1,16 @@
+import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/config/company";
 import Logo from "@/components/Logo";
 import styles from "./Footer.module.css";
 
-export default function Footer() {
+export default async function Footer() {
+  const t = await getTranslations("footer");
+
   return (
     <footer className={styles.footer}>
       <Logo variant="light" tagline="Surf Your Life" small />
       <div className={styles.legal}>
-        © {COMPANY.foundingYear} {COMPANY.name} · All psychedelic therapies
-        within Swiss regulatory frameworks
+        © {COMPANY.foundingYear} {COMPANY.name} · {t("legal")}
       </div>
     </footer>
   );

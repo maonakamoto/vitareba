@@ -1,20 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import Logo from "@/components/Logo";
-import styles from "./Nav.module.css";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
+import { Link } from "@/lib/i18n/navigation";
+import Logo from "@/components/Logo";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import styles from "./Nav.module.css";
 
-const NAV_LINKS = [
-  { href: "#pillars", label: "Programmes" },
-  { href: "#approach", label: "Approach" },
-  { href: "#diagnostics", label: "Diagnostics" },
-  { href: "#longevity", label: "Longevity" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#team", label: "Team" },
+const NAV_LINK_KEYS = [
+  { key: "programmes", href: "#pillars" },
+  { key: "approach", href: "#approach" },
+  { key: "diagnostics", href: "#diagnostics" },
+  { key: "longevity", href: "#longevity" },
+  { key: "pricing", href: "#pricing" },
+  { key: "team", href: "#team" },
 ] as const;
 
 export default function Nav() {
+  const t = useTranslations("nav");
   const { data: session } = useSession();
 
   return (
@@ -23,26 +26,29 @@ export default function Nav() {
         <Logo />
       </Link>
       <div className={styles.navLinks}>
-        {NAV_LINKS.map((link) => (
-          <a key={link.href} href={link.href}>
-            {link.label}
+        {NAV_LINK_KEYS.map(({ key, href }) => (
+          <a key={key} href={href}>
+            {t(key)}
           </a>
         ))}
       </div>
-      {session ? (
-        <Link href="/dashboard" className={styles.navBtn}>
-          Dashboard &rarr;
-        </Link>
-      ) : (
-        <>
-          <Link href="/login" className={styles.navSignIn}>
-            Sign in
+      <div className={styles.navActions}>
+        <LanguageSwitcher />
+        {session ? (
+          <Link href="/dashboard" className={styles.navBtn}>
+            {t("dashboard")} &rarr;
           </Link>
-          <Link href="/assessment" className={styles.navBtn}>
-            Take the Inflection Edge
-          </Link>
-        </>
-      )}
+        ) : (
+          <>
+            <Link href="/login" className={styles.navSignIn}>
+              {t("signIn")}
+            </Link>
+            <Link href="/assessment" className={styles.navBtn}>
+              {t("cta")}
+            </Link>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

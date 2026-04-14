@@ -1,0 +1,365 @@
+{
+  "nav": {
+    "programmes": "Programmes",
+    "approach": "Approche",
+    "diagnostics": "Diagnostics",
+    "longevity": "Longévité",
+    "pricing": "Tarifs",
+    "team": "Équipe",
+    "signIn": "Se connecter",
+    "dashboard": "Dashboard",
+    "cta": "Faire l'Inflection Edge"
+  },
+  "hero": {
+    "eyebrow": "Zürich · 8008 · Patients internationaux bienvenus",
+    "titleLine1": "Psychiatrie",
+    "titleLine2": "Métabolique &",
+    "titleEm": "Longévité Systémique.",
+    "sub": "Nous allons au-delà du diagnostic. Nous décodons la biologie de votre esprit — et l'environnement qui l'entoure — pour concevoir un parcours personnalisé vers une haute performance durable, la longévité et le bien-être.",
+    "specialties": ["ADHD", "Longévité", "Addiction", "Burnout", "Haute Performance", "Psychedelic Therapy"],
+    "flagship": "Notre Programme Phare",
+    "flagshipTitle": "ADHD & l'",
+    "flagshipTitleEm": "Esprit Haute Performance",
+    "flagshipSub": "Un programme intégré unique au monde combinant diagnostics formels de l'ADHD, médecine métabolique, technologies de longévité, thérapies en état psychédélique et coaching de performance Surf Your Life personnalisé.",
+    "quote": "Le cerveau ADHD n'est pas un lac brisé qui a besoin d'être apaisé. C'est un océan puissant — et personne ne vous a jamais appris à le surfer.",
+    "ctaPrimary": "Faire l'Inflection Edge →",
+    "ctaSecondary": "Réserver une consultation"
+  },
+  "impactStats": {
+    "eyebrow": "Les chiffres dont personne ne parle",
+    "heading": "L'ADHD n'est pas seulement un problème de performance.",
+    "headingEm": "C'est un problème de longévité.",
+    "body": "Il ne s'agit pas uniquement de défis cognitifs. L'ADHD non traité entraîne une dysfonction métabolique, un vieillissement cellulaire accéléré, une inflammation chronique et une mauvaise autorégulation des comportements de santé qui déterminent la durée et la qualité de votre vie. C'est pourquoi la psychiatrie métabolique et la médecine de la longévité doivent travailler ensemble — et pourquoi VitaReBa existe.",
+    "stats": [
+      {
+        "label": "Espérance de vie réduite pour les adultes présentant un ADHD persistant",
+        "source": "Barkley & Fischer, 2019"
+      },
+      {
+        "label": "Risque accru de blessures accidentelles, d'abus de substances et de maladies métaboliques",
+        "source": "Journal of Attention Disorders"
+      },
+      {
+        "label": "Des adultes ADHD présentent des troubles du sommeil cliniquement significatifs affectant la récupération cellulaire",
+        "source": "Barkley, 2015"
+      },
+      {
+        "label": "L'ADHD présente un risque de mortalité plus élevé qu'une mauvaise alimentation, l'inactivité, l'obésité et le tabagisme — réunis",
+        "source": "Barkley, CHADD 2018"
+      }
+    ]
+  },
+  "pillars": {
+    "eyebrow": "Nos trois piliers",
+    "heading": "Trois programmes.",
+    "headingEm": "Une approche intégrée.",
+    "sub": "Chaque programme aborde un point d'entrée différent — mais tous partagent la même base métabolique, la même rigueur clinique et le même engagement à traiter les causes profondes, et non les symptômes.",
+    "items": [
+      {
+        "name": "Psychiatrie Métabolique",
+        "desc": "Le cadre général. Nous évaluons les troubles psychiatriques à travers leurs causes profondes métaboliques, biologiques et physiologiques — neuroinflammation, santé mitochondriale, axe intestin-cerveau, rythmes circadiens et marqueurs de stress. Parce que la santé mentale et la longévité partagent les mêmes fondements biologiques. Diagnostics avancés disponibles en clinique et via des kits de test à domicile.",
+        "tags": ["Neuroinflammation", "Gut-Brain Axis", "Mitochondrial", "Longévité", "Home Test Kits"]
+      },
+      {
+        "name": "ADHD pour les Hauts Performeurs",
+        "desc": "Notre programme phare avec le SYL Clock propriétaire — cartographiant vos symptômes selon quatre dimensions de vie : santé, mindset, relations et carrière. Diagnostic formel, bilan métabolique, médecine de longévité et 90 jours de coaching de transformation Surf Your Life.",
+        "tags": ["SYL Clock", "4 Dimensions", "Coaching 90 jours", "Surf Your Life"]
+      },
+      {
+        "name": "Psychedelic Readiness",
+        "desc": "Un protocole de préparation structuré sur trois mois combinant diagnostics physiques, optimisation métabolique et évaluation de la préparation psychologique. Les recherches émergentes montrent que les psychédéliques ne soutiennent pas seulement la neuroplasticité — ils peuvent prolonger la durée de vie cellulaire, préserver les télomères et favoriser un vieillissement plus sain.",
+        "tags": ["Protocole 3 mois", "Préparation physique", "Neuroplasticité", "Longévité", "Cadre suisse"]
+      }
+    ]
+  },
+  "approach": {
+    "eyebrow": "Notre Approche",
+    "heading": "Nous diagnostiquons",
+    "headingEm": "et concevons.",
+    "sub": "La psychiatrie standard diagnostique et prescrit. Nous cartographions l'image biologique complète et construisons une architecture personnalisée pour votre esprit et votre corps.",
+    "items": [
+      {
+        "title": "Psychiatrie Métabolique",
+        "body": "Nous évaluons le substrat biologique de votre performance mentale — les systèmes corporels qui régulent directement l'attention, l'éveil, l'humeur et l'énergie. Aucune autre clinique en Suisse ne combine ces dimensions dans un protocole diagnostique unique."
+      },
+      {
+        "title": "L'ADHD comme Système de Performance",
+        "body": "L'ADHD n'est pas un déficit. C'est un profil de performance asymétrique — avec des sommets extraordinaires, des coûts réels et des conditions spécifiques dans lesquelles il excelle. Nous cartographions votre profil avec précision et construisons l'architecture qui transforme l'asymétrie en avantage."
+      },
+      {
+        "title": "Thérapie Assistée par Psychédéliques",
+        "body": "Thérapie assistée par kétamine et protocoles de respiration structurés dans le cadre réglementaire suisse. Nous créons des fenêtres de neuroplasticité accrue — et notre programme de préparation de trois mois garantit que vous abordez ces expériences depuis la base la plus solide possible."
+      },
+      {
+        "title": "Patients Internationaux",
+        "body": "Nous accueillons des patients d'Europe, du Moyen-Orient et d'ailleurs. Coordination concierge complète pour les voyages, l'hébergement et la planification — discrétion absolue du premier contact à la dernière séance."
+      }
+    ]
+  },
+  "pathway": {
+    "eyebrow": "Parcours Clinique",
+    "heading": "Six niveaux.",
+    "headingEm": "Un protocole intégré.",
+    "steps": [
+      {
+        "sub": "Point d'entrée",
+        "title": "Inflection Edge Assessment",
+        "text": "Notre instrument de performance propriétaire à 30 questions et 5 dimensions. Génère votre Neurotype Blueprint et structure l'ensemble de la conversation diagnostique.",
+        "tags": ["En ligne · Gratuit", "5 Dimensions", "Performance Blueprint"]
+      },
+      {
+        "sub": "Diagnostic clinique",
+        "title": "Diagnostic Formel de l'ADHD",
+        "text": "Évaluation psychiatrique complète par notre psychiatre métabolique. Au-delà des listes de contrôle — nous évaluons le type d'ADHD, les comorbidités, la sensibilité au rejet, la fonction exécutive et votre phénotype de performance spécifique.",
+        "tags": ["DSM-5 / ICD-11", "Cartographie des comorbidités", "Révision médicamenteuse"]
+      },
+      {
+        "sub": "Niveau biologique",
+        "title": "Bilan Métabolique Complet",
+        "text": "L'évaluation qui distingue VitaReBa. Nous examinons les systèmes biologiques qui déterminent votre tableau clinique — axe intestin-cerveau, neurotransmetteurs, fonction mitochondriale, hormones, micronutriments, toxines, HRV, rythme circadien et plus encore.",
+        "tags": ["Gut · Brain Axis", "Mitochondrial", "HRV · Circadien", "Toxines"]
+      },
+      {
+        "sub": "Neuroplasticité & Longévité",
+        "title": "Thérapie en État Psychédélique",
+        "text": "Thérapie assistée par kétamine et protocoles de respiration structurés induisant des états non ordinaires — créant des fenêtres de neuroplasticité accrue. Les recherches montrent désormais que les psychédéliques préservent également la longueur des télomères, surexpriment les gènes de longévité (SIRT1) et réduisent le stress oxydatif au niveau cellulaire.",
+        "tags": ["Assisté par kétamine", "Respiration", "Neuroplasticité", "Longévité", "Droit suisse"]
+      },
+      {
+        "sub": "Médecine de la Longévité",
+        "title": "Protocole Technologique VitaReBa",
+        "text": "L'ADHD réduit l'espérance de vie jusqu'à 13 ans. Nos technologies de médecine de la longévité traitent directement ce problème — santé mitochondriale, récupération du système nerveux, longévité cellulaire et fondements biologiques d'une performance cognitive durable.",
+        "tags": ["H₂ Therapy", "IHHT", "PEMF", "Infrarouge", "HRV Biofeedback"]
+      },
+      {
+        "sub": "Architecture de Performance",
+        "title": "Surf Your Life + Home Harmony",
+        "text": "La couche de coaching qui convertit les insights cliniques en architecture quotidienne. Vous repensez votre façon de travailler, de diriger, de décider et de récupérer — en fonction de votre neurotype spécifique. Comprend un audit complet de vos environnements personnels et professionnels.",
+        "tags": ["Surf Your Life", "Home Harmony", "Programme 90 jours"]
+      }
+    ]
+  },
+  "diagnostics": {
+    "eyebrow": "Profondeur Diagnostique",
+    "heading": "L'image biologique",
+    "headingLine2": "la plus complète",
+    "headingEm": "disponible.",
+    "sub": "Notre bilan métabolique examine six systèmes biologiques qui influencent directement la performance cognitive, l'humeur et l'énergie. Disponible en clinique et via des kits de test à domicile pour les patients internationaux.",
+    "categories": [
+      {
+        "cat": "Gut · Brain Axis",
+        "items": ["Analyse complète du microbiome", "Marqueurs de perméabilité intestinale", "Statut des précurseurs de neurotransmetteurs", "Cartographie des cascades inflammatoires"]
+      },
+      {
+        "cat": "Santé Mitochondriale",
+        "items": ["Capacité de production d'énergie cellulaire", "Charge de stress oxydatif", "Marqueurs d'efficacité mitochondriale", "Voies du métabolisme énergétique"]
+      },
+      {
+        "cat": "Hormones",
+        "items": ["Rythme cortisol complet & axe du stress", "Panel thyroïdien complet", "Hormones sexuelles & fonction surrénale", "Insuline & régulateurs métaboliques"]
+      },
+      {
+        "cat": "Micronutriments & Toxines",
+        "items": ["Statut minéraux & vitamines essentiels", "Profil des acides gras oméga", "Charge en métaux lourds & toxines environnementales", "Marqueurs inflammatoires & oxydatifs"]
+      },
+      {
+        "cat": "HRV · Circadien · Sommeil",
+        "items": ["Variabilité de la fréquence cardiaque de base", "Cartographie du rythme circadien", "Évaluation de l'architecture du sommeil", "Régulation du système nerveux autonome"]
+      },
+      {
+        "cat": "Marqueurs de Stress & Sérotonine",
+        "items": ["Métabolisme de la sérotonine & dopamine", "Réponse du cortisol au réveil", "Équilibre GABA & glutamate", "Capacité de réserve surrénale"]
+      }
+    ]
+  },
+  "sylClock": {
+    "eyebrow": "Instrument Propriétaire",
+    "heading": "Le SYL Clock.",
+    "headingEm": "Quatre dimensions. Une image.",
+    "body": "Le Surf Your Life Clock cartographie vos symptômes ADHD selon les quatre dimensions les plus importantes. Pas seulement comment votre cerveau fonctionne — mais comment il se manifeste dans chaque domaine de votre vie. Le résultat est la carte de performance la plus exploitable disponible.",
+    "dimensions": [
+      {
+        "name": "Santé",
+        "text": "Énergie, sommeil, nutrition, exercice, consommation de substances — le fondement biologique sur lequel tout le reste repose."
+      },
+      {
+        "name": "Mindset",
+        "text": "Schémas de concentration, régulation émotionnelle, discours intérieur, qualité des décisions et performance cognitive sous pression."
+      },
+      {
+        "name": "Relations",
+        "text": "Schémas de communication, sensibilité au rejet, confiance, intimité et comment votre neurotype façonne vos connexions."
+      },
+      {
+        "name": "Carrière",
+        "text": "Style de leadership, architecture de productivité, dynamique d'équipe, pensée stratégique et trajectoire professionnelle."
+      }
+    ]
+  },
+  "psychedelicReadiness": {
+    "eyebrow": "Programme Psychedelic Readiness",
+    "heading": "Trois mois.",
+    "headingEm": "Préparation complète.",
+    "sub": "Un protocole structuré pour toute personne envisageant une thérapie assistée par psychédéliques — que ce soit avec nous ou avec une clinique partenaire. Nous veillons à ce que votre corps, votre métabolisme et votre esprit soient préparés de manière optimale.",
+    "calloutTitle": "Au-delà de la neuroplasticité : la dimension longévité",
+    "calloutText": "Une étude publiée en 2025 dans npj Aging de Nature a révélé que la psilocybine prolongeait la durée de vie cellulaire humaine jusqu'à 57%, préservait la longueur des télomères et augmentait la survie de souris âgées de 30%. Le composé surexprime SIRT1 — un gène clé dans la longévité et la réparation de l'ADN — et réduit le stress oxydatif au niveau cellulaire. Ces résultats suggèrent que les psychédéliques pourraient être de puissants agents géroprotecteurs, rendant la préparation métabolique encore plus critique.",
+    "calloutCite": "Kato et al., npj Aging, 2025 · Emory University / Baylor College of Medicine",
+    "phases": [
+      {
+        "title": "Diagnostics Physiques",
+        "text": "Bilan métabolique complet, évaluation cardiovasculaire, révision médicamenteuse et dépistage des contre-indications. Nous identifions et traitons tout facteur biologique pouvant affecter votre expérience et ses bénéfices pour la longévité."
+      },
+      {
+        "title": "Optimisation Métabolique",
+        "text": "Supplémentation ciblée, protocole de santé intestinale, amélioration de l'architecture du sommeil et régulation du système nerveux. Construction des fondements biologiques pour la neuroplasticité et les effets de longévité cellulaire de la thérapie psychédélique."
+      },
+      {
+        "title": "Préparation Psychologique",
+        "text": "Formulation d'intentions, entraînement à la respiration, pratique de pleine conscience et préparation du cadre d'intégration. Vous donner les outils pour traiter et pérenniser les insights qui émergent — pour un changement durable."
+      }
+    ],
+    "footer": "Disponible pour les clients individuels et les partenaires référents — cliniques psychédéliques, centres de retraite et praticiens médicaux recherchant une préparation pré-traitement approfondie pour leurs patients."
+  },
+  "addiction": {
+    "eyebrow": "Traitement des Addictions",
+    "heading": "Là où l'ADHD se termine",
+    "headingMid": "et où l'addiction",
+    "headingEm": "commence",
+    "headingEnd": "n'est rarement évident.",
+    "body1": "L'ADHD et l'addiction font partie des pathologies les plus fréquemment co-occurrentes chez les adultes à haute performance. Pour beaucoup, la consommation de substances — alcool, stimulants, médicaments sur ordonnance — commence comme une automédication pour un cerveau ADHD non diagnostiqué ou insuffisamment traité.",
+    "body2": "Nous proposons un traitement des addictions exclusif et entièrement privé en Suisse — intégré au tableau métabolique et psychiatrique complet. Pas un cadre clinique. Pas un programme institutionnel. Un processus discret, fondé sur des preuves et profondément personnel.",
+    "enquire": "Demande confidentielle",
+    "cards": [
+      {
+        "label": "Entièrement privé",
+        "text": "Pas de cadre clinique. Pas de dossier institutionnel. Discrétion absolue du premier contact à la dernière séance."
+      },
+      {
+        "label": "Double Diagnostic",
+        "text": "ADHD et addiction traités ensemble — pas séquentiellement. Les causes profondes métaboliques des deux sont abordées simultanément."
+      },
+      {
+        "label": "Basé en Suisse",
+        "text": "Accès à une infrastructure médicale suisse de classe mondiale, à des cadres thérapeutiques légaux et à un environnement de sécurité absolue."
+      },
+      {
+        "label": "Clients Internationaux",
+        "text": "Coordination concierge complète. Nous accueillons des clients d'Europe, du Moyen-Orient et d'ailleurs."
+      }
+    ]
+  },
+  "programs": {
+    "eyebrow": "Architecture des Programmes",
+    "heading": "Trois points d'entrée.",
+    "headingEm": "Une destination.",
+    "items": [
+      {
+        "note": "Ponctuel · 2 séances",
+        "desc": "L'image biologique ADHD la plus complète disponible en Suisse. Diagnostic formel, bilan métabolique complet et votre Neurotype Blueprint personnalisé.",
+        "badge": null,
+        "btnLabel": "Demander",
+        "features": ["Inflection Edge assessment", "Diagnostic formel de l'ADHD", "Bilan métabolique complet", "Séance Neurotype Blueprint", "Protocole médicaments & suppléments"]
+      },
+      {
+        "note": "Programme 90 jours",
+        "desc": "Le programme intégré complet — diagnostic clinique, optimisation biologique, médecine de longévité et 90 jours de coaching de transformation Surf Your Life.",
+        "badge": "Le plus choisi",
+        "btnLabel": "Commencer le voyage",
+        "features": ["Tout ce qu'inclut Edge Diagnostic", "Coaching Surf Your Life 90 jours", "Cartographie complète SYL Clock", "Protocole technologique VitaReBa", "Audit environnemental Home Harmony", "Évaluation thérapie psychédélique"]
+      },
+      {
+        "note": "Annuel · Entièrement concierge",
+        "desc": "L'architecture annuelle complète — surveillance biologique continue, consultations régulières, thérapie psychédélique et optimisation continue de la performance.",
+        "badge": null,
+        "btnLabel": "Demander",
+        "features": ["Tout ce qu'inclut Riding the Wave", "Thérapie assistée par psychédéliques", "Retesting métabolique trimestriel", "Consultations mensuelles", "Reprise annuelle des instruments Inflection"]
+      }
+    ]
+  },
+  "team": {
+    "eyebrow": "Équipe Clinique",
+    "heading": "Construit autour de",
+    "headingEm": "la précision.",
+    "members": [
+      {
+        "role": "Fondatrice · Surf Your Life",
+        "bio": "L'architecte derrière l'approche intégrée de VitaReBa. Elle combine coaching de performance et psychiatrie métabolique pour construire l'architecture de vie dont les esprits à haute performance ont besoin."
+      },
+      {
+        "role": "Psychiatre Métabolique",
+        "bio": "Spécialiste en psychiatrie métabolique avec une expertise approfondie en ADHD, addiction et substrats biologiques de la performance cognitive."
+      },
+      {
+        "role": "Responsable Clinique",
+        "bio": "Direction du protocole de diagnostic clinique et supervision de l'intégration des bilans métaboliques avec l'évaluation psychiatrique et la planification du traitement."
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Commencer ici",
+    "heading": "Votre océan.",
+    "headingEm": "Précisément cartographié.",
+    "sub": "Commencez avec l'Inflection Edge — notre évaluation de performance ADHD gratuite. En 8 minutes, vous aurez l'image la plus précise de votre neurotype que vous ayez jamais vue. Vos résultats constituent votre Epoch — le début d'un nouveau chapitre.",
+    "ctaPrimary": "Faire l'Inflection Edge →",
+    "ctaSecondary": "Réserver un appel découverte"
+  },
+  "footer": {
+    "legal": "Toutes les thérapies psychédéliques dans le cadre réglementaire suisse"
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenue",
+      "titleEm": "de retour",
+      "sub": "Connectez-vous pour continuer",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Se connecter",
+      "submitting": "Connexion en cours…",
+      "error": "Adresse e-mail ou mot de passe invalide.",
+      "noAccount": "Pas de compte ?",
+      "registerLink": "S'inscrire",
+      "forgotPassword": "Mot de passe oublié ?"
+    },
+    "register": {
+      "title": "Créer",
+      "titleEm": "votre compte",
+      "sub": "E-mail et mot de passe — rien de plus",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordPlaceholder": "Min. 8 caractères",
+      "submit": "Créer un compte",
+      "submitting": "Création du compte…",
+      "hasAccount": "Déjà un compte ?",
+      "signInLink": "Se connecter"
+    },
+    "forgotPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "sub": "Entrez votre e-mail et nous vous enverrons un lien de réinitialisation.",
+      "successTitle": "Vérifiez votre boîte de réception",
+      "successSub": "Si un compte existe pour {email}, vous recevrez un lien de réinitialisation du mot de passe dans quelques minutes.",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "submit": "Envoyer le lien de réinitialisation",
+      "submitting": "Envoi en cours…",
+      "backToSignIn": "← Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Définir un nouveau mot de passe",
+      "sub": "Choisissez un mot de passe solide pour votre compte",
+      "invalidTitle": "Lien invalide",
+      "invalidSub": "Ce lien de réinitialisation du mot de passe manque de paramètres requis.",
+      "requestNew": "Demander un nouveau lien",
+      "newPasswordLabel": "Nouveau mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "newPasswordPlaceholder": "Min. 8 caractères",
+      "confirmPasswordPlaceholder": "Répéter le mot de passe",
+      "mismatchError": "Les mots de passe ne correspondent pas.",
+      "genericError": "Une erreur s'est produite. Le lien a peut-être expiré.",
+      "submit": "Mettre à jour le mot de passe",
+      "submitting": "Mise à jour en cours…"
+    }
+  }
+}
