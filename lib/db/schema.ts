@@ -9,6 +9,7 @@ import {
   timestamp,
   jsonb,
   primaryKey,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import type { AdapterAccountType } from "next-auth/adapters";
@@ -135,20 +136,24 @@ export const profiles = pgTable("profiles", {
 
 // ─── Daily check-ins ──────────────────────────────────────────────────────────
 
-export const dailyCheckins = pgTable("daily_checkins", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
-  sleep: integer("sleep").notNull(),   // 1–5
-  energy: integer("energy").notNull(), // 1–5
-  mood: integer("mood").notNull(),     // 1–5
-  focus: integer("focus").notNull(),   // 1–5
-  stress: integer("stress").notNull(), // 1–5 (1 = very low, 5 = very high)
-  notes: text("notes"),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-});
+export const dailyCheckins = pgTable(
+  "daily_checkins",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
+    sleep: integer("sleep").notNull(),   // 1–5
+    energy: integer("energy").notNull(), // 1–5
+    mood: integer("mood").notNull(),     // 1–5
+    focus: integer("focus").notNull(),   // 1–5
+    stress: integer("stress").notNull(), // 1–5 (1 = very low, 5 = very high)
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("daily_checkins_user_date_idx").on(t.userId, t.date)]
+);
 
 // ─── Assessments ──────────────────────────────────────────────────────────────
 
@@ -212,6 +217,7 @@ export const threadMessages = pgTable("thread_messages", {
     .notNull()
     .references(() => users.id),
   body: text("body").notNull(),
+  readAt: timestamp("read_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
