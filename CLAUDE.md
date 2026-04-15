@@ -293,9 +293,38 @@ Never commit `.env.local`. There are currently no secrets (static site), but kee
 pnpm dev        # local dev server (localhost:3000)
 pnpm build      # production build (run before pushing)
 pnpm lint       # eslint
+pnpm db:push    # push schema changes to Neon (after editing lib/db/schema.ts)
 ```
 
 **Before every push:** run `pnpm build` locally. The build must pass — never rely on Vercel to catch TypeScript or import errors.
+
+## Deploy Workflow (agentic — do this every push)
+
+After every `git push`, monitor the Vercel deployment to completion before reporting done:
+
+```bash
+# 1. Push
+git push
+
+# 2. Watch deployment — emit one line per status change, exit on Ready or Error
+prev=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1 | awk '{print $3}')
+while true; do
+  row=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1)
+  url=$(echo "$row" | awk '{print $3}')
+  status=$(echo "$row" | awk '{print $5}')
+  [ "$url" != "$prev" ] && echo "DEPLOY $status: $url"
+  echo "$status" | grep -qE "^Ready$" && echo "✓ live" && break
+  echo "$status" | grep -qiE "Error|Failed|Canceled" && echo "✗ failed — check: vercel logs $url" && break
+  sleep 8
+done
+```
+
+If deployment fails:
+- `vercel logs <url>` to read build/runtime errors
+- Fix, `pnpm build` locally, push again
+- Repeat until ✓ Ready
+
+**Never tell the user a feature is deployed until the Vercel dashboard shows Ready.**
 
 ---
 
