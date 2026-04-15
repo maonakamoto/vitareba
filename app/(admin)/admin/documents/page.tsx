@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import authStyles from "../../../(auth)/auth.module.css";
+import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 
 type Patient = { id: string; name: string | null; email: string };
 type Document = {
@@ -66,7 +67,7 @@ export default function AdminDocumentsPage() {
     setSubmitting(false);
     setSuccess(true);
     setShowForm(false);
-    setTimeout(() => setSuccess(false), 3000);
+    setTimeout(() => setSuccess(false), SAVED_FEEDBACK_MS);
     loadDocuments();
   }
 

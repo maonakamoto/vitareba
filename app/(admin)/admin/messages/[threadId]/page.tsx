@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../../admin.module.css";
 import authStyles from "../../../../(auth)/auth.module.css";
+import { formatDateTime } from "@/lib/utils/format";
 
 type Message = {
   id: string;
@@ -94,7 +95,7 @@ export default function AdminThreadPage() {
               <p style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "0.25rem" }}>
                 {isAdmin ? "You (Admin)" : (thread.patient.name ?? "Patient")}
                 {" · "}
-                {new Date(msg.createdAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                {formatDateTime(msg.createdAt)}
               </p>
             </div>
           );

@@ -24,8 +24,8 @@
 }
 
 .adminBadge {
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 2rem;
@@ -157,4 +157,68 @@
   padding: 3rem 2rem;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+/* ─── Signal badges ──────────────────────────────────────────────────────────── */
+
+.signalBadge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+}
+
+.signalBadge[data-signal="critical"] {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+.signalBadge[data-signal="attention"] {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 10%, transparent);
+}
+
+.signalBadge[data-signal="active"] {
+  color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 10%, transparent);
+}
+
+.signalBadge[data-signal="new"] {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+}
+
+/* ─── Sparkline ──────────────────────────────────────────────────────────────── */
+
+.sparkline {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sparkDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.sparkDot[data-level="low"]  { background: var(--danger); }
+.sparkDot[data-level="mid"]  { background: var(--warn); }
+.sparkDot[data-level="high"] { background: var(--teal); }
+
+/* ─── Card label (used in section headers within detail cards) ─────────────── */
+
+.cardLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1rem;
+  font-weight: 400;
 }

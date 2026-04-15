@@ -1,0 +1,106 @@
+.layout {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+@media (max-width: 767px) {
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fieldStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.textarea {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.textareaLg {
+  composes: textarea;
+  min-height: 120px;
+}
+
+/* ── Completeness indicator ─────────────────────────────────────────────── */
+
+.completenessCard {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  padding: 1.25rem 1.75rem;
+}
+
+.completenessHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.completenessLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.completenessValue {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--teal);
+  line-height: 1;
+}
+
+.progressTrack {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.completenessHint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}

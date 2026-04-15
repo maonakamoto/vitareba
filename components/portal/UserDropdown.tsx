@@ -29,8 +29,15 @@ export function UserDropdown({ name, email, role }: Props) {
     function onMouseDown(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
     document.addEventListener("mousedown", onMouseDown);
-    return () => document.removeEventListener("mousedown", onMouseDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, []);
 
   return (
@@ -57,8 +64,11 @@ export function UserDropdown({ name, email, role }: Props) {
                 Admin Panel ↗
               </Link>
             )}
+            <Link href="/checkin" className={styles.item} onClick={() => setOpen(false)}>
+              Daily check-in
+            </Link>
             <Link href="/profile" className={styles.item} onClick={() => setOpen(false)}>
-              Profile
+              Profile settings
             </Link>
           </div>
           <div className={styles.footer}>

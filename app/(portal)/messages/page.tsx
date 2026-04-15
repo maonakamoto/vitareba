@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../portal.module.css";
 import authStyles from "../../(auth)/auth.module.css";
+import { formatDateNumeric } from "@/lib/utils/format";
 
 type Thread = {
   id: string;
@@ -104,7 +105,7 @@ export default function MessagesPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
                   <p style={{ fontSize: "0.88rem", fontWeight: 400, color: "var(--ink)" }}>{t.subject}</p>
                   <p style={{ fontSize: "0.72rem", color: "var(--muted)" }}>
-                    {new Date(t.lastMessageAt).toLocaleDateString("en-GB")}
+                    {formatDateNumeric(t.lastMessageAt)}
                   </p>
                 </div>
                 {t.messages[0] && (

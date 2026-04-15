@@ -3,29 +3,27 @@
 import { useState, useEffect } from "react";
 import styles from "../../admin.module.css";
 import authStyles from "../../../(auth)/auth.module.css";
+import { BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingStatus } from "@/lib/config/booking-status";
+import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
 
 type Booking = {
   id: string;
-  status: "pending" | "confirmed" | "cancelled";
+  status: BookingStatus;
   preferredDate: string | null;
   notes: string | null;
   createdAt: string;
   user: { id: string; name: string | null; email: string };
 };
 
-const STATUS_STYLES: Record<string, { color: string; bg: string }> = {
-  pending: { color: "var(--warn)", bg: "color-mix(in srgb, var(--warn) 12%, transparent)" },
-  confirmed: { color: "var(--teal)", bg: "color-mix(in srgb, var(--teal) 12%, transparent)" },
-  cancelled: { color: "var(--muted)", bg: "color-mix(in srgb, var(--muted) 12%, transparent)" },
-};
 
-const FILTER_OPTIONS = ["all", "pending", "confirmed", "cancelled"] as const;
+const FILTER_OPTIONS = ["all", ...BOOKING_STATUS_VALUES] as const;
+type FilterOption = (typeof FILTER_OPTIONS)[number];
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "pending" | "confirmed" | "cancelled">("pending");
+  const [filter, setFilter] = useState<FilterOption>("pending");
   const [error, setError] = useState("");
 
   async function load() {
@@ -37,7 +35,7 @@ export default function AdminBookingsPage() {
 
   useEffect(() => { load(); }, []);
 
-  async function updateStatus(id: string, status: "confirmed" | "cancelled") {
+  async function updateStatus(id: string, status: BookingStatus) {
     setUpdating(id);
     setError("");
     const res = await fetch(`/api/bookings/${id}`, {
@@ -51,7 +49,7 @@ export default function AdminBookingsPage() {
     load();
   }
 
-  const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === filter);
+  const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === (filter as BookingStatus));
   const pendingCount = bookings.filter((b) => b.status === "pending").length;
 
   return (
@@ -110,7 +108,7 @@ export default function AdminBookingsPage() {
             </thead>
             <tbody>
               {filtered.map((b) => {
-                const s = STATUS_STYLES[b.status] ?? STATUS_STYLES.pending;
+                const s = BOOKING_STATUS_CONFIG[b.status] ?? BOOKING_STATUS_CONFIG.pending;
                 const isUpdating = updating === b.id;
                 return (
                   <tr key={b.id}>
@@ -122,7 +120,7 @@ export default function AdminBookingsPage() {
                     </td>
                     <td style={{ whiteSpace: "nowrap" }}>
                       {b.preferredDate
-                        ? new Date(b.preferredDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+                        ? formatDateShort(b.preferredDate)
                         : <span style={{ color: "var(--muted)" }}>—</span>}
                     </td>
                     <td style={{ maxWidth: "200px" }}>
@@ -133,7 +131,7 @@ export default function AdminBookingsPage() {
                       )}
                     </td>
                     <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: "var(--muted)" }}>
-                      {new Date(b.createdAt).toLocaleDateString("en-GB")}
+                      {formatDateNumeric(b.createdAt)}
                     </td>
                     <td>
                       <span className={styles.badge} style={{ color: s.color, background: s.bg }}>

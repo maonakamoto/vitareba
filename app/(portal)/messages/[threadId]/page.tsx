@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../portal.module.css";
 import authStyles from "../../../(auth)/auth.module.css";
+import { formatDateTime } from "@/lib/utils/format";
 
 type Message = {
   id: string;
@@ -23,33 +24,58 @@ export default function ThreadPage() {
   const params = useParams();
   const threadId = params.threadId as string;
   const [thread, setThread] = useState<Thread | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   async function load() {
     const res = await fetch(`/api/messages/${threadId}`);
+    if (!res.ok) { setLoadError(true); return; }
     const data = await res.json();
     setThread(data.data);
   }
 
   useEffect(() => { load(); }, [threadId]);
+
+  // Poll for new messages every 30 s while the tab is focused
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!document.hidden) load();
+    }, 30_000);
+    return () => clearInterval(interval);
+  }, [threadId]);
+
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [thread?.messages.length]);
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!body.trim()) return;
     setSending(true);
-    await fetch(`/api/messages/${threadId}`, {
+    setSendError("");
+    const res = await fetch(`/api/messages/${threadId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ body }),
     });
-    setBody("");
     setSending(false);
+    if (!res.ok) {
+      setSendError("Failed to send. Please try again.");
+      return;
+    }
+    setBody("");
     load();
   }
 
+  if (loadError) return (
+    <div className={styles.emptyState}>
+      Could not load this conversation.{" "}
+      <button onClick={() => { setLoadError(false); load(); }} style={{ color: "var(--teal)", background: "none", border: "none", cursor: "pointer", fontSize: "inherit", padding: 0 }}>
+        Retry
+      </button>
+    </div>
+  );
   if (!thread) return <div className={styles.emptyState}>Loading…</div>;
 
   return (
@@ -76,7 +102,7 @@ export default function ThreadPage() {
                 {msg.body}
               </div>
               <p style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "0.25rem" }}>
-                {isAdmin ? "VitaReBa team" : "You"} · {new Date(msg.createdAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                {isAdmin ? "VitaReBa team" : "You"} · {formatDateTime(msg.createdAt)}
               </p>
             </div>
           );
@@ -94,9 +120,10 @@ export default function ThreadPage() {
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(e); } }}
           />
           <button type="submit" className={authStyles.submit} style={{ marginTop: 0, width: "auto", padding: "0.65rem 1.25rem" }} disabled={sending || !body.trim()}>
-            Send
+            {sending ? "Sending…" : "Send"}
           </button>
         </form>
+        {sendError && <p style={{ fontSize: "0.78rem", color: "var(--danger)", margin: "0.5rem 0 0" }}>{sendError}</p>}
       </div>
     </div>
   );

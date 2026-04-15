@@ -1,35 +1,91 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { users, assessmentResults, bookings } from "@/lib/db/schema";
+import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import { scoreColor, VERDICT_TIERS } from "@/lib/assessment/data";
+import { computePatientSignal } from "@/lib/domain/signals";
+import { computeProfileCompleteness, profileCompletenessColor } from "@/lib/domain/profile";
+import {
+  SIGNAL_SORT_ORDER,
+  SIGNAL_LABELS,
+  SIGNAL_CHECKIN_WINDOW_DAYS,
+} from "@/lib/config/admin";
 
 function getVerdictName(score: number) {
   return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore)?.name ?? "";
+}
+
+function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: number; stress: number }): number {
+  return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
+}
+
+function relativeDate(dateStr: string, now: Date): string {
+  const d = new Date(dateStr + "T00:00:00");
+  const diffMs = now.getTime() - d.getTime();
+  const days = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return `${days}d ago`;
+}
+
+function sparkLevel(avg: number): string {
+  if (avg < 2.5) return "low";
+  if (avg < 3.5) return "mid";
+  return "high";
 }
 
 export default async function PatientsPage() {
   const session = await auth();
   if (!session || session.user.role !== "admin") redirect("/dashboard");
 
+  const now = new Date();
+
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),
-    orderBy: [desc(users.createdAt)],
     with: {
       profile: true,
       assessmentResults: {
         orderBy: [desc(assessmentResults.completedAt)],
-        limit: 1,
+        limit: 2,
       },
       bookings: {
         orderBy: [desc(bookings.createdAt)],
         limit: 1,
       },
+      dailyCheckins: {
+        orderBy: [desc(dailyCheckins.date)],
+        limit: SIGNAL_CHECKIN_WINDOW_DAYS,
+      },
     },
   });
+
+  // Compute signal for each patient, then sort by severity
+  const enriched = patients
+    .map((p) => {
+      const { signal } = computePatientSignal({
+        registeredAt: p.createdAt,
+        checkins: p.dailyCheckins,
+        assessments: p.assessmentResults.map((a) => ({
+          overallScore: a.overallScore,
+          completedAt: a.completedAt,
+        })),
+        bookings: p.bookings,
+        now,
+      });
+      return { ...p, signal };
+    })
+    .sort((a, b) => SIGNAL_SORT_ORDER[a.signal] - SIGNAL_SORT_ORDER[b.signal]);
+
+  // Build today-6..today date array for sparklines
+  const sparkDates: string[] = [];
+  for (let i = SIGNAL_CHECKIN_WINDOW_DAYS - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    sparkDates.push(d.toISOString().slice(0, 10));
+  }
 
   return (
     <div>
@@ -45,31 +101,67 @@ export default async function PatientsPage() {
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>Signal</th>
                 <th>Patient</th>
-                <th>Registered</th>
+                <th>Last check-in</th>
+                <th>7 days</th>
                 <th>Score</th>
-                <th>Bookings</th>
+                <th>Profile</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {patients.map((p) => {
+              {enriched.map((p) => {
                 const latest = p.assessmentResults[0];
+                const sortedCheckins = [...p.dailyCheckins].sort((a, b) =>
+                  b.date.localeCompare(a.date)
+                );
+                const lastCheckin = sortedCheckins[0];
+                const checkinMap = new Map(p.dailyCheckins.map((c) => [c.date, c]));
+
                 return (
                   <tr key={p.id}>
+                    {/* Signal */}
+                    <td>
+                      <span className={styles.signalBadge} data-signal={p.signal}>
+                        {SIGNAL_LABELS[p.signal]}
+                      </span>
+                    </td>
+
+                    {/* Patient */}
                     <td>
                       <div>
                         <div style={{ fontWeight: 400, color: "var(--ink)" }}>
-                          {p.name ?? <span style={{ color: "var(--muted)" }}>No name set</span>}
+                          {p.name ?? <span style={{ color: "var(--muted)" }}>No name</span>}
                         </div>
                         <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{p.email}</div>
                       </div>
                     </td>
-                    <td style={{ whiteSpace: "nowrap" }}>
-                      {new Date(p.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric", month: "short", year: "numeric",
-                      })}
+
+                    {/* Last check-in */}
+                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: lastCheckin ? "var(--ink2)" : "var(--muted)" }}>
+                      {lastCheckin ? relativeDate(lastCheckin.date, now) : "Never"}
                     </td>
+
+                    {/* 7-day sparkline */}
+                    <td>
+                      <div className={styles.sparkline}>
+                        {sparkDates.map((date) => {
+                          const c = checkinMap.get(date);
+                          const level = c ? sparkLevel(wellnessAvg(c)) : "empty";
+                          return (
+                            <span
+                              key={date}
+                              className={styles.sparkDot}
+                              data-level={level}
+                              title={c ? `${date}: ${wellnessAvg(c).toFixed(1)}` : date}
+                            />
+                          );
+                        })}
+                      </div>
+                    </td>
+
+                    {/* Score */}
                     <td>
                       {latest ? (
                         <div>
@@ -81,17 +173,19 @@ export default async function PatientsPage() {
                           </div>
                         </div>
                       ) : (
-                        <span style={{ color: "var(--muted)", fontSize: "0.78rem" }}>No assessment</span>
+                        <span style={{ color: "var(--muted)", fontSize: "0.78rem" }}>—</span>
                       )}
                     </td>
-                    <td>
-                      <span style={{
-                        fontSize: "0.72rem",
-                        color: p.bookings.length > 0 ? "var(--teal)" : "var(--muted)",
-                      }}>
-                        {p.bookings.length > 0 ? `${p.bookings.length} booking${p.bookings.length !== 1 ? "s" : ""}` : "None"}
-                      </span>
+
+                    {/* Profile completeness */}
+                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", fontWeight: 400 }}>
+                      {(() => {
+                        const pct = computeProfileCompleteness(p.profile as Record<string, unknown> | null);
+                        return <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>;
+                      })()}
                     </td>
+
+                    {/* View */}
                     <td>
                       <Link
                         href={`/admin/patients/${p.id}`}

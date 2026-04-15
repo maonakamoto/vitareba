@@ -4,7 +4,7 @@
 :root {
   --ink: #1a1a22;
   --ink2: #3a3a4a;
-  --muted: #888a96;
+  --muted: #71727c;  /* darkened from #888a96 — passes WCAG AA 4.5:1 on white */
   --faint: #c4c0b8;
   --teal: #2a7a8a;
   --teal-dark: #1e6672;
@@ -29,6 +29,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 112%; /* 17.9px effective — all rem values scale up ~12% for readability */
 }
 
 body {
@@ -47,8 +48,8 @@ body {
 }
 
 .eyebrow {
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--teal);
   margin-bottom: 0.8rem;
@@ -121,8 +122,8 @@ body {
 }
 
 .tag {
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.3rem 0.7rem;
   background: rgba(42, 122, 138, 0.06);

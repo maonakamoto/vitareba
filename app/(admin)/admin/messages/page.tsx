@@ -5,6 +5,7 @@ import { threads, threadMessages } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
+import { formatDateShort } from "@/lib/utils/format";
 
 export default async function AdminMessagesPage() {
   const session = await auth();
@@ -61,9 +62,7 @@ export default async function AdminMessagesPage() {
                     )}
                   </td>
                   <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: "var(--muted)" }}>
-                    {new Date(t.lastMessageAt).toLocaleDateString("en-GB", {
-                      day: "numeric", month: "short", year: "numeric",
-                    })}
+                    {formatDateShort(t.lastMessageAt)}
                   </td>
                   <td>
                     <Link

@@ -26,8 +26,8 @@
 }
 
 .pageFooter {
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
   margin-top: 1.75rem;
@@ -65,8 +65,8 @@
 }
 
 .label {
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink2);
   font-weight: 400;
@@ -151,9 +151,9 @@
   align-items: center;
   gap: 0.75rem;
   color: var(--muted);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   margin: 0.5rem 0;
 }
 

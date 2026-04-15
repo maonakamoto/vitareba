@@ -4,7 +4,10 @@ import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DIMENSIONS, INTERPRETATIONS, scoreColor } from "@/lib/assessment/data";
+import { formatDateLong } from "@/lib/utils/format";
 import styles from "../portal.module.css";
+import assessStyles from "./assessments.module.css";
+import { AssessmentTrendChartWrapper } from "./AssessmentTrendChartWrapper";
 
 function getInterpretation(dimId: string, score: number): string {
   const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
@@ -30,6 +33,15 @@ export default async function AssessmentsPage({
 
   const justSaved = params.saved === "1";
 
+  // Build chart data (ascending for chart rendering)
+  const chartData = [...results].reverse().map((r) => ({
+    date: new Date(r.completedAt).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    }),
+    score: r.overallScore,
+  }));
+
   return (
     <div>
       <h1 className={styles.pageTitle}>
@@ -37,16 +49,25 @@ export default async function AssessmentsPage({
       </h1>
       <p className={styles.pageSub}>Your Inflection Edge assessment history</p>
 
+      {/* Trend chart — only shown when there are 2+ assessments */}
+      {results.length >= 2 && (
+        <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
+          <p className={styles.cardTitle}>Score trend</p>
+          <AssessmentTrendChartWrapper data={chartData} />
+        </div>
+      )}
+
       {justSaved && (
-        <div style={{ background: "var(--ink)", borderRadius: "0.75rem", padding: "1.75rem 2rem", marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div className={assessStyles.savedBanner}>
           <div>
-            <p style={{ color: "var(--faint)", fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.4rem" }}>Results saved</p>
-            <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.6rem", fontWeight: 300, color: "#fff", lineHeight: 1.2 }}>
+            <p className={assessStyles.savedEyebrow}>Results saved</p>
+            <p className={assessStyles.savedTitle}>
               Your Inflection Edge results are now in your account.
             </p>
           </div>
-          <p style={{ fontSize: "0.85rem", color: "var(--faint)", lineHeight: 1.6, maxWidth: "480px" }}>
-            A consultation with Manuel gives you a personalised roadmap based on your specific profile — turning your scores into a concrete plan.
+          <p className={assessStyles.savedBody}>
+            A consultation with Manuel gives you a personalised roadmap based on your specific
+            profile — turning your scores into a concrete plan.
           </p>
           <div>
             <Link href="/bookings" className="btn-dark" style={{ display: "inline-block", padding: "0.75rem 1.75rem", fontSize: "0.8rem" }}>
@@ -66,59 +87,71 @@ export default async function AssessmentsPage({
           </div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <div className={assessStyles.resultsList}>
           {results.map((result, i) => {
             const scores = result.scores as Record<string, number>;
             return (
               <div key={result.id} className={styles.card}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem" }}>
+                <div className={assessStyles.resultHeader}>
                   <div>
                     <p className={styles.cardTitle}>
                       {i === 0 ? "Latest assessment" : `Assessment ${results.length - i}`}
                     </p>
-                    <p style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
-                      {new Date(result.completedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                    <p className={assessStyles.resultDate}>
+                      {formatDateLong(result.completedAt)}
                     </p>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "2.8rem", fontWeight: 300, color: scoreColor(result.overallScore), lineHeight: 1 }}>
+                  <div className={assessStyles.overallBlock}>
+                    <span
+                      className={assessStyles.overallScore}
+                      style={{ color: scoreColor(result.overallScore) }}
+                    >
                       {result.overallScore}
                     </span>
-                    <p style={{ fontSize: "0.7rem", color: "var(--muted)", letterSpacing: "0.08em" }}>overall</p>
+                    <p className={assessStyles.overallLabel}>overall</p>
                   </div>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.75rem", marginBottom: "1.5rem" }}>
+
+                <div className={assessStyles.dimGrid}>
                   {DIMENSIONS.map((dim) => {
                     const score = scores[dim.id] ?? 0;
                     return (
-                      <div key={dim.id} style={{ textAlign: "center" }}>
-                        <div style={{ fontSize: "1.2rem", marginBottom: "0.25rem" }}>{dim.icon}</div>
-                        <div style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.6rem", fontWeight: 300, color: scoreColor(score), lineHeight: 1 }}>
+                      <div key={dim.id} className={assessStyles.dimCell}>
+                        <div className={assessStyles.dimIcon}>{dim.icon}</div>
+                        <div
+                          className={assessStyles.dimScore}
+                          style={{ color: scoreColor(score) }}
+                        >
                           {score}
                         </div>
-                        <div style={{ fontSize: "0.6rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "0.2rem" }}>
-                          {dim.name}
-                        </div>
-                        <div style={{ height: "3px", background: "var(--border)", borderRadius: "2px", marginTop: "0.4rem" }}>
-                          <div style={{ height: "100%", width: `${score}%`, background: scoreColor(score), borderRadius: "2px" }} />
+                        <div className={assessStyles.dimName}>{dim.name}</div>
+                        <div className={assessStyles.dimBar}>
+                          <div
+                            className={assessStyles.dimBarFill}
+                            style={{ width: `${score}%`, background: scoreColor(score) }}
+                          />
                         </div>
                       </div>
                     );
                   })}
                 </div>
-                <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+
+                <div className={assessStyles.interpretations}>
                   {DIMENSIONS.map((dim) => {
                     const score = scores[dim.id] ?? 0;
                     const interpretation = getInterpretation(dim.id, score);
                     return (
-                      <div key={dim.id} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.75rem", alignItems: "baseline" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", minWidth: "140px" }}>
-                          <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.3rem", fontWeight: 300, color: scoreColor(score) }}>{score}</span>
-                          <span style={{ fontSize: "0.65rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>{dim.name}</span>
+                      <div key={dim.id} className={assessStyles.interpRow}>
+                        <div className={assessStyles.interpMeta}>
+                          <span
+                            className={assessStyles.interpScore}
+                            style={{ color: scoreColor(score) }}
+                          >
+                            {score}
+                          </span>
+                          <span className={assessStyles.interpDimName}>{dim.name}</span>
                         </div>
-                        <p style={{ fontSize: "0.8rem", color: "var(--ink2)", lineHeight: 1.65, margin: 0 }}>
-                          {interpretation}
-                        </p>
+                        <p className={assessStyles.interpText}>{interpretation}</p>
                       </div>
                     );
                   })}

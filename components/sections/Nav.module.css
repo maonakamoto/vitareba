@@ -24,7 +24,7 @@
 }
 
 .navLinks a {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
@@ -43,7 +43,7 @@
 }
 
 .navSignIn {
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -60,7 +60,7 @@
   color: var(--white);
   border: none;
   padding: 0.55rem 1.4rem;
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
