@@ -11,6 +11,7 @@ const PORTAL_PREFIXES = [
   "/assessment",
   "/assessments",
   "/bookings",
+  "/checkin",
   "/messages",
   "/profile",
   "/admin",

@@ -2,137 +2,214 @@
 
 # VitaReBa — Project Standards
 
-**What this is:** Marketing and intake website for VitaReBa GmbH — a metabolic psychiatry & systemic longevity clinic in Zürich, founded by Manuel (also founder of Surf Your Life). Flagship programme is ADHD diagnosis and optimisation for high performers. The site's primary conversion goal is getting visitors to take the Inflection Edge self-assessment.
+**What this is:** Clinical patient management platform for VitaReBa GmbH — a metabolic psychiatry & systemic longevity clinic in Zürich, founded by Manuel (also founder of Surf Your Life). Flagship programme is ADHD diagnosis and optimisation for high performers.
 
-**Stack:** Next.js (App Router) · TypeScript strict · Tailwind v4 · Vercel · No database (static marketing site)
+The platform has two parts:
+1. **Public marketing site** — multilingual (de/en/fr/it), lands at `/de/`, primary CTA is the Inflection Edge self-assessment overlay
+2. **Patient portal + admin panel** — authenticated, database-backed, at `/dashboard` (patients) and `/admin` (Manuel)
+
+**Stack:** Next.js 16 (App Router) · TypeScript strict · Tailwind v4 · Neon PostgreSQL · Drizzle ORM · NextAuth 5 · Resend email · Vercel (hosting + cron + blob storage)
 
 ---
 
 ## Architecture
 
 ```
+middleware.ts             → Auth guard (portal/admin) + locale routing (marketing)
+
 app/
-  page.tsx              → Landing page (client component — holds assessmentOpen state)
-  layout.tsx            → Root layout: fonts, metadata, OG/Twitter/JSON-LD
-  globals.css           → Design tokens (:root vars), base resets, shared utilities only
-  opengraph-image.tsx   → Dynamic OG image (edge runtime, ImageResponse)
-  sitemap.ts            → Sitemap route
+  (auth)/                 → Non-localized auth pages (/login, /register, etc.) — portal users
+  [locale]/(auth)/        → Localized auth pages (/de/login, etc.) — marketing site visitors
+  (portal)/               → Patient-facing authenticated area
+    dashboard/            → Patient home: assessment results, goals, check-in prompt, booking
+    assessment/           → Take the Inflection Edge questionnaire
+    assessments/          → History + trend chart
+    checkin/              → Daily wellness check-in (sleep, energy, mood, focus, stress)
+    bookings/             → Consultation booking (Calendly + manual)
+    messages/[threadId]/  → Secure async messaging with Manuel
+    profile/              → Patient profile management
+    layout.tsx            → Portal shell with PortalNav
+  (admin)/admin/          → Manuel-facing authenticated area
+    patients/             → Patient list with signal badges
+    patients/[id]/        → Full patient view (tabs: profile, assessments, goals, notes, docs)
+    bookings/             → All bookings across patients
+    messages/             → All message threads
+    reports/              → Live metrics: signal distribution, assessment tiers, programmes
+    layout.tsx            → Admin shell
+  api/
+    auth/                 → NextAuth handler + password reset
+    account/              → Registration
+    profile/              → Patient profile CRUD
+    assessment/           → Save/fetch Inflection Edge results
+    checkin/              → Daily check-in upsert/history
+    bookings/             → Booking CRUD
+    messages/[threadId]/  → Thread messages + email notification on send
+    goals/                → Patient clinical goals (read)
+    documents/            → Document list + upload (Vercel Blob)
+    admin/patients/       → Patient list + detail (admin only)
+    admin/patients/[id]/  → Goals, notes, programme assignment (admin only)
+    cron/                 → Scheduled jobs (all require CRON_SECRET bearer)
+      checkin-reminder    → Daily 07:00 — remind patients to check in
+      checkin-dip-alert   → Daily 09:00 — alert admin on wellness dips
+      signals             → Daily 02:00 — compute patient signals, alert on critical
+      emails              → Daily 08:00 — process email queue
+      weekly-digest       → Sunday 08:00 — weekly summary to patients
+    webhooks/calendly/    → Calendly invitee.created / invitee.canceled → bookings table
+  [locale]/               → Localized marketing site (de/en/fr/it)
+  page.tsx                → Root redirect → /de/
+  layout.tsx              → Root layout: fonts, metadata, SessionProvider
+  manifest.ts             → PWA manifest (start_url: /dashboard)
 
 components/
-  Logo.tsx              → Brand logo (presentational — wrap in <a> at call site if clickable)
-  sections/             → One file per page section, each with co-located .module.css
-    Nav.tsx             → Fixed nav with CTA button (hidden on mobile via CSS)
-    Hero.tsx            → Two-panel hero: clinical left, coaching right
-    ImpactStats.tsx     → Stat row (STATS config array)
-    Pillars.tsx         → 3-pillar grid (PILLARS config array)
-    Approach.tsx        → Sticky-scroll approach steps (ITEMS config array)
-    Pathway.tsx         → Patient pathway steps (STEPS config array)
-    Diagnostics.tsx     → Diagnostic tools overview (DIAGNOSTIC_CATEGORIES config array)
-    SylClock.tsx        → SYL Clock 4-dimension framework (SYL_DIMENSIONS config array)
-    PsychedelicReadiness.tsx → Psychedelic therapy section (PHASES config array)
-    Addiction.tsx       → Addiction/dependency care section (CARDS config array)
-    Programs.tsx        → 3-tier pricing cards (PROGRAMS config array)
-    Team.tsx            → Team bios (TEAM config array)
-    Cta.tsx             → Bottom CTA driving assessment open
-    Footer.tsx          → Links, address, copyright
-  Assessment/
-    index.tsx           → Overlay controller: intro → question → results flow
-    ResultsScreen.tsx   → Results display (scores, dimension interpretations, CTA)
-    Assessment.module.css → All overlay CSS
+  sections/               → Public marketing page sections (14 files, each with .module.css)
+  Assessment/             → Inflection Edge overlay (public, no auth required)
+  portal/                 → Portal UI: PortalNav, UserDropdown, trend charts
+  admin/                  → Admin UI: patient cards, forms, inline compose
 
 lib/
+  db/
+    schema.ts             → SSOT: all Drizzle table definitions + relations
+    index.ts              → Lazy Drizzle singleton (Neon serverless)
+  auth/
+    index.ts              → NextAuth config (Credentials + Google, DrizzleAdapter)
+    guards.ts             → requireSession() / requireAdmin() for API routes
+    edge.ts               → Edge-compatible auth for middleware
+    types.ts              → Custom session/token types
+  config/                 → All constants and labels (SSOT — never hardcode elsewhere)
+    company.ts            → Name, email, address, PORTAL_URL, getAdminEmails()
+    programmes.ts         → PROGRAMME_CONFIG, PHASE_CONFIG, enum values
+    admin.ts              → Signal thresholds, signal labels/colors
+    portal.ts             → CHECKIN_SCALE, CHECKIN_HISTORY_DAYS, profile completeness fields
+    booking-status.ts     → Booking status labels and badge colors
+    email-sequences.ts    → Email send-delay constants
+    auth.ts               → BCRYPT_SALT_ROUNDS, token expiry
+  domain/                 → Business logic (no HTTP, no rendering)
+    signals.ts            → computePatientSignal() — pure, injectable, tested
+    profile.ts            → computeProfileCompleteness()
+    auth.ts               → Login/register Zod schemas
+    email-queue.ts        → enqueueWelcomeSequence(), enqueueAssessmentSequence()
+  email/
+    index.ts              → sendEmail() via Resend
+    templates.ts          → All HTML email template generators
   assessment/
-    data.ts             → SSOT: QUESTIONS, DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS, scoreColor()
-  config/
-    company.ts          → SSOT: company name, email, address, foundingYear
+    data.ts               → SSOT: QUESTIONS, DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS, scoreColor()
+  utils/
+    format.ts             → formatDateShort(), formatDateLong()
+  i18n/
+    navigation.ts         → next-intl locale navigation helpers
+
+i18n/routing.ts           → Locales: de (default), en, fr, it
+messages/                 → Translation files: de.json, en.json, fr.json, it.json
 ```
 
 ---
 
-## Principles — Applied to This Codebase
+## Database Schema (Drizzle + Neon PostgreSQL)
 
-### SSOT — Where Each Thing Lives
+Tables: `users`, `accounts`, `sessions`, `verificationTokens` (NextAuth), `profiles`, `dailyCheckins` (unique on user_id+date), `assessmentResults`, `bookings`, `documents`, `threads`, `threadMessages` (with `readAt` for unread tracking), `patientNotes`, `programmeAssignments`, `clinicalGoals`, `emailQueue`
 
-This is a static marketing site. There is no database. The SSOTs are:
+**Migrations:** `pnpm db:push` to apply schema changes to Neon. Run after any edits to `lib/db/schema.ts`.
+
+---
+
+## SSOT — Where Each Thing Lives
 
 | What | Where | Never in |
 |------|-------|----------|
-| Design tokens (colors, spacing) | `app/globals.css` `:root` | Hardcoded hex values anywhere |
-| Shared utility CSS (eyebrow, sec-title, etc.) | `app/globals.css` | Duplicated across modules |
-| Component-specific CSS | Co-located `.module.css` file | `globals.css` or `style={}` props |
-| Company info (name, email, address) | `lib/config/company.ts` | Hardcoded in any component |
-| Assessment content (questions, scoring) | `lib/assessment/data.ts` | Any component |
-| Section content (team bios, programs, stats) | Config array at top of each section file | Scattered inline in JSX |
-| Assessment open/close state | `app/page.tsx` | Any section component |
+| Design tokens (colors, spacing) | `app/globals.css` `:root` | Hardcoded hex anywhere |
+| Shared utility CSS | `app/globals.css` | Duplicated across modules |
+| Component-specific CSS | Co-located `.module.css` | `globals.css` or inline `style={{}}` |
+| Company info (name, email, PORTAL_URL) | `lib/config/company.ts` | Hardcoded in components |
+| Programme/phase labels | `lib/config/programmes.ts` | Any component |
+| Signal thresholds + labels | `lib/config/admin.ts` | Any component |
+| Assessment questions, scoring | `lib/assessment/data.ts` | Any component |
+| DB schema | `lib/db/schema.ts` | Separate type files |
+| Auth pages routing | `middleware.ts` PORTAL_PREFIXES | Scattered guards |
 
-**The 2-file test:** Adding a new team member should touch exactly 1 file (`Team.tsx`). Changing the company email should touch 1 file (`company.ts`). If it takes more, the architecture is wrong.
+**The 2-file test:** Adding a team member = 1 file. Changing company email = 1 file. Adding a programme phase = 1 file. More than that → architecture is wrong.
 
-### DRY
+---
 
-**CSS classes are the shared language.** If two components need the same visual treatment, define a shared CSS class in `globals.css` — don't copy the declarations.
+## Middleware Routing Model
 
-**Config arrays, not inline JSX repetition.** Every section with repeated items has a typed const array at the file top:
-```typescript
-// RIGHT — Programs.tsx
-const PROGRAMS = [
-  { name: "Edge Diagnostic", price: "CHF 2,400", ... },
-  { name: "Riding the Wave", price: "CHF 8,500", ... },
-] as const;
+`middleware.ts` at the project root handles two distinct routing concerns:
 
-// WRONG
-<div>Edge Diagnostic · CHF 2,400</div>
-<div>Riding the Wave · CHF 8,500</div>
+```
+/dashboard, /assessment, /assessments, /bookings, /checkin,
+/messages, /profile, /admin, /api
+  → PORTAL mode: auth-guard only, no locale routing
+  → Unauthenticated → redirect to /login?returnTo=...
+  → Non-admin hitting /admin → redirect to /dashboard
+
+Everything else (/, /de/*, /en/*, etc.)
+  → MARKETING mode: next-intl locale routing
+  → Logged-in users on /de/login, /de/register, etc. → redirect to /dashboard or /admin/patients
 ```
 
-**Shared utilities:** `scoreColor()` is defined once in `lib/assessment/data.ts` and imported by `Assessment/index.tsx`. Never duplicate color logic.
+**Critical:** If you add a new portal route (e.g. `/reports`), add it to `PORTAL_PREFIXES` in `middleware.ts` or unauthenticated users will get locale-routed to a 404.
 
-### SoC — Each Layer's Job
+---
 
-| Layer | Job | Not its job |
-|-------|-----|-------------|
-| `globals.css` | Visual rules, design tokens, responsive breakpoints | Content, data |
-| `lib/assessment/data.ts` | Assessment questions, scoring, interpretations | Rendering, state |
-| `lib/config/company.ts` | Company metadata | Formatting, rendering |
-| Section components (`components/sections/`) | Render one section of the page | Business logic, state |
-| `Assessment/index.tsx` | Assessment overlay flow (intro → questions → results) | Section content |
-| `app/page.tsx` | Compose sections, hold assessment open/close state | Render content |
+## Patient Signal System
 
-**Section components must not:**
-- Import from other section components
-- Hold global state
-- Know about the assessment internals (they just call `onAssessmentOpen()`)
+`lib/domain/signals.ts` → `computePatientSignal()` — pure function, testable.
 
-**Page size limits:**
-- Section components: ≤ 200 lines. If over, extract a sub-component.
-- `Assessment/index.tsx` + `ResultsScreen.tsx`: combined ~300 lines across 2 files. Keep each under 200 lines.
-- `globals.css`: no hard limit, but each section's CSS should be clearly labeled with a `/* ─── SECTION NAME ─ */` comment.
+| Signal | Conditions |
+|--------|-----------|
+| `new` | Registered < `NEW_PATIENT_GRACE_DAYS` days ago |
+| `critical` | No check-in ≥ 5 days, OR 3 consecutive declining wellness days, OR assessment dropped > 10 pts |
+| `attention` | No assessment yet, OR has assessment but no booking |
+| `active` | Everything normal |
 
-### YAGNI — What Doesn't Exist Yet (Don't Add Prematurely)
+Used in: `/admin/patients` list, `/api/cron/signals` (alerts admin on first `critical` transition), `/admin/reports`.
 
-This is a **static marketing site.** The following do not exist and should not be built until explicitly required:
+---
 
-- Contact / booking form backend (emails go to `mailto:` links for now)
-- CMS or any database
-- User authentication
-- Blog / content management
-- Analytics beyond Vercel's built-in
-- Newsletter subscription
-- A/B testing
+## Cron Jobs
 
-Do not add loading states, error boundaries, or fallback UI for content that is statically defined. If it's in the code, it renders. No async = no loading states needed.
+All routes under `/api/cron/*` require `Authorization: Bearer CRON_SECRET`. Scheduled in `vercel.json`:
 
-### KISS
+| Route | Schedule | Purpose |
+|-------|----------|---------|
+| `cron/emails` | Daily 08:00 | Process email queue (welcome, assessment, engagement sequences) |
+| `cron/signals` | Daily 02:00 | Compute signals, email admin on new criticals |
+| `cron/checkin-reminder` | Daily 07:00 | Remind patients to check in (skips opted-out + already-done) |
+| `cron/checkin-dip-alert` | Daily 09:00 | Alert admin on consecutive wellness dips |
+| `cron/weekly-digest` | Sunday 08:00 | Weekly summary email to patients |
 
-- Assessment state is a plain `Record<string, number>` object (`answers`). Not a reducer, not a context, not Zustand.
-- The overlay renders as `null` when closed — no portal, no transition library, no animation framework.
-- Responsive design is two breakpoints max: base (mobile) and `min-width: 768px` (desktop). Never add a third breakpoint without justification.
-- `useMemo` for computed values (`dimScores`, `overallScore`). `useState` for UI state. That's it.
+---
+
+## Clinical Goals
+
+Goals are set by admin per patient (`/api/admin/patients/[id]/goals`). Each goal has:
+- `title` — e.g. "Improve sustained focus"
+- `metric` — optional key linking to data source: `"focus"`, `"mood"`, `"overallScore"`, etc.
+- `baseline`, `target`, `current` — 0–100 integers
+- Progress: `((current - baseline) / (target - baseline)) * 100` — NOT `current/target`
+
+`cron/signals` auto-updates `current` from latest check-in averages or assessment scores when `metric` is set.
+
+---
+
+## Email System
+
+- **Provider:** Resend (`lib/email/index.ts`)
+- **From address:** `RESEND_FROM` env var. Use `onboarding@resend.dev` until `vitareba.ch` is DNS-verified in Resend dashboard.
+- **Templates:** `lib/email/templates.ts` — all emails defined here, imported by cron routes and API routes
+- **Queue:** `emailQueue` table — sequences scheduled on assessment/registration, processed by `cron/emails`
+- **Immediate sends:** password reset, new message notification (fire-and-forget in API routes)
+
+---
+
+## Document Storage
+
+Documents are stored in Vercel Blob. The `documents.fileUrl` column stores the blob URL. Upload via `/api/documents` (POST with FormData). `DocumentAddForm` handles the upload client-side.
 
 ---
 
 ## Design System
 
-All values live in `globals.css`. Reference this table — never invent new values.
+All values live in `globals.css`. Never invent new values.
 
 ### Color Tokens
 
@@ -148,165 +225,92 @@ All values live in `globals.css`. Reference this table — never invent new valu
 | `--off` | `#f8f7f4` | Off-white section backgrounds |
 | `--light` | `#f1ede7` | Light section backgrounds |
 | `--border` | `#e5e0d8` | Borders, dividers |
-| `--warn` | `#d4820a` | Assessment medium score |
-| `--danger` | `#e05a5a` | Assessment low score, errors |
+| `--warn` | `#d4820a` | Warning states |
+| `--danger` | `#e05a5a` | Low scores, errors |
 
 ### Typography
 
-| Use | Font | Weight | Class / Note |
-|-----|------|--------|------|
+| Use | Font | Weight | Class |
+|-----|------|--------|-------|
 | Section titles | Cormorant Garamond | 300 | `.sec-title` — use `<em>` for italics |
 | Eyebrow labels | DM Sans | 400 | `.eyebrow` — uppercase, tracked |
-| Body text | DM Sans | 300 | default body |
-| Prices, stats | Cormorant Garamond | 300 | `.prog-price`, `.stat-value` |
+| Body text | DM Sans | 300 | default |
 | Buttons | DM Sans | 400 | letter-spacing: 0.08em |
 
-**Rule:** Cormorant = emotional weight (headings, prices, quotes). DM Sans = clarity (labels, body, buttons). Never swap them.
-
-### Spacing Scale
-
-| Token | Value | Used for |
-|-------|-------|---------|
-| `--section-pad-y` | `6rem` (desktop) | Section vertical padding |
-| `--section-pad-x` | `3rem` (desktop) | Section horizontal padding |
-| Mobile section padding | `4rem 1.5rem` | Base (no variable) |
+**Rule:** Cormorant = emotional weight (headings, prices, quotes). DM Sans = clarity (labels, body, buttons).
 
 ### Key CSS Classes
 
 | Class | Purpose |
 |-------|---------|
-| `.section-inner` | Max-width container (1100px, centered) |
+| `.section-inner` | Max-width container (1100px, centered) for marketing sections |
 | `.sec-title` | Large serif section heading |
-| `.eyebrow` | Small uppercase label above headings |
-| `.hr-rule` | Light border divider between sections |
-| `.hr-dark` | Dark border divider (before Programs) |
+| `.eyebrow` | Small uppercase label |
+| `.hr-rule` | Light border divider |
 | `.btn-dark` | Dark filled CTA button |
 | `.btn-outline` | Outlined CTA button |
-| `.prog` / `.prog.featured` | Pricing card (normal / highlighted) |
-| `.ov-*` | Assessment overlay elements |
-| `.q-*` | Assessment question elements |
-| `.r-*` | Assessment results elements |
+
+Portal-specific CSS lives in `app/(portal)/portal.module.css` (shared card styles, page layout).
+Admin-specific CSS lives in `app/(admin)/admin.module.css`.
 
 ### Responsive Strategy
 
-**Mobile-first.** Base styles = mobile (single column, reduced padding). `@media (min-width: 768px)` = desktop (multi-column grids, larger type, more padding).
-
-```css
-/* Base = mobile */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr; /* single column on mobile */
-}
-
-/* Desktop override */
-@media (min-width: 768px) {
-  .hero {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-```
-
-**The only other media query** is `@media (max-width: 767px)` for hiding elements that should not appear on mobile (e.g., `.nav-btn`). Never use `(max-width: 768px)` — off-by-one causes both rules to fire at exactly 768px.
-
-### Accessibility Minimums
-
-- Touch targets: `min-height: 2.75rem` (44px equivalent) on all interactive elements
-- All `<a>` used as buttons: `display: block; text-align: center; text-decoration: none`
-- Nav logo: plain text — no image, no alt needed
-- Focus states: browser default is acceptable for now; do not remove them
+Mobile-first. Base = mobile. `@media (min-width: 768px)` = desktop.
+Use `@media (max-width: 767px)` to hide desktop-only elements. Never `max-width: 768px` (off-by-one at exactly 768px).
 
 ---
 
 ## Assessment — How It Works
 
-The Inflection Edge assessment is the page's primary conversion mechanism.
+The Inflection Edge runs both as a public overlay (marketing site → conversion) and as a logged-in portal page (`/assessment`). Completing the assessment while logged in saves results to the DB.
 
-**Data flow:**
 ```
 lib/assessment/data.ts
-  DIMENSIONS (5)         → rendered as result dimension cards
-  QUESTIONS (30)         → 6 questions per dimension
-  VERDICT_TIERS          → overall score interpretation (3 tiers)
-  INTERPRETATIONS        → per-dimension interpretation text (3 tiers each)
-  scoreColor(score)      → returns CSS var string for score colouring
-
-Assessment/index.tsx
-  answers: Record<string, number>    → { [questionId]: 1–5 }
-  screen: "intro" | "q" | "results"  → overlay flow state
-  dimScores (useMemo)    → { [dimensionId]: 0–100 }
-  overallScore (useMemo) → 0–100
+  DIMENSIONS (5)         → Arousal, Divergent, Hyperfocus, Volatility, Environment
+  QUESTIONS (30)         → 6 per dimension
+  VERDICT_TIERS          → 4 tiers: Deep Friction / Managed Tension / Asymmetric Performance / Optimised
+  INTERPRETATIONS        → per-dimension text, 3 tiers each
+  scoreColor(score)      → CSS var string for score colouring
 ```
 
-**Scoring:** Each question answered 1–5. Per dimension: `(sum / maxPossible) * 100`. Overall: mean of dimension scores.
+**Scoring:** Each Q answered 1–5. Per dimension: `(sum / maxPossible) * 100`. Overall: mean of dimension scores.
 
-**To add a question:** Edit only `lib/assessment/data.ts`. Nothing else changes.
-**To change interpretations:** Edit only `lib/assessment/data.ts`. Nothing else changes.
-**To change the overlay design:** Edit `Assessment/index.tsx` + `Assessment/Assessment.module.css`.
-
----
-
-## Adding Content
-
-### New section content (team member, program, stat)
-Edit the config array at the top of the relevant section file. One file touched.
-
-### New section
-1. Create `components/sections/YourSection.tsx` with a typed config array
-2. Import and add to `app/page.tsx` between existing sections
-3. Add CSS classes to `globals.css` under a clearly labelled comment block
-4. One `<hr className="hr-rule" />` between each section (use `hr-dark` only before Programs)
-
-### New design token
-Add it to `:root {}` in `globals.css` before using it anywhere. Never use a raw value more than once.
+**To add a question / change interpretations:** Edit only `lib/assessment/data.ts`.
 
 ---
 
 ## Connection to Surf Your Life
 
-VitaReBa and Surf Your Life are **separate brands** sharing the same founder and philosophy.
+VitaReBa and Surf Your Life are separate brands — same founder, different platforms.
 
 | | VitaReBa | Surf Your Life |
 |---|---|---|
 | Domain | Clinical / medical | Coaching / transformation |
 | Audience | ADHD high performers, longevity patients | Burnout recovery, general wellbeing |
-| Contact | `manuel@surfyourlife.org` | Same founder |
-| Framework | SYL Clock (Health, Mindset, Relations, Career) | Same framework |
+| Contact | `manuel@surfyourlife.org` (SSOT: `lib/config/company.ts`) | Same founder |
 
-**Do not** merge these codebases. **Do not** share components across repos. They share branding philosophy, not code.
-
----
-
-## Deployment
-
-- **GitHub:** `g-but/vitareba`
-- **Vercel:** auto-deploy from `main` → `vitareba.vercel.app`
-- **Domain:** TBD (`vitareba.ch` / `vitareba.com`)
-- **Preview URLs:** every PR gets a Vercel preview automatically
-
-Never commit `.env.local`. There are currently no secrets (static site), but keep the habit.
+**Do not** merge codebases. **Do not** share components. They share philosophy, not code.
 
 ---
 
 ## Commands
 
 ```bash
-pnpm dev        # local dev server (localhost:3000)
-pnpm build      # production build (run before pushing)
-pnpm lint       # eslint
-pnpm db:push    # push schema changes to Neon (after editing lib/db/schema.ts)
+pnpm dev          # local dev server (localhost:3000)
+pnpm build        # production build — run before every push
+pnpm lint         # eslint
+pnpm db:push      # push schema changes to Neon DB
+pnpm db:generate  # generate migration files
+pnpm db:studio    # Drizzle Studio for DB inspection
 ```
 
-**Before every push:** run `pnpm build` locally. The build must pass — never rely on Vercel to catch TypeScript or import errors.
+**Before every push:** `pnpm build` must pass locally. Never rely on Vercel to catch TypeScript errors.
 
 ## Deploy Workflow (agentic — do this every push)
 
-After every `git push`, monitor the Vercel deployment to completion before reporting done:
+After every `git push`, monitor to completion before reporting done:
 
 ```bash
-# 1. Push
-git push
-
-# 2. Watch deployment — emit one line per status change, exit on Ready or Error
 prev=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1 | awk '{print $3}')
 while true; do
   row=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1)
@@ -319,22 +323,17 @@ while true; do
 done
 ```
 
-If deployment fails:
-- `vercel logs <url>` to read build/runtime errors
-- Fix, `pnpm build` locally, push again
-- Repeat until ✓ Ready
-
-**Never tell the user a feature is deployed until the Vercel dashboard shows Ready.**
+If deployment fails: `vercel logs <url>` → fix → `pnpm build` → push again.
 
 ---
 
-## Red Flags — Stop and Rethink If You See
+## Red Flags
 
-- Adding a color hex directly in a component (`color: #2a7a8a`) → use `var(--teal)`
-- Writing the same JSX structure more than twice → extract a component or config array
-- Putting assessment content in `Assessment/index.tsx` → belongs in `lib/assessment/data.ts`
-- Using `useEffect` to compute a derived value → use `useMemo`
-- Adding a `max-width: 768px` query → use `max-width: 767px` (or rethink: is mobile-first better?)
-- A section component importing from another section component → never, they're siblings
-- Hardcoding `manuel@surfyourlife.org` in a component → import from `lib/config/company.ts`
-- A component over 200 lines → extract a sub-component
+- Color hex directly in component → use `var(--teal)` etc.
+- Inline `style={{}}` in a component → move to co-located `.module.css`
+- New portal route not in `PORTAL_PREFIXES` in `middleware.ts` → unauthenticated users get a 404
+- Signal threshold hardcoded in a cron route → belongs in `lib/config/admin.ts`
+- Email template inline in an API route → belongs in `lib/email/templates.ts`
+- `style={{}}` props on portal/admin pages → use portal.module.css / admin.module.css
+- Goal progress as `(current/target)*100` → correct formula is `((current-baseline)/(target-baseline))*100`
+- `computePatientSignal` logic modified without updating tests in `lib/domain/signals.test.ts`
