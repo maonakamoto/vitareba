@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
 
 const saveSchema = z.object({
   scores: z.record(z.string(), z.number()),
@@ -13,8 +14,9 @@ const saveSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const body = await req.json();
   const parsed = saveSchema.safeParse(body);
@@ -31,12 +33,20 @@ export async function POST(req: Request) {
     })
     .returning();
 
+  enqueueAssessmentEmails({
+    userId: session.user.id,
+    overallScore: parsed.data.overallScore,
+    scores: parsed.data.scores,
+    triggeredAt: result.completedAt,
+  }).catch((err) => console.error("[email-queue] enqueue failed:", err));
+
   return NextResponse.json({ success: true, data: result }, { status: 201 });
 }
 
 export async function GET() {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const results = await db.query.assessmentResults.findMany({
     where: eq(assessmentResults.userId, session.user.id),

@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { threads, threadMessages } from "@/lib/db/schema";
 
@@ -14,8 +14,9 @@ const createSchema = z.object({
 });
 
 export async function GET() {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const where =
     session.user.role === "admin"
@@ -35,8 +36,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);

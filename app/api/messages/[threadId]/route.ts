@@ -3,20 +3,20 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq, asc } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
-
-const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
+import { PORTAL_URL } from "@/lib/config/company";
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ threadId: string }> }
 ) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const { threadId } = await params;
   const thread = await db.query.threads.findFirst({
@@ -41,8 +41,9 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ threadId: string }> }
 ) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const { threadId } = await params;
   const thread = await db.query.threads.findFirst({ where: eq(threads.id, threadId) });
@@ -83,7 +84,7 @@ export async function POST(
           recipientName: patient.name ?? "there",
           senderName: sender?.name ?? "VitaReBa",
           subject: thread.subject,
-          portalUrl: `${APP_URL}/messages/${threadId}`,
+          portalUrl: `${PORTAL_URL}/messages/${threadId}`,
         }),
       }).catch(console.error);
     }
@@ -100,7 +101,7 @@ export async function POST(
         recipientName: "Manuel",
         senderName: patient?.name ?? "Patient",
         subject: thread.subject,
-        portalUrl: `${APP_URL}/admin/messages/${threadId}`,
+        portalUrl: `${PORTAL_URL}/admin/messages/${threadId}`,
       }),
     }).catch(console.error);
   }

@@ -1,0 +1,135 @@
+export const dynamic = "force-dynamic";
+
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { emailQueue, users } from "@/lib/db/schema";
+import { eq, lte, and } from "drizzle-orm";
+import { sendEmail } from "@/lib/email/index";
+import {
+  assessmentResultsEmail,
+  assessmentMeaningEmail,
+  assessmentBookingEmail,
+  welcomePatientEmail,
+  profileCompletionEmail,
+  assessmentCtaEmail,
+} from "@/lib/email/templates";
+import { DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS } from "@/lib/assessment/data";
+import { PORTAL_URL } from "@/lib/config/company";
+
+function getVerdict(score: number) {
+  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore) ?? VERDICT_TIERS[0];
+}
+
+function getInterpretation(dimId: string, score: number): string {
+  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
+  if (!tiers) return "";
+  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
+}
+
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const now = new Date();
+
+  const pending = await db.query.emailQueue.findMany({
+    where: and(
+      eq(emailQueue.status, "pending"),
+      lte(emailQueue.sendAt, now)
+    ),
+    with: { user: { columns: { name: true, email: true } } },
+  });
+
+  let sent = 0;
+  let failed = 0;
+
+  for (const item of pending) {
+    const user = item.user;
+    if (!user?.email) {
+      await db
+        .update(emailQueue)
+        .set({ status: "failed", sentAt: now })
+        .where(eq(emailQueue.id, item.id));
+      failed++;
+      continue;
+    }
+
+    const payload = item.payload as Record<string, unknown>;
+    const patientName = user.name ?? user.email.split("@")[0];
+    const portalUrl = PORTAL_URL;
+
+    try {
+      let html: string;
+      let subject: string;
+
+      if (item.templateKey === "assessmentResults") {
+        const overallScore = payload.overallScore as number;
+        const scores = payload.scores as Record<string, number>;
+        const verdict = getVerdict(overallScore);
+        const dimensions = DIMENSIONS.map((dim) => ({
+          icon: dim.icon,
+          name: dim.name,
+          score: scores[dim.id] ?? 0,
+          interpretation: getInterpretation(dim.id, scores[dim.id] ?? 0),
+        }));
+        html = assessmentResultsEmail({
+          patientName,
+          overallScore,
+          verdictName: verdict.name,
+          verdictText: verdict.text,
+          dimensions,
+          portalUrl,
+        });
+        subject = `Your Inflection Edge results — ${verdict.name}`;
+      } else if (item.templateKey === "assessmentMeaning") {
+        html = assessmentMeaningEmail({ patientName, portalUrl });
+        subject = "What your Inflection Edge profile means clinically";
+      } else if (item.templateKey === "assessmentBooking") {
+        const overallScore = payload.overallScore as number;
+        html = assessmentBookingEmail({ patientName, overallScore, portalUrl });
+        subject = "Book a consultation with Manuel";
+      } else if (item.templateKey === "welcomePatient") {
+        html = welcomePatientEmail({ patientName, portalUrl });
+        subject = "Welcome to VitaReBa — here is where to start";
+      } else if (item.templateKey === "profileCompletion") {
+        html = profileCompletionEmail({ patientName, portalUrl });
+        subject = "One thing before your first consultation";
+      } else if (item.templateKey === "assessmentCta") {
+        html = assessmentCtaEmail({ patientName, portalUrl });
+        subject = "Your Inflection Edge is waiting";
+      } else {
+        // Unknown template — mark failed, don't retry
+        await db
+          .update(emailQueue)
+          .set({ status: "failed", sentAt: now })
+          .where(eq(emailQueue.id, item.id));
+        failed++;
+        continue;
+      }
+
+      await sendEmail({ to: user.email, subject, html });
+
+      await db
+        .update(emailQueue)
+        .set({ status: "sent", sentAt: now })
+        .where(eq(emailQueue.id, item.id));
+      sent++;
+    } catch (err) {
+      console.error("[cron/emails] send failed for", item.id, err);
+      await db
+        .update(emailQueue)
+        .set({ status: "failed", sentAt: now })
+        .where(eq(emailQueue.id, item.id));
+      failed++;
+    }
+  }
+
+  return NextResponse.json({
+    success: true,
+    sent,
+    failed,
+    processed: pending.length,
+  });
+}

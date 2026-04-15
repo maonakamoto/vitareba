@@ -1,0 +1,78 @@
+export const dynamic = "force-dynamic";
+
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { requireAdmin } from "@/lib/auth/guards";
+import { db } from "@/lib/db";
+import { programmeAssignments } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { PROGRAMME_ENUM_VALUES, PHASE_ENUM_VALUES } from "@/lib/config/programmes";
+
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(_req: Request, { params }: RouteContext) {
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
+
+  const { id } = await params;
+
+  const assignment = await db.query.programmeAssignments.findFirst({
+    where: eq(programmeAssignments.patientId, id),
+  });
+
+  return NextResponse.json({ success: true, data: assignment ?? null });
+}
+
+const updateSchema = z.object({
+  programme: z.enum(PROGRAMME_ENUM_VALUES),
+  phase: z.enum(PHASE_ENUM_VALUES),
+  startDate: z.string().nullable().optional(),
+  notes: z.string().nullable().optional(),
+});
+
+export async function PATCH(req: Request, { params }: RouteContext) {
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
+  const { session } = guard;
+
+  const { id } = await params;
+
+  const body = await req.json();
+  const parsed = updateSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
+  }
+
+  const existing = await db.query.programmeAssignments.findFirst({
+    where: eq(programmeAssignments.patientId, id),
+  });
+
+  let result;
+  if (existing) {
+    [result] = await db
+      .update(programmeAssignments)
+      .set({
+        programme: parsed.data.programme,
+        phase: parsed.data.phase,
+        startDate: parsed.data.startDate ?? null,
+        notes: parsed.data.notes ?? null,
+        updatedAt: new Date(),
+      })
+      .where(eq(programmeAssignments.patientId, id))
+      .returning();
+  } else {
+    [result] = await db
+      .insert(programmeAssignments)
+      .values({
+        patientId: id,
+        programme: parsed.data.programme,
+        phase: parsed.data.phase,
+        startDate: parsed.data.startDate ?? null,
+        notes: parsed.data.notes ?? null,
+        assignedBy: session.user.id,
+      })
+      .returning();
+  }
+
+  return NextResponse.json({ success: true, data: result });
+}
