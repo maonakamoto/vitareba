@@ -1,9 +1,9 @@
 {
   "crons": [
-    { "path": "/api/cron/emails", "schedule": "0 * * * *" },
-    { "path": "/api/cron/signals", "schedule": "0 * * * *" },
+    { "path": "/api/cron/emails", "schedule": "0 8 * * *" },
+    { "path": "/api/cron/signals", "schedule": "0 2 * * *" },
     { "path": "/api/cron/weekly-digest", "schedule": "0 8 * * 0" },
-    { "path": "/api/cron/checkin-reminder", "schedule": "0 7 * * 1-5" },
+    { "path": "/api/cron/checkin-reminder", "schedule": "0 7 * * *" },
     { "path": "/api/cron/checkin-dip-alert", "schedule": "0 9 * * *" }
   ]
 }
