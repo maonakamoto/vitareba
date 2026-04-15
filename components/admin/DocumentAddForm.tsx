@@ -1,35 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import authStyles from "@/app/(auth)/auth.module.css";
 
 export function DocumentAddForm({ patientId }: { patientId: string }) {
   const [title, setTitle] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState<"idle" | "uploading" | "done" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
-    setError("");
-    const res = await fetch("/api/documents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: patientId, title, fileUrl }),
-    });
+    if (!file || !title.trim()) return;
+
+    setUploading(true);
+    setProgress("uploading");
+    setErrorMsg("");
+
+    const formData = new FormData();
+    formData.set("file", file);
+    formData.set("title", title.trim());
+    formData.set("patientId", patientId);
+
+    const res = await fetch("/api/documents/upload", { method: "POST", body: formData });
     const data = await res.json();
+
+    setUploading(false);
     if (!data.success) {
-      setError("Failed to add document.");
-      setSubmitting(false);
+      setProgress("error");
+      setErrorMsg(data.error ?? "Upload failed.");
       return;
     }
+
     setTitle("");
-    setFileUrl("");
-    setSubmitting(false);
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
+    setFile(null);
+    if (fileRef.current) fileRef.current.value = "";
+    setProgress("done");
+    setTimeout(() => setProgress("idle"), 3000);
   }
 
   return (
@@ -50,26 +59,29 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
           />
         </div>
         <div className={authStyles.field}>
-          <label className={authStyles.label} htmlFor="doc-url">File URL</label>
+          <label className={authStyles.label} htmlFor="doc-file">File (max 20 MB)</label>
           <input
-            id="doc-url"
+            id="doc-file"
+            ref={fileRef}
             className={authStyles.input}
-            type="url"
-            value={fileUrl}
-            onChange={(e) => setFileUrl(e.target.value)}
-            placeholder="https://…"
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xlsx,.csv"
+            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             required
+            style={{ paddingTop: "0.4rem" }}
           />
         </div>
       </div>
-      {error && <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{error}</p>}
+      {progress === "error" && (
+        <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{errorMsg}</p>
+      )}
       <button
         type="submit"
         className={authStyles.submit}
         style={{ marginTop: 0, width: "auto", alignSelf: "flex-start", padding: "0.6rem 1.25rem" }}
-        disabled={submitting}
+        disabled={uploading || !file || !title.trim()}
       >
-        {submitting ? "Adding…" : success ? "Added ✓" : "Add document"}
+        {progress === "uploading" ? "Uploading…" : progress === "done" ? "Uploaded ✓" : "Upload document"}
       </button>
     </form>
   );
