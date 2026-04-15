@@ -3,26 +3,25 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
+import { PORTAL_URL } from "@/lib/config/company";
+import { BOOKING_STATUS_VALUES } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
-  status: z.enum(["pending", "confirmed", "cancelled"]),
+  status: z.enum(BOOKING_STATUS_VALUES),
 });
-
-const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
 
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session || session.user.role !== "admin") {
-    return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
-  }
+  const guard = await requireAdmin();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const { id } = await params;
   const body = await req.json();
@@ -45,8 +44,8 @@ export async function PATCH(
     });
     if (patient?.email) {
       const html = parsed.data.status === "confirmed"
-        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${APP_URL}/bookings` })
-        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${APP_URL}/bookings` });
+        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` })
+        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` });
       sendEmail({
         to: patient.email,
         subject: parsed.data.status === "confirmed"

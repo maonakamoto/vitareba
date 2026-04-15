@@ -21,6 +21,31 @@ export const bookingStatusEnum = pgEnum("booking_status", [
   "confirmed",
   "cancelled",
 ]);
+export const exerciseFrequencyEnum = pgEnum("exercise_frequency", [
+  "none",
+  "light",
+  "moderate",
+  "regular",
+  "intense",
+]);
+export const programmeEnum = pgEnum("programme", [
+  "edge_diagnostic",
+  "riding_the_wave",
+  "total_longevity",
+]);
+export const programmePhaseEnum = pgEnum("programme_phase", [
+  "intake",
+  "assessment",
+  "planning",
+  "active",
+  "review",
+  "completed",
+]);
+export const emailQueueStatusEnum = pgEnum("email_queue_status", [
+  "pending",
+  "sent",
+  "failed",
+]);
 
 // ─── Auth tables (required by NextAuth DrizzleAdapter) ───────────────────────
 
@@ -75,7 +100,7 @@ export const verificationTokens = pgTable(
   (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })]
 );
 
-// ─── Patient data ─────────────────────────────────────────────────────────────
+// ─── Patient profile ──────────────────────────────────────────────────────────
 
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -83,14 +108,49 @@ export const profiles = pgTable("profiles", {
     .notNull()
     .unique()
     .references(() => users.id, { onDelete: "cascade" }),
+  // Contact & basics
   phone: varchar("phone", { length: 50 }),
   dateOfBirth: varchar("date_of_birth", { length: 20 }),
+  city: varchar("city", { length: 100 }),
+  occupation: varchar("occupation", { length: 150 }),
+  // Clinical context
   mainConcern: text("main_concern"),
+  goals: text("goals"),
+  diagnosisHistory: text("diagnosis_history"),
+  currentMedications: text("current_medications"),
+  currentSupplements: text("current_supplements"),
+  // Lifestyle baselines
+  sleepHoursAvg: integer("sleep_hours_avg"),
+  exerciseFrequency: exerciseFrequencyEnum("exercise_frequency"),
+  // Meta
   referralSource: text("referral_source"),
   notes: text("notes"),
+  digestOptOut: boolean("digest_opt_out").notNull().default(false),
+  // Signal tracking (updated by cron/signals, used to detect critical transitions)
+  lastKnownSignal: varchar("last_known_signal", { length: 20 }),
+  criticalAlertSentAt: timestamp("critical_alert_sent_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 });
+
+// ─── Daily check-ins ──────────────────────────────────────────────────────────
+
+export const dailyCheckins = pgTable("daily_checkins", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  date: varchar("date", { length: 10 }).notNull(), // YYYY-MM-DD
+  sleep: integer("sleep").notNull(),   // 1–5
+  energy: integer("energy").notNull(), // 1–5
+  mood: integer("mood").notNull(),     // 1–5
+  focus: integer("focus").notNull(),   // 1–5
+  stress: integer("stress").notNull(), // 1–5 (1 = very low, 5 = very high)
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+// ─── Assessments ──────────────────────────────────────────────────────────────
 
 export const assessmentResults = pgTable("assessment_results", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -155,6 +215,74 @@ export const threadMessages = pgTable("thread_messages", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+// ─── Admin notes ──────────────────────────────────────────────────────────────
+
+export const patientNotes = pgTable("patient_notes", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  patientId: uuid("patient_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  adminId: uuid("admin_id")
+    .notNull()
+    .references(() => users.id),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+// ─── Programme assignments ────────────────────────────────────────────────────
+
+export const programmeAssignments = pgTable("programme_assignments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  patientId: uuid("patient_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  programme: programmeEnum("programme").notNull(),
+  phase: programmePhaseEnum("phase").notNull(),
+  startDate: varchar("start_date", { length: 10 }), // YYYY-MM-DD, nullable = TBD
+  notes: text("notes"),
+  assignedBy: uuid("assigned_by")
+    .notNull()
+    .references(() => users.id),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+// ─── Clinical goals ───────────────────────────────────────────────────────────
+
+export const clinicalGoals = pgTable("clinical_goals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  patientId: uuid("patient_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  setByAdminId: uuid("set_by_admin_id")
+    .notNull()
+    .references(() => users.id),
+  title: text("title").notNull(),
+  metric: varchar("metric", { length: 50 }),   // e.g. "focus", "overallScore", "mood" — optional
+  baseline: integer("baseline"),               // 0–100 reading at intake
+  target: integer("target"),                   // 0–100 goal
+  current: integer("current"),                 // 0–100 most recent reading
+  notes: text("notes"),
+  completedAt: timestamp("completed_at", { mode: "date" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+// ─── Email queue ──────────────────────────────────────────────────────────────
+
+export const emailQueue = pgTable("email_queue", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  templateKey: varchar("template_key", { length: 100 }).notNull(),
+  sendAt: timestamp("send_at", { mode: "date" }).notNull(),
+  sentAt: timestamp("sent_at", { mode: "date" }),
+  status: emailQueueStatusEnum("status").notNull().default("pending"),
+  payload: jsonb("payload").notNull().default({}),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -164,6 +292,20 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   documents: many(documents),
   threads: many(threads, { relationName: "patient_threads" }),
   sentMessages: many(threadMessages),
+  dailyCheckins: many(dailyCheckins),
+  patientNotes: many(patientNotes, { relationName: "patient_notes" }),
+  adminNotes: many(patientNotes, { relationName: "admin_notes" }),
+  programmeAssignment: one(programmeAssignments, {
+    fields: [users.id],
+    references: [programmeAssignments.patientId],
+    relationName: "patient_programme",
+  }),
+  clinicalGoals: many(clinicalGoals, { relationName: "patient_goals" }),
+  emailQueue: many(emailQueue),
+}));
+
+export const dailyCheckinsRelations = relations(dailyCheckins, ({ one }) => ({
+  user: one(users, { fields: [dailyCheckins.userId], references: [users.id] }),
 }));
 
 export const bookingsRelations = relations(bookings, ({ one }) => ({
@@ -172,7 +314,11 @@ export const bookingsRelations = relations(bookings, ({ one }) => ({
 
 export const documentsRelations = relations(documents, ({ one }) => ({
   user: one(users, { fields: [documents.userId], references: [users.id] }),
-  uploadedByUser: one(users, { fields: [documents.uploadedBy], references: [users.id], relationName: "uploaded_by" }),
+  uploadedByUser: one(users, {
+    fields: [documents.uploadedBy],
+    references: [users.id],
+    relationName: "uploaded_by",
+  }),
 }));
 
 export const threadsRelations = relations(threads, ({ one, many }) => ({
@@ -187,4 +333,47 @@ export const threadsRelations = relations(threads, ({ one, many }) => ({
 export const threadMessagesRelations = relations(threadMessages, ({ one }) => ({
   thread: one(threads, { fields: [threadMessages.threadId], references: [threads.id] }),
   sender: one(users, { fields: [threadMessages.senderId], references: [users.id] }),
+}));
+
+export const patientNotesRelations = relations(patientNotes, ({ one }) => ({
+  patient: one(users, {
+    fields: [patientNotes.patientId],
+    references: [users.id],
+    relationName: "patient_notes",
+  }),
+  admin: one(users, {
+    fields: [patientNotes.adminId],
+    references: [users.id],
+    relationName: "admin_notes",
+  }),
+}));
+
+export const programmeAssignmentsRelations = relations(programmeAssignments, ({ one }) => ({
+  patient: one(users, {
+    fields: [programmeAssignments.patientId],
+    references: [users.id],
+    relationName: "patient_programme",
+  }),
+  assignedByUser: one(users, {
+    fields: [programmeAssignments.assignedBy],
+    references: [users.id],
+    relationName: "admin_programme",
+  }),
+}));
+
+export const emailQueueRelations = relations(emailQueue, ({ one }) => ({
+  user: one(users, { fields: [emailQueue.userId], references: [users.id] }),
+}));
+
+export const clinicalGoalsRelations = relations(clinicalGoals, ({ one }) => ({
+  patient: one(users, {
+    fields: [clinicalGoals.patientId],
+    references: [users.id],
+    relationName: "patient_goals",
+  }),
+  setByAdmin: one(users, {
+    fields: [clinicalGoals.setByAdminId],
+    references: [users.id],
+    relationName: "admin_goals",
+  }),
 }));

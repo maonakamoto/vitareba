@@ -8,10 +8,10 @@ import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
+import { PORTAL_URL } from "@/lib/config/company";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 
 const schema = z.object({ email: z.string().email() });
-
-const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
 // Always return the same response to prevent email enumeration
 const OK = NextResponse.json({ success: true });
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
 
   const token = randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  const expires = new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY_MS);
 
   await db.insert(verificationTokens).values({
     identifier: `reset:${email}`,
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     expires,
   });
 
-  const resetUrl = `${APP_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+  const resetUrl = `${PORTAL_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
   await sendEmail({
     to: email,
     subject: "Reset your VitaReBa password",

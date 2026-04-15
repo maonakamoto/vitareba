@@ -2,10 +2,12 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { registerSchema } from "@/lib/domain/auth";
+import { enqueueWelcomeEmails } from "@/lib/domain/email-queue";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -29,8 +31,14 @@ export async function POST(req: Request) {
     );
   }
 
-  const hashed = await bcrypt.hash(password, 12);
-  await db.insert(users).values({ email, password: hashed });
+  const hashed = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
+  const [newUser] = await db
+    .insert(users)
+    .values({ email, password: hashed })
+    .returning({ id: users.id });
+
+  enqueueWelcomeEmails({ userId: newUser.id, triggeredAt: new Date() })
+    .catch((err) => console.error("[email-queue] welcome enqueue failed:", err));
 
   return NextResponse.json({ success: true }, { status: 201 });
 }

@@ -3,22 +3,22 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
-import { auth } from "@/lib/auth";
+import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
+import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 const createSchema = z.object({
   preferredDate: z.string().optional(),
   notes: z.string().optional(),
 });
 
-const APP_URL = process.env.AUTH_URL ?? "https://vitareba.ch";
-
 export async function GET() {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const where = session.user.role === "admin"
     ? undefined
@@ -34,8 +34,9 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+  const { session } = guard;
 
   const body = await req.json();
   const parsed = createSchema.safeParse(body);
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
     .returning();
 
   // Notify admin of new booking request (fire-and-forget — don't block the response)
-  const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim()).filter(Boolean);
+  const adminEmails = getAdminEmails();
   if (adminEmails.length > 0) {
     const patient = await db.query.users.findFirst({
       where: eq(users.id, session.user.id),
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
         patientEmail: patient?.email ?? "",
         notes: parsed.data.notes,
         preferredDate: parsed.data.preferredDate,
-        adminUrl: `${APP_URL}/admin/patients`,
+        adminUrl: `${PORTAL_URL}/admin/patients`,
       }),
     }).catch(console.error);
   }

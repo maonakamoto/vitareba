@@ -1,5 +1,8 @@
 // ─── Shared layout ────────────────────────────────────────────────────────────
 
+import { PORTAL_URL, COMPANY } from "@/lib/config/company";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
+
 function layout(body: string) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -25,7 +28,7 @@ function layout(body: string) {
 <div class="wrap">
   <div class="header"><h1>Vita<span>Re</span>Ba</h1></div>
   <div class="body">${body}</div>
-  <div class="footer">VitaReBa GmbH · Zürich · <a href="https://vitareba.ch" style="color:#2a7a8a">vitareba.ch</a></div>
+  <div class="footer">${COMPANY.name} · Zürich · <a href="${PORTAL_URL}" style="color:#2a7a8a">${PORTAL_URL.replace(/^https?:\/\//, "")}</a></div>
 </div>
 </body>
 </html>`;
@@ -99,7 +102,7 @@ export function passwordResetEmail({
 }) {
   return layout(`
     <p>You requested a password reset for your VitaReBa account.</p>
-    <p>Click the button below to set a new password. This link expires in <strong>1 hour</strong>.</p>
+    <p>Click the button below to set a new password. This link expires in <strong>${PASSWORD_RESET_TOKEN_EXPIRY_MS / 3_600_000} hour</strong>.</p>
     <p><a class="btn" href="${resetUrl}">Reset password</a></p>
     <div class="divider"></div>
     <p class="meta">If you did not request this, you can safely ignore this email.</p>
@@ -123,5 +126,341 @@ export function newMessageEmail({
     <p>Hi ${recipientName},</p>
     <p>You have a new message from <strong>${senderName}</strong> regarding: <em>${subject}</em></p>
     <p><a class="btn" href="${portalUrl}">Read message</a></p>
+  `);
+}
+
+// ─── Welcome sequence: immediate welcome ─────────────────────────────────────
+
+export function welcomePatientEmail({
+  patientName,
+  portalUrl,
+}: {
+  patientName: string;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>Welcome to VitaReBa. Your patient portal is ready.</p>
+    <p>Manuel works with a small number of patients at a time — which means your programme will be built around your specific biology, not a template. To make that possible, he needs your data.</p>
+    <div class="divider"></div>
+    <p><strong>Here is what to do first:</strong></p>
+    <p>1. <strong>Complete your profile</strong> — your clinical history, current medications, and lifestyle baseline give Manuel the context he needs before your first consultation.</p>
+    <p>2. <strong>Take the Inflection Edge</strong> — 30 questions, 5 minutes. Your results map your ADHD profile across five dimensions and unlock Manuel's ability to personalise your protocol.</p>
+    <p>3. <strong>Check in daily</strong> — takes 30 seconds. Sleep, energy, mood, focus, stress. Over time this becomes your most valuable clinical dataset.</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${portalUrl}/dashboard">Open your portal</a></p>
+    <p class="meta">If you have any questions before your first consultation, reply to this email.</p>
+  `);
+}
+
+// ─── Welcome sequence: profile completion nudge (+24h) ───────────────────────
+
+export function profileCompletionEmail({
+  patientName,
+  portalUrl,
+}: {
+  patientName: string;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>One quick thing before your first consultation: your profile.</p>
+    <p>Manuel reviews every patient's profile before meeting them. Your clinical history, current medications, and lifestyle baseline let him show up to your first session already understanding your situation — not spending the first 20 minutes gathering basics.</p>
+    <p>It takes about 5 minutes and makes a measurable difference to the quality of your first consultation.</p>
+    <p><a class="btn" href="${portalUrl}/profile">Complete your profile</a></p>
+    <p class="meta">Already done? Ignore this email.</p>
+  `);
+}
+
+// ─── Welcome sequence: assessment CTA (+72h) ─────────────────────────────────
+
+export function assessmentCtaEmail({
+  patientName,
+  portalUrl,
+}: {
+  patientName: string;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>The Inflection Edge is the foundation of everything Manuel does with you.</p>
+    <p>It maps your ADHD profile across five dimensions — Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Each dimension produces a 0–100 score that tells Manuel where your highest-leverage intervention points are.</p>
+    <p>Without it, Manuel is working blind. With it, he can design your protocol before you even sit down together.</p>
+    <p>It takes 5 minutes.</p>
+    <p><a class="btn" href="${portalUrl}/assessment">Take the Inflection Edge →</a></p>
+  `);
+}
+
+// ─── Critical patient alert (to Manuel) ──────────────────────────────────────
+
+export function criticalPatientAlertEmail({
+  patientName,
+  patientEmail,
+  reason,
+  adminUrl,
+}: {
+  patientName: string;
+  patientEmail: string;
+  reason: string;
+  adminUrl: string;
+}) {
+  return layout(`
+    <p>A patient has been flagged as <strong style="color:#e05a5a">Critical</strong>.</p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
+    <p class="meta"><strong>Reason:</strong> ${reason}</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${adminUrl}">View patient →</a></p>
+    <p class="meta">This alert fires once per critical episode. It will not repeat until the patient returns to active or attention and becomes critical again.</p>
+  `);
+}
+
+// ─── Assessment: immediate results ────────────────────────────────────────────
+
+export function assessmentResultsEmail({
+  patientName,
+  overallScore,
+  verdictName,
+  verdictText,
+  dimensions,
+  portalUrl,
+}: {
+  patientName: string;
+  overallScore: number;
+  verdictName: string;
+  verdictText: string;
+  dimensions: Array<{ icon: string; name: string; score: number; interpretation: string }>;
+  portalUrl: string;
+}) {
+  const dimRows = dimensions
+    .map(
+      (d) => `
+    <tr>
+      <td style="padding:0.6rem 0;border-bottom:1px solid #e5e0d8;vertical-align:top;width:28px;font-size:1.1rem">${d.icon}</td>
+      <td style="padding:0.6rem 0.5rem;border-bottom:1px solid #e5e0d8;vertical-align:top;font-size:0.78rem;color:#888a96;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;width:40px">${d.score}</td>
+      <td style="padding:0.6rem 0;border-bottom:1px solid #e5e0d8;vertical-align:top;">
+        <div style="font-size:0.8rem;font-weight:500;color:#1a1a22;margin-bottom:0.25rem">${d.name}</div>
+        <div style="font-size:0.76rem;color:#3a3a4a;line-height:1.6">${d.interpretation}</div>
+      </td>
+    </tr>`
+    )
+    .join("");
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>Your Inflection Edge results are in. Here is what your profile looks like:</p>
+    <div style="text-align:center;padding:1.5rem 0">
+      <div style="font-size:3.5rem;font-weight:300;color:#2a7a8a;line-height:1">${overallScore}</div>
+      <div style="font-size:0.85rem;font-weight:500;color:#1a1a22;margin-top:0.25rem">${verdictName}</div>
+    </div>
+    <p style="font-size:0.82rem;color:#3a3a4a;line-height:1.65">${verdictText}</p>
+    <div class="divider"></div>
+    <table style="width:100%;border-collapse:collapse">
+      <tbody>${dimRows}</tbody>
+    </table>
+    <div class="divider"></div>
+    <p><a class="btn" href="${portalUrl}">View full results in portal</a></p>
+    <p class="meta">Manuel will review your profile and be in touch about next steps.</p>
+  `);
+}
+
+// ─── Assessment: clinical meaning (+48h) ──────────────────────────────────────
+
+export function assessmentMeaningEmail({
+  patientName,
+  portalUrl,
+}: {
+  patientName: string;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>You took the Inflection Edge two days ago. This email explains what the five dimensions actually measure — and why they matter clinically.</p>
+    <div class="divider"></div>
+    <p><strong>⚡ Arousal &amp; Activation</strong><br/>
+    This is your ability to initiate. Most ADHD interventions start here because without reliable activation, nothing else works. Manuel looks at whether the barrier to starting is biological (dopamine regulation), structural (environment), or habitual.</p>
+    <p><strong>💥 Divergent Output</strong><br/>
+    Raw creative capacity. ADHD brains often generate more ideas than neurotypical ones — the clinical question is whether that output is captured, developed, and deployed, or scattered. Manuel tracks the gap between ideation and execution.</p>
+    <p><strong>🎯 Hyperfocus</strong><br/>
+    Your ability to enter deep, extended flow states. When managed well, hyperfocus is an asymmetric advantage. When uncontrolled, it burns time and relationships. Manuel maps how deliberate versus reactive your hyperfocus currently is.</p>
+    <p><strong>🌊 Volatility &amp; Cost</strong><br/>
+    Emotional and performance variance. The real-world cost of ADHD is often paid here — in decisions made in the wrong state, relationships affected by unpredictability, and energy spent on recovery. This is where biological stabilisation has the most direct impact.</p>
+    <p><strong>🏗️ Environment Design</strong><br/>
+    How well your workspace, schedule, and relationships are engineered around your neurotype. Environmental design compounds everything else — even perfect biological intervention underperforms in the wrong environment.</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${portalUrl}">Review your scores</a></p>
+  `);
+}
+
+// ─── Assessment: booking CTA (+5 days) ────────────────────────────────────────
+
+export function assessmentBookingEmail({
+  patientName,
+  overallScore,
+  portalUrl,
+}: {
+  patientName: string;
+  overallScore: number;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>Manuel has had time to review your Inflection Edge profile (overall score: <strong>${overallScore}/100</strong>).</p>
+    <p>If you would like to discuss what your results mean for your specific situation — and what interventions are most relevant for your neurotype — you can book a consultation directly.</p>
+    <p><a class="btn" href="${portalUrl}/bookings">Book a consultation</a></p>
+    <div class="divider"></div>
+    <p class="meta">If you have already booked, you can safely ignore this email.</p>
+  `);
+}
+
+// ─── Weekly digest ────────────────────────────────────────────────────────────
+
+type WeekAvgs = { sleep: number; energy: number; mood: number; focus: number; stress: number } | null;
+
+function deltaArrow(curr: number, prev: number): string {
+  if (curr > prev + 0.1) return "↑";
+  if (curr < prev - 0.1) return "↓";
+  return "→";
+}
+
+function metricRow(label: string, curr: number | undefined, prev: number | undefined, invert = false): string {
+  if (curr == null || prev == null) return "";
+  const displayCurr = invert ? 6 - curr : curr;
+  const displayPrev = invert ? 6 - prev : prev;
+  const arrow = deltaArrow(displayCurr, displayPrev);
+  const color = arrow === "↑" ? "#2a7a8a" : arrow === "↓" ? "#e05a5a" : "#888a96";
+  return `<tr>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:#888a96;width:120px">${label}</td>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:#1a1a22">${displayCurr.toFixed(1)}</td>
+    <td style="padding:0.35rem 0;font-size:0.9rem;color:${color};font-weight:600">${arrow}</td>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:#888a96">${displayPrev.toFixed(1)}</td>
+  </tr>`;
+}
+
+export function weeklyDigestEmail({
+  patientName,
+  thisWeekAvgs,
+  prevWeekAvgs,
+  latestScore,
+  verdictName,
+  nextBookingStatus,
+  portalUrl,
+}: {
+  patientName: string;
+  thisWeekAvgs: WeekAvgs;
+  prevWeekAvgs: WeekAvgs;
+  latestScore: number | null;
+  verdictName: string | null;
+  nextBookingStatus: string | null;
+  portalUrl: string;
+}) {
+  const hasCheckins = thisWeekAvgs !== null;
+
+  const checkinSection = hasCheckins ? `
+    <p><strong>This week's check-in averages</strong></p>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:0.5rem">
+      <thead>
+        <tr>
+          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Metric</th>
+          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">This week</th>
+          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Δ</th>
+          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Last week</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${metricRow("Sleep", thisWeekAvgs!.sleep, prevWeekAvgs?.sleep)}
+        ${metricRow("Energy", thisWeekAvgs!.energy, prevWeekAvgs?.energy)}
+        ${metricRow("Mood", thisWeekAvgs!.mood, prevWeekAvgs?.mood)}
+        ${metricRow("Focus", thisWeekAvgs!.focus, prevWeekAvgs?.focus)}
+        ${metricRow("Stress (low=good)", thisWeekAvgs!.stress, prevWeekAvgs?.stress, true)}
+      </tbody>
+    </table>
+    <div class="divider"></div>` : `
+    <p class="meta">No check-ins this week. Consistent tracking helps Manuel see your patterns clearly.</p>
+    <div class="divider"></div>`;
+
+  const assessmentSection = latestScore !== null ? `
+    <p><strong>Latest Inflection Edge score:</strong> ${latestScore}/100 — ${verdictName ?? ""}</p>` : "";
+
+  const bookingSection = nextBookingStatus ? `
+    <p class="meta">Your next consultation is <strong>${nextBookingStatus}</strong>.</p>` : "";
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>Here is your weekly summary from VitaReBa.</p>
+    ${checkinSection}
+    ${assessmentSection}
+    ${bookingSection}
+    <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in</a></p>
+    <div class="divider"></div>
+    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+  `);
+}
+
+// ─── Daily check-in reminder ──────────────────────────────────────────────────
+
+export function checkinReminderEmail({
+  patientName,
+  portalUrl,
+}: {
+  patientName: string;
+  portalUrl: string;
+}) {
+  return layout(`
+    <p>How are you doing today, <strong>${patientName}</strong>?</p>
+    <p>Logging your daily check-in takes 30 seconds and helps Manuel track your progress across sleep, energy, mood, focus, and stress.</p>
+    <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in →</a></p>
+    <div class="divider"></div>
+    <p class="meta">You receive this reminder on weekdays while enrolled in a VitaReBa programme. To stop, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+  `);
+}
+
+// ─── Check-in dip alert (to Manuel) ──────────────────────────────────────────
+
+export function checkinDipAlertEmail({
+  patientName,
+  patientEmail,
+  avgScore,
+  days,
+  adminUrl,
+}: {
+  patientName: string;
+  patientEmail: string;
+  avgScore: number;
+  days: number;
+  adminUrl: string;
+}) {
+  return layout(`
+    <p>A patient has had consistently low wellbeing scores for the past <strong>${days} days</strong>.</p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
+    <p class="meta"><strong>Average score (mood + energy + sleep):</strong> ${avgScore.toFixed(1)} / 5 over ${days} days</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${adminUrl}">View patient →</a></p>
+    <p class="meta">This alert fires once per dip episode and resets when the patient returns above the threshold.</p>
+  `);
+}
+
+// ─── Profile completion alert (to Manuel) ────────────────────────────────────
+
+export function profileCompletedAdminEmail({
+  patientName,
+  patientEmail,
+  completionPct,
+  adminUrl,
+}: {
+  patientName: string;
+  patientEmail: string;
+  completionPct: number;
+  adminUrl: string;
+}) {
+  return layout(`
+    <p>A patient has completed their intake profile — <strong style="color:#2a7a8a">ready for review</strong>.</p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
+    <p class="meta"><strong>Profile completeness:</strong> ${completionPct}%</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${adminUrl}">Review profile →</a></p>
+    <p class="meta">This notification fires once when the patient first crosses 70% completion.</p>
   `);
 }
