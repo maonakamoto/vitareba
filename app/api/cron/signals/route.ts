@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { users, profiles, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { users, profiles, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
+import { eq, desc, and, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
@@ -42,6 +42,9 @@ export async function GET(req: Request) {
       dailyCheckins: {
         orderBy: [desc(dailyCheckins.date)],
         limit: SIGNAL_CHECKIN_WINDOW_DAYS,
+      },
+      clinicalGoals: {
+        where: isNull(clinicalGoals.completedAt),
       },
     },
   });
@@ -84,6 +87,32 @@ export async function GET(req: Request) {
         } catch (err) {
           console.error("[cron/signals] alert send failed for", patient.id, err);
         }
+      }
+    }
+
+    // Auto-update goal current values from live data when metric is set
+    const latestAssessment = patient.assessmentResults[0];
+    const checkins = patient.dailyCheckins;
+    for (const goal of patient.clinicalGoals ?? []) {
+      if (!goal.metric) continue;
+
+      let liveValue: number | null = null;
+
+      if (goal.metric === "overallScore" && latestAssessment) {
+        liveValue = latestAssessment.overallScore;
+      } else if (["focus", "mood", "energy", "sleep", "stress"].includes(goal.metric) && checkins.length > 0) {
+        // 7-day average of the metric (scale 1–5 → 0–100)
+        const key = goal.metric as "focus" | "mood" | "energy" | "sleep" | "stress";
+        const sum = checkins.reduce((acc, c) => acc + c[key], 0);
+        const raw = sum / checkins.length; // 1–5
+        liveValue = Math.round(((raw - 1) / 4) * 100); // normalize to 0–100
+      }
+
+      if (liveValue !== null && liveValue !== goal.current) {
+        await db
+          .update(clinicalGoals)
+          .set({ current: liveValue, updatedAt: new Date() })
+          .where(eq(clinicalGoals.id, goal.id));
       }
     }
 

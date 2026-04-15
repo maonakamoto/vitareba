@@ -103,27 +103,28 @@ export default async function DashboardPage() {
         {activeGoals.length > 0 && (
           <div className={styles.card}>
             <p className={styles.cardTitle}>Your goals</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.5rem" }}>
+            <div className={styles.goalsList}>
               {activeGoals.map((goal) => {
                 const hasProgress = goal.baseline != null || goal.current != null || goal.target != null;
-                const currentPct = goal.current != null && goal.target != null && goal.target > 0
-                  ? Math.min(100, Math.round((goal.current / goal.target) * 100))
-                  : null;
+                // Progress from baseline to target; fallback to 0-based if no baseline
+                const base = goal.baseline ?? 0;
+                const range = (goal.target ?? 0) - base;
+                const currentPct =
+                  goal.current != null && goal.target != null && range > 0
+                    ? Math.min(100, Math.max(0, Math.round(((goal.current - base) / range) * 100)))
+                    : null;
                 return (
                   <div key={goal.id}>
-                    <p style={{ fontSize: "0.85rem", color: "var(--ink)", margin: "0 0 0.25rem" }}>{goal.title}</p>
+                    <p className={styles.goalTitle}>{goal.title}</p>
                     {hasProgress && (
                       <>
-                        <div style={{ height: "5px", background: "var(--border)", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{
-                            height: "100%",
-                            width: `${currentPct ?? 0}%`,
-                            background: "var(--teal)",
-                            borderRadius: "3px",
-                            transition: "width 0.3s",
-                          }} />
+                        <div className={styles.goalProgressTrack}>
+                          <div
+                            className={styles.goalProgressFill}
+                            style={{ width: `${currentPct ?? 0}%` }}
+                          />
                         </div>
-                        <p style={{ fontSize: "0.72rem", color: "var(--muted)", margin: "0.2rem 0 0" }}>
+                        <p className={styles.goalProgressMeta}>
                           {goal.current != null && `Current: ${goal.current}`}
                           {goal.target != null && ` · Target: ${goal.target}`}
                           {currentPct != null && ` (${currentPct}%)`}
@@ -149,7 +150,7 @@ export default async function DashboardPage() {
                 Track your sleep, energy, mood, focus, and stress. Takes 30 seconds.
               </p>
             </div>
-            <Link href="/checkin" className={styles.cardLink} style={{ whiteSpace: "nowrap" }}>
+            <Link href="/checkin" className={`${styles.cardLink} ${styles.noWrap}`}>
               Check in →
             </Link>
           </div>
@@ -181,7 +182,7 @@ export default async function DashboardPage() {
               </div>
               <p className={styles.heroBody}>{verdict.text}</p>
               {assessmentIsStale && (
-                <p style={{ fontSize: "0.78rem", color: "var(--warn)", margin: "0.5rem 0 0", padding: "0.5rem 0.75rem", background: "color-mix(in srgb, var(--warn) 8%, transparent)", borderRadius: "0.5rem" }}>
+                <p className={styles.assessmentStaleNotice}>
                   Last taken {assessmentAgeDays} days ago — time for a refresh?
                 </p>
               )}
@@ -223,7 +224,10 @@ export default async function DashboardPage() {
                     {(() => {
                       const s = BOOKING_STATUS_CONFIG[latestBooking.status as keyof typeof BOOKING_STATUS_CONFIG] ?? BOOKING_STATUS_CONFIG.pending;
                       return (
-                        <span style={{ display: "inline-block", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.1em", padding: "0.25rem 0.65rem", borderRadius: "1rem", color: s.color, background: s.bg, marginBottom: "0.5rem" }}>
+                        <span
+                          className={styles.bookingStatusBadge}
+                          style={{ color: s.color, background: s.bg }}
+                        >
                           {latestBooking.status}
                         </span>
                       );
@@ -242,7 +246,7 @@ export default async function DashboardPage() {
                     <p className={styles.bookingNoAppt}>
                       Request a discovery call or clinical consultation with Manuel.
                     </p>
-                    <Link href="/bookings" className="btn-dark" style={{ display: "inline-block", padding: "0.6rem 1.25rem", fontSize: "0.75rem" }}>
+                    <Link href="/bookings" className={`btn-dark ${styles.ctaBtnSmall}`}>
                       Request booking →
                     </Link>
                   </>
@@ -259,7 +263,7 @@ export default async function DashboardPage() {
                     {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the VitaReBa team
                   </p>
                 </div>
-                <Link href="/messages" className={styles.cardLink} style={{ whiteSpace: "nowrap" }}>
+                <Link href="/messages" className={`${styles.cardLink} ${styles.noWrap}`}>
                   Open messages →
                 </Link>
               </div>
@@ -277,11 +281,7 @@ export default async function DashboardPage() {
                 The Inflection Edge maps your ADHD profile across five dimensions. Your results
                 give Manuel the data he needs to design your programme.
               </p>
-              <Link
-                href="/assessment"
-                className="btn-dark"
-                style={{ display: "inline-block", padding: "0.75rem 1.75rem", fontSize: "0.78rem" }}
-              >
+              <Link href="/assessment" className={`btn-dark ${styles.ctaBtnLarge}`}>
                 Take the Inflection Edge →
               </Link>
             </div>
