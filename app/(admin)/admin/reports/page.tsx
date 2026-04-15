@@ -16,14 +16,10 @@ function getVerdictName(score: number) {
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className={styles.card} style={{ padding: "1.25rem 1.5rem" }}>
-      <p style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--muted)", marginBottom: "0.5rem" }}>
-        {label}
-      </p>
-      <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "2.5rem", fontWeight: 300, color: "var(--ink)", lineHeight: 1, marginBottom: sub ? "0.25rem" : 0 }}>
-        {value}
-      </p>
-      {sub && <p style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{sub}</p>}
+    <div className={`${styles.card} ${styles.statCardPadded}`}>
+      <p className={styles.statCardLabel}>{label}</p>
+      <p className={sub ? styles.statCardValueWithSub : styles.statCardValueNoSub}>{value}</p>
+      {sub && <p className={styles.statCardSub}>{sub}</p>}
     </div>
   );
 }
@@ -108,14 +104,6 @@ export default async function ReportsPage() {
 
   const SIGNAL_ORDER: PatientSignal[] = ["critical", "attention", "active", "new"];
 
-  const cardLabelStyle = {
-    fontSize: "0.65rem",
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.12em",
-    color: "var(--muted)",
-    marginBottom: "1rem",
-  };
-
   return (
     <div>
       <h1 className={styles.pageTitle}>
@@ -124,7 +112,7 @@ export default async function ReportsPage() {
       <p className={styles.pageSub}>Live snapshot — updates on every page load</p>
 
       {/* ── Top-level stats ──────────────────────────────────────────────── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
+      <div className={styles.statsGrid}>
         <StatCard label="Total patients" value={patients.length} />
         <StatCard
           label="Check-ins this week"
@@ -143,33 +131,31 @@ export default async function ReportsPage() {
         />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+      <div className={styles.twoColGrid}>
 
         {/* ── Signal breakdown ─────────────────────────────────────────── */}
         <div className={styles.card}>
-          <p style={cardLabelStyle}>Patient signals</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+          <p className={styles.sectionLabel}>Patient signals</p>
+          <div className={styles.barRow}>
             {SIGNAL_ORDER.map((signal) => {
               const count = signalCounts[signal];
               const pct = patients.length > 0 ? Math.round((count / patients.length) * 100) : 0;
               return (
                 <div key={signal}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+                  <div className={styles.barRowItem}>
                     <span className={styles.signalBadge} data-signal={signal}>
                       {SIGNAL_LABELS[signal]}
                     </span>
-                    <span style={{ fontSize: "0.82rem", color: "var(--ink2)", fontWeight: 400 }}>
-                      {count} <span style={{ color: "var(--muted)", fontSize: "0.72rem" }}>({pct}%)</span>
+                    <span className={styles.barCount}>
+                      {count} <span className={styles.barPct}>({pct}%)</span>
                     </span>
                   </div>
-                  <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+                  <div className={styles.barTrack}>
                     <div
+                      className={styles.barFill}
                       style={{
-                        height: "100%",
                         width: `${pct}%`,
-                        borderRadius: "2px",
                         background: SIGNAL_COLORS[signal as PatientSignal],
-                        transition: "width 0.3s",
                       }}
                     />
                   </div>
@@ -181,34 +167,30 @@ export default async function ReportsPage() {
 
         {/* ── Assessment score distribution ────────────────────────────── */}
         <div className={styles.card}>
-          <p style={cardLabelStyle}>Assessment score tiers</p>
+          <p className={styles.sectionLabel}>Assessment score tiers</p>
           {allAssessments.length === 0 ? (
-            <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No assessments yet.</div>
+            <div className={styles.emptyStateInline}>No assessments yet.</div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+            <div className={styles.barRow}>
               {tierCounts.map((tier) => {
                 const pct = allAssessments.length > 0 ? Math.round((tier.count / allAssessments.length) * 100) : 0;
                 return (
                   <div key={tier.name}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
-                      <span style={{ fontSize: "0.78rem", color: "var(--ink2)" }}>{tier.name}</span>
-                      <span style={{ fontSize: "0.78rem", color: "var(--muted)" }}>{tier.count} ({pct}%)</span>
+                    <div className={styles.barRowItem}>
+                      <span className={styles.tierName}>{tier.name}</span>
+                      <span className={styles.tierCount}>{tier.count} ({pct}%)</span>
                     </div>
-                    <div style={{ height: "4px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+                    <div className={styles.barTrack}>
                       <div
-                        style={{
-                          height: "100%",
-                          width: `${pct}%`,
-                          borderRadius: "2px",
-                          background: tier.color,
-                        }}
+                        className={styles.barFill}
+                        style={{ width: `${pct}%`, background: tier.color }}
                       />
                     </div>
                   </div>
                 );
               })}
               {avgScore !== null && (
-                <p style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.25rem" }}>
+                <p className={styles.avgNote}>
                   Population average: <strong style={{ color: scoreColor(avgScore) }}>{avgScore}/100</strong> — {getVerdictName(avgScore)}
                 </p>
               )}
@@ -218,30 +200,28 @@ export default async function ReportsPage() {
 
         {/* ── Programme distribution ───────────────────────────────────── */}
         <div className={styles.card}>
-          <p style={cardLabelStyle}>Programme distribution</p>
+          <p className={styles.sectionLabel}>Programme distribution</p>
           {assignments.length === 0 ? (
-            <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No assignments yet.</div>
+            <div className={styles.emptyStateInline}>No assignments yet.</div>
           ) : (
             <>
-              <table className={styles.table} style={{ marginBottom: "1.25rem" }}>
+              <table className={`${styles.table} ${styles.tableWithMargin}`}>
                 <tbody>
                   {Object.entries(programmeCounts).map(([key, count]) => (
                     <tr key={key}>
-                      <td style={{ color: "var(--ink2)" }}>{PROGRAMME_CONFIG[key as ProgrammeKey]?.label ?? key}</td>
-                      <td style={{ color: "var(--muted)", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{count} patient{count !== 1 ? "s" : ""}</td>
+                      <td className={styles.tableCellName}>{PROGRAMME_CONFIG[key as ProgrammeKey]?.label ?? key}</td>
+                      <td className={styles.tableCellCount}>{count} patient{count !== 1 ? "s" : ""}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <p style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--muted)", marginBottom: "0.75rem" }}>
-                By phase
-              </p>
+              <p className={styles.phaseLabel}>By phase</p>
               <table className={styles.table}>
                 <tbody>
                   {Object.entries(phaseCounts).map(([key, count]) => (
                     <tr key={key}>
-                      <td style={{ color: "var(--ink2)" }}>{PHASE_CONFIG[key as PhaseKey]?.label ?? key}</td>
-                      <td style={{ color: "var(--muted)", textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{count}</td>
+                      <td className={styles.tableCellName}>{PHASE_CONFIG[key as PhaseKey]?.label ?? key}</td>
+                      <td className={styles.tableCellCount}>{count}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -252,9 +232,9 @@ export default async function ReportsPage() {
 
         {/* ── Recent assessments ───────────────────────────────────────── */}
         <div className={styles.card}>
-          <p style={cardLabelStyle}>Recent assessments (last 10)</p>
+          <p className={styles.sectionLabel}>Recent assessments (last 10)</p>
           {allAssessments.length === 0 ? (
-            <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No assessments yet.</div>
+            <div className={styles.emptyStateInline}>No assessments yet.</div>
           ) : (
             <table className={styles.table}>
               <thead>
@@ -268,12 +248,15 @@ export default async function ReportsPage() {
                 {allAssessments.slice(0, 10).map((a) => (
                   <tr key={a.id}>
                     <td>
-                      <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.3rem", fontWeight: 300, color: scoreColor(a.overallScore) }}>
+                      <span
+                        className={styles.scoreChipLarge}
+                        style={{ color: scoreColor(a.overallScore) }}
+                      >
                         {a.overallScore}
                       </span>
                     </td>
-                    <td style={{ fontSize: "0.78rem", color: "var(--muted)" }}>{getVerdictName(a.overallScore)}</td>
-                    <td style={{ fontSize: "0.72rem", color: "var(--muted)", whiteSpace: "nowrap" }}>
+                    <td className={styles.tableTierCell}>{getVerdictName(a.overallScore)}</td>
+                    <td className={styles.tableDateCell}>
                       {formatDateShort(a.completedAt)}
                     </td>
                   </tr>

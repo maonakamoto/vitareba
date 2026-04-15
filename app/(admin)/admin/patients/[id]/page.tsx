@@ -54,17 +54,14 @@ export default async function PatientDetailPage({
   return (
     <div>
       {/* Header */}
-      <div style={{ marginBottom: "2rem" }}>
-        <Link
-          href="/admin/patients"
-          style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none", display: "inline-block", marginBottom: "0.75rem" }}
-        >
+      <div className={styles.patientHeader}>
+        <Link href="/admin/patients" className={styles.patientBackLink}>
           ← All patients
         </Link>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div className={styles.patientHeaderRow}>
           <div>
             <h1 className={styles.pageTitle}>
-              {patient.name ? <em>{patient.name}</em> : <span style={{ color: "var(--muted)" }}>Unnamed patient</span>}
+              {patient.name ? <em>{patient.name}</em> : <span className={styles.patientNameMuted}>Unnamed patient</span>}
             </h1>
             <p className={styles.pageSub}>{patient.email} · registered {formatDateLong(patient.createdAt)}</p>
           </div>
@@ -72,7 +69,7 @@ export default async function PatientDetailPage({
       </div>
 
       {/* 2-column card grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+      <div className={styles.patientGrid}>
         <PatientProfileCard profile={patient.profile} />
         <PatientAssessmentCard assessmentResults={patient.assessmentResults} />
         <PatientBookingsCard bookings={patient.bookings} />
@@ -81,7 +78,7 @@ export default async function PatientDetailPage({
 
       {/* Check-in trend */}
       {patient.dailyCheckins.length > 0 && (
-        <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+        <div className={styles.cardWithTopMargin}>
           <p className={styles.cardLabel}>Check-in trend</p>
           <CheckinTrendChart
             data={patient.dailyCheckins.map((c) => ({
@@ -98,7 +95,7 @@ export default async function PatientDetailPage({
 
       {/* Assessment trend */}
       {patient.assessmentResults.length >= 2 && (
-        <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+        <div className={styles.cardWithTopMargin}>
           <p className={styles.cardLabel}>Assessment trend</p>
           <AssessmentTrendChart
             data={patient.assessmentResults.map((r) => ({
@@ -110,7 +107,7 @@ export default async function PatientDetailPage({
       )}
 
       {/* Programme assignment */}
-      <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+      <div className={styles.cardWithTopMargin}>
         <p className={styles.cardLabel}>Programme assignment</p>
         <ProgrammeAssignmentForm
           patientId={patient.id}
@@ -124,20 +121,20 @@ export default async function PatientDetailPage({
       </div>
 
       {/* Documents */}
-      <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+      <div className={styles.cardWithTopMargin}>
         <p className={styles.cardLabel}>Documents ({patient.documents.length})</p>
         {patient.documents.length > 0 && (
-          <div style={{ marginBottom: "1.25rem", display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+          <div className={styles.docList}>
             {patient.documents.map((doc) => (
-              <div key={doc.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.82rem" }}>
+              <div key={doc.id} className={styles.docRow}>
                 <div>
-                  <div style={{ color: "var(--ink2)" }}>{doc.title}</div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>
+                  <div className={styles.docTitle}>{doc.title}</div>
+                  <div className={styles.docMeta}>
                     {formatDateShort(doc.createdAt)}
                     {doc.mimeType && ` · ${doc.mimeType}`}
                   </div>
                 </div>
-                <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none" }}>
+                <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className={styles.docLink}>
                   Open →
                 </a>
               </div>
@@ -151,7 +148,7 @@ export default async function PatientDetailPage({
       <PatientGoalsCard patientId={patient.id} />
 
       {/* Clinical notes */}
-      <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+      <div className={styles.cardWithTopMargin}>
         <p className={styles.cardLabel}>Clinical notes</p>
         <AdminNotesForm
           patientId={patient.id}
