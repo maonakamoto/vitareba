@@ -4,26 +4,23 @@ import Link from "next/link";
 import Logo from "@/components/Logo";
 import styles from "./admin.module.css";
 import { UserDropdown } from "@/components/portal/UserDropdown";
+import { AdminNav } from "@/components/admin/AdminNav";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-
-const NAV_ITEMS = [
-  { href: "/admin/patients", label: "Patients" },
-  { href: "/admin/bookings", label: "Bookings" },
-  { href: "/admin/messages", label: "Messages" },
-  { href: "/admin/documents", label: "Documents" },
-  { href: "/admin/reports", label: "Reports" },
-] as const;
+import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session || session.user.role !== "admin") redirect("/dashboard");
 
-  const dbUser = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: { name: true },
-  });
+  const [dbUser, unreadMessages] = await Promise.all([
+    db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { name: true },
+    }),
+    getAdminUnreadThreadCount(),
+  ]);
 
   const name = dbUser?.name ?? "";
   const email = session.user.email ?? "";
@@ -35,13 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Logo />
         </Link>
         <p className={styles.adminBadge}>Admin</p>
-        <nav className={styles.nav}>
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.href} href={item.href} className={styles.navItem}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <AdminNav unreadMessages={unreadMessages} />
       </aside>
       <div className={styles.mainWrap}>
         <header className={styles.header}>

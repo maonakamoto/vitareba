@@ -9,15 +9,19 @@ import { NavBreadcrumb } from "@/components/portal/NavBreadcrumb";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { getUnreadThreadCount } from "@/lib/domain/messages";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const dbUser = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: { name: true },
-  });
+  const [dbUser, unreadMessages] = await Promise.all([
+    db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { name: true },
+    }),
+    getUnreadThreadCount(session.user.id),
+  ]);
 
   const name = dbUser?.name ?? "";
   const email = session.user.email ?? "";
@@ -28,7 +32,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
           <Logo />
         </Link>
-        <PortalNav />
+        <PortalNav unreadMessages={unreadMessages} />
       </aside>
 
       <div className={styles.mainWrap}>
@@ -39,7 +43,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <main className={styles.main}>{children}</main>
       </div>
 
-      <BottomNav />
+      <BottomNav unreadMessages={unreadMessages} />
     </div>
   );
 }

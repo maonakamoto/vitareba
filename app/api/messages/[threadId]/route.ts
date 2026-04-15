@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and, isNull, ne } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
@@ -33,6 +33,18 @@ export async function GET(
   if (session.user.role !== "admin" && thread.patientId !== session.user.id) {
     return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
   }
+
+  // Mark messages from the other party as read
+  await db
+    .update(threadMessages)
+    .set({ readAt: new Date() })
+    .where(
+      and(
+        eq(threadMessages.threadId, threadId),
+        ne(threadMessages.senderId, session.user.id),
+        isNull(threadMessages.readAt)
+      )
+    );
 
   return NextResponse.json({ success: true, data: thread });
 }

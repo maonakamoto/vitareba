@@ -45,11 +45,36 @@
   text-decoration: none;
   font-size: 0.82rem;
   transition: background 0.12s, color 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .navItem:hover {
   background: rgba(255, 255, 255, 0.07);
   color: #fff;
+}
+
+.navItemActive {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+}
+
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--teal);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 
@@ -221,4 +246,235 @@
   color: var(--teal);
   margin-bottom: 1rem;
   font-weight: 400;
+}
+
+/* ─── Reports page ────────────────────────────────────────────────────────── */
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.twoColGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* StatCard internals */
+.statCardPadded {
+  padding: 1.25rem 1.5rem;
+}
+
+.statCardLabel {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.statCardValue {
+  font-family: var(--font-cormorant), serif;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.statCardValueNoSub {
+  composes: statCardValue;
+  margin-bottom: 0;
+}
+
+.statCardValueWithSub {
+  composes: statCardValue;
+  margin-bottom: 0.25rem;
+}
+
+.statCardSub {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* Shared card section label */
+.sectionLabel {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+/* Bar chart rows */
+.barRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.barRowItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.barCount {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  font-weight: 400;
+}
+
+.barPct {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.barTrack {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+/* Tier / assessment rows */
+.tierName {
+  font-size: 0.78rem;
+  color: var(--ink2);
+}
+
+.tierCount {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.avgNote {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* Phase sub-label in programme distribution */
+.phaseLabel {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+/* Programme/phase table cells */
+.tableCellName {
+  color: var(--ink2);
+}
+
+.tableCellCount {
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Table margin between sections */
+.tableWithMargin {
+  margin-bottom: 1.25rem;
+}
+
+/* Score chip in recent assessments table */
+.scoreChipLarge {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.3rem;
+  font-weight: 300;
+}
+
+.tableTierCell {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.tableDateCell {
+  font-size: 0.72rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Empty state override for in-card use */
+.emptyStateInline {
+  padding: 1rem 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ─── Patient detail page ─────────────────────────────────────────────────── */
+
+.patientHeader {
+  margin-bottom: 2rem;
+}
+
+.patientBackLink {
+  font-size: 0.78rem;
+  color: var(--teal);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.patientHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.patientNameMuted {
+  color: var(--muted);
+}
+
+.patientGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.cardWithTopMargin {
+  composes: card;
+  margin-top: 1.25rem;
+}
+
+/* Documents list */
+.docList {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.docRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.docTitle {
+  color: var(--ink2);
+}
+
+.docMeta {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.docLink {
+  font-size: 0.78rem;
+  color: var(--teal);
+  text-decoration: none;
 }

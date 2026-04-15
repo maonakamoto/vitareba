@@ -67,6 +67,7 @@ type NavItem = {
   href: string;
   label: string;
   Icon: React.ComponentType;
+  badgeKey?: "messages";
 };
 
 const NAV_GROUPS: NavItem[][] = [
@@ -79,19 +80,18 @@ const NAV_GROUPS: NavItem[][] = [
     { href: "/assessments", label: "My Results",     Icon: IcoResults },
   ],
   [
-    { href: "/bookings", label: "Bookings", Icon: IcoBookings },
-    { href: "/messages", label: "Messages", Icon: IcoMessages },
+    { href: "/bookings", label: "Bookings",                   Icon: IcoBookings },
+    { href: "/messages", label: "Messages", badgeKey: "messages", Icon: IcoMessages },
   ],
   [
     { href: "/profile", label: "Profile", Icon: IcoProfile },
   ],
 ];
 
-// Items shown in the mobile bottom tab bar (most critical paths)
 const BOTTOM_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Home",     Icon: IcoDashboard },
   { href: "/checkin",   label: "Check-in", Icon: IcoCheckin },
-  { href: "/messages",  label: "Messages", Icon: IcoMessages },
+  { href: "/messages",  label: "Messages", badgeKey: "messages", Icon: IcoMessages },
   { href: "/bookings",  label: "Bookings", Icon: IcoBookings },
   { href: "/profile",   label: "Profile",  Icon: IcoProfile },
 ];
@@ -103,17 +103,21 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
+type Badges = { messages: number };
+
 // ─── Sidebar nav (desktop) ────────────────────────────────────────────────────
 
-export function PortalNav() {
+export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
   const pathname = usePathname();
+  const badges: Badges = { messages: unreadMessages };
 
   return (
     <nav className={styles.nav} aria-label="Portal navigation">
       {NAV_GROUPS.map((group, gi) => (
         <div key={gi} className={styles.navGroup}>
-          {group.map(({ href, label, Icon }) => {
+          {group.map(({ href, label, Icon, badgeKey }) => {
             const active = isActive(pathname, href);
+            const count = badgeKey ? badges[badgeKey] : 0;
             return (
               <Link
                 key={href}
@@ -123,6 +127,11 @@ export function PortalNav() {
               >
                 <span className={styles.navIcon}><Icon /></span>
                 <span className={styles.navLabel}>{label}</span>
+                {count > 0 && (
+                  <span className={styles.navBadge} aria-label={`${count} unread`}>
+                    {count > 99 ? "99+" : count}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -134,21 +143,31 @@ export function PortalNav() {
 
 // ─── Mobile bottom tab bar ────────────────────────────────────────────────────
 
-export function BottomNav() {
+export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
   const pathname = usePathname();
+  const badges: Badges = { messages: unreadMessages };
 
   return (
     <nav className={styles.bottomNav} aria-label="Mobile navigation">
-      {BOTTOM_ITEMS.map(({ href, label, Icon }) => {
+      {BOTTOM_ITEMS.map(({ href, label, Icon, badgeKey }) => {
         const active = isActive(pathname, href);
+        const count = badgeKey ? badges[badgeKey] : 0;
         return (
           <Link
             key={href}
             href={href}
             className={active ? `${styles.bottomNavItem} ${styles.bottomNavItemActive}` : styles.bottomNavItem}
             aria-current={active ? "page" : undefined}
+            style={{ position: "relative" }}
           >
-            <span className={styles.bottomNavIcon}><Icon /></span>
+            <span className={styles.bottomNavIcon}>
+              <Icon />
+              {count > 0 && (
+                <span className={styles.bottomNavBadge} aria-label={`${count} unread`}>
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
+            </span>
             <span className={styles.bottomNavLabel}>{label}</span>
           </Link>
         );
