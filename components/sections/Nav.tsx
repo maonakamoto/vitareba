@@ -35,14 +35,15 @@ export default function Nav() {
       <div className={styles.navActions}>
         <LanguageSwitcher />
         {session ? (
-          <Link href="/dashboard" className={styles.navBtn}>
+          // Portal routes are not locale-prefixed — use plain <a>, not i18n Link
+          <a href="/dashboard" className={styles.navBtn}>
             {t("dashboard")} &rarr;
-          </Link>
+          </a>
         ) : (
           <>
-            <Link href="/login" className={styles.navSignIn}>
+            <a href="/login" className={styles.navSignIn}>
               {t("signIn")}
-            </Link>
+            </a>
             <Link href="/assessment" className={styles.navBtn}>
               {t("cta")}
             </Link>
