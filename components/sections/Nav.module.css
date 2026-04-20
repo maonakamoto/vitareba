@@ -8,38 +8,207 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
 
 .logoLink {
   text-decoration: none;
+  flex-shrink: 0;
 }
+
+/* ─── Nav links row ────────────────────────────────────────────────────────── */
 
 .navLinks {
   display: none;
   align-items: center;
-  gap: 2rem;
+  gap: 0;
 }
 
-.navLinks a {
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
+/* Simple (no dropdown) nav link */
+.navLink {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.3s;
+  padding: 0.5rem 0.9rem;
+  transition: color 0.2s;
+  white-space: nowrap;
 }
 
-.navLinks a:hover {
+.navLink:hover {
   color: var(--ink);
 }
+
+/* ─── Megamenu item (trigger + panel) ─────────────────────────────────────── */
+
+.megaItem {
+  position: relative;
+}
+
+.megaTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.5rem 0.9rem;
+  transition: color 0.2s;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.megaTrigger:hover,
+.megaItem:hover .megaTrigger {
+  color: var(--ink);
+}
+
+.chevron {
+  opacity: 0.5;
+  transition: transform 0.2s, opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.megaItem:hover .chevron {
+  transform: rotate(180deg);
+  opacity: 0.8;
+}
+
+/* ─── Dropdown panel ───────────────────────────────────────────────────────── */
+
+.megaPanel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  pointer-events: none;
+  min-width: 16rem;
+}
+
+/* Small decorative arrow pointing up */
+.megaPanel::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 9px;
+  height: 9px;
+  background: #fff;
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-radius: 2px 0 0 0;
+}
+
+.megaItem:hover .megaPanel,
+.megaItem:focus-within .megaPanel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* ─── Programme cards layout ───────────────────────────────────────────────── */
+
+.megaCards {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  gap: 0.25rem;
+  min-width: 22rem;
+}
+
+.megaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.megaCard:hover {
+  background: var(--off);
+}
+
+.megaCardLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.megaCardSub {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.megaPanelFooter {
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 1.75rem;
+}
+
+.megaFooterLink {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.megaFooterLink:hover {
+  color: var(--teal-dark);
+}
+
+/* ─── Simple list layout (approach, diagnostics) ───────────────────────────── */
+
+.megaList {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  gap: 0.1rem;
+  min-width: 18rem;
+}
+
+.megaListItem {
+  display: block;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  color: var(--ink2);
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: background 0.12s, color 0.12s;
+  letter-spacing: 0.01em;
+}
+
+.megaListItem:hover {
+  background: var(--off);
+  color: var(--ink);
+}
+
+/* ─── Actions (right side) ─────────────────────────────────────────────────── */
 
 .navActions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .navSignIn {
@@ -49,6 +218,7 @@
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 
 .navSignIn:hover {
@@ -60,26 +230,26 @@
   color: var(--white);
   border: none;
   padding: 0.55rem 1.4rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
   font-family: var(--font-dm-sans), sans-serif;
   border-radius: 0.2rem;
-  transition: background 0.3s;
+  transition: background 0.2s;
   text-decoration: none;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .navBtn:hover {
   background: var(--teal);
 }
 
-@media (max-width: 767px) {
-  .navBtn {
-    display: none;
-  }
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
 
+@media (max-width: 767px) {
+  .navBtn,
   .navSignIn {
     display: none;
   }
@@ -87,10 +257,19 @@
 
 @media (min-width: 768px) {
   .nav {
-    padding: 1.2rem 3rem;
+    padding: 1rem 2.5rem;
   }
 
   .navLinks {
     display: flex;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  /* Tighten spacing on mid-size screens */
+  .navLink,
+  .megaTrigger {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.68rem;
   }
 }
