@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { users, profiles } from "@/lib/db/schema";
 import { registerSchema } from "@/lib/domain/auth";
 import { enqueueWelcomeEmails } from "@/lib/domain/email-queue";
 
@@ -36,6 +36,9 @@ export async function POST(req: Request) {
     .insert(users)
     .values({ email, password: hashed })
     .returning({ id: users.id });
+
+  // Create empty profile row so profile-dependent features work immediately
+  await db.insert(profiles).values({ userId: newUser.id });
 
   enqueueWelcomeEmails({ userId: newUser.id, triggeredAt: new Date() })
     .catch((err) => console.error("[email-queue] welcome enqueue failed:", err));

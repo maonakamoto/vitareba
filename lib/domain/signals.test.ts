@@ -1,3 +1,4 @@
+/// <reference types="vitest/globals" />
 import { computePatientSignal } from "./signals";
 import { NEW_PATIENT_GRACE_DAYS, NO_CHECKIN_CRITICAL_DAYS, SCORE_DROP_CRITICAL } from "@/lib/config/admin";
 

@@ -21,28 +21,32 @@ function RegisterForm() {
     setLoading(true);
     setErrors({});
 
-    const res = await fetch("/api/account", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("/api/account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
-    if (!data.success) {
-      setErrors(data.error ?? {});
+      const data = await res.json();
+      if (!data.success) {
+        setErrors(data.error ?? {});
+        setLoading(false);
+        return;
+      }
+
+      const signInRes = await signIn("credentials", { email, password, redirect: false });
+      if (signInRes?.error) {
+        router.push(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+        return;
+      }
+
+      router.push(returnTo);
+      router.refresh();
+    } catch {
+      setErrors({ email: ["Something went wrong. Please try again."] });
       setLoading(false);
-      return;
     }
-
-    const signInRes = await signIn("credentials", { email, password, redirect: false });
-    if (signInRes?.error) {
-      setErrors({ email: ["Account created — please sign in."] });
-      setLoading(false);
-      return;
-    }
-
-    router.push(returnTo);
-    router.refresh();
   }
 
   return (

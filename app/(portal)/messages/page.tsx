@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../portal.module.css";
 import authStyles from "../../(auth)/auth.module.css";
+import msgStyles from "./messages.module.css";
 import { formatDateNumeric } from "@/lib/utils/format";
 
 type Thread = {
@@ -17,13 +18,17 @@ type Thread = {
 export default function MessagesPage() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   async function load() {
+    setLoadError(false);
     const res = await fetch("/api/messages");
+    if (!res.ok) { setLoading(false); setLoadError(true); return; }
     const data = await res.json();
     setThreads(data.data ?? []);
     setLoading(false);
@@ -34,36 +39,42 @@ export default function MessagesPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    await fetch("/api/messages", {
+    setSubmitError("");
+    const res = await fetch("/api/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ subject, body }),
     });
+    const data = await res.json();
+    setSubmitting(false);
+    if (!res.ok || !data.success) {
+      setSubmitError("Failed to send message. Please try again.");
+      return;
+    }
     setSubject("");
     setBody("");
     setShowForm(false);
-    setSubmitting(false);
     load();
   }
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem" }}>
+      <div className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>
             My <em>Messages</em>
           </h1>
           <p className={styles.pageSub}>Secure messages with the VitaReBa team</p>
         </div>
-        <button type="button" className={authStyles.submit} style={{ marginTop: 0, width: "auto" }} onClick={() => setShowForm(!showForm)}>
+        <button type="button" className={`${authStyles.submit} ${styles.headerBtn}`} onClick={() => setShowForm(!showForm)}>
           + New message
         </button>
       </div>
 
       {showForm && (
-        <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
+        <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>New message thread</p>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="subject">Subject</label>
               <input id="subject" className={authStyles.input} value={subject} onChange={(e) => setSubject(e.target.value)} required placeholder="What is this about?" />
@@ -72,18 +83,19 @@ export default function MessagesPage() {
               <label className={authStyles.label} htmlFor="body">Message</label>
               <textarea
                 id="body"
-                style={{ padding: "0.65rem 0.9rem", border: "1px solid var(--border)", borderRadius: "0.5rem", fontFamily: "inherit", fontSize: "0.9rem", resize: "vertical", minHeight: "100px" }}
+                className={styles.formTextarea}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 required
                 placeholder="Your message…"
               />
             </div>
-            <div style={{ display: "flex", gap: "0.75rem" }}>
-              <button type="submit" className={authStyles.submit} style={{ marginTop: 0, flex: 1 }} disabled={submitting}>
+            {submitError && <p className={styles.formError}>{submitError}</p>}
+            <div className={styles.formActions}>
+              <button type="submit" className={`${authStyles.submit} ${styles.formActionPrimary}`} disabled={submitting}>
                 {submitting ? "Sending…" : "Send message"}
               </button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "0.75rem", border: "1px solid var(--border)", borderRadius: "0.5rem", background: "none", cursor: "pointer", fontSize: "0.8rem" }}>
+              <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>
                 Cancel
               </button>
             </div>
@@ -93,23 +105,32 @@ export default function MessagesPage() {
 
       {loading ? (
         <div className={styles.emptyState}>Loading…</div>
+      ) : loadError ? (
+        <div className={styles.card}>
+          <div className={styles.emptyState}>
+            Could not load messages.{" "}
+            <button onClick={load} className={styles.retryBtn}>
+              Retry
+            </button>
+          </div>
+        </div>
       ) : threads.length === 0 ? (
         <div className={styles.card}>
           <div className={styles.emptyState}>No messages yet. Send a message above.</div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div className={styles.listStack}>
           {threads.map((t) => (
-            <Link key={t.id} href={`/messages/${t.id}`} style={{ textDecoration: "none" }}>
-              <div className={styles.card} style={{ cursor: "pointer", transition: "border-color 0.15s" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
-                  <p style={{ fontSize: "0.88rem", fontWeight: 400, color: "var(--ink)" }}>{t.subject}</p>
-                  <p style={{ fontSize: "0.72rem", color: "var(--muted)" }}>
+            <Link key={t.id} href={`/messages/${t.id}`} className={msgStyles.threadLink}>
+              <div className={styles.card}>
+                <div className={msgStyles.threadRow}>
+                  <p className={msgStyles.threadSubject}>{t.subject}</p>
+                  <p className={msgStyles.threadDate}>
                     {formatDateNumeric(t.lastMessageAt)}
                   </p>
                 </div>
                 {t.messages[0] && (
-                  <p style={{ fontSize: "0.78rem", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <p className={msgStyles.threadPreview}>
                     {t.messages[0].body}
                   </p>
                 )}

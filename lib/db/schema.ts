@@ -130,6 +130,7 @@ export const profiles = pgTable("profiles", {
   // Signal tracking (updated by cron/signals, used to detect critical transitions)
   lastKnownSignal: varchar("last_known_signal", { length: 20 }),
   criticalAlertSentAt: timestamp("critical_alert_sent_at", { mode: "date" }),
+  dipAlertSentAt: timestamp("dip_alert_sent_at", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
 });

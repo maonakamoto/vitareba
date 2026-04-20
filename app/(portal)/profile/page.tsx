@@ -11,6 +11,7 @@ import {
   SLEEP_HOURS_MAX,
 } from "@/lib/config/portal";
 import type { ExerciseFrequency } from "@/lib/config/portal";
+import { computeProfileCompleteness } from "@/lib/domain/profile";
 
 type ProfileData = {
   name: string;
@@ -47,12 +48,6 @@ const EMPTY_FORM: ProfileData = {
   notes: "",
   digestOptOut: false,
 };
-
-function completeness(form: ProfileData): number {
-  const fields = Object.values(form);
-  const filled = fields.filter((v) => v !== "" && v !== null && v !== undefined).length;
-  return Math.round((filled / fields.length) * 100);
-}
 
 export default function ProfilePage() {
   const [form, setForm] = useState<ProfileData>(EMPTY_FORM);
@@ -147,7 +142,8 @@ export default function ProfilePage() {
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
 
-  const pct = completeness(form);
+  // Use SSOT completeness — pass profile fields only (matches lib/domain/profile keys)
+  const pct = computeProfileCompleteness(form as Record<string, unknown>);
 
   return (
     <div className={profileStyles.layout}>
@@ -320,30 +316,30 @@ export default function ProfilePage() {
         {/* ── Email preferences ─────────────────────────────────────── */}
         <div className={styles.card} id="digest-optout">
           <p className={styles.cardTitle}>Email preferences</p>
-          <label style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontSize: "0.85rem", color: "var(--ink2)", cursor: "pointer" }}>
+          <label className={styles.checkboxRow}>
             <input
               type="checkbox"
+              className={styles.checkboxInput}
               checked={form.digestOptOut}
               onChange={(e) => setForm((prev) => ({ ...prev, digestOptOut: e.target.checked }))}
-              style={{ width: "1rem", height: "1rem", accentColor: "var(--teal)" }}
             />
             Opt out of weekly summary emails
           </label>
-          <p style={{ fontSize: "0.75rem", color: "var(--muted)", marginTop: "0.5rem" }}>
+          <p className={styles.checkboxHint}>
             Weekly summaries include your check-in averages, latest score, and booking status. Uncheck to receive them.
           </p>
         </div>
 
-        {saveError && <p style={{ fontSize: "0.78rem", color: "var(--danger)", margin: "0 0 0.5rem" }}>{saveError}</p>}
+        {saveError && <p className={styles.formError}>{saveError}</p>}
         <button type="submit" className={authStyles.submit} disabled={saving}>
           {saving ? "Saving…" : saved ? "Saved ✓" : "Save changes"}
         </button>
       </form>
 
       {/* ── Change password ─────────────────────────────────────────── */}
-      <div className={styles.card} style={{ marginTop: "1.25rem" }}>
+      <div className={`${styles.card} ${styles.pwFormCard}`}>
         <p className={styles.cardTitle}>Change password</p>
-        <form onSubmit={handlePasswordChange} style={{ display: "flex", flexDirection: "column", gap: "0.75rem", maxWidth: "26rem" }}>
+        <form onSubmit={handlePasswordChange} className={styles.pwForm}>
           <div className={authStyles.field}>
             <label className={authStyles.label} htmlFor="currentPassword">Current password</label>
             <input
@@ -367,12 +363,11 @@ export default function ProfilePage() {
               minLength={8}
             />
           </div>
-          {pwError && <p style={{ fontSize: "0.78rem", color: "var(--danger)", margin: 0 }}>{pwError}</p>}
+          {pwError && <p className={styles.formError}>{pwError}</p>}
           <button
             type="submit"
-            className={authStyles.submit}
+            className={`${authStyles.submit} ${styles.pwSubmitBtn}`}
             disabled={pwSaving || !pwForm.currentPassword || !pwForm.newPassword}
-            style={{ alignSelf: "flex-start" }}
           >
             {pwSaving ? "Saving…" : pwSaved ? "Saved ✓" : "Update password"}
           </button>

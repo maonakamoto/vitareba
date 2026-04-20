@@ -625,3 +625,229 @@
   white-space: nowrap;
 }
 
+/* ─── Page header row (title + action button) ─────────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+/* Override submit button sizing when used inline in a page header */
+.headerBtn {
+  margin-top: 0 !important;
+  width: auto !important;
+}
+
+/* ─── Vertical list of cards ──────────────────────────────────────────────── */
+
+.listStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ─── Inline form inside a card ───────────────────────────────────────────── */
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.formTextareaLg {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  min-height: 120px;
+  box-sizing: border-box;
+}
+
+.formError {
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin: 0;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.formActionPrimary {
+  margin-top: 0 !important;
+  flex: 1;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.cancelBtn:hover {
+  background: var(--light);
+}
+
+/* ─── Card with bottom gap (used when a card appears above a list) ─────────── */
+
+.cardGap {
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Retry inline button (plain text style) ──────────────────────────────── */
+
+.retryBtn {
+  color: var(--teal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  font-family: inherit;
+}
+
+/* ─── Calendly banner ─────────────────────────────────────────────────────── */
+
+.calendlyBanner {
+  background: color-mix(in srgb, var(--teal) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
+  border-radius: 0.875rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.calendlyBannerTitle {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin: 0 0 0.2rem;
+}
+
+.calendlyBannerSub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ─── Success / info inline banners ───────────────────────────────────────── */
+
+.successBanner {
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--teal);
+}
+
+/* ─── Booking list item ───────────────────────────────────────────────────── */
+
+.bookingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.bookingItemInfo {
+  min-width: 0;
+}
+
+.bookingItemDate {
+  font-size: 0.85rem;
+  color: var(--ink);
+  margin: 0 0 0.35rem;
+}
+
+.bookingNotes {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.bookingRequested {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
+.bookingBadge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Email preferences checkbox row ─────────────────────────────────────── */
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--ink2);
+  cursor: pointer;
+}
+
+.checkboxInput {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--teal);
+}
+
+.checkboxHint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
+/* ─── Password form ───────────────────────────────────────────────────────── */
+
+.pwFormCard {
+  margin-top: 1.25rem;
+}
+
+.pwForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 26rem;
+}
+
+.pwSubmitBtn {
+  align-self: flex-start;
+}
+

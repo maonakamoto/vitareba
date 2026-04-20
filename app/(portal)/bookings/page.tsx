@@ -64,37 +64,26 @@ export default function BookingsPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem" }}>
+      <div className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>
             My <em>Bookings</em>
           </h1>
           <p className={styles.pageSub}>Consultation requests and appointments</p>
         </div>
-        <button type="button" className={authStyles.submit} style={{ marginTop: 0, width: "auto" }} onClick={() => setShowForm(!showForm)}>
+        <button type="button" className={`${authStyles.submit} ${styles.headerBtn}`} onClick={() => setShowForm(!showForm)}>
           + Request booking
         </button>
       </div>
 
       {/* Calendly shortcut */}
       {CALENDLY_URL && (
-        <div style={{
-          background: "color-mix(in srgb, var(--teal) 6%, transparent)",
-          border: "1px solid color-mix(in srgb, var(--teal) 20%, transparent)",
-          borderRadius: "0.875rem",
-          padding: "1.25rem 1.5rem",
-          marginBottom: "1.5rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
-        }}>
+        <div className={styles.calendlyBanner}>
           <div>
-            <p style={{ fontSize: "0.88rem", fontWeight: 500, color: "var(--ink)", margin: "0 0 0.2rem" }}>
+            <p className={styles.calendlyBannerTitle}>
               Book directly with Manuel
             </p>
-            <p style={{ fontSize: "0.78rem", color: "var(--muted)", margin: 0 }}>
+            <p className={styles.calendlyBannerSub}>
               Pick a time — instant confirmation
             </p>
           </div>
@@ -102,8 +91,7 @@ export default function BookingsPage() {
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-dark"
-            style={{ padding: "0.6rem 1.25rem", fontSize: "0.75rem", textDecoration: "none", whiteSpace: "nowrap" }}
+            className={`btn-dark ${styles.ctaBtnSmall}`}
           >
             Book on Calendly →
           </a>
@@ -111,15 +99,15 @@ export default function BookingsPage() {
       )}
 
       {submitSuccess && (
-        <div style={{ background: "color-mix(in srgb, var(--teal) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--teal) 25%, transparent)", borderRadius: "0.75rem", padding: "1rem 1.5rem", marginBottom: "1.25rem", fontSize: "0.85rem", color: "var(--teal)" }}>
+        <div className={styles.successBanner}>
           Booking request submitted. Manuel will be in touch to confirm.
         </div>
       )}
 
       {showForm && (
-        <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
+        <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>New booking request</p>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="date">Preferred date (optional)</label>
               <input id="date" className={authStyles.input} type="date" value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
@@ -128,18 +116,18 @@ export default function BookingsPage() {
               <label className={authStyles.label} htmlFor="notes">Notes</label>
               <textarea
                 id="notes"
-                style={{ padding: "0.65rem 0.9rem", border: "1px solid var(--border)", borderRadius: "0.5rem", fontFamily: "inherit", fontSize: "0.9rem", resize: "vertical", minHeight: "80px" }}
+                className={styles.formTextarea}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="What would you like to discuss?"
               />
             </div>
-            {submitError && <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{submitError}</p>}
-            <div style={{ display: "flex", gap: "0.75rem" }}>
-              <button type="submit" className={authStyles.submit} style={{ marginTop: 0, flex: 1 }} disabled={submitting}>
+            {submitError && <p className={styles.formError}>{submitError}</p>}
+            <div className={styles.formActions}>
+              <button type="submit" className={`${authStyles.submit} ${styles.formActionPrimary}`} disabled={submitting}>
                 {submitting ? "Submitting…" : "Submit request"}
               </button>
-              <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "0.75rem", border: "1px solid var(--border)", borderRadius: "0.5rem", background: "none", cursor: "pointer", fontSize: "0.8rem" }}>
+              <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>
                 Cancel
               </button>
             </div>
@@ -153,7 +141,7 @@ export default function BookingsPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             Could not load bookings.{" "}
-            <button onClick={load} style={{ color: "var(--teal)", background: "none", border: "none", cursor: "pointer", fontSize: "inherit", padding: 0 }}>
+            <button onClick={load} className={styles.retryBtn}>
               Retry
             </button>
           </div>
@@ -163,23 +151,28 @@ export default function BookingsPage() {
           <div className={styles.emptyState}>No bookings yet. Request your first consultation above.</div>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div className={styles.listStack}>
           {bookings.map((b) => {
             const s = BOOKING_STATUS_CONFIG[b.status] ?? BOOKING_STATUS_CONFIG.pending;
             return (
-              <div key={b.id} className={styles.card} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <p style={{ fontSize: "0.85rem", color: "var(--ink)", marginBottom: "0.35rem" }}>
-                    {b.preferredDate ? `Preferred: ${formatDateLong(b.preferredDate)}` : "No preferred date"}
-                  </p>
-                  {b.notes && <p style={{ fontSize: "0.78rem", color: "var(--muted)" }}>{b.notes}</p>}
-                  <p style={{ fontSize: "0.7rem", color: "var(--muted)", marginTop: "0.5rem" }}>
-                    Requested {formatDateNumeric(b.createdAt)}
-                  </p>
+              <div key={b.id} className={styles.card}>
+                <div className={styles.bookingItem}>
+                  <div className={styles.bookingItemInfo}>
+                    <p className={styles.bookingItemDate}>
+                      {b.preferredDate ? `Preferred: ${formatDateLong(b.preferredDate)}` : "No preferred date"}
+                    </p>
+                    {b.notes && <p className={styles.bookingNotes}>{b.notes}</p>}
+                    <p className={styles.bookingRequested}>
+                      Requested {formatDateNumeric(b.createdAt)}
+                    </p>
+                  </div>
+                  <span
+                    className={styles.bookingBadge}
+                    style={{ color: s.color, background: s.bg }}
+                  >
+                    {b.status}
+                  </span>
                 </div>
-                <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.1em", padding: "0.3rem 0.75rem", borderRadius: "1rem", color: s.color, background: s.bg, whiteSpace: "nowrap" }}>
-                  {b.status}
-                </span>
               </div>
             );
           })}

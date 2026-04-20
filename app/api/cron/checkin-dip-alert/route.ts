@@ -26,7 +26,7 @@ export async function GET(req: Request) {
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),
     with: {
-      profile: { columns: { digestOptOut: true, criticalAlertSentAt: true } },
+      profile: { columns: { digestOptOut: true, dipAlertSentAt: true } },
       dailyCheckins: {
         where: gte(dailyCheckins.date, cutoffDate),
         orderBy: [desc(dailyCheckins.date)],
@@ -60,14 +60,12 @@ export async function GET(req: Request) {
 
     const overallAvg = dayAvgs.reduce((a, b) => a + b, 0) / dayAvgs.length;
 
-    // Check whether we already sent an alert recently (within the same dip window)
-    // We use profile.criticalAlertSentAt as a proxy — reuse it rather than a new column
+    // Don't re-alert within the same dip window (avoid spam)
     const profile = patient.profile;
-    if (profile?.criticalAlertSentAt) {
+    if (profile?.dipAlertSentAt) {
       const sentDaysAgo =
-        (Date.now() - new Date(profile.criticalAlertSentAt).getTime()) /
+        (Date.now() - new Date(profile.dipAlertSentAt).getTime()) /
         (24 * 60 * 60 * 1000);
-      // Don't re-alert within the dip window (avoid spam)
       if (sentDaysAgo < CHECKIN_DIP_ALERT_DAYS) {
         skipped++;
         continue;
@@ -91,10 +89,9 @@ export async function GET(req: Request) {
       }).catch(console.error);
     }
 
-    // Mark alert sent — reuse criticalAlertSentAt to avoid schema change
     await db
       .update(profiles)
-      .set({ criticalAlertSentAt: new Date() })
+      .set({ dipAlertSentAt: new Date() })
       .where(eq(profiles.userId, patient.id));
 
     alerted++;
