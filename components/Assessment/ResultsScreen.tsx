@@ -88,14 +88,16 @@ export default function ResultsScreen({
       </div>
 
       <div className={styles.rCta}>
-        <div className={styles.rCtaTitle}>Ready to go deeper?</div>
+        <div className={styles.rCtaTitle}>This is your starting point.</div>
         <div className={styles.rCtaSub}>
-          Your Inflection Edge results are the starting point. The full
-          diagnostic picture awaits.
+          A 30-minute discovery call with Manuel translates these scores into a concrete plan — which dimensions to address first, what interventions are available, and what a VitaReBa programme looks like for your specific profile.
+        </div>
+        <div className={styles.rCtaSub} style={{ marginTop: "0.5rem" }}>
+          No commitment. Just clarity.
         </div>
         <div className={styles.rCtaBtns}>
           <a href={`mailto:${COMPANY.email}`} className={styles.rBtnP}>
-            Book a Discovery Call
+            Book a Discovery Call →
           </a>
           <button type="button" className={styles.rBtnO} onClick={onRestart}>
             Retake Assessment

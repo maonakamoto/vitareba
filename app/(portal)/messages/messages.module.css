@@ -34,3 +34,130 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ── Thread detail view ─────────────────────────────────────────────────── */
+
+.threadDetail {
+  max-width: 680px;
+}
+
+.backLink {
+  font-size: 0.78rem;
+  color: var(--teal);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+  transition: color 0.15s;
+}
+
+.backLink:hover {
+  color: var(--teal-dark);
+}
+
+.msgList {
+  margin-bottom: 1rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.msgRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.msgRowAdmin {
+  align-items: flex-start;
+}
+
+.msgRowPatient {
+  align-items: flex-end;
+}
+
+.msgBubble {
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  max-width: 80%;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.msgBubbleAdmin {
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
+}
+
+.msgBubblePatient {
+  background: var(--off);
+  border: 1px solid var(--border);
+}
+
+.msgMeta {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.composeForm {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.composeTextarea {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  resize: none;
+  min-height: 64px;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.composeTextarea:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.sendBtn {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: var(--teal);
+}
+
+.sendBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.sendError {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: 0.5rem;
+}
+
+.retryBtn {
+  color: var(--teal);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+}

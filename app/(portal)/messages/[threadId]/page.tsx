@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../portal.module.css";
-import authStyles from "../../../(auth)/auth.module.css";
+import msgStyles from "../messages.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 
 type Message = {
@@ -71,7 +71,7 @@ export default function ThreadPage() {
   if (loadError) return (
     <div className={styles.emptyState}>
       Could not load this conversation.{" "}
-      <button onClick={() => { setLoadError(false); load(); }} style={{ color: "var(--teal)", background: "none", border: "none", cursor: "pointer", fontSize: "inherit", padding: 0 }}>
+      <button onClick={() => { setLoadError(false); load(); }} className={msgStyles.retryBtn}>
         Retry
       </button>
     </div>
@@ -79,29 +79,21 @@ export default function ThreadPage() {
   if (!thread) return <div className={styles.emptyState}>Loading…</div>;
 
   return (
-    <div style={{ maxWidth: "680px" }}>
-      <Link href="/messages" style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none", display: "inline-block", marginBottom: "1rem" }}>
+    <div className={msgStyles.threadDetail}>
+      <Link href="/messages" className={msgStyles.backLink}>
         ← Back to messages
       </Link>
       <h1 className={styles.pageTitle}>{thread.subject}</h1>
 
-      <div className={styles.card} style={{ marginBottom: "1rem", maxHeight: "55vh", overflowY: "auto", display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div className={`${styles.card} ${msgStyles.msgList}`}>
         {thread.messages.map((msg) => {
           const isAdmin = msg.sender.role === "admin";
           return (
-            <div key={msg.id} style={{ display: "flex", flexDirection: "column", alignItems: isAdmin ? "flex-start" : "flex-end" }}>
-              <div style={{
-                background: isAdmin ? "color-mix(in srgb, var(--teal) 8%, transparent)" : "var(--off)",
-                border: `1px solid ${isAdmin ? "color-mix(in srgb, var(--teal) 20%, transparent)" : "var(--border)"}`,
-                borderRadius: "0.75rem",
-                padding: "0.75rem 1rem",
-                maxWidth: "80%",
-                fontSize: "0.85rem",
-                lineHeight: 1.7,
-              }}>
+            <div key={msg.id} className={`${msgStyles.msgRow} ${isAdmin ? msgStyles.msgRowAdmin : msgStyles.msgRowPatient}`}>
+              <div className={`${msgStyles.msgBubble} ${isAdmin ? msgStyles.msgBubbleAdmin : msgStyles.msgBubblePatient}`}>
                 {msg.body}
               </div>
-              <p style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "0.25rem" }}>
+              <p className={msgStyles.msgMeta}>
                 {isAdmin ? "VitaReBa team" : "You"} · {formatDateTime(msg.createdAt)}
               </p>
             </div>
@@ -111,19 +103,19 @@ export default function ThreadPage() {
       </div>
 
       <div className={styles.card}>
-        <form onSubmit={handleSend} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end" }}>
+        <form onSubmit={handleSend} className={msgStyles.composeForm}>
           <textarea
-            style={{ flex: 1, padding: "0.65rem 0.9rem", border: "1px solid var(--border)", borderRadius: "0.5rem", fontFamily: "inherit", fontSize: "0.88rem", resize: "none", minHeight: "64px" }}
+            className={msgStyles.composeTextarea}
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="Type a message…"
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(e); } }}
           />
-          <button type="submit" className={authStyles.submit} style={{ marginTop: 0, width: "auto", padding: "0.65rem 1.25rem" }} disabled={sending || !body.trim()}>
+          <button type="submit" className={msgStyles.sendBtn} disabled={sending || !body.trim()}>
             {sending ? "Sending…" : "Send"}
           </button>
         </form>
-        {sendError && <p style={{ fontSize: "0.78rem", color: "var(--danger)", margin: "0.5rem 0 0" }}>{sendError}</p>}
+        {sendError && <p className={msgStyles.sendError}>{sendError}</p>}
       </div>
     </div>
   );
