@@ -514,6 +514,11 @@
   margin-bottom: 1.5rem;
 }
 
+.ctaBodySpaced {
+  composes: ctaBody;
+  margin-top: 0.75rem;
+}
+
 /* Check-in prompt */
 .checkinPrompt {
   composes: card;

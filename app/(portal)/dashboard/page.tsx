@@ -302,7 +302,7 @@ export default async function DashboardPage() {
               <p className={styles.ctaBody}>
                 The Inflection Edge maps your ADHD profile across five dimensions: Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Your results are the clinical foundation for everything that follows — Manuel reviews them before every consultation.
               </p>
-              <p className={styles.ctaBody} style={{ marginTop: "0.75rem" }}>
+              <p className={styles.ctaBodySpaced}>
                 Most patients describe this as the first time they&apos;ve seen their performance pattern explained clearly. Take 10 minutes now.
               </p>
               <Link href="/assessment" className={`btn-dark ${styles.ctaBtnLarge}`}>

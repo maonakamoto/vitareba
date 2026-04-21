@@ -20,27 +20,12 @@ function getExerciseLabel(value: string | null | undefined): string {
   return EXERCISE_FREQUENCY_OPTIONS.find((o) => o.value === value)?.label ?? value;
 }
 
-const SUB_LABEL_STYLE = {
-  fontSize: "0.65rem",
-  letterSpacing: "0.1em",
-  textTransform: "uppercase" as const,
-  color: "var(--muted)",
-  marginBottom: "0.5rem",
-};
-
-const TABLE_STYLE = {
-  width: "100%",
-  fontSize: "0.82rem",
-  borderCollapse: "collapse" as const,
-  marginBottom: "1rem",
-};
-
 function ProfileRow({ label, value }: { label: string; value?: string | null }) {
   return (
     <tr>
-      <td style={{ color: "var(--muted)", padding: "0.3rem 0", width: "40%", verticalAlign: "top" }}>{label}</td>
-      <td style={{ color: "var(--ink2)", padding: "0.3rem 0", lineHeight: 1.5 }}>
-        {value || <span style={{ color: "var(--faint)" }}>—</span>}
+      <td className={styles.profileTdLabel}>{label}</td>
+      <td className={styles.profileTdValue}>
+        {value || <span className={styles.cellFaint}>—</span>}
       </td>
     </tr>
   );
@@ -52,8 +37,8 @@ export function PatientProfileCard({ profile }: { profile: Profile | null | unde
     <div className={styles.card}>
       <p className={styles.cardLabel}>Profile</p>
 
-      <p style={SUB_LABEL_STYLE}>Contact</p>
-      <table style={TABLE_STYLE}>
+      <p className={styles.profileSubLabel}>Contact</p>
+      <table className={styles.profileTable}>
         <tbody>
           <ProfileRow label="Phone" value={pr?.phone} />
           <ProfileRow label="Date of birth" value={pr?.dateOfBirth} />
@@ -62,8 +47,8 @@ export function PatientProfileCard({ profile }: { profile: Profile | null | unde
         </tbody>
       </table>
 
-      <p style={SUB_LABEL_STYLE}>Clinical</p>
-      <table style={TABLE_STYLE}>
+      <p className={styles.profileSubLabel}>Clinical</p>
+      <table className={styles.profileTable}>
         <tbody>
           <ProfileRow label="Main concern" value={pr?.mainConcern} />
           <ProfileRow label="Goals" value={pr?.goals} />
@@ -73,20 +58,20 @@ export function PatientProfileCard({ profile }: { profile: Profile | null | unde
         </tbody>
       </table>
 
-      <p style={{ ...SUB_LABEL_STYLE, marginBottom: "0.5rem" }}>Lifestyle</p>
-      <table style={{ ...TABLE_STYLE, marginBottom: 0 }}>
+      <p className={styles.profileSubLabel}>Lifestyle</p>
+      <table className={styles.profileTableLast}>
         <tbody>
           <tr>
-            <td style={{ color: "var(--muted)", padding: "0.3rem 0", width: "40%" }}>Sleep avg</td>
-            <td style={{ color: "var(--ink2)", padding: "0.3rem 0" }}>
+            <td className={styles.profileTdLabel}>Sleep avg</td>
+            <td className={styles.profileTdValue}>
               {pr?.sleepHoursAvg != null
                 ? `${pr.sleepHoursAvg}h/night`
-                : <span style={{ color: "var(--faint)" }}>—</span>}
+                : <span className={styles.cellFaint}>—</span>}
             </td>
           </tr>
           <tr>
-            <td style={{ color: "var(--muted)", padding: "0.3rem 0" }}>Exercise</td>
-            <td style={{ color: "var(--ink2)", padding: "0.3rem 0" }}>{getExerciseLabel(pr?.exerciseFrequency)}</td>
+            <td className={styles.profileTdLabel}>Exercise</td>
+            <td className={styles.profileTdValue}>{getExerciseLabel(pr?.exerciseFrequency)}</td>
           </tr>
         </tbody>
       </table>

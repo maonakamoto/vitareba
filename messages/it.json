@@ -32,18 +32,26 @@
     "body": "Non si tratta solo di sfide cognitive. L'ADHD non trattato provoca disfunzione metabolica, invecchiamento cellulare accelerato, infiammazione cronica e scarsa autoregolazione dei comportamenti di salute che determinano la durata e la qualità della vita. Per questo la psichiatria metabolica e la medicina della longevità devono lavorare insieme — ed è per questo che esiste VitaReBa.",
     "stats": [
       {
+        "number": "13",
+        "unit": " yrs",
         "label": "Aspettativa di vita ridotta negli adulti con ADHD persistente",
         "source": "Barkley & Fischer, 2019"
       },
       {
+        "number": "4×",
+        "unit": "",
         "label": "Rischio più elevato di lesioni accidentali, abuso di sostanze e malattie metaboliche",
         "source": "Journal of Attention Disorders"
       },
       {
+        "number": "40",
+        "unit": "%",
         "label": "Degli adulti con ADHD presenta disturbi del sonno clinicamente significativi che influenzano il recupero cellulare",
         "source": "Barkley, 2015"
       },
       {
+        "number": "#1",
+        "unit": "",
         "label": "L'ADHD presenta un rischio di mortalità maggiore rispetto a una dieta scorretta, inattività, obesità e fumo — combinati",
         "source": "Barkley, CHADD 2018"
       }

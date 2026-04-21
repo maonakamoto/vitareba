@@ -1,16 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./ImpactStats.module.css";
 
-const STATS_CONFIG = [
-  { number: "13", unit: " yrs" },
-  { number: "4×", unit: "" },
-  { number: "40", unit: "%" },
-  { number: "#1", unit: "" },
-];
+type Stat = { number: string; unit: string; label: string; source: string };
 
 export default async function ImpactStats() {
   const t = await getTranslations("impactStats");
-  const stats = t.raw("stats") as Array<{ label: string; source: string }>;
+  const stats = t.raw("stats") as Stat[];
 
   return (
     <section className={styles.section}>
@@ -28,9 +23,9 @@ export default async function ImpactStats() {
           {stats.map((stat, i) => (
             <div key={i} className={styles.card}>
               <div className={styles.n}>
-                {STATS_CONFIG[i].number}
-                {STATS_CONFIG[i].unit && (
-                  <span className={styles.unit}>{STATS_CONFIG[i].unit}</span>
+                {stat.number}
+                {stat.unit && (
+                  <span className={styles.unit}>{stat.unit}</span>
                 )}
               </div>
               <div className={styles.label}>{stat.label}</div>

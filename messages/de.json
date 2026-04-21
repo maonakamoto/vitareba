@@ -32,18 +32,26 @@
     "body": "Dies sind keine blossen kognitiven Herausforderungen. Unbehandeltes ADHD treibt metabolische Dysfunktion, beschleunigtes zelluläres Altern, chronische Entzündungen und eine schlechte Selbstregulation genau der Gesundheitsverhaltensweisen voran, die bestimmen, wie lange und wie gut Sie leben. Deshalb müssen metabolische Psychiatrie und Longevity-Medizin zusammenarbeiten — und deshalb existiert VitaReBa.",
     "stats": [
       {
+        "number": "13",
+        "unit": " yrs",
         "label": "Reduzierte Lebenserwartung bei Erwachsenen mit persistierendem ADHD",
         "source": "Barkley & Fischer, 2019"
       },
       {
+        "number": "4×",
+        "unit": "",
         "label": "Erhöhtes Risiko für Unfallverletzungen, Substanzmissbrauch und metabolische Erkrankungen",
         "source": "Journal of Attention Disorders"
       },
       {
+        "number": "40",
+        "unit": "%",
         "label": "Der ADHD-Erwachsenen haben klinisch signifikante Schlafstörungen, die die zelluläre Regeneration beeinträchtigen",
         "source": "Barkley, 2015"
       },
       {
+        "number": "#1",
+        "unit": "",
         "label": "ADHD stellt ein grösseres Mortalitätsrisiko dar als schlechte Ernährung, Bewegungsmangel, Adipositas und Rauchen — zusammengenommen",
         "source": "Barkley, CHADD 2018"
       }

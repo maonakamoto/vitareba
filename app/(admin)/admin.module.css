@@ -972,3 +972,38 @@
 .cellFaint {
   color: var(--faint);
 }
+
+/* ─── PatientProfileCard ─────────────────────────────────────────────────── */
+
+.profileSubLabel {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.profileTable {
+  width: 100%;
+  font-size: 0.82rem;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.profileTableLast {
+  composes: profileTable;
+  margin-bottom: 0;
+}
+
+.profileTdLabel {
+  color: var(--muted);
+  padding: 0.3rem 0;
+  width: 40%;
+  vertical-align: top;
+}
+
+.profileTdValue {
+  color: var(--ink2);
+  padding: 0.3rem 0;
+  line-height: 1.5;
+}

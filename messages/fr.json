@@ -32,18 +32,26 @@
     "body": "Il ne s'agit pas uniquement de défis cognitifs. L'ADHD non traité entraîne une dysfonction métabolique, un vieillissement cellulaire accéléré, une inflammation chronique et une mauvaise autorégulation des comportements de santé qui déterminent la durée et la qualité de votre vie. C'est pourquoi la psychiatrie métabolique et la médecine de la longévité doivent travailler ensemble — et pourquoi VitaReBa existe.",
     "stats": [
       {
+        "number": "13",
+        "unit": " yrs",
         "label": "Espérance de vie réduite pour les adultes présentant un ADHD persistant",
         "source": "Barkley & Fischer, 2019"
       },
       {
+        "number": "4×",
+        "unit": "",
         "label": "Risque accru de blessures accidentelles, d'abus de substances et de maladies métaboliques",
         "source": "Journal of Attention Disorders"
       },
       {
+        "number": "40",
+        "unit": "%",
         "label": "Des adultes ADHD présentent des troubles du sommeil cliniquement significatifs affectant la récupération cellulaire",
         "source": "Barkley, 2015"
       },
       {
+        "number": "#1",
+        "unit": "",
         "label": "L'ADHD présente un risque de mortalité plus élevé qu'une mauvaise alimentation, l'inactivité, l'obésité et le tabagisme — réunis",
         "source": "Barkley, CHADD 2018"
       }
