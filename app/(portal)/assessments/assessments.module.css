@@ -33,6 +33,41 @@
   max-width: 480px;
 }
 
+.savedActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.savedSecondary {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.savedSecondary:hover {
+  color: #fff;
+}
+
+/* ── Retake CTA ─────────────────────────────────────────────────────────── */
+
+.retakeCta {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.retakeHint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
 /* ── Results list ───────────────────────────────────────────────────────── */
 
 .resultsList {

@@ -100,26 +100,30 @@ export default function BookingsPage() {
 
       {submitSuccess && (
         <div className={styles.successBanner}>
-          Booking request submitted. Manuel will be in touch to confirm.
+          <p style={{ fontWeight: 500, marginBottom: "0.25rem" }}>Booking request submitted</p>
+          <p>Manuel reviews all requests personally and will be in touch within 24 hours to confirm your appointment.</p>
         </div>
       )}
 
       {showForm && (
         <div className={`${styles.card} ${styles.cardGap}`}>
-          <p className={styles.cardTitle}>New booking request</p>
+          <p className={styles.cardTitle}>Request a consultation</p>
+          <p style={{ fontSize: "0.82rem", color: "var(--muted)", marginBottom: "1rem" }}>
+            Manuel reviews every request personally. Include anything that helps him prepare — your Inflection Edge scores are already on file.
+          </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="date">Preferred date (optional)</label>
               <input id="date" className={authStyles.input} type="date" value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
             </div>
             <div className={authStyles.field}>
-              <label className={authStyles.label} htmlFor="notes">Notes</label>
+              <label className={authStyles.label} htmlFor="notes">What would you like to focus on?</label>
               <textarea
                 id="notes"
                 className={styles.formTextarea}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="What would you like to discuss?"
+                placeholder="e.g. I want to understand my ADHD diagnosis and what a programme could look like for me…"
               />
             </div>
             {submitError && <p className={styles.formError}>{submitError}</p>}
@@ -148,7 +152,10 @@ export default function BookingsPage() {
         </div>
       ) : bookings.length === 0 ? (
         <div className={styles.card}>
-          <div className={styles.emptyState}>No bookings yet. Request your first consultation above.</div>
+          <div className={styles.emptyState}>
+            <p style={{ marginBottom: "0.5rem", fontWeight: 500 }}>No bookings yet</p>
+            <p>A discovery call is the fastest way to find out if VitaReBa is right for you — 30 minutes with Manuel to look at your Inflection Edge results and map out a programme.</p>
+          </div>
         </div>
       ) : (
         <div className={styles.listStack}>

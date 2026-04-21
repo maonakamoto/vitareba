@@ -62,16 +62,21 @@ export default async function AssessmentsPage({
           <div>
             <p className={assessStyles.savedEyebrow}>Results saved</p>
             <p className={assessStyles.savedTitle}>
-              Your Inflection Edge results are now in your account.
+              Your Inflection Edge profile is now on record.
             </p>
           </div>
           <p className={assessStyles.savedBody}>
-            A consultation with Manuel gives you a personalised roadmap based on your specific
-            profile — turning your scores into a concrete plan.
+            This is your baseline. Every check-in, every retake builds on it — showing you exactly how your biology and performance evolve over time. Manuel reviews this data before every consultation to design your programme around your actual profile, not a generic template.
           </p>
-          <div>
+          <p className={assessStyles.savedBody}>
+            The single highest-leverage next step: a 30-minute discovery call with Manuel to translate your scores into a concrete plan.
+          </p>
+          <div className={assessStyles.savedActions}>
             <Link href="/bookings" className="btn-dark" style={{ display: "inline-block", padding: "0.75rem 1.75rem", fontSize: "0.8rem" }}>
-              Book a consultation →
+              Book a discovery call →
+            </Link>
+            <Link href="/dashboard" className={assessStyles.savedSecondary}>
+              Back to dashboard
             </Link>
           </div>
         </div>
@@ -162,9 +167,12 @@ export default async function AssessmentsPage({
         </div>
       )}
 
-      <div style={{ marginTop: "1.5rem" }}>
+      <div className={assessStyles.retakeCta}>
+        <p className={assessStyles.retakeHint}>
+          Retake every 30 days to see how your profile shifts with your programme.
+        </p>
         <Link href="/assessment" className="btn-outline" style={{ display: "inline-block", padding: "0.65rem 1.5rem", fontSize: "0.78rem" }}>
-          Take assessment again
+          Retake assessment →
         </Link>
       </div>
     </div>

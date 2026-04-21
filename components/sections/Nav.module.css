@@ -83,23 +83,30 @@
 
 .megaPanel {
   position: absolute;
-  top: calc(100% + 0.75rem);
+  top: 100%;
   left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 0.875rem;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding-top: 0.75rem;
+  background: transparent;
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) translateY(-6px);
   transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
   pointer-events: none;
   min-width: 16rem;
+  z-index: 200;
+}
+
+/* Inner card that carries the visual styling */
+.megaPanelInner {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Small decorative arrow pointing up */
-.megaPanel::before {
+.megaPanelInner::before {
   content: "";
   position: absolute;
   top: -5px;

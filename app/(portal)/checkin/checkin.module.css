@@ -116,6 +116,100 @@
   border-color: var(--teal);
 }
 
+/* ── Streak badge ────────────────────────────────────────────────────────── */
+
+.streakBadge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--warn);
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+  background: rgba(212, 130, 10, 0.08);
+  padding: 0.3rem 0.7rem;
+  border-radius: 2rem;
+}
+
+/* ── Post-save success panel ────────────────────────────────────────────── */
+
+.successPanel {
+  background: var(--off);
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+}
+
+.successTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.successCheck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.successTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.successStreak {
+  font-size: 0.8rem;
+  color: var(--teal);
+  font-weight: 500;
+}
+
+.successBody {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.successLinks {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.successLinkPrimary {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+
+.successLinkPrimary:hover {
+  color: var(--teal);
+}
+
+.successLinkMuted {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.successLinkMuted:hover {
+  color: var(--ink);
+}
+
 /* ── Submit ─────────────────────────────────────────────────────────────── */
 
 .submitBtn {

@@ -85,7 +85,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <h1 className={styles.pageTitle}>
-        Welcome, <em>{firstName}</em>
+        Welcome back, <em>{firstName}</em>
       </h1>
       <p className={styles.pageSub}>Your VitaReBa patient portal</p>
 
@@ -125,9 +125,17 @@ export default async function DashboardPage() {
                           />
                         </div>
                         <p className={styles.goalProgressMeta}>
-                          {goal.current != null && `Current: ${goal.current}`}
-                          {goal.target != null && ` · Target: ${goal.target}`}
-                          {currentPct != null && ` (${currentPct}%)`}
+                          {currentPct != null
+                            ? currentPct >= 100
+                              ? "Goal reached — ready for review"
+                              : currentPct >= 75
+                              ? `${currentPct}% there — in the final stretch`
+                              : currentPct >= 40
+                              ? `${currentPct}% progress — building momentum`
+                              : `${currentPct}% progress — just getting started`
+                            : goal.current != null
+                            ? `Current: ${goal.current}${goal.target != null ? ` · Target: ${goal.target}` : ""}`
+                            : null}
                         </p>
                       </>
                     )}
@@ -142,16 +150,27 @@ export default async function DashboardPage() {
         <ProfileCompletenessBar pct={profilePct} />
 
         {/* ── Check-in prompt ────────────────────────────────────────── */}
-        {!todayCheckin && (
+        {!todayCheckin ? (
           <div className={styles.checkinPrompt}>
             <div>
               <p className={styles.checkinPromptLabel}>Daily check-in</p>
               <p className={styles.checkinPromptText}>
-                Track your sleep, energy, mood, focus, and stress. Takes 30 seconds.
+                30 seconds to log sleep, energy, mood, focus, and stress — this data feeds directly into your programme.
               </p>
             </div>
             <Link href="/checkin" className={`${styles.cardLink} ${styles.noWrap}`}>
               Check in →
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.checkinDone}>
+            <span className={styles.checkinDoneCheck}>✓</span>
+            <div>
+              <p className={styles.checkinDoneLabel}>Check-in done</p>
+              <p className={styles.checkinDoneText}>Today&apos;s data saved — your trend is growing.</p>
+            </div>
+            <Link href="/checkin" className={`${styles.cardLinkMuted} ${styles.noWrap}`}>
+              Edit →
             </Link>
           </div>
         )}
@@ -183,7 +202,7 @@ export default async function DashboardPage() {
               <p className={styles.heroBody}>{verdict.text}</p>
               {assessmentIsStale && (
                 <p className={styles.assessmentStaleNotice}>
-                  Last taken {assessmentAgeDays} days ago — time for a refresh?
+                  Last taken {assessmentAgeDays} days ago — retaking now shows how your biology has shifted.
                 </p>
               )}
               <div className={styles.heroLinks}>
@@ -191,7 +210,7 @@ export default async function DashboardPage() {
                   Full results →
                 </Link>
                 <Link href="/assessment" className={styles.heroLinkMuted}>
-                  Retake assessment
+                  {assessmentIsStale ? "Retake to track change →" : "Retake assessment"}
                 </Link>
               </div>
             </div>
@@ -200,7 +219,7 @@ export default async function DashboardPage() {
               {/* ── Key intervention area ─────────────────────────── */}
               {lowestDim && (
                 <div className={styles.cardWarn}>
-                  <p className={styles.cardTitle}>Key intervention area</p>
+                  <p className={styles.cardTitle}>Highest-leverage area</p>
                   <p className={styles.interventionName}>
                     {lowestDim.icon} {lowestDim.name}
                   </p>
@@ -210,8 +229,11 @@ export default async function DashboardPage() {
                   >
                     {scores[lowestDim.id] ?? 0}
                   </p>
+                  <p className={styles.interventionHint}>
+                    This is where a targeted intervention delivers the most return.
+                  </p>
                   <Link href="/assessments" className={styles.cardLink}>
-                    See interpretation →
+                    Read full interpretation →
                   </Link>
                 </div>
               )}
@@ -244,10 +266,10 @@ export default async function DashboardPage() {
                 ) : (
                   <>
                     <p className={styles.bookingNoAppt}>
-                      Request a discovery call or clinical consultation with Manuel.
+                      Book a discovery call — no commitment, just a direct conversation with Manuel to see if VitaReBa is the right fit.
                     </p>
                     <Link href="/bookings" className={`btn-dark ${styles.ctaBtnSmall}`}>
-                      Request booking →
+                      Book a call →
                     </Link>
                   </>
                 )}
@@ -275,17 +297,18 @@ export default async function DashboardPage() {
             <div className={styles.heroCard}>
               <p className={styles.heroEyebrow}>Start here</p>
               <p className={styles.heroTitle}>
-                Map your neurotype before your first consultation
+                Understand your neurotype in 10 minutes
               </p>
               <p className={styles.ctaBody}>
-                The Inflection Edge maps your ADHD profile across five dimensions. Your results
-                give Manuel the data he needs to design your programme.
+                The Inflection Edge maps your ADHD profile across five dimensions: Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Your results are the clinical foundation for everything that follows — Manuel reviews them before every consultation.
+              </p>
+              <p className={styles.ctaBody} style={{ marginTop: "0.75rem" }}>
+                Most patients describe this as the first time they&apos;ve seen their performance pattern explained clearly. Take 10 minutes now.
               </p>
               <Link href="/assessment" className={`btn-dark ${styles.ctaBtnLarge}`}>
                 Take the Inflection Edge →
               </Link>
             </div>
-
           </>
         )}
       </div>

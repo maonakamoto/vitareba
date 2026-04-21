@@ -537,6 +537,62 @@
   margin-bottom: 0.35rem;
 }
 
+/* Check-in done (already checked in today) */
+.checkinDone {
+  composes: card;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--off);
+}
+
+.checkinDoneCheck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.checkinDoneLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 0.2rem;
+}
+
+.checkinDoneText {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.cardLinkMuted {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-decoration: none;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.cardLinkMuted:hover {
+  color: var(--ink);
+}
+
+/* Intervention hint */
+.interventionHint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
 /* Chart section */
 .chartCard {
   composes: card;

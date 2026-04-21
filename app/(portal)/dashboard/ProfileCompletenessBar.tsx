@@ -16,9 +16,14 @@ export function ProfileCompletenessBar({ pct }: { pct: number }) {
         <div style={{ height: "100%", width: `${pct}%`, borderRadius: "2px", background: "var(--teal)", transition: "width 0.3s ease" }} />
       </div>
       <p style={{ fontSize: "0.82rem", color: "var(--ink2)", margin: 0 }}>
-        Complete your profile to help Manuel prepare for your consultation.{" "}
+        {pct < 40
+          ? "A full profile lets Manuel arrive at your consultation already knowing your context — not spending the first 20 minutes gathering basics."
+          : pct < 80
+          ? "Almost there — a complete profile means Manuel can design your programme before you even walk in the door."
+          : "Just a few fields left — complete your profile so Manuel has the full picture."}
+        {" "}
         <Link href="/profile" style={{ color: "var(--teal)", textDecoration: "none" }}>
-          Fill it in →
+          Complete profile →
         </Link>
       </p>
     </div>

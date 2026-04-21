@@ -47,16 +47,18 @@ export default function Nav() {
             </svg>
           </a>
           <div className={styles.megaPanel}>
-            <div className={styles.megaCards}>
-              {MEGA.programmes.map((item) => (
-                <a key={item.label} href={item.href} className={styles.megaCard}>
-                  <span className={styles.megaCardLabel}>{item.label}</span>
-                  <span className={styles.megaCardSub}>{item.sub}</span>
-                </a>
-              ))}
-            </div>
-            <div className={styles.megaPanelFooter}>
-              <a href="#pillars" className={styles.megaFooterLink}>View all programmes →</a>
+            <div className={styles.megaPanelInner}>
+              <div className={styles.megaCards}>
+                {MEGA.programmes.map((item) => (
+                  <a key={item.label} href={item.href} className={styles.megaCard}>
+                    <span className={styles.megaCardLabel}>{item.label}</span>
+                    <span className={styles.megaCardSub}>{item.sub}</span>
+                  </a>
+                ))}
+              </div>
+              <div className={styles.megaPanelFooter}>
+                <a href="#pillars" className={styles.megaFooterLink}>View all programmes →</a>
+              </div>
             </div>
           </div>
         </div>
@@ -70,12 +72,14 @@ export default function Nav() {
             </svg>
           </a>
           <div className={styles.megaPanel}>
-            <div className={styles.megaList}>
-              {MEGA.approach.map((item) => (
-                <a key={item.label} href={item.href} className={styles.megaListItem}>
-                  {item.label}
-                </a>
-              ))}
+            <div className={styles.megaPanelInner}>
+              <div className={styles.megaList}>
+                {MEGA.approach.map((item) => (
+                  <a key={item.label} href={item.href} className={styles.megaListItem}>
+                    {item.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -89,12 +93,14 @@ export default function Nav() {
             </svg>
           </a>
           <div className={styles.megaPanel}>
-            <div className={styles.megaList}>
-              {MEGA.diagnostics.map((item) => (
-                <a key={item.label} href={item.href} className={styles.megaListItem}>
-                  {item.label}
-                </a>
-              ))}
+            <div className={styles.megaPanelInner}>
+              <div className={styles.megaList}>
+                {MEGA.diagnostics.map((item) => (
+                  <a key={item.label} href={item.href} className={styles.megaListItem}>
+                    {item.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

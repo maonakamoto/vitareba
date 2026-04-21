@@ -20,6 +20,34 @@ type CheckinData = {
 
 type StoredCheckin = Omit<CheckinData, "notes"> & { notes: string | null; id: string };
 
+function computeStreak(checkins: StoredCheckin[]): number {
+  if (checkins.length === 0) return 0;
+  const sorted = [...checkins].sort((a, b) => b.date.localeCompare(a.date));
+  const today = todayISO();
+  let streak = 0;
+  let expected = today;
+  for (const c of sorted) {
+    if (c.date === expected) {
+      streak++;
+      const d = new Date(expected + "T00:00:00");
+      d.setDate(d.getDate() - 1);
+      expected = d.toISOString().slice(0, 10);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function streakMessage(streak: number): string {
+  if (streak >= 30) return "30-day streak — elite consistency. You're in rare company.";
+  if (streak >= 14) return `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
+  if (streak >= 7) return `${streak}-day streak — a full week. Your nervous system is being mapped.`;
+  if (streak >= 3) return `${streak} days in a row. Patterns are already forming.`;
+  if (streak === 2) return "2 days running. Keep it going.";
+  return "First data point saved. Come back tomorrow to start your streak.";
+}
+
 const METRICS: Array<{
   key: MetricKey;
   label: string;
@@ -123,6 +151,7 @@ export default function CheckinPage() {
   }));
 
   const allFilled = METRICS.every(({ key }) => form[key] > 0);
+  const streak = computeStreak(history);
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
 
@@ -134,11 +163,34 @@ export default function CheckinPage() {
       <p className={styles.pageSub}>Track your wellbeing — takes 30 seconds</p>
 
       <div className={checkinStyles.layout}>
+        {/* Post-save success panel */}
+        {saved && (
+          <div className={checkinStyles.successPanel}>
+            <div className={checkinStyles.successTop}>
+              <span className={checkinStyles.successCheck}>✓</span>
+              <div>
+                <p className={checkinStyles.successTitle}>Check-in saved</p>
+                <p className={checkinStyles.successStreak}>{streakMessage(streak)}</p>
+              </div>
+            </div>
+            <p className={checkinStyles.successBody}>
+              Each data point refines your pattern. Manuel reviews your trend before every consultation — this is the raw material of your programme.
+            </p>
+            <div className={checkinStyles.successLinks}>
+              <a href="/dashboard" className={checkinStyles.successLinkPrimary}>Back to dashboard →</a>
+              <a href="/assessments" className={checkinStyles.successLinkMuted}>View full results</a>
+            </div>
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className={styles.card}>
           <p className={styles.cardTitle}>
-            {alreadyCheckedIn ? "Today's check-in — edit" : "Today's check-in"}
+            {alreadyCheckedIn ? "Today's check-in — update" : "Today's check-in"}
           </p>
+          {streak >= 2 && !saved && (
+            <p className={checkinStyles.streakBadge}>🔥 {streak}-day streak</p>
+          )}
 
           <div className={checkinStyles.metrics}>
             {METRICS.map(({ key, label, lowLabel, highLabel }) => (

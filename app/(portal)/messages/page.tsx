@@ -64,7 +64,7 @@ export default function MessagesPage() {
           <h1 className={styles.pageTitle}>
             My <em>Messages</em>
           </h1>
-          <p className={styles.pageSub}>Secure messages with the VitaReBa team</p>
+          <p className={styles.pageSub}>Direct line to Manuel — secure and asynchronous</p>
         </div>
         <button type="button" className={`${authStyles.submit} ${styles.headerBtn}`} onClick={() => setShowForm(!showForm)}>
           + New message
@@ -73,11 +73,14 @@ export default function MessagesPage() {
 
       {showForm && (
         <div className={`${styles.card} ${styles.cardGap}`}>
-          <p className={styles.cardTitle}>New message thread</p>
+          <p className={styles.cardTitle}>New message</p>
+          <p style={{ fontSize: "0.82rem", color: "var(--muted)", marginBottom: "1rem" }}>
+            Manuel reads and responds to all messages personally. Typically within 24 hours on weekdays.
+          </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="subject">Subject</label>
-              <input id="subject" className={authStyles.input} value={subject} onChange={(e) => setSubject(e.target.value)} required placeholder="What is this about?" />
+              <input id="subject" className={authStyles.input} value={subject} onChange={(e) => setSubject(e.target.value)} required placeholder="e.g. Question about my medication protocol" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="body">Message</label>
@@ -87,7 +90,7 @@ export default function MessagesPage() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 required
-                placeholder="Your message…"
+                placeholder="Write anything you&apos;d want Manuel to know — symptoms, questions, observations…"
               />
             </div>
             {submitError && <p className={styles.formError}>{submitError}</p>}
@@ -116,7 +119,10 @@ export default function MessagesPage() {
         </div>
       ) : threads.length === 0 ? (
         <div className={styles.card}>
-          <div className={styles.emptyState}>No messages yet. Send a message above.</div>
+          <div className={styles.emptyState}>
+            <p style={{ fontWeight: 500, marginBottom: "0.5rem" }}>No messages yet</p>
+            <p>This is your direct line to Manuel and the VitaReBa team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
+          </div>
         </div>
       ) : (
         <div className={styles.listStack}>
