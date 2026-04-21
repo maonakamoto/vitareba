@@ -68,6 +68,26 @@
   max-width: 320px;
 }
 
+/* ── Inline teal link (empty state) ─────────────────────────────────────── */
+
+.emptyLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.emptyLink:hover {
+  color: var(--teal-dark);
+}
+
+/* ── Retake button (smaller than standard btn-outline) ───────────────────── */
+
+.retakeBtn {
+  padding: 0.65rem 1.5rem;
+}
+
 /* ── Results list ───────────────────────────────────────────────────────── */
 
 .resultsList {

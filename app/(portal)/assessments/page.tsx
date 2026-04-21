@@ -72,7 +72,7 @@ export default async function AssessmentsPage({
             The single highest-leverage next step: a 30-minute discovery call with Manuel to translate your scores into a concrete plan.
           </p>
           <div className={assessStyles.savedActions}>
-            <Link href="/bookings" className="btn-dark" style={{ display: "inline-block", padding: "0.75rem 1.75rem", fontSize: "0.8rem" }}>
+            <Link href="/bookings" className="btn-dark">
               Book a discovery call →
             </Link>
             <Link href="/dashboard" className={assessStyles.savedSecondary}>
@@ -86,7 +86,7 @@ export default async function AssessmentsPage({
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p>No assessments yet.</p>
-            <Link href="/assessment" style={{ color: "var(--teal)", marginTop: "0.75rem", display: "inline-block" }}>
+            <Link href="/assessment" className={assessStyles.emptyLink}>
               Take the Inflection Edge →
             </Link>
           </div>
@@ -171,7 +171,7 @@ export default async function AssessmentsPage({
         <p className={assessStyles.retakeHint}>
           Retake every 30 days to see how your profile shifts with your programme.
         </p>
-        <Link href="/assessment" className="btn-outline" style={{ display: "inline-block", padding: "0.65rem 1.5rem", fontSize: "0.78rem" }}>
+        <Link href="/assessment" className={`btn-outline ${assessStyles.retakeBtn}`}>
           Retake assessment →
         </Link>
       </div>
