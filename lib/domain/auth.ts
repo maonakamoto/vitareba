@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getAdminEmails } from "@/lib/config/company";
 
 export const loginSchema = z.object({
   email: z.string().email(),
@@ -11,9 +12,6 @@ export const registerSchema = z.object({
 });
 
 export function resolveRole(email: string): "patient" | "admin" {
-  const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
+  const adminEmails = getAdminEmails().map((e) => e.toLowerCase());
   return adminEmails.includes(email.toLowerCase()) ? "admin" : "patient";
 }

@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
-import { PORTAL_URL } from "@/lib/config/company";
+import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 export async function GET(
   _req: Request,
@@ -80,7 +80,7 @@ export async function POST(
     .where(eq(threads.id, threadId));
 
   // Notify the other party (fire-and-forget)
-  const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim()).filter(Boolean);
+  const adminEmails = getAdminEmails();
 
   if (session.user.role === "admin") {
     // Admin sent → notify patient
