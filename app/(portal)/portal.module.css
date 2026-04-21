@@ -907,3 +907,80 @@
   align-self: flex-start;
 }
 
+/* ─── ProfileCompletenessBar ──────────────────────────────────────────────── */
+
+.profileBar {
+  composes: card;
+  padding: 1.25rem 1.75rem;
+}
+
+.profileBarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.6rem;
+}
+
+.profileBarTitle {
+  composes: cardTitle;
+  margin: 0;
+}
+
+.profileBarPct {
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.profileBarTrack {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--light);
+  margin-bottom: 0.75rem;
+}
+
+.profileBarFill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--teal);
+  transition: width 0.3s ease;
+}
+
+.profileBarText {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  margin: 0;
+}
+
+.profileBarLink {
+  color: var(--teal);
+  text-decoration: none;
+}
+
+.profileBarLink:hover {
+  text-decoration: underline;
+}
+
+/* ─── ProgrammeCard ───────────────────────────────────────────────────────── */
+
+.progName {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--ink);
+  margin: 0 0 0.25rem;
+}
+
+.progPhase {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  margin-bottom: 0.75rem;
+}
+
+.progDesc {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  line-height: 1.65;
+}
+

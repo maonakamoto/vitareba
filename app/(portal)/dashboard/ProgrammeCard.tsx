@@ -15,37 +15,9 @@ export function ProgrammeCard({
   return (
     <div className={styles.card}>
       <p className={styles.cardTitle}>Your Programme</p>
-      <p
-        style={{
-          fontFamily: "var(--font-cormorant)",
-          fontSize: "1.6rem",
-          fontWeight: 300,
-          color: "var(--ink)",
-          margin: "0 0 0.25rem",
-        }}
-      >
-        {prog.label}
-      </p>
-      <p
-        style={{
-          fontSize: "0.65rem",
-          textTransform: "uppercase",
-          letterSpacing: "0.12em",
-          color: "var(--teal)",
-          marginBottom: "0.75rem",
-        }}
-      >
-        {ph.label}
-      </p>
-      <p
-        style={{
-          fontSize: "0.82rem",
-          color: "var(--ink2)",
-          lineHeight: 1.65,
-        }}
-      >
-        {ph.description}
-      </p>
+      <p className={styles.progName}>{prog.label}</p>
+      <p className={styles.progPhase}>{ph.label}</p>
+      <p className={styles.progDesc}>{ph.description}</p>
     </div>
   );
 }
