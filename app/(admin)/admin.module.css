@@ -184,6 +184,22 @@
   font-size: 0.85rem;
 }
 
+/* ─── Unread message indicator ──────────────────────────────────────────────── */
+
+.unreadDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+}
+
+.unreadSubject {
+  font-weight: 500;
+  color: var(--ink);
+}
+
 /* ─── Signal badges ──────────────────────────────────────────────────────────── */
 
 .signalBadge {

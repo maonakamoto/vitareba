@@ -35,13 +35,21 @@ export async function getUnreadThreadCount(userId: string): Promise<number> {
  * sent by a patient (non-admin). Used for the admin nav badge.
  */
 export async function getAdminUnreadThreadCount(): Promise<number> {
-  // Find all patient user IDs
+  const unreadThreadIds = await getAdminUnreadThreadIds();
+  return unreadThreadIds.size;
+}
+
+/**
+ * Return the set of thread IDs that have at least one unread patient message.
+ * Used by the admin messages list to show per-thread unread indicators.
+ */
+export async function getAdminUnreadThreadIds(): Promise<Set<string>> {
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),
     columns: { id: true },
   });
 
-  if (patients.length === 0) return 0;
+  if (patients.length === 0) return new Set();
 
   const patientIds = patients.map((p) => p.id);
 
@@ -53,5 +61,5 @@ export async function getAdminUnreadThreadCount(): Promise<number> {
     columns: { threadId: true },
   });
 
-  return new Set(unread.map((m) => m.threadId)).size;
+  return new Set(unread.map((m) => m.threadId));
 }
