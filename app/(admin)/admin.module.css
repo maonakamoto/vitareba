@@ -831,6 +831,36 @@
   cursor: default;
 }
 
+/* ─── Shared cell / text variants ───────────────────────────────────────── */
+
+.scoreVerdict {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.cellNowrapSm {
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.tdNotes {
+  max-width: 200px;
+}
+
+.cellTextAlt {
+  font-size: 0.78rem;
+  color: var(--ink2);
+}
+
+.cellInk2 {
+  color: var(--ink2);
+}
+
+.linkPlain {
+  text-decoration: none;
+}
+
 /* ─── Message list preview cell ──────────────────────────────────────────── */
 
 .tdDot {

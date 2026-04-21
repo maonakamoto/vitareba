@@ -167,7 +167,7 @@ export default async function PatientsPage() {
                           <span className={styles.scoreChip} style={{ color: scoreColor(latest.overallScore) }}>
                             {latest.overallScore}
                           </span>
-                          <div style={{ fontSize: "0.68rem", color: "var(--muted)", marginTop: "0.15rem" }}>
+                          <div className={styles.scoreVerdict}>
                             {getVerdictName(latest.overallScore)}
                           </div>
                         </div>
@@ -177,7 +177,7 @@ export default async function PatientsPage() {
                     </td>
 
                     {/* Profile completeness */}
-                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem" }}>
+                    <td className={styles.cellNowrapSm}>
                       <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>
                     </td>
 

@@ -743,6 +743,11 @@
   margin: 0;
 }
 
+.formErrorTop {
+  composes: formError;
+  margin-top: 0.5rem;
+}
+
 .formActions {
   display: flex;
   gap: 0.75rem;

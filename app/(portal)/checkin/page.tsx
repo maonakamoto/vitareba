@@ -230,7 +230,7 @@ export default function CheckinPage() {
             />
           </div>
 
-          {saveError && <p style={{ fontSize: "0.78rem", color: "var(--danger)", margin: "0.5rem 0 0" }}>{saveError}</p>}
+          {saveError && <p className={styles.formErrorTop}>{saveError}</p>}
           <button
             type="submit"
             className={checkinStyles.submitBtn}

@@ -183,14 +183,14 @@ export default function AdminDocumentsPage() {
               {documents.map((doc) => (
                 <tr key={doc.id}>
                   <td>
-                    <Link href={`/admin/patients/${doc.user.id}`} style={{ textDecoration: "none" }}>
+                    <Link href={`/admin/patients/${doc.user.id}`} className={styles.linkPlain}>
                       <div className={styles.cellName}>
                         {doc.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
                       <div className={styles.cellSub}>{doc.user.email}</div>
                     </Link>
                   </td>
-                  <td style={{ color: "var(--ink2)" }}>{doc.title}</td>
+                  <td className={styles.cellInk2}>{doc.title}</td>
                   <td className={styles.cellSub}>
                     {doc.mimeType ?? "—"}
                   </td>

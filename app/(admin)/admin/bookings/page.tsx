@@ -111,9 +111,9 @@ export default function AdminBookingsPage() {
                         ? formatDateShort(b.preferredDate)
                         : <span className={styles.cellMuted}>—</span>}
                     </td>
-                    <td style={{ maxWidth: "200px" }}>
+                    <td className={styles.tdNotes}>
                       {b.notes ? (
-                        <span style={{ fontSize: "0.78rem", color: "var(--ink2)" }}>{b.notes}</span>
+                        <span className={styles.cellTextAlt}>{b.notes}</span>
                       ) : (
                         <span className={styles.cellMuted}>—</span>
                       )}
