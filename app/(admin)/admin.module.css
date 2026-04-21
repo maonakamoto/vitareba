@@ -830,3 +830,26 @@
   opacity: 0.45;
   cursor: default;
 }
+
+/* ─── Message list preview cell ──────────────────────────────────────────── */
+
+.tdDot {
+  width: 1.5rem;
+}
+
+.tdMaxW {
+  max-width: 220px;
+}
+
+.msgPreview {
+  font-size: 0.78rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.cellFaint {
+  color: var(--faint);
+}

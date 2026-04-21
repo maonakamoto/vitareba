@@ -867,6 +867,24 @@
   flex-shrink: 0;
 }
 
+/* ─── Shared text utilities (success banners, form hints, empty states) ──── */
+
+.bannerTitle {
+  font-weight: 500;
+  margin: 0 0 0.25rem;
+}
+
+.formHint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.emptyTitle {
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
 /* ─── Email preferences checkbox row ─────────────────────────────────────── */
 
 .checkboxRow {

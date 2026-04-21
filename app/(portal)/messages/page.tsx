@@ -74,7 +74,7 @@ export default function MessagesPage() {
       {showForm && (
         <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>New message</p>
-          <p style={{ fontSize: "0.82rem", color: "var(--muted)", marginBottom: "1rem" }}>
+          <p className={styles.formHint}>
             Manuel reads and responds to all messages personally. Typically within 24 hours on weekdays.
           </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
@@ -120,7 +120,7 @@ export default function MessagesPage() {
       ) : threads.length === 0 ? (
         <div className={styles.card}>
           <div className={styles.emptyState}>
-            <p style={{ fontWeight: 500, marginBottom: "0.5rem" }}>No messages yet</p>
+            <p className={styles.emptyTitle}>No messages yet</p>
             <p>This is your direct line to Manuel and the VitaReBa team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
           </div>
         </div>

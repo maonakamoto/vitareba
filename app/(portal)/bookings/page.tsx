@@ -100,7 +100,7 @@ export default function BookingsPage() {
 
       {submitSuccess && (
         <div className={styles.successBanner}>
-          <p style={{ fontWeight: 500, marginBottom: "0.25rem" }}>Booking request submitted</p>
+          <p className={styles.bannerTitle}>Booking request submitted</p>
           <p>Manuel reviews all requests personally and will be in touch within 24 hours to confirm your appointment.</p>
         </div>
       )}
@@ -108,7 +108,7 @@ export default function BookingsPage() {
       {showForm && (
         <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>Request a consultation</p>
-          <p style={{ fontSize: "0.82rem", color: "var(--muted)", marginBottom: "1rem" }}>
+          <p className={styles.formHint}>
             Manuel reviews every request personally. Include anything that helps him prepare — your Inflection Edge scores are already on file.
           </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
@@ -153,7 +153,7 @@ export default function BookingsPage() {
       ) : bookings.length === 0 ? (
         <div className={styles.card}>
           <div className={styles.emptyState}>
-            <p style={{ marginBottom: "0.5rem", fontWeight: 500 }}>No bookings yet</p>
+            <p className={styles.emptyTitle}>No bookings yet</p>
             <p>A discovery call is the fastest way to find out if VitaReBa is right for you — 30 minutes with Manuel to look at your Inflection Edge results and map out a programme.</p>
           </div>
         </div>

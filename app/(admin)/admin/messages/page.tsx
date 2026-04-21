@@ -57,35 +57,30 @@ export default async function AdminMessagesPage() {
                 const isUnread = unreadIds.has(t.id);
                 return (
                   <tr key={t.id}>
-                    <td style={{ width: "1.5rem" }}>
+                    <td className={styles.tdDot}>
                       {isUnread && <span className={styles.unreadDot} title="Unread message from patient" />}
                     </td>
                     <td>
-                      <div className={isUnread ? styles.unreadSubject : undefined} style={{ color: "var(--ink)" }}>
-                        {t.patient.name ?? <span style={{ color: "var(--muted)" }}>No name</span>}
+                      <div className={`${styles.cellName}${isUnread ? ` ${styles.unreadSubject}` : ""}`}>
+                        {t.patient.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{t.patient.email}</div>
+                      <div className={styles.cellSub}>{t.patient.email}</div>
                     </td>
-                    <td className={isUnread ? styles.unreadSubject : undefined} style={{ color: "var(--ink2)" }}>
+                    <td className={isUnread ? styles.unreadSubject : undefined}>
                       {t.subject}
                     </td>
-                    <td style={{ maxWidth: "220px" }}>
+                    <td className={styles.tdMaxW}>
                       {t.messages[0] ? (
-                        <span style={{ fontSize: "0.78rem", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>
-                          {t.messages[0].body}
-                        </span>
+                        <span className={styles.msgPreview}>{t.messages[0].body}</span>
                       ) : (
-                        <span style={{ color: "var(--faint)" }}>—</span>
+                        <span className={styles.cellFaint}>—</span>
                       )}
                     </td>
-                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: "var(--muted)" }}>
+                    <td className={styles.cellNowrap}>
                       {formatDateShort(t.lastMessageAt)}
                     </td>
                     <td>
-                      <Link
-                        href={`/admin/messages/${t.id}`}
-                        style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none" }}
-                      >
+                      <Link href={`/admin/messages/${t.id}`} className={styles.cellLink}>
                         {isUnread ? "Reply →" : "Open →"}
                       </Link>
                     </td>
