@@ -494,3 +494,339 @@
   color: var(--teal);
   text-decoration: none;
 }
+
+/* ─── Thread detail (admin messages/[threadId]) ───────────────────────────── */
+
+.threadDetail {
+  max-width: 680px;
+}
+
+.threadBackLink {
+  font-size: 0.78rem;
+  color: var(--teal);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  transition: color 0.15s;
+}
+
+.threadBackLink:hover {
+  color: var(--teal-dark);
+}
+
+.threadMeta {
+  margin-bottom: 1.5rem;
+}
+
+.threadPatientLink {
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.threadPatientLink:hover {
+  color: var(--teal-dark);
+}
+
+.msgList {
+  margin-bottom: 1rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.msgRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.msgRowAdmin {
+  align-items: flex-end;
+}
+
+.msgRowPatient {
+  align-items: flex-start;
+}
+
+.msgBubble {
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  max-width: 80%;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.msgBubbleAdmin {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+}
+
+.msgBubblePatient {
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
+  color: var(--ink);
+}
+
+.msgMeta {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.composeForm {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.composeTextarea {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  resize: none;
+  min-height: 64px;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.composeTextarea:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.sendBtn {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.sendBtn:hover:not(:disabled) {
+  background: var(--teal);
+}
+
+.sendBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ─── Shared admin page header row ───────────────────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.headerBtn {
+  font-size: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.headerBtn:hover {
+  background: var(--teal);
+}
+
+/* ─── Admin success/error banners ────────────────────────────────────────── */
+
+.successBanner {
+  background: color-mix(in srgb, var(--teal) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.82rem;
+  color: var(--teal);
+}
+
+.formError {
+  font-size: 0.75rem;
+  color: var(--danger);
+}
+
+/* ─── Admin table cell variants ──────────────────────────────────────────── */
+
+.cellName {
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.cellSub {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.cellMuted {
+  color: var(--muted);
+}
+
+.cellNowrap {
+  white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.cellLink {
+  font-size: 0.78rem;
+  color: var(--teal);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.cellLink:hover {
+  color: var(--teal-dark);
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  transition: border-color 0.15s;
+}
+
+.cancelBtn:hover {
+  border-color: var(--ink2);
+}
+
+.formRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sectionEyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1rem;
+}
+
+.selectInput {
+  padding: 0.7rem 0;
+  border: none;
+  border-bottom: 1.5px solid var(--border);
+  border-radius: 0;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* ─── Filter tabs (bookings, etc.) ──────────────────────────────────────── */
+
+.filterBar {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filterTab {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--ink2);
+  font-size: 0.75rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  cursor: pointer;
+  text-transform: capitalize;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filterTab:hover {
+  border-color: var(--ink2);
+}
+
+.filterTabActive {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+/* ─── Action buttons inside table cells ──────────────────────────────────── */
+
+.actionGroup {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actionBtnConfirm {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.75rem;
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  color: var(--teal);
+  border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-family: var(--font-dm-sans), sans-serif;
+  transition: background 0.15s;
+}
+
+.actionBtnConfirm:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--teal) 20%, transparent);
+}
+
+.actionBtnCancel {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.75rem;
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-family: var(--font-dm-sans), sans-serif;
+  transition: background 0.15s;
+}
+
+.actionBtnCancel:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
+}
+
+.actionBtnConfirm:disabled,
+.actionBtnCancel:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

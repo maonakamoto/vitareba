@@ -73,7 +73,7 @@ export default function AdminDocumentsPage() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem" }}>
+      <div className={styles.pageHeader}>
         <div>
           <h1 className={styles.pageTitle}>
             <em>Documents</em>
@@ -83,28 +83,20 @@ export default function AdminDocumentsPage() {
         <button
           type="button"
           onClick={() => setShowForm(!showForm)}
-          style={{
-            fontSize: "0.75rem", padding: "0.6rem 1.25rem",
-            background: "var(--ink)", color: "#fff", border: "none",
-            borderRadius: "0.5rem", cursor: "pointer", letterSpacing: "0.05em",
-          }}
+          className={styles.headerBtn}
         >
           + Add document
         </button>
       </div>
 
       {success && (
-        <div style={{ background: "color-mix(in srgb, var(--teal) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--teal) 30%, transparent)", borderRadius: "0.75rem", padding: "0.85rem 1.25rem", marginBottom: "1.25rem", fontSize: "0.82rem", color: "var(--teal)" }}>
-          Document added successfully.
-        </div>
+        <div className={styles.successBanner}>Document added successfully.</div>
       )}
 
       {showForm && (
         <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
-          <p style={{ fontSize: "0.72rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--teal)", marginBottom: "1rem" }}>
-            New document
-          </p>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+          <p className={styles.sectionEyebrow}>New document</p>
+          <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="doc-patient">Patient</label>
               <select
@@ -112,7 +104,7 @@ export default function AdminDocumentsPage() {
                 value={patientId}
                 onChange={(e) => setPatientId(e.target.value)}
                 required
-                style={{ padding: "0.7rem 0", border: "none", borderBottom: "1.5px solid var(--border)", borderRadius: 0, fontSize: "0.95rem", fontFamily: "inherit", color: "var(--ink)", background: "transparent", cursor: "pointer" }}
+                className={styles.selectInput}
               >
                 <option value="">Select patient…</option>
                 {patients.map((p) => (
@@ -122,7 +114,7 @@ export default function AdminDocumentsPage() {
                 ))}
               </select>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+            <div className={styles.formGrid2}>
               <div className={authStyles.field}>
                 <label className={authStyles.label} htmlFor="doc-title">Title</label>
                 <input
@@ -147,15 +139,20 @@ export default function AdminDocumentsPage() {
                 />
               </div>
             </div>
-            {error && <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{error}</p>}
-            <div style={{ display: "flex", gap: "0.75rem" }}>
-              <button type="submit" className={authStyles.submit} style={{ marginTop: 0, flex: 1 }} disabled={submitting}>
+            {error && <p className={styles.formError}>{error}</p>}
+            <div className={styles.formRow}>
+              <button
+                type="submit"
+                className={authStyles.submit}
+                style={{ marginTop: 0, flex: 1 }}
+                disabled={submitting}
+              >
                 {submitting ? "Adding…" : "Add document"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                style={{ flex: 1, padding: "0.75rem", border: "1px solid var(--border)", borderRadius: "0.5rem", background: "none", cursor: "pointer", fontSize: "0.8rem" }}
+                className={styles.cancelBtn}
               >
                 Cancel
               </button>
@@ -186,21 +183,18 @@ export default function AdminDocumentsPage() {
               {documents.map((doc) => (
                 <tr key={doc.id}>
                   <td>
-                    <Link
-                      href={`/admin/patients/${doc.user.id}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <div style={{ fontWeight: 400, color: "var(--ink)" }}>
-                        {doc.user.name ?? <span style={{ color: "var(--muted)" }}>No name</span>}
+                    <Link href={`/admin/patients/${doc.user.id}`} style={{ textDecoration: "none" }}>
+                      <div className={styles.cellName}>
+                        {doc.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{doc.user.email}</div>
+                      <div className={styles.cellSub}>{doc.user.email}</div>
                     </Link>
                   </td>
                   <td style={{ color: "var(--ink2)" }}>{doc.title}</td>
-                  <td style={{ fontSize: "0.75rem", color: "var(--muted)" }}>
+                  <td className={styles.cellSub}>
                     {doc.mimeType ?? "—"}
                   </td>
-                  <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: "var(--muted)" }}>
+                  <td className={styles.cellNowrap}>
                     {new Date(doc.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric", month: "short", year: "numeric",
                     })}
@@ -210,7 +204,7 @@ export default function AdminDocumentsPage() {
                       href={doc.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none" }}
+                      className={styles.cellLink}
                     >
                       Open →
                     </a>

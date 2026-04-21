@@ -118,6 +118,7 @@ export default async function PatientsPage() {
                 );
                 const lastCheckin = sortedCheckins[0];
                 const checkinMap = new Map(p.dailyCheckins.map((c) => [c.date, c]));
+                const pct = computeProfileCompleteness(p.profile as Record<string, unknown> | null);
 
                 return (
                   <tr key={p.id}>
@@ -130,12 +131,10 @@ export default async function PatientsPage() {
 
                     {/* Patient */}
                     <td>
-                      <div>
-                        <div style={{ fontWeight: 400, color: "var(--ink)" }}>
-                          {p.name ?? <span style={{ color: "var(--muted)" }}>No name</span>}
-                        </div>
-                        <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{p.email}</div>
+                      <div className={styles.cellName}>
+                        {p.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
+                      <div className={styles.cellSub}>{p.email}</div>
                     </td>
 
                     {/* Last check-in */}
@@ -173,24 +172,18 @@ export default async function PatientsPage() {
                           </div>
                         </div>
                       ) : (
-                        <span style={{ color: "var(--muted)", fontSize: "0.78rem" }}>—</span>
+                        <span className={styles.cellSub}>—</span>
                       )}
                     </td>
 
                     {/* Profile completeness */}
-                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", fontWeight: 400 }}>
-                      {(() => {
-                        const pct = computeProfileCompleteness(p.profile as Record<string, unknown> | null);
-                        return <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>;
-                      })()}
+                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem" }}>
+                      <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>
                     </td>
 
                     {/* View */}
                     <td>
-                      <Link
-                        href={`/admin/patients/${p.id}`}
-                        style={{ fontSize: "0.78rem", color: "var(--teal)", textDecoration: "none" }}
-                      >
+                      <Link href={`/admin/patients/${p.id}`} className={styles.cellLink}>
                         View →
                       </Link>
                     </td>
