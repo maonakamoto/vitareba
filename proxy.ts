@@ -3,19 +3,16 @@ import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import { USER_ROLE } from "@/lib/config/auth";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
-// Portal / admin paths: auth-guard only, bypass locale routing
+// Portal / admin paths: auth-guard only, bypass locale routing.
+// Derived from PORTAL_ROUTES so adding a new portal route only requires
+// updating lib/config/routes.ts — not this file too.
 const PORTAL_PREFIXES = [
-  "/dashboard",
-  "/assessment",
-  "/assessments",
-  "/bookings",
-  "/checkin",
-  "/messages",
-  "/profile",
-  "/admin",
+  ...Object.values(PORTAL_ROUTES),
+  "/admin", // all admin sub-routes share this prefix
   "/api",
 ];
 
