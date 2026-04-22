@@ -9,7 +9,7 @@ import { eq, desc } from "drizzle-orm";
 import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
 
 const saveSchema = z.object({
-  scores: z.record(z.string(), z.number()),
+  scores: z.record(z.string().max(50), z.number().min(0).max(100)),
   overallScore: z.number().int().min(0).max(100),
 });
 

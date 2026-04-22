@@ -1,16 +1,18 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { getAdminEmails } from "@/lib/config/company";
-import { USER_ROLE, type UserRole, PASSWORD_MIN_LENGTH, BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
+import { USER_ROLE, type UserRole, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, EMAIL_MAX_LENGTH, BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
 
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().email().max(EMAIL_MAX_LENGTH),
+  password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
 });
 
 export const registerSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`),
+  email: z.string().email("Invalid email address").max(EMAIL_MAX_LENGTH),
+  password: z.string()
+    .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`)
+    .max(PASSWORD_MAX_LENGTH),
 });
 
 export function resolveRole(email: string): UserRole {

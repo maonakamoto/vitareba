@@ -3,15 +3,15 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { and, eq, gt } from "drizzle-orm";
-import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, EMAIL_MAX_LENGTH } from "@/lib/config/auth";
 import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
 import { hashPassword } from "@/lib/domain/auth";
 
 const schema = z.object({
-  token: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(PASSWORD_MIN_LENGTH),
+  token: z.string().min(1).max(512),
+  email: z.string().email().max(EMAIL_MAX_LENGTH),
+  password: z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
 
 export async function POST(req: Request) {

@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { programmeAssignments } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { PROGRAMME_ENUM_VALUES, PHASE_ENUM_VALUES } from "@/lib/config/programmes";
+import { PATIENT_NOTE_MAX_LENGTH } from "@/lib/config/portal";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -26,8 +27,8 @@ export async function GET(_req: Request, { params }: RouteContext) {
 const updateSchema = z.object({
   programme: z.enum(PROGRAMME_ENUM_VALUES),
   phase: z.enum(PHASE_ENUM_VALUES),
-  startDate: z.string().nullable().optional(),
-  notes: z.string().nullable().optional(),
+  startDate: z.string().max(10).nullable().optional(),
+  notes: z.string().max(PATIENT_NOTE_MAX_LENGTH).nullable().optional(),
 });
 
 export async function PATCH(req: Request, { params }: RouteContext) {

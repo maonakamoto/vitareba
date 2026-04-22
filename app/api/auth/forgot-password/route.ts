@@ -9,9 +9,9 @@ import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS, EMAIL_MAX_LENGTH } from "@/lib/config/auth";
 
-const schema = z.object({ email: z.string().email() });
+const schema = z.object({ email: z.string().email().max(EMAIL_MAX_LENGTH) });
 // Always return the same response to prevent email enumeration
 const OK = NextResponse.json({ success: true });
 

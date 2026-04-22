@@ -6,12 +6,12 @@ import { eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from "@/lib/config/auth";
 import { hashPassword, verifyPassword } from "@/lib/domain/auth";
 
 const schema = z.object({
-  currentPassword: z.string().min(1),
-  newPassword: z.string().min(PASSWORD_MIN_LENGTH),
+  currentPassword: z.string().min(1).max(PASSWORD_MAX_LENGTH),
+  newPassword: z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
 
 export async function POST(req: Request) {

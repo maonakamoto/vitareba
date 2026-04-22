@@ -16,5 +16,14 @@ export const BCRYPT_SALT_ROUNDS = 12;
 /** Minimum password length — enforced at registration, reset, and change-password */
 export const PASSWORD_MIN_LENGTH = 8;
 
+/**
+ * Maximum password length — bounded to prevent bcrypt DoS via extremely long inputs.
+ * bcrypt truncates at 72 bytes internally; 200 chars is generous and safe.
+ */
+export const PASSWORD_MAX_LENGTH = 200;
+
+/** Maximum email length — matches email varchar(255) DB column */
+export const EMAIL_MAX_LENGTH = 255;
+
 /** How long (ms) a password-reset token remains valid */
 export const PASSWORD_RESET_TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
