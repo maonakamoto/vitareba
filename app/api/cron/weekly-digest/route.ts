@@ -9,6 +9,7 @@ import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL } from "@/lib/config/company";
 import { ACTIVE_CHECKIN_DAYS } from "@/lib/config/admin";
+import { formatDateISO } from "@/lib/utils/format";
 
 function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: number; focus: number; stress: number }>) {
   if (checkins.length === 0) return null;
@@ -30,10 +31,6 @@ function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: numbe
     focus: sum.focus / n,
     stress: sum.stress / n,
   };
-}
-
-function dateStr(d: Date): string {
-  return d.toISOString().slice(0, 10);
 }
 
 export async function GET(req: Request) {
@@ -83,7 +80,7 @@ export async function GET(req: Request) {
     const recentCheckins = await db.query.dailyCheckins.findMany({
       where: and(
         eq(dailyCheckins.userId, patient.id),
-        gte(dailyCheckins.date, dateStr(cutoffDate))
+        gte(dailyCheckins.date, formatDateISO(cutoffDate))
       ),
     });
 
@@ -91,9 +88,9 @@ export async function GET(req: Request) {
     if (!hasAssessment && recentCheckins.length === 0) { skipped++; continue; }
 
     // Compute week averages
-    const thisWeekCheckins = recentCheckins.filter((c) => c.date >= dateStr(thisWeekStart));
+    const thisWeekCheckins = recentCheckins.filter((c) => c.date >= formatDateISO(thisWeekStart));
     const prevWeekCheckins = recentCheckins.filter(
-      (c) => c.date >= dateStr(prevWeekStart) && c.date < dateStr(thisWeekStart)
+      (c) => c.date >= formatDateISO(prevWeekStart) && c.date < formatDateISO(thisWeekStart)
     );
 
     const thisWeekAvgs = avgMetrics(thisWeekCheckins);

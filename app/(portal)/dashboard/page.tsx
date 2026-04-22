@@ -8,7 +8,7 @@ import styles from "./dashboard.module.css";
 import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
 import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
-import { formatDateLong } from "@/lib/utils/format";
+import { formatDateLong, formatDateISO, DAY_MS } from "@/lib/utils/format";
 import { ProgrammeCard } from "./ProgrammeCard";
 import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
@@ -24,7 +24,7 @@ export default async function DashboardPage() {
   if (!session) return null;
 
   const now = Date.now();
-  const today = new Date(now).toISOString().slice(0, 10);
+  const today = formatDateISO(new Date(now));
 
   const [recentAssessments, latestBooking, threadCount, dbUser, todayCheckin, programmeAssignment, profile, activeGoals] = await Promise.all([
     db.query.assessmentResults.findMany({
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
   const verdict = latestAssessment ? getVerdict(latestAssessment.overallScore) : null;
   const assessmentAgeDays = latestAssessment
-    ? Math.floor((now - new Date(latestAssessment.completedAt).getTime()) / (24 * 60 * 60 * 1000))
+    ? Math.floor((now - new Date(latestAssessment.completedAt).getTime()) / DAY_MS)
     : null;
   const assessmentIsStale = assessmentAgeDays !== null && assessmentAgeDays >= 30;
   const delta =

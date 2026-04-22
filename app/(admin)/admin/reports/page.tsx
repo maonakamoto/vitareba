@@ -8,7 +8,7 @@ import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
-import { formatDateShort } from "@/lib/utils/format";
+import { formatDateShort, formatDateISO } from "@/lib/utils/format";
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
@@ -27,7 +27,7 @@ export default async function ReportsPage() {
   const now = new Date();
   const weekAgo = new Date(now);
   weekAgo.setDate(weekAgo.getDate() - 7);
-  const weekAgoStr = weekAgo.toISOString().slice(0, 10);
+  const weekAgoStr = formatDateISO(weekAgo);
 
   // Fetch all patients with signal-relevant data
   const patients = await db.query.users.findMany({

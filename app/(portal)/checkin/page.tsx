@@ -6,6 +6,7 @@ import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { formatDateISO } from "@/lib/utils/format";
 
 type MetricKey = "sleep" | "energy" | "mood" | "focus" | "stress";
 
@@ -32,7 +33,7 @@ function computeStreak(checkins: StoredCheckin[]): number {
       streak++;
       const d = new Date(expected + "T00:00:00");
       d.setDate(d.getDate() - 1);
-      expected = d.toISOString().slice(0, 10);
+      expected = formatDateISO(d);
     } else {
       break;
     }
@@ -68,7 +69,7 @@ const SCALE = Array.from(
 );
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10);
+  return formatDateISO(new Date());
 }
 
 export default function CheckinPage() {

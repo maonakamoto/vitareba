@@ -1,5 +1,8 @@
 // Date formatting utilities — SSOT for locale + format decisions
 
+export const HOUR_MS = 60 * 60 * 1000;
+export const DAY_MS = 24 * HOUR_MS;
+
 const LOCALE = "en-GB";
 
 /** "2 Apr 2025" */
@@ -24,4 +27,9 @@ export function formatDateNumeric(date: Date | string): string {
 export function formatDateTime(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toLocaleString(LOCALE, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
+
+/** ISO date string "YYYY-MM-DD" — for DB date column comparisons */
+export function formatDateISO(date: Date): string {
+  return date.toISOString().slice(0, 10);
 }

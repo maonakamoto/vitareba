@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { dailyCheckins } from "@/lib/db/schema";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS } from "@/lib/config/portal";
+import { formatDateISO } from "@/lib/utils/format";
 
 const metricSchema = z
   .number()
@@ -35,7 +36,7 @@ export async function GET(req: Request) {
 
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
-  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  const cutoffStr = formatDateISO(cutoff);
 
   // Fetch recent check-ins ordered ascending for chart rendering
   const allCheckins = await db.query.dailyCheckins.findMany({
@@ -45,7 +46,7 @@ export async function GET(req: Request) {
   });
 
   // Today's check-in
-  const today = new Date().toISOString().slice(0, 10);
+  const today = formatDateISO(new Date());
   const todayCheckin = allCheckins.find((c) => c.date === today) ?? null;
 
   return NextResponse.json({

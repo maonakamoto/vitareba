@@ -1,7 +1,6 @@
 // Email sequence timing — SSOT for all delay values
 
-const HOUR_MS = 60 * 60 * 1000;
-const DAY_MS = 24 * HOUR_MS;
+import { HOUR_MS, DAY_MS } from "@/lib/utils/format";
 
 export const ASSESSMENT_EMAIL_SEQUENCE = [
   {

@@ -11,6 +11,7 @@ import {
   CHECKIN_DIP_ALERT_THRESHOLD,
   CHECKIN_DIP_ALERT_DAYS,
 } from "@/lib/config/admin";
+import { DAY_MS, formatDateISO } from "@/lib/utils/format";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -21,7 +22,7 @@ export async function GET(req: Request) {
   // Fetch last N days of check-ins for all active patients
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - CHECKIN_DIP_ALERT_DAYS);
-  const cutoffDate = cutoff.toISOString().slice(0, 10);
+  const cutoffDate = formatDateISO(cutoff);
 
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),
@@ -65,7 +66,7 @@ export async function GET(req: Request) {
     if (profile?.dipAlertSentAt) {
       const sentDaysAgo =
         (Date.now() - new Date(profile.dipAlertSentAt).getTime()) /
-        (24 * 60 * 60 * 1000);
+        DAY_MS;
       if (sentDaysAgo < CHECKIN_DIP_ALERT_DAYS) {
         skipped++;
         continue;

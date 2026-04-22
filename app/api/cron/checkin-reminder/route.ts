@@ -7,6 +7,7 @@ import { eq, desc } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { checkinReminderEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
+import { formatDateISO } from "@/lib/utils/format";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = formatDateISO(new Date());
 
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),

@@ -4,6 +4,7 @@ import {
   SCORE_DROP_CRITICAL,
   NEW_PATIENT_GRACE_DAYS,
 } from "@/lib/config/admin";
+import { DAY_MS } from "@/lib/utils/format";
 
 type CheckinRow = {
   date: string; // YYYY-MM-DD
@@ -44,9 +45,8 @@ export function computePatientSignal({
   bookings,
   now = new Date(),
 }: SignalInput): SignalResult {
-  const dayMs = 24 * 60 * 60 * 1000;
   const daysSinceRegistration = Math.floor(
-    (now.getTime() - registeredAt.getTime()) / dayMs
+    (now.getTime() - registeredAt.getTime()) / DAY_MS
   );
 
   // New: registered recently, no activity expected yet
@@ -59,7 +59,7 @@ export function computePatientSignal({
     const sorted = [...checkins].sort((a, b) => b.date.localeCompare(a.date));
     const lastCheckinDate = new Date(sorted[0].date + "T00:00:00");
     const daysSinceLast = Math.floor(
-      (now.getTime() - lastCheckinDate.getTime()) / dayMs
+      (now.getTime() - lastCheckinDate.getTime()) / DAY_MS
     );
 
     // Critical: has check-in history but gone silent ≥ threshold days

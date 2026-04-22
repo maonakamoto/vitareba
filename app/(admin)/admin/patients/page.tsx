@@ -13,6 +13,7 @@ import {
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
 } from "@/lib/config/admin";
+import { DAY_MS, formatDateISO } from "@/lib/utils/format";
 
 function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: number; stress: number }): number {
   return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
@@ -21,7 +22,7 @@ function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: nu
 function relativeDate(dateStr: string, now: Date): string {
   const d = new Date(dateStr + "T00:00:00");
   const diffMs = now.getTime() - d.getTime();
-  const days = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+  const days = Math.floor(diffMs / DAY_MS);
   if (days === 0) return "Today";
   if (days === 1) return "Yesterday";
   return `${days}d ago`;
@@ -80,7 +81,7 @@ export default async function PatientsPage() {
   for (let i = SIGNAL_CHECKIN_WINDOW_DAYS - 1; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
-    sparkDates.push(d.toISOString().slice(0, 10));
+    sparkDates.push(formatDateISO(d));
   }
 
   return (
