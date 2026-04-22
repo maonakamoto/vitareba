@@ -158,7 +158,6 @@ export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
             href={href}
             className={active ? `${styles.bottomNavItem} ${styles.bottomNavItemActive}` : styles.bottomNavItem}
             aria-current={active ? "page" : undefined}
-            style={{ position: "relative" }}
           >
             <span className={styles.bottomNavIcon}>
               <Icon />

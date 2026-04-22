@@ -92,7 +92,7 @@ export default function ResultsScreen({
         <div className={styles.rCtaSub}>
           A 30-minute discovery call with Manuel translates these scores into a concrete plan — which dimensions to address first, what interventions are available, and what a VitaReBa programme looks like for your specific profile.
         </div>
-        <div className={styles.rCtaSub} style={{ marginTop: "0.5rem" }}>
+        <div className={styles.rCtaSubSpaced}>
           No commitment. Just clarity.
         </div>
         <div className={styles.rCtaBtns}>

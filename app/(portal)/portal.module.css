@@ -243,6 +243,7 @@
   padding: 0.4rem 0;
   transition: color 0.12s;
   min-height: 44px; /* minimum touch target */
+  position: relative;
 }
 
 .bottomNavItemActive {

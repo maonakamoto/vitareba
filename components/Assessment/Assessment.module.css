@@ -462,6 +462,11 @@
   margin-bottom: 1.5rem;
 }
 
+.rCtaSubSpaced {
+  composes: rCtaSub;
+  margin-top: 0.5rem;
+}
+
 .rCtaBtns {
   display: flex;
   gap: 0.7rem;
