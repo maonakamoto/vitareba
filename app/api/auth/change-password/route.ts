@@ -3,11 +3,11 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { BCRYPT_SALT_ROUNDS, PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { hashPassword, verifyPassword } from "@/lib/domain/auth";
 
 const schema = z.object({
   currentPassword: z.string().min(1),
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const valid = await bcrypt.compare(currentPassword, user.password);
+  const valid = await verifyPassword(currentPassword, user.password);
   if (!valid) {
     return NextResponse.json(
       { success: false, error: "Current password is incorrect" },
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const hashed = await bcrypt.hash(newPassword, BCRYPT_SALT_ROUNDS);
+  const hashed = await hashPassword(newPassword);
   await db.update(users).set({ password: hashed }).where(eq(users.id, session.user.id));
 
   return NextResponse.json({ success: true });

@@ -3,10 +3,10 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { and, eq, gt } from "drizzle-orm";
-import bcrypt from "bcryptjs";
-import { BCRYPT_SALT_ROUNDS, PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
+import { hashPassword } from "@/lib/domain/auth";
 
 const schema = z.object({
   token: z.string().min(1),
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid or expired link" }, { status: 400 });
   }
 
-  const hashed = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
+  const hashed = await hashPassword(password);
   await db.update(users).set({ password: hashed }).where(eq(users.email, email));
   await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
 

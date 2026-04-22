@@ -1,12 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users, profiles } from "@/lib/db/schema";
-import { registerSchema } from "@/lib/domain/auth";
+import { registerSchema, hashPassword } from "@/lib/domain/auth";
 import { enqueueWelcomeEmails } from "@/lib/domain/email-queue";
 
 export async function POST(req: Request) {
@@ -31,7 +29,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const hashed = await bcrypt.hash(password, BCRYPT_SALT_ROUNDS);
+  const hashed = await hashPassword(password);
   const [newUser] = await db
     .insert(users)
     .values({ email, password: hashed })

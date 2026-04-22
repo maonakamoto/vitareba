@@ -2,11 +2,10 @@ import NextAuth from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { getInstance } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { loginSchema, resolveRole } from "@/lib/domain/auth";
+import { loginSchema, resolveRole, verifyPassword } from "@/lib/domain/auth";
 import { USER_ROLE, type UserRole } from "@/lib/config/auth";
 
 // Functional config pattern — DrizzleAdapter(getInstance()) is only called on the
@@ -37,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
 
           if (!user?.password) return null;
 
-          const valid = await bcrypt.compare(parsed.data.password, user.password);
+          const valid = await verifyPassword(parsed.data.password, user.password);
           if (!valid) return null;
 
           return {
