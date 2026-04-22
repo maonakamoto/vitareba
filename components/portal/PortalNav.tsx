@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import styles from "@/app/(portal)/portal.module.css";
+import { BADGE_MAX_COUNT } from "@/lib/config/portal";
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
 
@@ -129,7 +130,7 @@ export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
                 <span className={styles.navLabel}>{label}</span>
                 {count > 0 && (
                   <span className={styles.navBadge} aria-label={`${count} unread`}>
-                    {count > 99 ? "99+" : count}
+                    {count > BADGE_MAX_COUNT ? `${BADGE_MAX_COUNT}+` : count}
                   </span>
                 )}
               </Link>
@@ -163,7 +164,7 @@ export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
               <Icon />
               {count > 0 && (
                 <span className={styles.bottomNavBadge} aria-label={`${count} unread`}>
-                  {count > 99 ? "99+" : count}
+                  {count > BADGE_MAX_COUNT ? `${BADGE_MAX_COUNT}+` : count}
                 </span>
               )}
             </span>

@@ -86,3 +86,12 @@ export const PROFILE_COMPLETENESS_HIGH_PCT = 80;
 
 /** Calendly booking URL embedded in the patient bookings page (null when not configured) */
 export const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? null;
+
+/** How long (ms) to show the booking submission success banner before hiding it */
+export const BOOKING_SUCCESS_MS = 5_000;
+
+/** How often (ms) the message thread view polls for new messages while the tab is focused */
+export const MESSAGE_POLL_INTERVAL_MS = 30_000;
+
+/** Maximum badge count before showing "N+" truncation (e.g. 99+) */
+export const BADGE_MAX_COUNT = 99;

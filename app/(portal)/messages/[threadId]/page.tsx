@@ -8,6 +8,7 @@ import msgStyles from "../messages.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { COMPANY } from "@/lib/config/company";
+import { MESSAGE_POLL_INTERVAL_MS } from "@/lib/config/portal";
 
 type Message = {
   id: string;
@@ -46,7 +47,7 @@ export default function ThreadPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (!document.hidden) load();
-    }, 30_000);
+    }, MESSAGE_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [load]);
 

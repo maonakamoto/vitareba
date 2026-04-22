@@ -7,7 +7,7 @@ import authStyles from "../../(auth)/auth.module.css";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
-import { CALENDLY_URL } from "@/lib/config/portal";
+import { CALENDLY_URL, BOOKING_SUCCESS_MS } from "@/lib/config/portal";
 
 
 export default function BookingsPage() {
@@ -51,7 +51,7 @@ export default function BookingsPage() {
     setNotes("");
     setShowForm(false);
     setSubmitSuccess(true);
-    setTimeout(() => setSubmitSuccess(false), 5000);
+    setTimeout(() => setSubmitSuccess(false), BOOKING_SUCCESS_MS);
     load();
   }
 
