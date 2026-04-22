@@ -8,6 +8,7 @@ import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
+import { computeStreak } from "@/lib/domain/checkin";
 
 type MetricKey = "sleep" | "energy" | "mood" | "focus" | "stress";
 
@@ -23,24 +24,6 @@ type CheckinData = {
 
 type StoredCheckin = Omit<CheckinData, "notes"> & { notes: string | null; id: string };
 
-function computeStreak(checkins: StoredCheckin[]): number {
-  if (checkins.length === 0) return 0;
-  const sorted = [...checkins].sort((a, b) => b.date.localeCompare(a.date));
-  const today = todayISO();
-  let streak = 0;
-  let expected = today;
-  for (const c of sorted) {
-    if (c.date === expected) {
-      streak++;
-      const d = new Date(expected + "T00:00:00");
-      d.setDate(d.getDate() - 1);
-      expected = formatDateISO(d);
-    } else {
-      break;
-    }
-  }
-  return streak;
-}
 
 function streakMessage(streak: number): string {
   if (streak >= 30) return "30-day streak — elite consistency. You're in rare company.";
