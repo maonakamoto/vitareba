@@ -6,26 +6,12 @@ import Link from "next/link";
 import styles from "../../../admin.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
-
-type Message = {
-  id: string;
-  body: string;
-  createdAt: string;
-  readAt: string | null;
-  sender: { id: string; name: string | null; role: string };
-};
-
-type Thread = {
-  id: string;
-  subject: string;
-  patient: { id: string; name: string | null; email: string };
-  messages: Message[];
-};
+import { type ThreadDetailWithPatient } from "@/lib/config/messages";
 
 export default function AdminThreadPage() {
   const params = useParams();
   const threadId = params.threadId as string;
-  const [thread, setThread] = useState<Thread | null>(null);
+  const [thread, setThread] = useState<ThreadDetailWithPatient | null>(null);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState("");

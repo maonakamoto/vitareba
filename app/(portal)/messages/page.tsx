@@ -7,18 +7,10 @@ import authStyles from "../../(auth)/auth.module.css";
 import msgStyles from "./messages.module.css";
 import { formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
-
-type Thread = {
-  id: string;
-  subject: string;
-  createdAt: string;
-  lastMessageAt: string;
-  patient: { id: string };
-  messages: { body: string; senderId: string; readAt: string | null }[];
-};
+import { type ThreadListItem } from "@/lib/config/messages";
 
 export default function MessagesPage() {
-  const [threads, setThreads] = useState<Thread[]>([]);
+  const [threads, setThreads] = useState<ThreadListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);

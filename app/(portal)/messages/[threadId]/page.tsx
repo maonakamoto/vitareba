@@ -9,25 +9,12 @@ import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { COMPANY } from "@/lib/config/company";
 import { MESSAGE_POLL_INTERVAL_MS } from "@/lib/config/portal";
-
-type Message = {
-  id: string;
-  body: string;
-  createdAt: string;
-  readAt: string | null;
-  sender: { id: string; name: string | null; role: string };
-};
-
-type Thread = {
-  id: string;
-  subject: string;
-  messages: Message[];
-};
+import { type ThreadDetail } from "@/lib/config/messages";
 
 export default function ThreadPage() {
   const params = useParams();
   const threadId = params.threadId as string;
-  const [thread, setThread] = useState<Thread | null>(null);
+  const [thread, setThread] = useState<ThreadDetail | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
