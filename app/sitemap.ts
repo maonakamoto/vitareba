@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitareba.vercel.app";
+import { SITE_URL } from "@/lib/config/company";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

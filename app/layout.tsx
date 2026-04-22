@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
-import { COMPANY } from "@/lib/config/company";
+import { COMPANY, SITE_URL } from "@/lib/config/company";
 import { SessionProvider } from "@/components/portal/SessionProvider";
 import { cookies } from "next/headers";
 import "./globals.css";
@@ -18,7 +18,6 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitareba.vercel.app";
 const TITLE = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
 const DESCRIPTION =
   "We go beyond diagnosis. We decode the biology behind your mind — and the environment around it — to design a personalised path to sustained high performance, longevity and wellbeing.";
