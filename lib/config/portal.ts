@@ -13,16 +13,25 @@ export const CHECKIN_SCALE_MAX = 5;
 /** How many days of check-in history to display in the trend chart */
 export const CHECKIN_HISTORY_DAYS = 30;
 
-/** Exercise frequency options — SSOT for select/display */
-export const EXERCISE_FREQUENCY_OPTIONS = [
+/** Exercise frequency valid values — SSOT tuple used for Zod validation and type derivation */
+export const EXERCISE_FREQUENCY_VALUES = [
+  "none",
+  "light",
+  "moderate",
+  "regular",
+  "intense",
+] as const;
+
+export type ExerciseFrequency = (typeof EXERCISE_FREQUENCY_VALUES)[number];
+
+/** Exercise frequency options for select components — derived from EXERCISE_FREQUENCY_VALUES */
+export const EXERCISE_FREQUENCY_OPTIONS: readonly { value: ExerciseFrequency; label: string }[] = [
   { value: "none", label: "None" },
   { value: "light", label: "Light (1–2× / week)" },
   { value: "moderate", label: "Moderate (3× / week)" },
   { value: "regular", label: "Regular (4–5× / week)" },
   { value: "intense", label: "Intense (daily / 2×/day)" },
-] as const;
-
-export type ExerciseFrequency = (typeof EXERCISE_FREQUENCY_OPTIONS)[number]["value"];
+];
 
 /** Sleep hours range for the profile selector */
 export const SLEEP_HOURS_MIN = 3;

@@ -6,7 +6,12 @@ import { eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { profiles, users } from "@/lib/db/schema";
-import { SLEEP_HOURS_MIN, SLEEP_HOURS_MAX, PROFILE_COMPLETION_THRESHOLD } from "@/lib/config/portal";
+import {
+  SLEEP_HOURS_MIN,
+  SLEEP_HOURS_MAX,
+  PROFILE_COMPLETION_THRESHOLD,
+  EXERCISE_FREQUENCY_VALUES,
+} from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { profileCompletedAdminEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email";
@@ -30,10 +35,7 @@ const updateSchema = z.object({
     .max(SLEEP_HOURS_MAX)
     .nullable()
     .optional(),
-  exerciseFrequency: z
-    .enum(["none", "light", "moderate", "regular", "intense"])
-    .nullable()
-    .optional(),
+  exerciseFrequency: z.enum(EXERCISE_FREQUENCY_VALUES).nullable().optional(),
   referralSource: z.string().optional(),
   notes: z.string().optional(),
   digestOptOut: z.boolean().optional(),
