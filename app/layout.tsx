@@ -18,7 +18,7 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
 });
 
-const TITLE = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
+const TITLE = `${COMPANY.shortName} · Metabolic Psychiatry & Systemic Longevity · Zürich`;
 const DESCRIPTION =
   "We go beyond diagnosis. We decode the biology behind your mind — and the environment around it — to design a personalised path to sustained high performance, longevity and wellbeing.";
 
