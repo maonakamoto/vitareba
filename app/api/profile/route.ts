@@ -11,6 +11,7 @@ import {
   SLEEP_HOURS_MAX,
   PROFILE_COMPLETION_THRESHOLD,
   EXERCISE_FREQUENCY_VALUES,
+  PATIENT_NOTE_MAX_LENGTH,
 } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { profileCompletedAdminEmail } from "@/lib/email/templates";
@@ -18,16 +19,16 @@ import { sendEmail } from "@/lib/email";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 const updateSchema = z.object({
-  name: z.string().min(1).optional(),
-  phone: z.string().optional(),
-  dateOfBirth: z.string().optional(),
-  city: z.string().optional(),
-  occupation: z.string().optional(),
-  mainConcern: z.string().optional(),
-  goals: z.string().optional(),
-  diagnosisHistory: z.string().optional(),
-  currentMedications: z.string().optional(),
-  currentSupplements: z.string().optional(),
+  name: z.string().min(1).max(200).optional(),
+  phone: z.string().max(50).optional(),
+  dateOfBirth: z.string().max(20).optional(),
+  city: z.string().max(100).optional(),
+  occupation: z.string().max(150).optional(),
+  mainConcern: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
+  goals: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
+  diagnosisHistory: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
+  currentMedications: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
+  currentSupplements: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
   sleepHoursAvg: z
     .number()
     .int()
@@ -36,8 +37,8 @@ const updateSchema = z.object({
     .nullable()
     .optional(),
   exerciseFrequency: z.enum(EXERCISE_FREQUENCY_VALUES).nullable().optional(),
-  referralSource: z.string().optional(),
-  notes: z.string().optional(),
+  referralSource: z.string().max(500).optional(),
+  notes: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
   digestOptOut: z.boolean().optional(),
 });
 
