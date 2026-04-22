@@ -4,6 +4,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   DIMENSIONS,
   QUESTIONS,
+  computeScores,
   type DimensionId,
 } from "@/lib/assessment/data";
 import { COMPANY } from "@/lib/config/company";
@@ -68,37 +69,10 @@ export default function Assessment({ onClose, onComplete }: Props) {
     setAnswers(emptyAnswers());
   }, []);
 
-  const dimScores = useMemo((): Record<DimensionId, number> => {
-    const totals = {} as Record<DimensionId, number>;
-    const counts = {} as Record<DimensionId, number>;
-
-    DIMENSIONS.forEach((d) => {
-      totals[d.id] = 0;
-      counts[d.id] = 0;
-    });
-
-    QUESTIONS.forEach((q, i) => {
-      const raw = answers[i];
-      if (raw === null) return;
-      const score = q.reversed ? 6 - raw : raw;
-      totals[q.dimension] += score;
-      counts[q.dimension] += 1;
-    });
-
-    const result = {} as Record<DimensionId, number>;
-    DIMENSIONS.forEach((d) => {
-      result[d.id] =
-        counts[d.id] > 0
-          ? Math.round((totals[d.id] / (counts[d.id] * 5)) * 100)
-          : 0;
-    });
-    return result;
-  }, [answers]);
-
-  const overallScore = useMemo((): number => {
-    const vals = Object.values(dimScores);
-    return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
-  }, [dimScores]);
+  const { scores: dimScores, overallScore } = useMemo(
+    () => computeScores(answers),
+    [answers]
+  );
 
   // Keep ref in sync with latest onComplete (avoids stale closure without re-subscribing)
   const onCompleteRef = useRef(onComplete);

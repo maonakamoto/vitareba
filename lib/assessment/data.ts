@@ -308,3 +308,41 @@ export function getInterpretation(dimId: string, score: number): string {
   if (!tiers) return "";
   return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
 }
+
+/**
+ * Compute per-dimension and overall scores from raw assessment answers.
+ * Each answer is 1–5 (or null if skipped). Reversed questions are scored
+ * as (6 - raw). Each dimension score is normalised to 0–100.
+ * Overall score is the mean of dimension scores.
+ */
+export function computeScores(answers: (number | null)[]): {
+  scores: Record<DimensionId, number>;
+  overallScore: number;
+} {
+  const totals = {} as Record<DimensionId, number>;
+  const counts = {} as Record<DimensionId, number>;
+  for (const d of DIMENSIONS) {
+    totals[d.id] = 0;
+    counts[d.id] = 0;
+  }
+
+  QUESTIONS.forEach((q, i) => {
+    const raw = answers[i] ?? null;
+    if (raw === null) return;
+    const score = q.reversed ? 6 - raw : raw;
+    totals[q.dimension] += score;
+    counts[q.dimension] += 1;
+  });
+
+  const scores = {} as Record<DimensionId, number>;
+  for (const d of DIMENSIONS) {
+    scores[d.id] = counts[d.id] > 0
+      ? Math.round((totals[d.id] / (counts[d.id] * 5)) * 100)
+      : 0;
+  }
+
+  const vals = Object.values(scores);
+  const overallScore = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+
+  return { scores, overallScore };
+}

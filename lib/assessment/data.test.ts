@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { scoreColor, getVerdict, getVerdictName, getInterpretation, VERDICT_TIERS, DIMENSIONS } from "./data";
+import { scoreColor, getVerdict, getVerdictName, getInterpretation, VERDICT_TIERS, DIMENSIONS, QUESTIONS, computeScores } from "./data";
 
 // ─── scoreColor ───────────────────────────────────────────────────────────────
 
@@ -111,5 +111,55 @@ describe("getInterpretation", () => {
 
   it("returns empty string for unknown dimension id", () => {
     expect(getInterpretation("nonexistent", 50)).toBe("");
+  });
+});
+
+// ─── computeScores ────────────────────────────────────────────────────────────
+
+describe("computeScores", () => {
+  const allFives = Array(QUESTIONS.length).fill(5);
+  const allOnes = Array(QUESTIONS.length).fill(1);
+  const allNulls = Array(QUESTIONS.length).fill(null);
+
+  it("returns 0–100 integers for each dimension", () => {
+    const { scores } = computeScores(allFives);
+    for (const dim of DIMENSIONS) {
+      expect(scores[dim.id]).toBeGreaterThanOrEqual(0);
+      expect(scores[dim.id]).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it("returns overallScore as mean of dimension scores", () => {
+    const { scores, overallScore } = computeScores(allFives);
+    const expected = Math.round(
+      Object.values(scores).reduce((a, b) => a + b, 0) / DIMENSIONS.length
+    );
+    expect(overallScore).toBe(expected);
+  });
+
+  it("all-null answers produce score 0 for every dimension", () => {
+    const { scores, overallScore } = computeScores(allNulls);
+    for (const dim of DIMENSIONS) {
+      expect(scores[dim.id]).toBe(0);
+    }
+    expect(overallScore).toBe(0);
+  });
+
+  it("all-5 answers produce higher scores than all-1 answers (non-reversed questions dominate)", () => {
+    const { overallScore: highScore } = computeScores(allFives);
+    const { overallScore: lowScore } = computeScores(allOnes);
+    // Net direction: more non-reversed than reversed questions, so 5s beat 1s
+    expect(highScore).toBeGreaterThan(lowScore);
+  });
+
+  it("correctly reverses reversed questions (score 1 on a reversed question = high contribution)", () => {
+    const answers = Array(QUESTIONS.length).fill(null) as (number | null)[];
+    // Find a reversed question and set it to 1 — should contribute 5 to the dimension
+    const reversedIdx = QUESTIONS.findIndex((q) => q.reversed);
+    const reversedDim = QUESTIONS[reversedIdx].dimension;
+    answers[reversedIdx] = 1;
+    const { scores } = computeScores(answers);
+    // With one answer of 1 on a reversed question, contribution is (6-1)=5, max is 5 → 100%
+    expect(scores[reversedDim]).toBe(100);
   });
 });
