@@ -1,6 +1,7 @@
 /// <reference types="vitest/globals" />
 import { computePatientSignal } from "./signals";
 import { NEW_PATIENT_GRACE_DAYS, NO_CHECKIN_CRITICAL_DAYS, SCORE_DROP_CRITICAL } from "@/lib/config/admin";
+import { formatDateISO } from "@/lib/utils/format";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ const NOW = new Date("2024-06-15T12:00:00Z");
 function dateStr(daysBack: number): string {
   const d = new Date("2024-06-15");
   d.setDate(d.getDate() - daysBack);
-  return d.toISOString().slice(0, 10);
+  return formatDateISO(d);
 }
 
 function checkin(daysBack: number, score: number) {
