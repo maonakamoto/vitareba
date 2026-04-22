@@ -101,7 +101,7 @@ export function passwordResetEmail({
   resetUrl: string;
 }) {
   return layout(`
-    <p>You requested a password reset for your VitaReBa account.</p>
+    <p>You requested a password reset for your ${COMPANY.shortName} account.</p>
     <p>Click the button below to set a new password. This link expires in <strong>${PASSWORD_RESET_TOKEN_EXPIRY_MS / 3_600_000} hour</strong>.</p>
     <p><a class="btn" href="${resetUrl}">Reset password</a></p>
     <div class="divider"></div>
@@ -140,7 +140,7 @@ export function welcomePatientEmail({
 }) {
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Welcome to VitaReBa. Your patient portal is ready.</p>
+    <p>Welcome to ${COMPANY.shortName}. Your patient portal is ready.</p>
     <p>${COMPANY.clinicianName} works with a small number of patients at a time — which means your programme will be built around your specific biology, not a template. To make that possible, ${COMPANY.clinicianName} needs your data.</p>
     <div class="divider"></div>
     <p><strong>Here is what to do first:</strong></p>
@@ -387,7 +387,7 @@ export function weeklyDigestEmail({
 
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Here is your weekly summary from VitaReBa.</p>
+    <p>Here is your weekly summary from ${COMPANY.shortName}.</p>
     ${checkinSection}
     ${assessmentSection}
     ${bookingSection}
@@ -411,7 +411,7 @@ export function checkinReminderEmail({
     <p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>
     <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in →</a></p>
     <div class="divider"></div>
-    <p class="meta">You receive this reminder on weekdays while enrolled in a VitaReBa programme. To stop, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">You receive this reminder on weekdays while enrolled in a ${COMPANY.shortName} programme. To stop, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
   `);
 }
 
