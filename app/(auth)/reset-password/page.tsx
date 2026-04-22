@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../auth.module.css";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -67,9 +68,9 @@ function ResetPasswordForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Min. 8 characters"
+            placeholder={`Min. ${PASSWORD_MIN_LENGTH} characters`}
             required
-            minLength={8}
+            minLength={PASSWORD_MIN_LENGTH}
             autoComplete="new-password"
           />
         </div>

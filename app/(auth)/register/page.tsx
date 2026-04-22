@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../auth.module.css";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 function RegisterForm() {
   const router = useRouter();
@@ -78,7 +79,7 @@ function RegisterForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Min. 8 characters"
+            placeholder={`Min. ${PASSWORD_MIN_LENGTH} characters`}
             required
             autoComplete="new-password"
           />

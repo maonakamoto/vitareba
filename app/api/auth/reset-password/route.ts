@@ -4,14 +4,14 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { and, eq, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { BCRYPT_SALT_ROUNDS } from "@/lib/config/auth";
+import { BCRYPT_SALT_ROUNDS, PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
 
 const schema = z.object({
   token: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z.string().min(PASSWORD_MIN_LENGTH),
 });
 
 export async function POST(req: Request) {

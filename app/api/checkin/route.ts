@@ -6,7 +6,7 @@ import { eq, and, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { dailyCheckins } from "@/lib/db/schema";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS } from "@/lib/config/portal";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS } from "@/lib/config/portal";
 import { formatDateISO } from "@/lib/utils/format";
 
 const metricSchema = z
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const limitParam = searchParams.get("days");
-  const days = limitParam ? Math.min(parseInt(limitParam, 10), 90) : CHECKIN_HISTORY_DAYS;
+  const days = limitParam ? Math.min(parseInt(limitParam, 10), CHECKIN_FETCH_MAX_DAYS) : CHECKIN_HISTORY_DAYS;
 
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);

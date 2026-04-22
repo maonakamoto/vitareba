@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 function ResetPasswordForm() {
   const t = useTranslations("auth.resetPassword");
@@ -71,7 +72,7 @@ function ResetPasswordForm() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("newPasswordPlaceholder")}
             required
-            minLength={8}
+            minLength={PASSWORD_MIN_LENGTH}
             autoComplete="new-password"
           />
         </div>

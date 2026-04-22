@@ -10,6 +10,7 @@ import {
   SLEEP_HOURS_MIN,
   SLEEP_HOURS_MAX,
 } from "@/lib/config/portal";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 import type { ExerciseFrequency } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { COMPANY } from "@/lib/config/company";
@@ -361,7 +362,7 @@ export default function ProfilePage() {
               value={pwForm.newPassword}
               onChange={(e) => setPwForm((prev) => ({ ...prev, newPassword: e.target.value }))}
               autoComplete="new-password"
-              minLength={8}
+              minLength={PASSWORD_MIN_LENGTH}
             />
           </div>
           {pwError && <p className={styles.formError}>{pwError}</p>}

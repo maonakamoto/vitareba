@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getAdminEmails } from "@/lib/config/company";
+import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 export const loginSchema = z.object({
   email: z.string().email(),
@@ -8,7 +9,7 @@ export const loginSchema = z.object({
 
 export const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`),
 });
 
 export function resolveRole(email: string): "patient" | "admin" {

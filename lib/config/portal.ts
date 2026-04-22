@@ -48,6 +48,9 @@ export const PROFILE_COMPLETION_THRESHOLD = 0.7;
 /** Below this fraction the profile completeness indicator shows a warning color */
 export const PROFILE_COMPLETION_LOWER_THRESHOLD = 0.3;
 
+/** Maximum number of days of check-in history that can be requested via the API */
+export const CHECKIN_FETCH_MAX_DAYS = 90;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 
