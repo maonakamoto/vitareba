@@ -128,20 +128,20 @@ export default function AdminBookingsPage() {
                     </td>
                     <td>
                       <div className={styles.actionGroup}>
-                        {b.status !== "confirmed" && (
+                        {b.status !== BOOKING_STATUS.confirmed && (
                           <button
                             type="button"
-                            onClick={() => updateStatus(b.id, "confirmed")}
+                            onClick={() => updateStatus(b.id, BOOKING_STATUS.confirmed)}
                             disabled={isUpdating}
                             className={styles.actionBtnConfirm}
                           >
                             Confirm
                           </button>
                         )}
-                        {b.status !== "cancelled" && (
+                        {b.status !== BOOKING_STATUS.cancelled && (
                           <button
                             type="button"
-                            onClick={() => updateStatus(b.id, "cancelled")}
+                            onClick={() => updateStatus(b.id, BOOKING_STATUS.cancelled)}
                             disabled={isUpdating}
                             className={styles.actionBtnCancel}
                           >

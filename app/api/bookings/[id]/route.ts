@@ -9,7 +9,7 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
-import { BOOKING_STATUS_VALUES } from "@/lib/config/booking-status";
+import { BOOKING_STATUS, BOOKING_STATUS_VALUES } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
   status: z.enum(BOOKING_STATUS_VALUES),
@@ -36,18 +36,18 @@ export async function PATCH(
     .returning();
 
   // Notify patient of status change (fire-and-forget)
-  if (parsed.data.status === "confirmed" || parsed.data.status === "cancelled") {
+  if (parsed.data.status === BOOKING_STATUS.confirmed || parsed.data.status === BOOKING_STATUS.cancelled) {
     const patient = await db.query.users.findFirst({
       where: eq(users.id, updated.userId),
       columns: { name: true, email: true },
     });
     if (patient?.email) {
-      const html = parsed.data.status === "confirmed"
+      const html = parsed.data.status === BOOKING_STATUS.confirmed
         ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` })
         : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` });
       sendEmail({
         to: patient.email,
-        subject: parsed.data.status === "confirmed"
+        subject: parsed.data.status === BOOKING_STATUS.confirmed
           ? "Your consultation has been confirmed — VitaReBa"
           : "Your consultation request — VitaReBa",
         html,
