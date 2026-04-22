@@ -39,7 +39,7 @@ export function AssessmentTrendChart({ data }: Props) {
         />
         <Tooltip
           contentStyle={{
-            background: "#fff",
+            background: "var(--white)",
             border: "1px solid var(--border)",
             borderRadius: "0.5rem",
             fontSize: "0.8rem",

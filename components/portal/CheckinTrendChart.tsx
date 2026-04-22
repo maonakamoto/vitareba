@@ -25,7 +25,7 @@ type Props = {
 };
 
 const METRIC_LINES = [
-  { key: "sleep",  label: "Sleep",  color: "var(--purple, #6366f1)" },
+  { key: "sleep",  label: "Sleep",  color: "var(--purple)" },
   { key: "energy", label: "Energy", color: "var(--teal)" },
   { key: "mood",   label: "Mood",   color: "var(--gold)" },
   { key: "focus",  label: "Focus",  color: "var(--teal-dark)" },
@@ -53,7 +53,7 @@ export function CheckinTrendChart({ data }: Props) {
         />
         <Tooltip
           contentStyle={{
-            background: "#fff",
+            background: "var(--white)",
             border: "1px solid var(--border)",
             borderRadius: "0.5rem",
             fontSize: "0.78rem",
