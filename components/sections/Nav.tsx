@@ -8,6 +8,7 @@ import Logo from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import styles from "./Nav.module.css";
 import { COMPANY } from "@/lib/config/company";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 // Megamenu config — sub-items link to on-page anchors
 const MEGA = {
@@ -116,7 +117,7 @@ export default function Nav() {
       <div className={styles.navActions}>
         <LanguageSwitcher />
         {session ? (
-          <NextLink href="/dashboard" className={styles.navBtn}>
+          <NextLink href={PORTAL_ROUTES.dashboard} className={styles.navBtn}>
             {t("dashboard")} &rarr;
           </NextLink>
         ) : (
@@ -124,7 +125,7 @@ export default function Nav() {
             <NextLink href="/login" className={styles.navSignIn}>
               {t("signIn")}
             </NextLink>
-            <Link href="/assessment" className={styles.navBtn}>
+            <Link href={PORTAL_ROUTES.assessment} className={styles.navBtn}>
               {t("cta")}
             </Link>
           </>

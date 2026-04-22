@@ -9,6 +9,7 @@ import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { COMPANY } from "@/lib/config/company";
 import { MESSAGE_POLL_INTERVAL_MS } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type ThreadDetail } from "@/lib/config/messages";
 
 export default function ThreadPage() {
@@ -71,7 +72,7 @@ export default function ThreadPage() {
 
   return (
     <div className={msgStyles.threadDetail}>
-      <Link href="/messages" className={msgStyles.backLink}>
+      <Link href={PORTAL_ROUTES.messages} className={msgStyles.backLink}>
         ← Back to messages
       </Link>
       <h1 className={styles.pageTitle}>{thread.subject}</h1>

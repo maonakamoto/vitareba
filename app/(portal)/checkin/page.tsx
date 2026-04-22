@@ -6,6 +6,7 @@ import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { computeStreak } from "@/lib/domain/checkin";
@@ -163,8 +164,8 @@ export default function CheckinPage() {
               Each data point refines your pattern. {COMPANY.clinicianName} reviews your trend before every consultation — this is the raw material of your programme.
             </p>
             <div className={checkinStyles.successLinks}>
-              <Link href="/dashboard" className={checkinStyles.successLinkPrimary}>Back to dashboard →</Link>
-              <Link href="/assessments" className={checkinStyles.successLinkMuted}>View full results</Link>
+              <Link href={PORTAL_ROUTES.dashboard} className={checkinStyles.successLinkPrimary}>Back to dashboard →</Link>
+              <Link href={PORTAL_ROUTES.assessments} className={checkinStyles.successLinkMuted}>View full results</Link>
             </div>
           </div>
         )}

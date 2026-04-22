@@ -3,6 +3,7 @@ import styles from "./dashboard.module.css";
 import { profileCompletenessColor } from "@/lib/domain/profile";
 import { COMPANY } from "@/lib/config/company";
 import { PROFILE_COMPLETENESS_LOW_PCT, PROFILE_COMPLETENESS_HIGH_PCT } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export function ProfileCompletenessBar({ pct }: { pct: number }) {
   if (pct >= 100) return null;
@@ -24,7 +25,7 @@ export function ProfileCompletenessBar({ pct }: { pct: number }) {
           ? `Almost there — a complete profile means ${COMPANY.clinicianName} can design your programme before you even walk in the door.`
           : `Just a few fields left — complete your profile so ${COMPANY.clinicianName} has the full picture.`}
         {" "}
-        <Link href="/profile" className={styles.profileBarLink}>
+        <Link href={PORTAL_ROUTES.profile} className={styles.profileBarLink}>
           Complete profile →
         </Link>
       </p>

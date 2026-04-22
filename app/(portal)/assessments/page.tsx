@@ -5,6 +5,7 @@ import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import styles from "../portal.module.css";
@@ -65,10 +66,10 @@ export default async function AssessmentsPage({
             The single highest-leverage next step: a 30-minute discovery call with {COMPANY.clinicianName} to translate your scores into a concrete plan.
           </p>
           <div className={assessStyles.savedActions}>
-            <Link href="/bookings" className="btn-dark">
+            <Link href={PORTAL_ROUTES.bookings} className="btn-dark">
               Book a discovery call →
             </Link>
-            <Link href="/dashboard" className={assessStyles.savedSecondary}>
+            <Link href={PORTAL_ROUTES.dashboard} className={assessStyles.savedSecondary}>
               Back to dashboard
             </Link>
           </div>
@@ -79,7 +80,7 @@ export default async function AssessmentsPage({
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p>No assessments yet.</p>
-            <Link href="/assessment" className={assessStyles.emptyLink}>
+            <Link href={PORTAL_ROUTES.assessment} className={assessStyles.emptyLink}>
               Take the Inflection Edge →
             </Link>
           </div>
@@ -164,7 +165,7 @@ export default async function AssessmentsPage({
         <p className={assessStyles.retakeHint}>
           Retake every {ASSESSMENT_STALE_DAYS} days to see how your profile shifts with your programme.
         </p>
-        <Link href="/assessment" className={`btn-outline ${assessStyles.retakeBtn}`}>
+        <Link href={PORTAL_ROUTES.assessment} className={`btn-outline ${assessStyles.retakeBtn}`}>
           Retake assessment →
         </Link>
       </div>

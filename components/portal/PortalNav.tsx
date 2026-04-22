@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import styles from "@/app/(portal)/portal.module.css";
 import { BADGE_MAX_COUNT } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
 
@@ -73,34 +74,34 @@ type NavItem = {
 
 const NAV_GROUPS: NavItem[][] = [
   [
-    { href: "/dashboard", label: "Dashboard", Icon: IcoDashboard },
+    { href: PORTAL_ROUTES.dashboard,   label: "Dashboard",      Icon: IcoDashboard },
   ],
   [
-    { href: "/checkin",     label: "Daily Check-in", Icon: IcoCheckin },
-    { href: "/assessment",  label: "Assessment",     Icon: IcoAssessment },
-    { href: "/assessments", label: "My Results",     Icon: IcoResults },
+    { href: PORTAL_ROUTES.checkin,     label: "Daily Check-in", Icon: IcoCheckin },
+    { href: PORTAL_ROUTES.assessment,  label: "Assessment",     Icon: IcoAssessment },
+    { href: PORTAL_ROUTES.assessments, label: "My Results",     Icon: IcoResults },
   ],
   [
-    { href: "/bookings", label: "Bookings",                   Icon: IcoBookings },
-    { href: "/messages", label: "Messages", badgeKey: "messages", Icon: IcoMessages },
+    { href: PORTAL_ROUTES.bookings, label: "Bookings",                      Icon: IcoBookings },
+    { href: PORTAL_ROUTES.messages, label: "Messages", badgeKey: "messages", Icon: IcoMessages },
   ],
   [
-    { href: "/profile", label: "Profile", Icon: IcoProfile },
+    { href: PORTAL_ROUTES.profile, label: "Profile", Icon: IcoProfile },
   ],
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Home",     Icon: IcoDashboard },
-  { href: "/checkin",   label: "Check-in", Icon: IcoCheckin },
-  { href: "/messages",  label: "Messages", badgeKey: "messages", Icon: IcoMessages },
-  { href: "/bookings",  label: "Bookings", Icon: IcoBookings },
-  { href: "/profile",   label: "Profile",  Icon: IcoProfile },
+  { href: PORTAL_ROUTES.dashboard, label: "Home",     Icon: IcoDashboard },
+  { href: PORTAL_ROUTES.checkin,   label: "Check-in", Icon: IcoCheckin },
+  { href: PORTAL_ROUTES.messages,  label: "Messages", badgeKey: "messages", Icon: IcoMessages },
+  { href: PORTAL_ROUTES.bookings,  label: "Bookings", Icon: IcoBookings },
+  { href: PORTAL_ROUTES.profile,   label: "Profile",  Icon: IcoProfile },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/dashboard") return pathname === "/dashboard";
+  if (href === PORTAL_ROUTES.dashboard) return pathname === PORTAL_ROUTES.dashboard;
   return pathname === href || pathname.startsWith(href + "/");
 }
 

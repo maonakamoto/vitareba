@@ -3,6 +3,7 @@ import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, DAY_MS } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
@@ -46,7 +47,7 @@ export function AssessmentSection({
           Most patients describe this as the first time they&apos;ve seen their performance pattern
           explained clearly. Take 10 minutes now.
         </p>
-        <Link href="/assessment" className={`btn-dark ${styles.ctaBtnLarge}`}>
+        <Link href={PORTAL_ROUTES.assessment} className={`btn-dark ${styles.ctaBtnLarge}`}>
           Take the Inflection Edge →
         </Link>
       </div>
@@ -96,10 +97,10 @@ export function AssessmentSection({
           </p>
         )}
         <div className={styles.heroLinks}>
-          <Link href="/assessments" className={styles.heroLinkPrimary}>
+          <Link href={PORTAL_ROUTES.assessments} className={styles.heroLinkPrimary}>
             Full results →
           </Link>
-          <Link href="/assessment" className={styles.heroLinkMuted}>
+          <Link href={PORTAL_ROUTES.assessment} className={styles.heroLinkMuted}>
             {assessmentIsStale ? "Retake to track change →" : "Retake assessment"}
           </Link>
         </div>
@@ -122,7 +123,7 @@ export function AssessmentSection({
             <p className={styles.interventionHint}>
               This is where a targeted intervention delivers the most return.
             </p>
-            <Link href="/assessments" className={styles.cardLink}>
+            <Link href={PORTAL_ROUTES.assessments} className={styles.cardLink}>
               Read full interpretation →
             </Link>
           </div>
@@ -148,7 +149,7 @@ export function AssessmentSection({
               {latestBooking.preferredDate && (
                 <p className={styles.bookingDate}>{formatDateLong(latestBooking.preferredDate)}</p>
               )}
-              <Link href="/bookings" className={styles.cardLink}>
+              <Link href={PORTAL_ROUTES.bookings} className={styles.cardLink}>
                 View bookings →
               </Link>
             </>
@@ -158,7 +159,7 @@ export function AssessmentSection({
                 Book a discovery call — no commitment, just a direct conversation with{" "}
                 {COMPANY.clinicianName} to see if {COMPANY.shortName} is the right fit.
               </p>
-              <Link href="/bookings" className={`btn-dark ${shared.ctaBtnSmall}`}>
+              <Link href={PORTAL_ROUTES.bookings} className={`btn-dark ${shared.ctaBtnSmall}`}>
                 Book a call →
               </Link>
             </>
@@ -175,7 +176,7 @@ export function AssessmentSection({
               {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the {COMPANY.shortName} team
             </p>
           </div>
-          <Link href="/messages" className={`${styles.cardLink} ${styles.noWrap}`}>
+          <Link href={PORTAL_ROUTES.messages} className={`${styles.cardLink} ${styles.noWrap}`}>
             Open messages →
           </Link>
         </div>

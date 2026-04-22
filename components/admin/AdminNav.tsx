@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import styles from "@/app/(admin)/admin.module.css";
 import { BADGE_MAX_COUNT } from "@/lib/config/portal";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 type NavItem = {
   href: string;
@@ -12,11 +13,11 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/admin/patients",  label: "Patients" },
-  { href: "/admin/bookings",  label: "Bookings" },
-  { href: "/admin/messages",  label: "Messages", badgeKey: "messages" },
-  { href: "/admin/documents", label: "Documents" },
-  { href: "/admin/reports",   label: "Reports" },
+  { href: ADMIN_ROUTES.patients,  label: "Patients" },
+  { href: ADMIN_ROUTES.bookings,  label: "Bookings" },
+  { href: ADMIN_ROUTES.messages,  label: "Messages", badgeKey: "messages" },
+  { href: ADMIN_ROUTES.documents, label: "Documents" },
+  { href: ADMIN_ROUTES.reports,   label: "Reports" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

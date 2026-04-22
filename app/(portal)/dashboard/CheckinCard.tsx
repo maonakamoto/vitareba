@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export function CheckinCard({ hasTodayCheckin }: { hasTodayCheckin: boolean }) {
   if (!hasTodayCheckin) {
@@ -11,7 +12,7 @@ export function CheckinCard({ hasTodayCheckin }: { hasTodayCheckin: boolean }) {
             30 seconds to log sleep, energy, mood, focus, and stress — this data feeds directly into your programme.
           </p>
         </div>
-        <Link href="/checkin" className={`${styles.cardLink} ${styles.noWrap}`}>
+        <Link href={PORTAL_ROUTES.checkin} className={`${styles.cardLink} ${styles.noWrap}`}>
           Check in →
         </Link>
       </div>
@@ -25,7 +26,7 @@ export function CheckinCard({ hasTodayCheckin }: { hasTodayCheckin: boolean }) {
         <p className={styles.checkinDoneLabel}>Check-in done</p>
         <p className={styles.checkinDoneText}>Today&apos;s data saved — your trend is growing.</p>
       </div>
-      <Link href="/checkin" className={`${styles.cardLinkMuted} ${styles.noWrap}`}>
+      <Link href={PORTAL_ROUTES.checkin} className={`${styles.cardLinkMuted} ${styles.noWrap}`}>
         Edit →
       </Link>
     </div>

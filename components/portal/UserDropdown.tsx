@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styles from "./UserDropdown.module.css";
 import { USER_ROLE, type UserRole } from "@/lib/config/auth";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 interface Props {
   name: string;
@@ -65,10 +66,10 @@ export function UserDropdown({ name, email, role }: Props) {
                 Admin Panel ↗
               </Link>
             )}
-            <Link href="/checkin" className={styles.item} onClick={() => setOpen(false)}>
+            <Link href={PORTAL_ROUTES.checkin} className={styles.item} onClick={() => setOpen(false)}>
               Daily check-in
             </Link>
-            <Link href="/profile" className={styles.item} onClick={() => setOpen(false)}>
+            <Link href={PORTAL_ROUTES.profile} className={styles.item} onClick={() => setOpen(false)}>
               Profile settings
             </Link>
           </div>
