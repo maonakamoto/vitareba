@@ -9,10 +9,11 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
+import { USER_ROLE } from "@/lib/config/auth";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
 
   const [dbUser, unreadMessages] = await Promise.all([
     db.query.users.findFirst({

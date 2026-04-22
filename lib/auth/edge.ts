@@ -4,6 +4,7 @@
 // full auth config in lib/auth/index.ts — we just read them here.
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
+import type { UserRole } from "@/lib/config/auth";
 
 const edgeConfig: NextAuthConfig = {
   session: { strategy: "jwt" },
@@ -12,7 +13,7 @@ const edgeConfig: NextAuthConfig = {
   callbacks: {
     session({ session, token }) {
       session.user.id = token.id as string;
-      session.user.role = token.role as "admin" | "patient";
+      session.user.role = token.role as UserRole;
       session.user.emailVerified =
         (token.emailVerified as Date | null | undefined) ?? null;
       return session;

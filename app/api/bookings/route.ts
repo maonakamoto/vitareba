@@ -9,6 +9,7 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { USER_ROLE } from "@/lib/config/auth";
 
 const createSchema = z.object({
   preferredDate: z.string().optional(),
@@ -20,7 +21,7 @@ export async function GET() {
   if (guard.error) return guard.error;
   const { session } = guard;
 
-  const where = session.user.role === "admin"
+  const where = session.user.role === USER_ROLE.admin
     ? undefined
     : eq(bookings.userId, session.user.id);
 

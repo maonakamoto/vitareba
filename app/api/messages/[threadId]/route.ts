@@ -10,6 +10,7 @@ import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
 import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { USER_ROLE } from "@/lib/config/auth";
 
 const replySchema = z.object({
   body: z.string().min(1).max(MESSAGE_BODY_MAX_LENGTH),
@@ -36,7 +37,7 @@ export async function GET(
   });
 
   if (!thread) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
-  if (session.user.role !== "admin" && thread.patientId !== session.user.id) {
+  if (session.user.role !== USER_ROLE.admin && thread.patientId !== session.user.id) {
     return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
   }
 
@@ -66,7 +67,7 @@ export async function POST(
   const { threadId } = await params;
   const thread = await db.query.threads.findFirst({ where: eq(threads.id, threadId) });
   if (!thread) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
-  if (session.user.role !== "admin" && thread.patientId !== session.user.id) {
+  if (session.user.role !== USER_ROLE.admin && thread.patientId !== session.user.id) {
     return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
   }
 
@@ -88,7 +89,7 @@ export async function POST(
   // Notify the other party (fire-and-forget)
   const adminEmails = getAdminEmails();
 
-  if (session.user.role === "admin") {
+  if (session.user.role === USER_ROLE.admin) {
     // Admin sent → notify patient
     const [patient, sender] = await Promise.all([
       db.query.users.findFirst({ where: eq(users.id, thread.patientId), columns: { name: true, email: true } }),

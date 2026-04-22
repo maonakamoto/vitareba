@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getAdminEmails } from "@/lib/config/company";
-import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { USER_ROLE, type UserRole, PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 export const loginSchema = z.object({
   email: z.string().email(),
@@ -12,7 +12,7 @@ export const registerSchema = z.object({
   password: z.string().min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`),
 });
 
-export function resolveRole(email: string): "patient" | "admin" {
+export function resolveRole(email: string): UserRole {
   const adminEmails = getAdminEmails().map((e) => e.toLowerCase());
-  return adminEmails.includes(email.toLowerCase()) ? "admin" : "patient";
+  return adminEmails.includes(email.toLowerCase()) ? USER_ROLE.admin : USER_ROLE.patient;
 }

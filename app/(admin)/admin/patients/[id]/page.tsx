@@ -16,6 +16,7 @@ import { PatientBookingsCard } from "@/components/admin/PatientBookingsCard";
 import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
 import { formatDateShort, formatDateLong } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 export default async function PatientDetailPage({
   params,
@@ -23,7 +24,7 @@ export default async function PatientDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
 
   const { id } = await params;
 
@@ -49,7 +50,7 @@ export default async function PatientDetailPage({
     },
   });
 
-  if (!patient || patient.role !== "patient") notFound();
+  if (!patient || patient.role !== USER_ROLE.patient) notFound();
 
   return (
     <div>

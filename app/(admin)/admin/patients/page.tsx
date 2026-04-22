@@ -16,6 +16,7 @@ import {
   SPARKLINE_MID_THRESHOLD,
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: number; stress: number }): number {
   return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
@@ -38,12 +39,12 @@ function sparkLevel(avg: number): string {
 
 export default async function PatientsPage() {
   const session = await auth();
-  if (!session || session.user.role !== "admin") redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
 
   const now = new Date();
 
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: true,
       assessmentResults: {

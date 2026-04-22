@@ -5,13 +5,14 @@ import { eq, desc } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { users, assessmentResults } from "@/lib/db/schema";
+import { USER_ROLE } from "@/lib/config/auth";
 
 export async function GET() {
   const guard = await requireAdmin();
   if (guard.error) return guard.error;
 
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     orderBy: [desc(users.createdAt)],
     with: {
       profile: true,

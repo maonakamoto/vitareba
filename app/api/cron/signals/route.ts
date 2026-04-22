@@ -8,6 +8,7 @@ import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
+import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 export async function GET(req: Request) {
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
   }
 
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: { columns: { lastKnownSignal: true } },
       assessmentResults: {

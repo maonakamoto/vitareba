@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { getInstance } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { loginSchema, resolveRole } from "@/lib/domain/auth";
+import { USER_ROLE, type UserRole } from "@/lib/config/auth";
 
 // Functional config pattern — DrizzleAdapter(getInstance()) is only called on the
 // first actual request, never at module evaluation time. This prevents Next.js build
@@ -56,7 +57,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
           token.emailVerified =
             (user as { emailVerified?: Date | null }).emailVerified ?? null;
 
-          const existingRole = (user as { role?: string }).role ?? "patient";
+          const existingRole = (user as { role?: string }).role ?? USER_ROLE.patient;
           const correctRole = resolveRole(user.email ?? "");
           if (correctRole !== existingRole && user.id) {
             await db
@@ -70,7 +71,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
       },
       session({ session, token }) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "admin" | "patient";
+        session.user.role = token.role as UserRole;
         session.user.emailVerified =
           (token.emailVerified as Date | null | undefined) ?? null;
         return session;

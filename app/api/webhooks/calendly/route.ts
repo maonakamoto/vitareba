@@ -7,6 +7,7 @@ import { users, bookings } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { formatDateISO } from "@/lib/utils/format";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
+import { USER_ROLE } from "@/lib/config/auth";
 
 // Calendly webhook signature verification
 // Header: Calendly-Webhook-Signature → "t=<unix_ts>,v1=<hmac_sha256_hex>"
@@ -70,7 +71,7 @@ export async function POST(req: Request) {
 
   // Find patient by email
   const patient = await db.query.users.findFirst({
-    where: and(eq(users.email, inviteeEmail), eq(users.role, "patient")),
+    where: and(eq(users.email, inviteeEmail), eq(users.role, USER_ROLE.patient)),
     columns: { id: true },
   });
 

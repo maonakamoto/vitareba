@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth/edge";
 import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
+import { USER_ROLE } from "@/lib/config/auth";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -29,7 +30,7 @@ const LOCALE_AUTH_SUFFIXES = [
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
-  const dest = session?.user.role === "admin" ? "/admin/patients" : "/dashboard";
+  const dest = session?.user.role === USER_ROLE.admin ? "/admin/patients" : "/dashboard";
 
   // ── Portal / admin ─────────────────────────────────────────────────────
   if (PORTAL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
@@ -38,7 +39,7 @@ export default auth((req) => {
       loginUrl.searchParams.set("returnTo", pathname);
       return NextResponse.redirect(loginUrl);
     }
-    if (pathname.startsWith("/admin") && session.user.role !== "admin") {
+    if (pathname.startsWith("/admin") && session.user.role !== USER_ROLE.admin) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
     return NextResponse.next();

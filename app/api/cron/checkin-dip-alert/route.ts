@@ -12,6 +12,7 @@ import {
   CHECKIN_DIP_ALERT_DAYS,
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -25,7 +26,7 @@ export async function GET(req: Request) {
   const cutoffDate = formatDateISO(cutoff);
 
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: { columns: { digestOptOut: true, dipAlertSentAt: true } },
       dailyCheckins: {

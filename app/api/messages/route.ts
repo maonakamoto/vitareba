@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { threads, threadMessages } from "@/lib/db/schema";
 import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { USER_ROLE } from "@/lib/config/auth";
 
 const createSchema = z.object({
   subject: z.string().min(1).max(MESSAGE_SUBJECT_MAX_LENGTH),
@@ -20,7 +21,7 @@ export async function GET() {
   const { session } = guard;
 
   const where =
-    session.user.role === "admin"
+    session.user.role === USER_ROLE.admin
       ? undefined
       : eq(threads.patientId, session.user.id);
 
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
   }
 
   const patientId =
-    session.user.role === "admin" && parsed.data.patientId
+    session.user.role === USER_ROLE.admin && parsed.data.patientId
       ? parsed.data.patientId
       : session.user.id;
 

@@ -4,11 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styles from "./UserDropdown.module.css";
+import { USER_ROLE, type UserRole } from "@/lib/config/auth";
 
 interface Props {
   name: string;
   email: string;
-  role: "admin" | "patient";
+  role: UserRole;
 }
 
 function initials(name: string, email: string): string {
@@ -59,7 +60,7 @@ export function UserDropdown({ name, email, role }: Props) {
             {name && <p className={styles.headerEmail}>{email}</p>}
           </div>
           <div className={styles.items}>
-            {role === "admin" && (
+            {role === USER_ROLE.admin && (
               <Link href="/admin" className={styles.item} onClick={() => setOpen(false)}>
                 Admin Panel ↗
               </Link>

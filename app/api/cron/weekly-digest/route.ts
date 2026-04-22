@@ -9,6 +9,7 @@ import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: number; focus: number; stress: number }>) {
   if (checkins.length === 0) return null;
@@ -50,7 +51,7 @@ export async function GET(req: Request) {
 
   // Fetch all patients with their profile, latest assessment, and latest booking
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: { columns: { digestOptOut: true } },
       assessmentResults: {

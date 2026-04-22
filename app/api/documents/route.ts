@@ -6,6 +6,7 @@ import { eq, desc } from "drizzle-orm";
 import { requireSession, requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
+import { USER_ROLE } from "@/lib/config/auth";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
@@ -23,7 +24,7 @@ export async function GET(req: Request) {
   const patientId = searchParams.get("patientId");
 
   // Admin with no patientId filter → return all documents with user info
-  if (session.user.role === "admin" && !patientId) {
+  if (session.user.role === USER_ROLE.admin && !patientId) {
     const results = await db.query.documents.findMany({
       orderBy: [desc(documents.createdAt)],
       with: { user: { columns: { id: true, name: true, email: true } } },
@@ -32,7 +33,7 @@ export async function GET(req: Request) {
   }
 
   const targetId =
-    session.user.role === "admin" && patientId ? patientId : session.user.id;
+    session.user.role === USER_ROLE.admin && patientId ? patientId : session.user.id;
 
   const results = await db.query.documents.findMany({
     where: eq(documents.userId, targetId),

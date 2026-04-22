@@ -6,6 +6,7 @@ import { eq, desc, gte } from "drizzle-orm";
 import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
+import { USER_ROLE } from "@/lib/config/auth";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
 import { formatDateShort, formatDateISO } from "@/lib/utils/format";
@@ -22,7 +23,7 @@ function StatCard({ label, value, sub }: { label: string; value: string | number
 
 export default async function ReportsPage() {
   const session = await auth();
-  if (!session || session.user.role !== "admin") redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
 
   const now = new Date();
   const weekAgo = new Date(now);
@@ -31,7 +32,7 @@ export default async function ReportsPage() {
 
   // Fetch all patients with signal-relevant data
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     with: {
       assessmentResults: {
         orderBy: [desc(assessmentResults.completedAt)],
