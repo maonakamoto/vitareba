@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import authStyles from "@/app/(auth)/auth.module.css";
+import styles from "@/app/(admin)/admin.module.css";
 
 export function DocumentAddForm({ patientId }: { patientId: string }) {
   const [title, setTitle] = useState("");
@@ -42,43 +42,39 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-      <p style={{ fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-        Add document
-      </p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-        <div className={authStyles.field}>
-          <label className={authStyles.label} htmlFor="doc-title">Title</label>
+    <form onSubmit={handleSubmit} className={styles.docForm}>
+      <p className={styles.docFormHeading}>Add document</p>
+      <div className={styles.formGrid2}>
+        <div className={styles.formField}>
+          <label className={styles.formLabel} htmlFor="doc-title">Title</label>
           <input
             id="doc-title"
-            className={authStyles.input}
+            className={styles.formInput}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Lab results, Assessment report…"
             required
           />
         </div>
-        <div className={authStyles.field}>
-          <label className={authStyles.label} htmlFor="doc-file">File (max 20 MB)</label>
+        <div className={styles.formField}>
+          <label className={styles.formLabel} htmlFor="doc-file">File (max 20 MB)</label>
           <input
             id="doc-file"
             ref={fileRef}
-            className={authStyles.input}
+            className={styles.docFileInput}
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xlsx,.csv"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             required
-            style={{ paddingTop: "0.4rem" }}
           />
         </div>
       </div>
       {progress === "error" && (
-        <p style={{ fontSize: "0.75rem", color: "var(--danger)" }}>{errorMsg}</p>
+        <p className={styles.assignError}>{errorMsg}</p>
       )}
       <button
         type="submit"
-        className={authStyles.submit}
-        style={{ marginTop: 0, width: "auto", alignSelf: "flex-start", padding: "0.6rem 1.25rem" }}
+        className={styles.assignSubmit}
         disabled={uploading || !file || !title.trim()}
       >
         {progress === "uploading" ? "Uploading…" : progress === "done" ? "Uploaded ✓" : "Upload document"}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "@/app/(admin)/admin.module.css";
 import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 import { formatDateShort } from "@/lib/utils/format";
 
@@ -49,61 +50,28 @@ export function AdminNotesForm({
   return (
     <div>
       {notes.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem", marginBottom: "1.25rem" }}>
+        <div className={styles.notesList}>
           {notes.map((n) => (
-            <div
-              key={n.id}
-              style={{
-                background: "var(--off)",
-                borderRadius: "0.5rem",
-                padding: "0.85rem 1rem",
-                fontSize: "0.82rem",
-              }}
-            >
-              <div style={{ color: "var(--muted)", fontSize: "0.7rem", marginBottom: "0.4rem" }}>
-                {n.adminName ?? "Admin"} ·{" "}
-                {formatDateShort(n.createdAt)}
+            <div key={n.id} className={styles.noteItem}>
+              <div className={styles.noteMeta}>
+                {n.adminName ?? "Admin"} · {formatDateShort(n.createdAt)}
               </div>
-              <p style={{ color: "var(--ink2)", lineHeight: 1.65, margin: 0, whiteSpace: "pre-wrap" }}>{n.body}</p>
+              <p className={styles.noteBody}>{n.body}</p>
             </div>
           ))}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <form onSubmit={handleSubmit} className={styles.noteForm}>
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add a clinical note…"
           rows={3}
-          style={{
-            padding: "0.65rem 0.9rem",
-            border: "1px solid var(--border)",
-            borderRadius: "0.5rem",
-            fontFamily: "inherit",
-            fontSize: "0.85rem",
-            resize: "vertical",
-            width: "100%",
-            boxSizing: "border-box",
-          }}
+          className={styles.composeTextarea}
         />
-        {error && <p style={{ fontSize: "0.75rem", color: "var(--danger)", margin: 0 }}>{error}</p>}
-        <button
-          type="submit"
-          disabled={saving || !body.trim()}
-          style={{
-            alignSelf: "flex-start",
-            padding: "0.5rem 1.25rem",
-            background: "var(--ink)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontSize: "0.78rem",
-            letterSpacing: "0.05em",
-            cursor: saving ? "not-allowed" : "pointer",
-            opacity: saving || !body.trim() ? 0.6 : 1,
-          }}
-        >
+        {error && <p className={styles.assignError}>{error}</p>}
+        <button type="submit" disabled={saving || !body.trim()} className={styles.assignSubmit}>
           {saving ? "Saving…" : saved ? "Saved ✓" : "Add note"}
         </button>
       </form>

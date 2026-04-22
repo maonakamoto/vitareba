@@ -44,6 +44,18 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
+  // ── Locale-prefixed portal paths: redirect to canonical ───────────────
+  // e.g. /en/dashboard → /dashboard, /de/profile → /profile
+  const localePortalMatch = routing.locales.flatMap((locale) =>
+    PORTAL_PREFIXES.map((p) => ({ locale, prefix: p })),
+  ).find(({ locale, prefix }) =>
+    pathname === `/${locale}${prefix}` || pathname.startsWith(`/${locale}${prefix}/`),
+  );
+  if (localePortalMatch) {
+    const stripped = pathname.slice(localePortalMatch.locale.length + 1); // remove /locale
+    return NextResponse.redirect(new URL(stripped, req.url));
+  }
+
   // ── Marketing / auth: locale routing ───────────────────────────────────
 
   // Redirect logged-in users away from locale-prefixed auth pages

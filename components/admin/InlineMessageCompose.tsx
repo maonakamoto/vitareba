@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import styles from "@/app/(admin)/admin.module.css";
 
 export function InlineMessageCompose({ patientId }: { patientId: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -35,12 +36,9 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
 
   if (sentThreadId) {
     return (
-      <div style={{ marginTop: "1rem", fontSize: "0.82rem", color: "var(--ink2)" }}>
+      <div className={styles.composeSent}>
         Sent —{" "}
-        <Link
-          href={`/admin/messages/${sentThreadId}`}
-          style={{ color: "var(--teal)", textDecoration: "none" }}
-        >
+        <Link href={`/admin/messages/${sentThreadId}`} className={styles.composeSentLink}>
           View conversation →
         </Link>
       </div>
@@ -49,92 +47,41 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
 
   if (!expanded) {
     return (
-      <button
-        onClick={() => setExpanded(true)}
-        style={{
-          marginTop: "1rem",
-          padding: "0.4rem 0.9rem",
-          background: "transparent",
-          color: "var(--teal)",
-          border: "1px solid var(--teal)",
-          borderRadius: "0.5rem",
-          fontSize: "0.78rem",
-          letterSpacing: "0.04em",
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={() => setExpanded(true)} className={styles.composeNewBtn}>
         New message +
       </button>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}
-    >
+    <form onSubmit={handleSubmit} className={styles.composeForm}>
       <input
         type="text"
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
         placeholder="Subject"
-        style={{
-          padding: "0.55rem 0.9rem",
-          border: "1px solid var(--border)",
-          borderRadius: "0.5rem",
-          fontFamily: "inherit",
-          fontSize: "0.85rem",
-          width: "100%",
-          boxSizing: "border-box",
-        }}
+        className={styles.composeInput}
       />
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder="Write a message…"
         rows={3}
-        style={{
-          padding: "0.65rem 0.9rem",
-          border: "1px solid var(--border)",
-          borderRadius: "0.5rem",
-          fontFamily: "inherit",
-          fontSize: "0.85rem",
-          resize: "vertical",
-          width: "100%",
-          boxSizing: "border-box",
-        }}
+        className={styles.composeTextarea}
       />
-      {error && <p style={{ fontSize: "0.75rem", color: "var(--danger)", margin: 0 }}>{error}</p>}
-      <div style={{ display: "flex", gap: "0.5rem" }}>
+      {error && <p className={styles.assignError}>{error}</p>}
+      <div className={styles.goalFormActions}>
         <button
           type="submit"
           disabled={sending || !subject.trim() || !body.trim()}
-          style={{
-            padding: "0.5rem 1.25rem",
-            background: "var(--ink)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontSize: "0.78rem",
-            letterSpacing: "0.05em",
-            cursor: sending ? "not-allowed" : "pointer",
-            opacity: sending || !subject.trim() || !body.trim() ? 0.6 : 1,
-          }}
+          className={styles.composeSend}
         >
           {sending ? "Sending…" : "Send"}
         </button>
         <button
           type="button"
           onClick={() => { setExpanded(false); setError(""); }}
-          style={{
-            padding: "0.5rem 0.9rem",
-            background: "transparent",
-            color: "var(--muted)",
-            border: "1px solid var(--border)",
-            borderRadius: "0.5rem",
-            fontSize: "0.78rem",
-            cursor: "pointer",
-          }}
+          className={styles.composeCancel}
         >
           Cancel
         </button>
