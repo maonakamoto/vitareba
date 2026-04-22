@@ -141,11 +141,11 @@ export function welcomePatientEmail({
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Welcome to VitaReBa. Your patient portal is ready.</p>
-    <p>Manuel works with a small number of patients at a time — which means your programme will be built around your specific biology, not a template. To make that possible, he needs your data.</p>
+    <p>${COMPANY.clinicianName} works with a small number of patients at a time — which means your programme will be built around your specific biology, not a template. To make that possible, ${COMPANY.clinicianName} needs your data.</p>
     <div class="divider"></div>
     <p><strong>Here is what to do first:</strong></p>
-    <p>1. <strong>Complete your profile</strong> — your clinical history, current medications, and lifestyle baseline give Manuel the context he needs before your first consultation.</p>
-    <p>2. <strong>Take the Inflection Edge</strong> — 30 questions, 5 minutes. Your results map your ADHD profile across five dimensions and unlock Manuel's ability to personalise your protocol.</p>
+    <p>1. <strong>Complete your profile</strong> — your clinical history, current medications, and lifestyle baseline give ${COMPANY.clinicianName} the context needed before your first consultation.</p>
+    <p>2. <strong>Take the Inflection Edge</strong> — 30 questions, 5 minutes. Your results map your ADHD profile across five dimensions and unlock ${COMPANY.clinicianName}'s ability to personalise your protocol.</p>
     <p>3. <strong>Check in daily</strong> — takes 30 seconds. Sleep, energy, mood, focus, stress. Over time this becomes your most valuable clinical dataset.</p>
     <div class="divider"></div>
     <p><a class="btn" href="${portalUrl}/dashboard">Open your portal</a></p>
@@ -165,7 +165,7 @@ export function profileCompletionEmail({
   return layout(`
     <p>Hi ${patientName},</p>
     <p>One quick thing before your first consultation: your profile.</p>
-    <p>Manuel reviews every patient's profile before meeting them. Your clinical history, current medications, and lifestyle baseline let him show up to your first session already understanding your situation — not spending the first 20 minutes gathering basics.</p>
+    <p>${COMPANY.clinicianName} reviews every patient's profile before meeting them. Your clinical history, current medications, and lifestyle baseline allow for your first session to already be built around your situation — not spending the first 20 minutes gathering basics.</p>
     <p>It takes about 5 minutes and makes a measurable difference to the quality of your first consultation.</p>
     <p><a class="btn" href="${portalUrl}/profile">Complete your profile</a></p>
     <p class="meta">Already done? Ignore this email.</p>
@@ -183,9 +183,9 @@ export function assessmentCtaEmail({
 }) {
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>The Inflection Edge is the foundation of everything Manuel does with you.</p>
-    <p>It maps your ADHD profile across five dimensions — Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Each dimension produces a 0–100 score that tells Manuel where your highest-leverage intervention points are.</p>
-    <p>Without it, Manuel is working blind. With it, he can design your protocol before you even sit down together.</p>
+    <p>The Inflection Edge is the foundation of everything ${COMPANY.clinicianName} does with you.</p>
+    <p>It maps your ADHD profile across five dimensions — Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Each dimension produces a 0–100 score that tells ${COMPANY.clinicianName} where your highest-leverage intervention points are.</p>
+    <p>Without it, ${COMPANY.clinicianName} is working blind. With it, your protocol can be designed before you even sit down together.</p>
     <p>It takes 5 minutes.</p>
     <p><a class="btn" href="${portalUrl}/assessment">Take the Inflection Edge →</a></p>
   `);
@@ -260,7 +260,7 @@ export function assessmentResultsEmail({
     </table>
     <div class="divider"></div>
     <p><a class="btn" href="${portalUrl}">View full results in portal</a></p>
-    <p class="meta">Manuel will review your profile and be in touch about next steps.</p>
+    <p class="meta">${COMPANY.clinicianName} will review your profile and be in touch about next steps.</p>
   `);
 }
 
@@ -278,11 +278,11 @@ export function assessmentMeaningEmail({
     <p>You took the Inflection Edge two days ago. This email explains what the five dimensions actually measure — and why they matter clinically.</p>
     <div class="divider"></div>
     <p><strong>⚡ Arousal &amp; Activation</strong><br/>
-    This is your ability to initiate. Most ADHD interventions start here because without reliable activation, nothing else works. Manuel looks at whether the barrier to starting is biological (dopamine regulation), structural (environment), or habitual.</p>
+    This is your ability to initiate. Most ADHD interventions start here because without reliable activation, nothing else works. ${COMPANY.clinicianName} looks at whether the barrier to starting is biological (dopamine regulation), structural (environment), or habitual.</p>
     <p><strong>💥 Divergent Output</strong><br/>
-    Raw creative capacity. ADHD brains often generate more ideas than neurotypical ones — the clinical question is whether that output is captured, developed, and deployed, or scattered. Manuel tracks the gap between ideation and execution.</p>
+    Raw creative capacity. ADHD brains often generate more ideas than neurotypical ones — the clinical question is whether that output is captured, developed, and deployed, or scattered. ${COMPANY.clinicianName} tracks the gap between ideation and execution.</p>
     <p><strong>🎯 Hyperfocus</strong><br/>
-    Your ability to enter deep, extended flow states. When managed well, hyperfocus is an asymmetric advantage. When uncontrolled, it burns time and relationships. Manuel maps how deliberate versus reactive your hyperfocus currently is.</p>
+    Your ability to enter deep, extended flow states. When managed well, hyperfocus is an asymmetric advantage. When uncontrolled, it burns time and relationships. ${COMPANY.clinicianName} maps how deliberate versus reactive your hyperfocus currently is.</p>
     <p><strong>🌊 Volatility &amp; Cost</strong><br/>
     Emotional and performance variance. The real-world cost of ADHD is often paid here — in decisions made in the wrong state, relationships affected by unpredictability, and energy spent on recovery. This is where biological stabilisation has the most direct impact.</p>
     <p><strong>🏗️ Environment Design</strong><br/>
@@ -305,7 +305,7 @@ export function assessmentBookingEmail({
 }) {
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Manuel has had time to review your Inflection Edge profile (overall score: <strong>${overallScore}/100</strong>).</p>
+    <p>${COMPANY.clinicianName} has had time to review your Inflection Edge profile (overall score: <strong>${overallScore}/100</strong>).</p>
     <p>If you would like to discuss what your results mean for your specific situation — and what interventions are most relevant for your neurotype — you can book a consultation directly.</p>
     <p><a class="btn" href="${portalUrl}/bookings">Book a consultation</a></p>
     <div class="divider"></div>
@@ -376,7 +376,7 @@ export function weeklyDigestEmail({
       </tbody>
     </table>
     <div class="divider"></div>` : `
-    <p class="meta">No check-ins this week. Consistent tracking helps Manuel see your patterns clearly.</p>
+    <p class="meta">No check-ins this week. Consistent tracking helps ${COMPANY.clinicianName} see your patterns clearly.</p>
     <div class="divider"></div>`;
 
   const assessmentSection = latestScore !== null ? `
@@ -408,7 +408,7 @@ export function checkinReminderEmail({
 }) {
   return layout(`
     <p>How are you doing today, <strong>${patientName}</strong>?</p>
-    <p>Logging your daily check-in takes 30 seconds and helps Manuel track your progress across sleep, energy, mood, focus, and stress.</p>
+    <p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>
     <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in →</a></p>
     <div class="divider"></div>
     <p class="meta">You receive this reminder on weekdays while enrolled in a VitaReBa programme. To stop, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>

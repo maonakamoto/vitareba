@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { db } from "@/lib/db";
 import { users, bookings } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
+import { formatDateISO } from "@/lib/utils/format";
 
 // Calendly webhook signature verification
 // Header: Calendly-Webhook-Signature → "t=<unix_ts>,v1=<hmac_sha256_hex>"
@@ -89,14 +90,14 @@ export async function POST(req: Request) {
         .update(bookings)
         .set({
           status: "confirmed",
-          preferredDate: startTime ? startTime.slice(0, 10) : existingPending.preferredDate,
+          preferredDate: startTime ? formatDateISO(new Date(startTime)) : existingPending.preferredDate,
         })
         .where(eq(bookings.id, existingPending.id));
     } else {
       await db.insert(bookings).values({
         userId: patient.id,
         status: "confirmed",
-        preferredDate: startTime ? startTime.slice(0, 10) : null,
+        preferredDate: startTime ? formatDateISO(new Date(startTime)) : null,
         notes: "Booked directly via Calendly",
       });
     }
