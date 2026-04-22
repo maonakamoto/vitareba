@@ -1,5 +1,5 @@
 import styles from "@/app/(admin)/admin.module.css";
-import { DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, getInterpretation, scoreColor } from "@/lib/assessment/data";
 import { formatDateShort } from "@/lib/utils/format";
 
 type AssessmentResult = {
@@ -8,16 +8,6 @@ type AssessmentResult = {
   scores: unknown;
   completedAt: Date;
 };
-
-function getVerdict(score: number) {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore);
-}
-
-function getInterpretation(dimId: string, score: number): string {
-  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
-  if (!tiers) return "";
-  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
-}
 
 export function PatientAssessmentCard({ assessmentResults }: { assessmentResults: AssessmentResult[] }) {
   const result = assessmentResults[0];

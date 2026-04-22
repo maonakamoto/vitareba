@@ -35,6 +35,9 @@ export const CHECKIN_DIP_ALERT_THRESHOLD = 2.5;
 /** Number of consecutive days at or below the threshold before Manuel is alerted */
 export const CHECKIN_DIP_ALERT_DAYS = 3;
 
+/** Days of check-in history to include in weekly digest computations */
+export const ACTIVE_CHECKIN_DAYS = 30;
+
 /** CSS variable for each signal severity — SSOT for signal color rendering */
 export const SIGNAL_COLORS: Record<PatientSignal, string> = {
   critical: "var(--danger)",

@@ -7,12 +7,8 @@ import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
-import { VERDICT_TIERS, scoreColor } from "@/lib/assessment/data";
+import { getVerdictName, scoreColor } from "@/lib/assessment/data";
 import { formatDateShort } from "@/lib/utils/format";
-
-function getVerdictName(score: number) {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore)?.name ?? "—";
-}
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (

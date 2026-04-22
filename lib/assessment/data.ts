@@ -289,3 +289,22 @@ export const VERDICT_TIERS: VerdictTier[] = [
     text: "Your ADHD profile is largely working for you. The refinement available at this level is precision optimisation — fine-tuning the edges to extract the full potential of your neurotype.",
   },
 ];
+
+// ─── Shared helpers — import from here, never redefine locally ───────────────
+
+/** Returns the verdict tier for a given overall score (falls back to lowest tier). */
+export function getVerdict(score: number): VerdictTier {
+  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore) ?? VERDICT_TIERS[0];
+}
+
+/** Returns just the tier name string, useful for display-only callsites. */
+export function getVerdictName(score: number): string {
+  return getVerdict(score).name;
+}
+
+/** Returns the interpretation text for a dimension at a given score. */
+export function getInterpretation(dimId: string, score: number): string {
+  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
+  if (!tiers) return "";
+  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
+}

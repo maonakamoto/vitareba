@@ -13,18 +13,8 @@ import {
   profileCompletionEmail,
   assessmentCtaEmail,
 } from "@/lib/email/templates";
-import { DIMENSIONS, INTERPRETATIONS, VERDICT_TIERS } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data";
 import { PORTAL_URL } from "@/lib/config/company";
-
-function getVerdict(score: number) {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore) ?? VERDICT_TIERS[0];
-}
-
-function getInterpretation(dimId: string, score: number): string {
-  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
-  if (!tiers) return "";
-  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
-}
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");

@@ -1,7 +1,7 @@
 import {
   DIMENSIONS,
-  VERDICT_TIERS,
-  INTERPRETATIONS,
+  getVerdict,
+  getInterpretation,
   scoreColor,
   type DimensionId,
 } from "@/lib/assessment/data";
@@ -19,9 +19,7 @@ export default function ResultsScreen({
   overall,
   onRestart,
 }: ResultsScreenProps) {
-  const verdict =
-    VERDICT_TIERS.find((t) => overall >= t.minScore && overall <= t.maxScore) ??
-    VERDICT_TIERS[VERDICT_TIERS.length - 1];
+  const verdict = getVerdict(overall);
 
   return (
     <div className={`${styles.ovScreen} ${styles.active}`}>
@@ -58,10 +56,6 @@ export default function ResultsScreen({
       <div>
         {DIMENSIONS.map((dim) => {
           const score = scores[dim.id];
-          const bands = INTERPRETATIONS[dim.id];
-          const interp =
-            bands.find((i) => score <= i.maxScore) ??
-            bands[bands.length - 1];
           return (
             <div key={dim.id} className={styles.rDim}>
               <div className={styles.rDimTop}>
@@ -81,7 +75,7 @@ export default function ResultsScreen({
                   style={{ width: `${score}%`, background: scoreColor(score) }}
                 />
               </div>
-              <div className={styles.rDimText}>{interp.text}</div>
+              <div className={styles.rDimText}>{getInterpretation(dim.id, score)}</div>
             </div>
           );
         })}

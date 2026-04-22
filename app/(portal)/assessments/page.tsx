@@ -3,17 +3,11 @@ import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
-import { DIMENSIONS, INTERPRETATIONS, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
 import { formatDateLong } from "@/lib/utils/format";
 import styles from "../portal.module.css";
 import assessStyles from "./assessments.module.css";
 import { AssessmentTrendChartWrapper } from "./AssessmentTrendChartWrapper";
-
-function getInterpretation(dimId: string, score: number): string {
-  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
-  if (!tiers) return "";
-  return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
-}
 
 export default async function AssessmentsPage({
   searchParams,

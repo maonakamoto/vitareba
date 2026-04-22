@@ -5,7 +5,7 @@ import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/sche
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
-import { scoreColor, VERDICT_TIERS } from "@/lib/assessment/data";
+import { scoreColor, getVerdictName } from "@/lib/assessment/data";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { computeProfileCompleteness, profileCompletenessColor } from "@/lib/domain/profile";
 import {
@@ -13,10 +13,6 @@ import {
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
 } from "@/lib/config/admin";
-
-function getVerdictName(score: number) {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore)?.name ?? "";
-}
 
 function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: number; stress: number }): number {
   return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;

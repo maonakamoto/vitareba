@@ -5,17 +5,13 @@ import { eq, desc, and, isNull } from "drizzle-orm";
 import Link from "next/link";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
-import { DIMENSIONS, VERDICT_TIERS, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
 import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
 import { formatDateLong } from "@/lib/utils/format";
 import { ProgrammeCard } from "./ProgrammeCard";
 import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
-
-function getVerdict(score: number) {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore) ?? VERDICT_TIERS[0];
-}
 
 function getLowestDimension(scores: Record<string, number>) {
   return DIMENSIONS.reduce((min, dim) =>

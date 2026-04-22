@@ -6,13 +6,9 @@ import { users, profiles, assessmentResults, bookings, dailyCheckins } from "@/l
 import { eq, gte, and, desc } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
-import { VERDICT_TIERS } from "@/lib/assessment/data";
+import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL } from "@/lib/config/company";
-const ACTIVE_CHECKIN_DAYS = 30;
-
-function getVerdictName(score: number): string {
-  return VERDICT_TIERS.find((t) => score >= t.minScore && score <= t.maxScore)?.name ?? "";
-}
+import { ACTIVE_CHECKIN_DAYS } from "@/lib/config/admin";
 
 function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: number; focus: number; stress: number }>) {
   if (checkins.length === 0) return null;
