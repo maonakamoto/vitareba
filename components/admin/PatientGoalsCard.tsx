@@ -23,31 +23,18 @@ function GoalProgressBar({ baseline, current, target }: { baseline: number | nul
   const targetPct = target != null ? (target / max) * 100 : null;
 
   return (
-    <div style={{ position: "relative", height: "6px", background: "var(--border)", borderRadius: "3px", margin: "0.5rem 0", overflow: "visible" }}>
-      {/* Fill from baseline to current */}
+    <div className={styles.goalBar}>
       {currentPct != null && (
-        <div style={{
-          position: "absolute",
-          left: `${baselinePct ?? 0}%`,
-          width: `${Math.max(0, currentPct - (baselinePct ?? 0))}%`,
-          height: "100%",
-          background: "var(--teal)",
-          borderRadius: "3px",
-          transition: "width 0.3s",
-        }} />
+        <div
+          className={styles.goalBarFill}
+          style={{
+            left: `${baselinePct ?? 0}%`,
+            width: `${Math.max(0, currentPct - (baselinePct ?? 0))}%`,
+          }}
+        />
       )}
-      {/* Target marker */}
       {targetPct != null && (
-        <div style={{
-          position: "absolute",
-          left: `${targetPct}%`,
-          top: "-3px",
-          width: "2px",
-          height: "12px",
-          background: "var(--gold)",
-          borderRadius: "1px",
-          transform: "translateX(-50%)",
-        }} />
+        <div className={styles.goalBarTarget} style={{ left: `${targetPct}%` }} />
       )}
     </div>
   );
@@ -124,54 +111,44 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
   const completed = goals.filter((g) => g.completedAt);
 
   return (
-    <div className={styles.card} style={{ marginTop: "1.25rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+    <div className={styles.goalCardMt}>
+      <div className={styles.goalCardHeader}>
         <p className={styles.cardLabel}>Clinical goals ({goals.length})</p>
-        <button
-          type="button"
-          onClick={() => setShowForm(!showForm)}
-          style={{ fontSize: "0.75rem", color: "var(--teal)", background: "none", border: "1px solid color-mix(in srgb, var(--teal) 30%, transparent)", borderRadius: "0.4rem", padding: "0.3rem 0.75rem", cursor: "pointer" }}
-        >
+        <button type="button" onClick={() => setShowForm(!showForm)} className={styles.goalAddBtn}>
           + Add goal
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleAdd} style={{ marginBottom: "1.25rem", display: "flex", flexDirection: "column", gap: "0.65rem", background: "var(--off)", borderRadius: "0.5rem", padding: "1rem" }}>
+        <form onSubmit={handleAdd} className={styles.goalForm}>
           <input
             required
             placeholder="Goal title (e.g. Improve focus score to 70)"
             value={form.title}
             onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-            style={{ padding: "0.5rem 0.75rem", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.82rem", fontFamily: "inherit" }}
+            className={styles.goalFormInput}
           />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem" }}>
+          <div className={styles.goalFormGrid3}>
             <input
-              type="number"
-              min="0"
-              max="100"
+              type="number" min="0" max="100"
               placeholder="Baseline (0–100)"
               value={form.baseline}
               onChange={(e) => setForm((p) => ({ ...p, baseline: e.target.value }))}
-              style={{ padding: "0.5rem 0.75rem", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.82rem", fontFamily: "inherit" }}
+              className={styles.goalFormInput}
             />
             <input
-              type="number"
-              min="0"
-              max="100"
+              type="number" min="0" max="100"
               placeholder="Current (0–100)"
               value={form.current}
               onChange={(e) => setForm((p) => ({ ...p, current: e.target.value }))}
-              style={{ padding: "0.5rem 0.75rem", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.82rem", fontFamily: "inherit" }}
+              className={styles.goalFormInput}
             />
             <input
-              type="number"
-              min="0"
-              max="100"
+              type="number" min="0" max="100"
               placeholder="Target (0–100)"
               value={form.target}
               onChange={(e) => setForm((p) => ({ ...p, target: e.target.value }))}
-              style={{ padding: "0.5rem 0.75rem", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.82rem", fontFamily: "inherit" }}
+              className={styles.goalFormInput}
             />
           </div>
           <textarea
@@ -179,13 +156,13 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             value={form.notes}
             onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
             rows={2}
-            style={{ padding: "0.5rem 0.75rem", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.82rem", fontFamily: "inherit", resize: "vertical" }}
+            className={styles.goalFormTextarea}
           />
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button type="submit" disabled={saving} style={{ flex: 1, padding: "0.5rem", background: "var(--ink)", color: "#fff", border: "none", borderRadius: "0.4rem", fontSize: "0.8rem", cursor: "pointer" }}>
+          <div className={styles.goalFormActions}>
+            <button type="submit" disabled={saving} className={styles.goalFormSubmit}>
               {saving ? "Saving…" : "Add goal"}
             </button>
-            <button type="button" onClick={() => setShowForm(false)} style={{ flex: 1, padding: "0.5rem", background: "none", border: "1px solid var(--border)", borderRadius: "0.4rem", fontSize: "0.8rem", cursor: "pointer" }}>
+            <button type="button" onClick={() => setShowForm(false)} className={styles.goalFormCancel}>
               Cancel
             </button>
           </div>
@@ -193,30 +170,20 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
       )}
 
       {loading ? (
-        <p style={{ fontSize: "0.82rem", color: "var(--muted)" }}>Loading…</p>
+        <p className={styles.goalMutedText}>Loading…</p>
       ) : goals.length === 0 ? (
-        <p style={{ fontSize: "0.82rem", color: "var(--muted)" }}>No goals set yet.</p>
+        <p className={styles.goalMutedText}>No goals set yet.</p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div className={styles.goalList}>
           {active.map((goal) => (
-            <div key={goal.id} style={{ borderLeft: "3px solid var(--teal)", paddingLeft: "0.75rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem" }}>
-                <p style={{ fontSize: "0.85rem", color: "var(--ink)", fontWeight: 500, margin: 0 }}>{goal.title}</p>
-                <div style={{ display: "flex", gap: "0.4rem", flexShrink: 0 }}>
-                  <button
-                    type="button"
-                    onClick={() => handleToggleComplete(goal)}
-                    title="Mark complete"
-                    style={{ fontSize: "0.7rem", color: "var(--teal)", background: "none", border: "1px solid color-mix(in srgb, var(--teal) 25%, transparent)", borderRadius: "0.3rem", padding: "0.2rem 0.5rem", cursor: "pointer" }}
-                  >
+            <div key={goal.id} className={styles.goalActiveItem}>
+              <div className={styles.goalItemHeader}>
+                <p className={styles.goalTitle}>{goal.title}</p>
+                <div className={styles.goalItemActions}>
+                  <button type="button" onClick={() => handleToggleComplete(goal)} title="Mark complete" className={styles.goalDoneBtn}>
                     ✓ Done
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(goal.id)}
-                    title="Delete goal"
-                    style={{ fontSize: "0.7rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", padding: "0.2rem" }}
-                  >
+                  <button type="button" onClick={() => handleDelete(goal.id)} title="Delete goal" className={styles.goalDeleteBtn}>
                     ✕
                   </button>
                 </div>
@@ -224,38 +191,27 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
               {(goal.baseline != null || goal.current != null || goal.target != null) && (
                 <>
                   <GoalProgressBar baseline={goal.baseline} current={goal.current} target={goal.target} />
-                  <p style={{ fontSize: "0.72rem", color: "var(--muted)", margin: "0.2rem 0 0" }}>
+                  <p className={styles.goalStats}>
                     {goal.baseline != null && `Baseline: ${goal.baseline}`}
                     {goal.current != null && ` · Current: ${goal.current}`}
                     {goal.target != null && ` · Target: ${goal.target}`}
                   </p>
                 </>
               )}
-              {/* Inline current score update */}
               {editingId === goal.id ? (
-                <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.4rem", alignItems: "center" }}>
+                <div className={styles.goalEditRow}>
                   <input
-                    type="number"
-                    min="0"
-                    max="100"
+                    type="number" min="0" max="100"
                     value={editCurrent}
                     onChange={(e) => setEditCurrent(e.target.value)}
                     placeholder="New score"
-                    style={{ width: "80px", padding: "0.3rem 0.5rem", border: "1px solid var(--border)", borderRadius: "0.3rem", fontSize: "0.78rem", fontFamily: "inherit" }}
+                    className={styles.goalEditInput}
                     autoFocus
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleUpdateCurrent(goal.id)}
-                    style={{ fontSize: "0.72rem", color: "#fff", background: "var(--teal)", border: "none", borderRadius: "0.3rem", padding: "0.3rem 0.6rem", cursor: "pointer" }}
-                  >
+                  <button type="button" onClick={() => handleUpdateCurrent(goal.id)} className={styles.goalEditSave}>
                     Save
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditingId(null)}
-                    style={{ fontSize: "0.72rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer" }}
-                  >
+                  <button type="button" onClick={() => setEditingId(null)} className={styles.goalEditCancel}>
                     Cancel
                   </button>
                 </div>
@@ -263,38 +219,30 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
                 <button
                   type="button"
                   onClick={() => { setEditingId(goal.id); setEditCurrent(goal.current?.toString() ?? ""); }}
-                  style={{ fontSize: "0.72rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", padding: 0, marginTop: "0.25rem", textDecoration: "underline" }}
+                  className={styles.goalUpdateLink}
                 >
                   Update score
                 </button>
               )}
-              {goal.notes && <p style={{ fontSize: "0.75rem", color: "var(--muted)", margin: "0.3rem 0 0" }}>{goal.notes}</p>}
+              {goal.notes && <p className={styles.goalNotes}>{goal.notes}</p>}
             </div>
           ))}
 
           {completed.length > 0 && (
-            <details style={{ marginTop: "0.5rem" }}>
-              <summary style={{ fontSize: "0.78rem", color: "var(--muted)", cursor: "pointer", listStyle: "none" }}>
+            <details className={styles.goalCompletedDetails}>
+              <summary className={styles.goalCompletedSummary}>
                 {completed.length} completed goal{completed.length !== 1 ? "s" : ""}
               </summary>
-              <div style={{ marginTop: "0.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              <div className={styles.goalCompletedList}>
                 {completed.map((goal) => (
-                  <div key={goal.id} style={{ borderLeft: "3px solid var(--border)", paddingLeft: "0.75rem", opacity: 0.7 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <p style={{ fontSize: "0.82rem", color: "var(--ink2)", margin: 0, textDecoration: "line-through" }}>{goal.title}</p>
-                      <div style={{ display: "flex", gap: "0.4rem" }}>
-                        <button
-                          type="button"
-                          onClick={() => handleToggleComplete(goal)}
-                          style={{ fontSize: "0.68rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer" }}
-                        >
+                  <div key={goal.id} className={styles.goalCompletedItem}>
+                    <div className={styles.goalCompletedHeader}>
+                      <p className={styles.goalCompletedTitle}>{goal.title}</p>
+                      <div className={styles.goalCompletedActions}>
+                        <button type="button" onClick={() => handleToggleComplete(goal)} className={styles.goalCompletedBtn}>
                           Reopen
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(goal.id)}
-                          style={{ fontSize: "0.68rem", color: "var(--muted)", background: "none", border: "none", cursor: "pointer" }}
-                        >
+                        <button type="button" onClick={() => handleDelete(goal.id)} className={styles.goalCompletedBtn}>
                           ✕
                         </button>
                       </div>
