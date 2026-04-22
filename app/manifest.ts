@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { COMPANY } from "@/lib/config/company";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "VitaReBa Portal",
-    short_name: "VitaReBa",
-    description: "Your VitaReBa patient portal — daily check-in, assessments, and consultations.",
+    name: `${COMPANY.shortName} Portal`,
+    short_name: COMPANY.shortName,
+    description: `Your ${COMPANY.shortName} patient portal — daily check-in, assessments, and consultations.`,
     start_url: "/dashboard",
     display: "standalone",
     orientation: "portrait",

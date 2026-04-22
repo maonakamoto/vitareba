@@ -101,7 +101,7 @@ export async function POST(
         subject: `New message: ${thread.subject} — VitaReBa`,
         html: newMessageEmail({
           recipientName: patient.name ?? "there",
-          senderName: sender?.name ?? "VitaReBa",
+          senderName: sender?.name ?? COMPANY.shortName,
           subject: thread.subject,
           portalUrl: `${PORTAL_URL}/messages/${threadId}`,
         }),
