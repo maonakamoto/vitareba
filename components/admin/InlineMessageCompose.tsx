@@ -47,7 +47,7 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
 
   if (!expanded) {
     return (
-      <button onClick={() => setExpanded(true)} className={styles.composeNewBtn}>
+      <button type="button" onClick={() => setExpanded(true)} className={styles.composeNewBtn}>
         New message +
       </button>
     );
@@ -57,12 +57,14 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
     <form onSubmit={handleSubmit} className={styles.composeForm}>
       <input
         type="text"
+        aria-label="Message subject"
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
         placeholder="Subject"
         className={styles.composeInput}
       />
       <textarea
+        aria-label="Message body"
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder="Write a message…"

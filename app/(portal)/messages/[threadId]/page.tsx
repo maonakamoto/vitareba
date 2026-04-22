@@ -98,6 +98,7 @@ export default function ThreadPage() {
       <div className={styles.card}>
         <form onSubmit={handleSend} className={msgStyles.composeForm}>
           <textarea
+            aria-label="Message"
             className={msgStyles.composeTextarea}
             value={body}
             onChange={(e) => setBody(e.target.value)}

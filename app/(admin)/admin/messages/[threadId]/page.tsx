@@ -91,6 +91,7 @@ export default function AdminThreadPage() {
       <div className={styles.card}>
         <form onSubmit={handleSend} className={styles.composeForm}>
           <textarea
+            aria-label="Reply"
             className={styles.composeTextarea}
             value={body}
             onChange={(e) => setBody(e.target.value)}

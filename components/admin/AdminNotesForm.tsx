@@ -64,6 +64,7 @@ export function AdminNotesForm({
 
       <form onSubmit={handleSubmit} className={styles.noteForm}>
         <textarea
+          aria-label="Clinical note"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add a clinical note…"

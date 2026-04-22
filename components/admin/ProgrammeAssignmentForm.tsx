@@ -61,8 +61,9 @@ export function ProgrammeAssignmentForm({
     <form onSubmit={handleSubmit} className={styles.formStack}>
       <div className={styles.formGrid2}>
         <div>
-          <label className={styles.assignLabel}>Programme</label>
+          <label htmlFor="prog-programme" className={styles.assignLabel}>Programme</label>
           <select
+            id="prog-programme"
             value={programme}
             onChange={(e) => setProgramme(e.target.value as ProgrammeKey)}
             className={styles.assignField}
@@ -75,8 +76,9 @@ export function ProgrammeAssignmentForm({
         </div>
 
         <div>
-          <label className={styles.assignLabel}>Phase</label>
+          <label htmlFor="prog-phase" className={styles.assignLabel}>Phase</label>
           <select
+            id="prog-phase"
             value={phase}
             onChange={(e) => setPhase(e.target.value as PhaseKey)}
             className={styles.assignField}
@@ -90,8 +92,9 @@ export function ProgrammeAssignmentForm({
       </div>
 
       <div>
-        <label className={styles.assignLabel}>Start date (optional)</label>
+        <label htmlFor="prog-start-date" className={styles.assignLabel}>Start date (optional)</label>
         <input
+          id="prog-start-date"
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
@@ -100,8 +103,9 @@ export function ProgrammeAssignmentForm({
       </div>
 
       <div>
-        <label className={styles.assignLabel}>Notes (optional)</label>
+        <label htmlFor="prog-notes" className={styles.assignLabel}>Notes (optional)</label>
         <textarea
+          id="prog-notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
