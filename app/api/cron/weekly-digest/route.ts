@@ -3,12 +3,11 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
-import { eq, gte, and, desc } from "drizzle-orm";
+import { eq, gte, and, desc, inArray } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL } from "@/lib/config/company";
-import { ACTIVE_CHECKIN_DAYS } from "@/lib/config/admin";
 import { formatDateISO } from "@/lib/utils/format";
 
 function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: number; focus: number; stress: number }>) {
@@ -40,15 +39,16 @@ export async function GET(req: Request) {
   }
 
   const now = new Date();
-  const cutoffDate = new Date(now);
-  cutoffDate.setDate(cutoffDate.getDate() - ACTIVE_CHECKIN_DAYS);
 
   const thisWeekStart = new Date(now);
   thisWeekStart.setDate(thisWeekStart.getDate() - 7);
   const prevWeekStart = new Date(now);
   prevWeekStart.setDate(prevWeekStart.getDate() - 14);
 
-  // Fetch all patients with their profile, latest assessment, latest booking, and last 14 days of check-ins
+  const thisWeekISO = formatDateISO(thisWeekStart);
+  const prevWeekISO = formatDateISO(prevWeekStart);
+
+  // Fetch all patients with their profile, latest assessment, and latest booking
   const patients = await db.query.users.findMany({
     where: eq(users.role, "patient"),
     with: {
@@ -64,6 +64,28 @@ export async function GET(req: Request) {
     },
   });
 
+  // Batch-load last 14 days of check-ins for all patients in a single query
+  const patientIds = patients.map((p) => p.id);
+  const allCheckins = patientIds.length > 0
+    ? await db
+        .select()
+        .from(dailyCheckins)
+        .where(
+          and(
+            inArray(dailyCheckins.userId, patientIds),
+            gte(dailyCheckins.date, prevWeekISO)
+          )
+        )
+    : [];
+
+  // Group check-ins by userId for O(1) lookup in the loop
+  const checkinsByPatient = new Map<string, typeof allCheckins>();
+  for (const checkin of allCheckins) {
+    const list = checkinsByPatient.get(checkin.userId) ?? [];
+    list.push(checkin);
+    checkinsByPatient.set(checkin.userId, list);
+  }
+
   let sent = 0;
   let skipped = 0;
 
@@ -76,21 +98,15 @@ export async function GET(req: Request) {
     // Skip patients with no assessments and no recent activity
     const hasAssessment = patient.assessmentResults.length > 0;
 
-    // Fetch last 14 days of check-ins for this patient
-    const recentCheckins = await db.query.dailyCheckins.findMany({
-      where: and(
-        eq(dailyCheckins.userId, patient.id),
-        gte(dailyCheckins.date, formatDateISO(cutoffDate))
-      ),
-    });
+    const recentCheckins = checkinsByPatient.get(patient.id) ?? [];
 
     // Skip if no assessments AND no recent activity
     if (!hasAssessment && recentCheckins.length === 0) { skipped++; continue; }
 
     // Compute week averages
-    const thisWeekCheckins = recentCheckins.filter((c) => c.date >= formatDateISO(thisWeekStart));
+    const thisWeekCheckins = recentCheckins.filter((c) => c.date >= thisWeekISO);
     const prevWeekCheckins = recentCheckins.filter(
-      (c) => c.date >= formatDateISO(prevWeekStart) && c.date < formatDateISO(thisWeekStart)
+      (c) => c.date >= prevWeekISO && c.date < thisWeekISO
     );
 
     const thisWeekAvgs = avgMetrics(thisWeekCheckins);
