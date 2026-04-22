@@ -10,27 +10,15 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
 
 type DataPoint = {
   date: string;
-  sleep: number;
-  energy: number;
-  mood: number;
-  focus: number;
-  stress: number;
-};
+} & Record<MetricKey, number>;
 
 type Props = {
   data: DataPoint[];
 };
-
-const METRIC_LINES = [
-  { key: "sleep",  label: "Sleep",  color: "var(--purple)" },
-  { key: "energy", label: "Energy", color: "var(--teal)" },
-  { key: "mood",   label: "Mood",   color: "var(--gold)" },
-  { key: "focus",  label: "Focus",  color: "var(--teal-dark)" },
-  { key: "stress", label: "Stress", color: "var(--danger)" },
-] as const;
 
 export function CheckinTrendChart({ data }: Props) {
   return (
@@ -66,12 +54,12 @@ export function CheckinTrendChart({ data }: Props) {
           iconSize={7}
           wrapperStyle={{ fontSize: "0.72rem", fontFamily: "var(--font-dm-sans)" }}
         />
-        {METRIC_LINES.map(({ key, label, color }) => (
+        {CHECKIN_METRICS.map(({ key, shortLabel, color }) => (
           <Line
             key={key}
             type="monotone"
             dataKey={key}
-            name={label}
+            name={shortLabel}
             stroke={color}
             strokeWidth={1.5}
             dot={false}

@@ -1,5 +1,7 @@
 // Admin signal thresholds — SSOT, no magic numbers in page files
 
+import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+
 /** Days since last check-in before patient is marked critical (has prior check-in history) */
 export const NO_CHECKIN_CRITICAL_DAYS = 5;
 
@@ -23,9 +25,9 @@ export const PATIENT_SIGNAL = {
   new: "new",
 } as const satisfies Record<PatientSignal, PatientSignal>;
 
-/** Check-in metric keys that can be linked to clinical goals */
-export const CHECKIN_GOAL_METRICS = ["focus", "mood", "energy", "sleep", "stress"] as const;
-export type CheckinGoalMetric = (typeof CHECKIN_GOAL_METRICS)[number];
+/** Check-in metric keys that can be linked to clinical goals — derived from CHECKIN_METRICS SSOT */
+export const CHECKIN_GOAL_METRICS = CHECKIN_METRICS.map((m) => m.key);
+export type CheckinGoalMetric = MetricKey;
 
 /** Sort order for signal severity — lower = shown first */
 export const SIGNAL_SORT_ORDER: Record<PatientSignal, number> = {

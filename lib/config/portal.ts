@@ -10,6 +10,21 @@ export const SAVED_FEEDBACK_MS = 3_000;
 export const CHECKIN_SCALE_MIN = 1;
 export const CHECKIN_SCALE_MAX = 5;
 
+/**
+ * SSOT for all five daily check-in metrics — keys, display labels, scale edge labels, and chart
+ * colours. Import from here; never redefine the list in components.
+ * Adding a new metric: edit here + the DB schema (lib/db/schema.ts) only.
+ */
+export const CHECKIN_METRICS = [
+  { key: "sleep",  label: "Sleep quality", shortLabel: "Sleep",  lowLabel: "Poor",      highLabel: "Excellent", color: "var(--purple)" },
+  { key: "energy", label: "Energy level",  shortLabel: "Energy", lowLabel: "Drained",   highLabel: "Vibrant",   color: "var(--teal)" },
+  { key: "mood",   label: "Mood",          shortLabel: "Mood",   lowLabel: "Low",       highLabel: "Great",     color: "var(--gold)" },
+  { key: "focus",  label: "Focus",         shortLabel: "Focus",  lowLabel: "Scattered", highLabel: "Sharp",     color: "var(--teal-dark)" },
+  { key: "stress", label: "Stress level",  shortLabel: "Stress", lowLabel: "None",      highLabel: "High",      color: "var(--danger)" },
+] as const;
+
+export type MetricKey = (typeof CHECKIN_METRICS)[number]["key"];
+
 /** How many days of check-in history to display in the trend chart */
 export const CHECKIN_HISTORY_DAYS = 30;
 

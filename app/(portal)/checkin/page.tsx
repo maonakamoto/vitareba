@@ -5,13 +5,12 @@ import Link from "next/link";
 import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { computeStreak } from "@/lib/domain/checkin";
 
-type MetricKey = "sleep" | "energy" | "mood" | "focus" | "stress";
 
 type CheckinData = {
   date: string;
@@ -35,18 +34,6 @@ function streakMessage(streak: number): string {
   return "First data point saved. Come back tomorrow to start your streak.";
 }
 
-const METRICS: Array<{
-  key: MetricKey;
-  label: string;
-  lowLabel: string;
-  highLabel: string;
-}> = [
-  { key: "sleep",  label: "Sleep quality",  lowLabel: "Poor",  highLabel: "Excellent" },
-  { key: "energy", label: "Energy level",   lowLabel: "Drained", highLabel: "Vibrant" },
-  { key: "mood",   label: "Mood",           lowLabel: "Low",   highLabel: "Great" },
-  { key: "focus",  label: "Focus",          lowLabel: "Scattered", highLabel: "Sharp" },
-  { key: "stress", label: "Stress level",   lowLabel: "None",  highLabel: "High" },
-];
 
 const SCALE = Array.from(
   { length: CHECKIN_SCALE_MAX - CHECKIN_SCALE_MIN + 1 },
@@ -103,7 +90,7 @@ export default function CheckinPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (METRICS.some(({ key }) => form[key] === 0)) return; // all metrics required
+    if (CHECKIN_METRICS.some(({ key }) => form[key] === 0)) return; // all metrics required
     setSaving(true);
     setSaveError("");
     const res = await fetch("/api/checkin", {
@@ -139,7 +126,7 @@ export default function CheckinPage() {
     stress: c.stress,
   }));
 
-  const allFilled = METRICS.every(({ key }) => form[key] > 0);
+  const allFilled = CHECKIN_METRICS.every(({ key }) => form[key] > 0);
   const streak = computeStreak(history);
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
@@ -183,7 +170,7 @@ export default function CheckinPage() {
           )}
 
           <div className={checkinStyles.metrics}>
-            {METRICS.map(({ key, label, lowLabel, highLabel }) => (
+            {CHECKIN_METRICS.map(({ key, label, lowLabel, highLabel }) => (
               <div key={key} className={checkinStyles.metricRow}>
                 <div className={checkinStyles.metricLabel}>{label}</div>
                 <div className={checkinStyles.scaleWrap}>
