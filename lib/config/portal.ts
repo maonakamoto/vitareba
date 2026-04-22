@@ -72,6 +72,9 @@ export const PATIENT_NOTE_MAX_LENGTH = 5_000;
 /** Daily check-in optional notes max length */
 export const CHECKIN_NOTES_MAX_LENGTH = 1_000;
 
+/** Booking request notes max length */
+export const BOOKING_NOTES_MAX_LENGTH = 1_000;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 

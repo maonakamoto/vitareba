@@ -10,10 +10,11 @@ import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { USER_ROLE } from "@/lib/config/auth";
+import { BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 
 const createSchema = z.object({
-  preferredDate: z.string().optional(),
-  notes: z.string().optional(),
+  preferredDate: z.string().max(50).optional(),
+  notes: z.string().max(BOOKING_NOTES_MAX_LENGTH).optional(),
 });
 
 export async function GET() {

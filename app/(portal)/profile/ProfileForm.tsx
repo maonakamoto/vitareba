@@ -53,36 +53,43 @@ const EMPTY_FORM: ProfileData = {
 export function ProfileForm() {
   const [form, setForm] = useState<ProfileData>(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     async function load() {
-      const [profileRes, sessionRes] = await Promise.all([
-        fetch("/api/profile"),
-        fetch("/api/auth/session"),
-      ]);
-      const profile = await profileRes.json();
-      const session = await sessionRes.json();
-      setForm({
-        name: session?.user?.name ?? "",
-        phone: profile.data?.phone ?? "",
-        dateOfBirth: profile.data?.dateOfBirth ?? "",
-        city: profile.data?.city ?? "",
-        occupation: profile.data?.occupation ?? "",
-        mainConcern: profile.data?.mainConcern ?? "",
-        goals: profile.data?.goals ?? "",
-        diagnosisHistory: profile.data?.diagnosisHistory ?? "",
-        currentMedications: profile.data?.currentMedications ?? "",
-        currentSupplements: profile.data?.currentSupplements ?? "",
-        sleepHoursAvg: profile.data?.sleepHoursAvg ?? "",
-        exerciseFrequency: profile.data?.exerciseFrequency ?? "",
-        referralSource: profile.data?.referralSource ?? "",
-        notes: profile.data?.notes ?? "",
-        digestOptOut: profile.data?.digestOptOut ?? false,
-      });
-      setLoading(false);
+      try {
+        const [profileRes, sessionRes] = await Promise.all([
+          fetch("/api/profile"),
+          fetch("/api/auth/session"),
+        ]);
+        if (!profileRes.ok || !sessionRes.ok) { setLoadError(true); setLoading(false); return; }
+        const profile = await profileRes.json();
+        const session = await sessionRes.json();
+        setForm({
+          name: session?.user?.name ?? "",
+          phone: profile.data?.phone ?? "",
+          dateOfBirth: profile.data?.dateOfBirth ?? "",
+          city: profile.data?.city ?? "",
+          occupation: profile.data?.occupation ?? "",
+          mainConcern: profile.data?.mainConcern ?? "",
+          goals: profile.data?.goals ?? "",
+          diagnosisHistory: profile.data?.diagnosisHistory ?? "",
+          currentMedications: profile.data?.currentMedications ?? "",
+          currentSupplements: profile.data?.currentSupplements ?? "",
+          sleepHoursAvg: profile.data?.sleepHoursAvg ?? "",
+          exerciseFrequency: profile.data?.exerciseFrequency ?? "",
+          referralSource: profile.data?.referralSource ?? "",
+          notes: profile.data?.notes ?? "",
+          digestOptOut: profile.data?.digestOptOut ?? false,
+        });
+      } catch {
+        setLoadError(true);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -118,6 +125,7 @@ export function ProfileForm() {
   }
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
+  if (loadError) return <div className={styles.emptyState}>Failed to load your profile. Please refresh the page.</div>;
 
   const pct = computeProfileCompleteness(form as Record<string, unknown>);
 

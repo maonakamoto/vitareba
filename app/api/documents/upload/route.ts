@@ -9,6 +9,20 @@ import { documents } from "@/lib/db/schema";
 // Max file size: 20 MB
 const MAX_BYTES = 20 * 1024 * 1024;
 
+// Server-side MIME type allowlist — must stay in sync with DocumentAddForm's accept attribute
+const ALLOWED_MIME_TYPES = new Set([
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/csv",
+  "text/plain", // some browsers report CSV as text/plain
+]);
+
 export async function POST(req: Request) {
   const guard = await requireAdmin();
   if (guard.error) return guard.error;
@@ -25,6 +39,10 @@ export async function POST(req: Request) {
 
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ success: false, error: "File exceeds 20 MB limit" }, { status: 413 });
+  }
+
+  if (file.type && !ALLOWED_MIME_TYPES.has(file.type)) {
+    return NextResponse.json({ success: false, error: "File type not allowed" }, { status: 415 });
   }
 
   // Sanitize filename — no path traversal, keep extension
