@@ -1,5 +1,11 @@
 /// <reference types="vitest/globals" />
 import { loginSchema, registerSchema, resolveRole, hashPassword, verifyPassword } from "./auth";
+
+// bcrypt cost 12 is intentionally slow (production security); use 4 in tests
+vi.mock("@/lib/config/auth", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/config/auth")>();
+  return { ...actual, BCRYPT_SALT_ROUNDS: 4 };
+});
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 // ─── loginSchema ──────────────────────────────────────────────────────────────
