@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { users, bookings } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { formatDateISO } from "@/lib/utils/format";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 
 // Calendly webhook signature verification
 // Header: Calendly-Webhook-Signature → "t=<unix_ts>,v1=<hmac_sha256_hex>"
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
   if (event === "invitee.created") {
     // Check if there's an existing pending booking to upgrade; otherwise create one
     const existingPending = await db.query.bookings.findFirst({
-      where: and(eq(bookings.userId, patient.id), eq(bookings.status, "pending")),
+      where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.pending)),
       orderBy: [desc(bookings.createdAt)],
     });
 
@@ -89,37 +90,37 @@ export async function POST(req: Request) {
       await db
         .update(bookings)
         .set({
-          status: "confirmed",
+          status: BOOKING_STATUS.confirmed,
           preferredDate: startTime ? formatDateISO(new Date(startTime)) : existingPending.preferredDate,
         })
         .where(eq(bookings.id, existingPending.id));
     } else {
       await db.insert(bookings).values({
         userId: patient.id,
-        status: "confirmed",
+        status: BOOKING_STATUS.confirmed,
         preferredDate: startTime ? formatDateISO(new Date(startTime)) : null,
         notes: "Booked directly via Calendly",
       });
     }
 
-    return NextResponse.json({ success: true, action: "confirmed" });
+    return NextResponse.json({ success: true, action: BOOKING_STATUS.confirmed });
   }
 
   if (event === "invitee.canceled") {
     // Cancel the most recent confirmed booking for this patient
     const existing = await db.query.bookings.findFirst({
-      where: and(eq(bookings.userId, patient.id), eq(bookings.status, "confirmed")),
+      where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.confirmed)),
       orderBy: [desc(bookings.createdAt)],
     });
 
     if (existing) {
       await db
         .update(bookings)
-        .set({ status: "cancelled" })
+        .set({ status: BOOKING_STATUS.cancelled })
         .where(eq(bookings.id, existing.id));
     }
 
-    return NextResponse.json({ success: true, action: "cancelled" });
+    return NextResponse.json({ success: true, action: BOOKING_STATUS.cancelled });
   }
 
   return NextResponse.json({ success: true, note: "Event not handled" });
