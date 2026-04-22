@@ -12,7 +12,8 @@ type Thread = {
   subject: string;
   createdAt: string;
   lastMessageAt: string;
-  messages: { body: string }[];
+  patient: { id: string };
+  messages: { body: string; senderId: string; readAt: string | null }[];
 };
 
 export default function MessagesPage() {
@@ -126,23 +127,32 @@ export default function MessagesPage() {
         </div>
       ) : (
         <div className={styles.listStack}>
-          {threads.map((t) => (
-            <Link key={t.id} href={`/messages/${t.id}`} className={msgStyles.threadLink}>
-              <div className={styles.card}>
-                <div className={msgStyles.threadRow}>
-                  <p className={msgStyles.threadSubject}>{t.subject}</p>
-                  <p className={msgStyles.threadDate}>
-                    {formatDateNumeric(t.lastMessageAt)}
-                  </p>
+          {threads.map((t) => {
+            const lastMsg = t.messages[0];
+            const isUnread = !!lastMsg && lastMsg.senderId !== t.patient.id && lastMsg.readAt === null;
+            return (
+              <Link key={t.id} href={`/messages/${t.id}`} className={msgStyles.threadLink}>
+                <div className={styles.card}>
+                  <div className={msgStyles.threadRow}>
+                    <div className={msgStyles.threadSubjectRow}>
+                      {isUnread && <span className={msgStyles.unreadDot} />}
+                      <p className={`${msgStyles.threadSubject}${isUnread ? ` ${msgStyles.threadSubjectUnread}` : ""}`}>
+                        {t.subject}
+                      </p>
+                    </div>
+                    <p className={msgStyles.threadDate}>
+                      {formatDateNumeric(t.lastMessageAt)}
+                    </p>
+                  </div>
+                  {lastMsg && (
+                    <p className={msgStyles.threadPreview}>
+                      {lastMsg.body}
+                    </p>
+                  )}
                 </div>
-                {t.messages[0] && (
-                  <p className={msgStyles.threadPreview}>
-                    {t.messages[0].body}
-                  </p>
-                )}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
