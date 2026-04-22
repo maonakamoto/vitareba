@@ -6,7 +6,7 @@ import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
-import { formatDateISO } from "@/lib/utils/format";
+import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 
 type MetricKey = "sleep" | "energy" | "mood" | "focus" | "stress";
@@ -145,7 +145,7 @@ export default function CheckinPage() {
   }
 
   const chartData = history.map((c) => ({
-    date: new Date(c.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
+    date: formatDateMonthDay(c.date + "T00:00:00"),
     sleep: c.sleep,
     energy: c.energy,
     mood: c.mood,

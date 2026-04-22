@@ -29,6 +29,12 @@ export function formatDateTime(date: Date | string): string {
   return d.toLocaleString(LOCALE, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
+/** "2 Apr" — for chart axis labels where year is omitted for compactness */
+export function formatDateMonthDay(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
+}
+
 /** ISO date string "YYYY-MM-DD" — for DB date column comparisons */
 export function formatDateISO(date: Date): string {
   return date.toISOString().slice(0, 10);

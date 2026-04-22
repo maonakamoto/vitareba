@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { formatDateShort } from "@/lib/utils/format";
 
 type Patient = { id: string; name: string | null; email: string };
 type Document = {
@@ -193,9 +194,7 @@ export default function AdminDocumentsPage() {
                     {doc.mimeType ?? "—"}
                   </td>
                   <td className={styles.cellNowrap}>
-                    {new Date(doc.createdAt).toLocaleDateString("en-GB", {
-                      day: "numeric", month: "short", year: "numeric",
-                    })}
+                    {formatDateShort(doc.createdAt)}
                   </td>
                   <td>
                     <a

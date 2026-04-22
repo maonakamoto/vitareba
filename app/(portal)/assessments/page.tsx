@@ -4,7 +4,7 @@ import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
-import { formatDateLong } from "@/lib/utils/format";
+import { formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import styles from "../portal.module.css";
 import assessStyles from "./assessments.module.css";
@@ -30,10 +30,7 @@ export default async function AssessmentsPage({
 
   // Build chart data (ascending for chart rendering)
   const chartData = [...results].reverse().map((r) => ({
-    date: new Date(r.completedAt).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-    }),
+    date: formatDateMonthDay(r.completedAt),
     score: r.overallScore,
   }));
 

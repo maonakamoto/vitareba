@@ -15,7 +15,7 @@ import { PatientAssessmentCard } from "@/components/admin/PatientAssessmentCard"
 import { PatientBookingsCard } from "@/components/admin/PatientBookingsCard";
 import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
-import { formatDateShort, formatDateLong } from "@/lib/utils/format";
+import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 
 export default async function PatientDetailPage({
@@ -100,7 +100,7 @@ export default async function PatientDetailPage({
           <p className={styles.cardLabel}>Assessment trend</p>
           <AssessmentTrendChart
             data={patient.assessmentResults.map((r) => ({
-              date: new Date(r.completedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" }),
+              date: formatDateMonthDay(r.completedAt),
               score: r.overallScore,
             }))}
           />
