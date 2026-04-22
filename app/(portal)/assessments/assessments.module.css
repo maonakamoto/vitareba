@@ -47,8 +47,10 @@
   transition: color 0.15s;
 }
 
-.savedSecondary:hover {
+.savedSecondary:hover,
+.savedSecondary:focus-visible {
   color: #fff;
+  outline: none;
 }
 
 /* ── Retake CTA ─────────────────────────────────────────────────────────── */
@@ -78,8 +80,10 @@
   transition: color 0.15s;
 }
 
-.emptyLink:hover {
+.emptyLink:hover,
+.emptyLink:focus-visible {
   color: var(--teal-dark);
+  outline: none;
 }
 
 /* ── Retake button (smaller than standard btn-outline) ───────────────────── */

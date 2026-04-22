@@ -51,9 +51,11 @@
   gap: 0.5rem;
 }
 
-.navItem:hover {
+.navItem:hover,
+.navItem:focus-visible {
   background: rgba(255, 255, 255, 0.07);
   color: #fff;
+  outline: none;
 }
 
 .navItemActive {
@@ -646,8 +648,10 @@
   transition: color 0.15s;
 }
 
-.threadBackLink:hover {
+.threadBackLink:hover,
+.threadBackLink:focus-visible {
   color: var(--teal-dark);
+  outline: none;
 }
 
 .threadMeta {
@@ -660,8 +664,10 @@
   transition: color 0.15s;
 }
 
-.threadPatientLink:hover {
+.threadPatientLink:hover,
+.threadPatientLink:focus-visible {
   color: var(--teal-dark);
+  outline: none;
 }
 
 .msgList {
@@ -754,8 +760,10 @@
   white-space: nowrap;
 }
 
-.sendBtn:hover:not(:disabled) {
+.sendBtn:hover:not(:disabled),
+.sendBtn:focus-visible:not(:disabled) {
   background: var(--teal);
+  outline: none;
 }
 
 .sendBtn:disabled {
@@ -785,8 +793,10 @@
   white-space: nowrap;
 }
 
-.headerBtn:hover {
+.headerBtn:hover,
+.headerBtn:focus-visible {
   background: var(--teal);
+  outline: none;
 }
 
 /* ─── Admin success/error banners ────────────────────────────────────────── */
@@ -840,8 +850,10 @@
   transition: color 0.15s;
 }
 
-.cellLink:hover {
+.cellLink:hover,
+.cellLink:focus-visible {
   color: var(--teal-dark);
+  outline: none;
 }
 
 .cancelBtn {
@@ -856,8 +868,10 @@
   transition: border-color 0.15s;
 }
 
-.cancelBtn:hover {
+.cancelBtn:hover,
+.cancelBtn:focus-visible {
   border-color: var(--ink2);
+  outline: none;
 }
 
 .formRow {
@@ -880,8 +894,10 @@
   transition: background 0.15s;
 }
 
-.formRowSubmit:hover {
+.formRowSubmit:hover,
+.formRowSubmit:focus-visible {
   background: var(--ink2);
+  outline: none;
 }
 
 .formRowSubmit:disabled {
@@ -982,8 +998,10 @@
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.filterTab:hover {
+.filterTab:hover,
+.filterTab:focus-visible {
   border-color: var(--ink2);
+  outline: none;
 }
 
 .filterTabActive {
@@ -1011,8 +1029,10 @@
   transition: background 0.15s;
 }
 
-.actionBtnConfirm:hover:not(:disabled) {
+.actionBtnConfirm:hover:not(:disabled),
+.actionBtnConfirm:focus-visible:not(:disabled) {
   background: color-mix(in srgb, var(--teal) 20%, transparent);
+  outline: none;
 }
 
 .actionBtnCancel {
@@ -1027,8 +1047,10 @@
   transition: background 0.15s;
 }
 
-.actionBtnCancel:hover:not(:disabled) {
+.actionBtnCancel:hover:not(:disabled),
+.actionBtnCancel:focus-visible:not(:disabled) {
   background: color-mix(in srgb, var(--muted) 18%, transparent);
+  outline: none;
 }
 
 .actionBtnConfirm:disabled,

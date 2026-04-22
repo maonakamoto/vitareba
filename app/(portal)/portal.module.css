@@ -61,9 +61,11 @@
   position: relative;
 }
 
-.navItem:hover {
+.navItem:hover,
+.navItem:focus-visible {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.9);
+  outline: none;
 }
 
 .navItemActive {
@@ -410,8 +412,10 @@
   font-family: inherit;
 }
 
-.cancelBtn:hover {
+.cancelBtn:hover,
+.cancelBtn:focus-visible {
   background: var(--light);
+  outline: none;
 }
 
 .formHint {

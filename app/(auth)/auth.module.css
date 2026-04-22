@@ -116,8 +116,10 @@
   transition: background 0.15s;
 }
 
-.submit:hover {
+.submit:hover,
+.submit:focus-visible {
   background: var(--teal);
+  outline: none;
 }
 
 .submit:disabled {
@@ -131,8 +133,10 @@
   text-decoration: none;
 }
 
-.link:hover {
+.link:hover,
+.link:focus-visible {
   text-decoration: underline;
+  outline: none;
 }
 
 .linkRow {

@@ -67,9 +67,11 @@
   min-height: 2.75rem; /* 44px minimum touch target */
 }
 
-.scaleBtn:hover {
+.scaleBtn:hover,
+.scaleBtn:focus-visible {
   border-color: var(--teal);
   color: var(--teal);
+  outline: none;
 }
 
 .scaleBtnActive {

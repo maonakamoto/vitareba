@@ -21,8 +21,10 @@
   flex-shrink: 0;
 }
 
-.avatar:hover {
+.avatar:hover,
+.avatar:focus-visible {
   background: var(--teal);
+  outline: none;
 }
 
 .avatar[aria-expanded="true"] {
@@ -80,9 +82,11 @@
   transition: background 0.1s;
 }
 
-.item:hover {
+.item:hover,
+.item:focus-visible {
   background: var(--off);
   color: var(--ink);
+  outline: none;
 }
 
 .footer {
@@ -103,6 +107,8 @@
   transition: background 0.1s;
 }
 
-.signOutBtn:hover {
+.signOutBtn:hover,
+.signOutBtn:focus-visible {
   background: var(--off);
+  outline: none;
 }

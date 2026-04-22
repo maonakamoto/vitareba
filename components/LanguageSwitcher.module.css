@@ -21,9 +21,11 @@
   min-height: 2rem;
 }
 
-.trigger:hover {
+.trigger:hover,
+.trigger:focus-visible {
   border-color: var(--ink2);
   color: var(--ink);
+  outline: none;
 }
 
 .chevron {
@@ -66,9 +68,11 @@
   line-height: 1;
 }
 
-.option:hover {
+.option:hover,
+.option:focus-visible {
   background: var(--off);
   color: var(--ink);
+  outline: none;
 }
 
 .optionActive {

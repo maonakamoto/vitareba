@@ -150,9 +150,11 @@ body {
   transition: background 0.15s, border-color 0.15s;
 }
 
-.btn-dark:hover {
+.btn-dark:hover,
+.btn-dark:focus-visible {
   background: var(--ink2);
   border-color: var(--ink2);
+  outline: none;
 }
 
 .btn-outline {
@@ -172,7 +174,9 @@ body {
   transition: background 0.15s, color 0.15s;
 }
 
-.btn-outline:hover {
+.btn-outline:hover,
+.btn-outline:focus-visible {
   background: var(--ink);
   color: #fff;
+  outline: none;
 }

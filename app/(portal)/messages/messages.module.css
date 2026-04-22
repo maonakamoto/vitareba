@@ -74,8 +74,10 @@
   transition: color 0.15s;
 }
 
-.backLink:hover {
+.backLink:hover,
+.backLink:focus-visible {
   color: var(--teal-dark);
+  outline: none;
 }
 
 .msgList {
@@ -166,8 +168,10 @@
   white-space: nowrap;
 }
 
-.sendBtn:hover:not(:disabled) {
+.sendBtn:hover:not(:disabled),
+.sendBtn:focus-visible:not(:disabled) {
   background: var(--teal);
+  outline: none;
 }
 
 .sendBtn:disabled {
