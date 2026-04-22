@@ -14,20 +14,20 @@ export function PatientBookingsCard({ bookings }: { bookings: Booking[] }) {
     <div className={styles.card}>
       <p className={styles.cardLabel}>Bookings ({bookings.length})</p>
       {bookings.length === 0 ? (
-        <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No bookings.</div>
+        <div className={styles.emptyState}>No bookings.</div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+        <div className={styles.bookingList}>
           {bookings.map((b) => {
             const s = BOOKING_STATUS_CONFIG[b.status] ?? BOOKING_STATUS_CONFIG.pending;
             return (
-              <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", fontSize: "0.82rem", paddingBottom: "0.65rem", borderBottom: "1px solid var(--border)" }}>
+              <div key={b.id} className={styles.bookingRow}>
                 <div>
-                  <div style={{ color: "var(--ink2)" }}>
+                  <div className={styles.bookingDate}>
                     {b.preferredDate ? formatDateLong(b.preferredDate) : "No date preference"}
                   </div>
-                  {b.notes && <div style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.2rem" }}>{b.notes}</div>}
+                  {b.notes && <div className={styles.bookingNotes}>{b.notes}</div>}
                 </div>
-                <span style={{ fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.08em", padding: "0.2rem 0.6rem", borderRadius: "1rem", color: s.color, background: s.bg, whiteSpace: "nowrap" }}>
+                <span className={styles.badge} style={{ color: s.color, background: s.bg }}>
                   {b.status}
                 </span>
               </div>

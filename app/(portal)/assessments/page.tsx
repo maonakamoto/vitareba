@@ -51,7 +51,7 @@ export default async function AssessmentsPage({
 
       {/* Trend chart — only shown when there are 2+ assessments */}
       {results.length >= 2 && (
-        <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
+        <div className={styles.cardMb}>
           <p className={styles.cardTitle}>Score trend</p>
           <AssessmentTrendChartWrapper data={chartData} />
         </div>

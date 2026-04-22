@@ -289,6 +289,11 @@
   padding: 1.75rem;
 }
 
+.cardMb {
+  composes: card;
+  margin-bottom: 1.5rem;
+}
+
 .cardTitle {
   font-size: 0.72rem;
   letter-spacing: 0.15em;

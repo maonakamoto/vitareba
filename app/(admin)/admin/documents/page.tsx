@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "../../admin.module.css";
-import authStyles from "../../../(auth)/auth.module.css";
 import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 
 type Patient = { id: string; name: string | null; email: string };
@@ -94,11 +93,11 @@ export default function AdminDocumentsPage() {
       )}
 
       {showForm && (
-        <div className={styles.card} style={{ marginBottom: "1.5rem" }}>
+        <div className={styles.cardMb}>
           <p className={styles.sectionEyebrow}>New document</p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
-            <div className={authStyles.field}>
-              <label className={authStyles.label} htmlFor="doc-patient">Patient</label>
+            <div className={styles.formField}>
+              <label className={styles.formLabel} htmlFor="doc-patient">Patient</label>
               <select
                 id="doc-patient"
                 value={patientId}
@@ -115,22 +114,22 @@ export default function AdminDocumentsPage() {
               </select>
             </div>
             <div className={styles.formGrid2}>
-              <div className={authStyles.field}>
-                <label className={authStyles.label} htmlFor="doc-title">Title</label>
+              <div className={styles.formField}>
+                <label className={styles.formLabel} htmlFor="doc-title">Title</label>
                 <input
                   id="doc-title"
-                  className={authStyles.input}
+                  className={styles.formInput}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Lab results, Assessment report…"
                   required
                 />
               </div>
-              <div className={authStyles.field}>
-                <label className={authStyles.label} htmlFor="doc-url">File URL</label>
+              <div className={styles.formField}>
+                <label className={styles.formLabel} htmlFor="doc-url">File URL</label>
                 <input
                   id="doc-url"
-                  className={authStyles.input}
+                  className={styles.formInput}
                   type="url"
                   value={fileUrl}
                   onChange={(e) => setFileUrl(e.target.value)}
@@ -143,8 +142,7 @@ export default function AdminDocumentsPage() {
             <div className={styles.formRow}>
               <button
                 type="submit"
-                className={authStyles.submit}
-                style={{ marginTop: 0, flex: 1 }}
+                className={styles.formRowSubmit}
                 disabled={submitting}
               >
                 {submitting ? "Adding…" : "Add document"}

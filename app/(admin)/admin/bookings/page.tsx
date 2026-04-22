@@ -73,7 +73,7 @@ export default function AdminBookingsPage() {
         ))}
       </div>
 
-      {error && <p className={styles.formError} style={{ marginBottom: "1rem" }}>{error}</p>}
+      {error && <p className={styles.formErrorMb}>{error}</p>}
 
       {loading ? (
         <div className={styles.emptyState}>Loading…</div>

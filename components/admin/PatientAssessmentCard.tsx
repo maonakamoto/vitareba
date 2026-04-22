@@ -27,46 +27,44 @@ export function PatientAssessmentCard({ assessmentResults }: { assessmentResults
         Latest Assessment {assessmentResults.length > 1 && `(${assessmentResults.length} total)`}
       </p>
       {!result ? (
-        <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No assessments yet.</div>
+        <div className={styles.emptyState}>No assessments yet.</div>
       ) : (() => {
         const scores = result.scores as Record<string, number>;
         const verdict = getVerdict(result.overallScore);
         return (
           <>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "0.75rem", marginBottom: "0.35rem" }}>
-              <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "3rem", fontWeight: 300, color: scoreColor(result.overallScore), lineHeight: 1 }}>
+            <div className={styles.assessScoreRow}>
+              <span className={styles.assessScoreBig} style={{ color: scoreColor(result.overallScore) }}>
                 {result.overallScore}
               </span>
               <div>
-                {verdict && <div style={{ fontSize: "0.82rem", color: "var(--ink)", fontWeight: 400 }}>{verdict.name}</div>}
-                <div style={{ fontSize: "0.72rem", color: "var(--muted)" }}>{formatDateShort(result.completedAt)}</div>
+                {verdict && <div className={styles.assessVerdictName}>{verdict.name}</div>}
+                <div className={styles.assessDate}>{formatDateShort(result.completedAt)}</div>
               </div>
             </div>
             {verdict && (
-              <p style={{ fontSize: "0.78rem", color: "var(--ink2)", lineHeight: 1.65, marginBottom: "1rem" }}>
-                {verdict.text}
-              </p>
+              <p className={styles.assessVerdictText}>{verdict.text}</p>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.5rem", marginBottom: "0.75rem" }}>
+            <div className={styles.assessDimGrid}>
               {DIMENSIONS.map((dim) => {
                 const score = scores[dim.id] ?? 0;
                 return (
-                  <div key={dim.id} style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: "1rem", marginBottom: "0.2rem" }}>{dim.icon}</div>
-                    <div style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.4rem", fontWeight: 300, color: scoreColor(score), lineHeight: 1 }}>{score}</div>
-                    <div style={{ fontSize: "0.55rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginTop: "0.15rem" }}>{dim.name}</div>
+                  <div key={dim.id} className={styles.assessDimCell}>
+                    <div className={styles.assessDimIcon}>{dim.icon}</div>
+                    <div className={styles.assessDimScore} style={{ color: scoreColor(score) }}>{score}</div>
+                    <div className={styles.assessDimName}>{dim.name}</div>
                   </div>
                 );
               })}
             </div>
-            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <div className={styles.assessInterpList}>
               {DIMENSIONS.map((dim) => {
                 const score = scores[dim.id] ?? 0;
                 return (
-                  <div key={dim.id} style={{ display: "flex", gap: "0.5rem", alignItems: "baseline" }}>
-                    <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "1rem", color: scoreColor(score), minWidth: "28px" }}>{score}</span>
-                    <p style={{ fontSize: "0.72rem", color: "var(--muted)", lineHeight: 1.6, margin: 0 }}>
-                      <strong style={{ color: "var(--ink2)", fontWeight: 500 }}>{dim.name}:</strong>{" "}
+                  <div key={dim.id} className={styles.assessInterpRow}>
+                    <span className={styles.assessInterpScore} style={{ color: scoreColor(score) }}>{score}</span>
+                    <p className={styles.assessInterpText}>
+                      <strong className={styles.assessInterpStrong}>{dim.name}:</strong>{" "}
                       {getInterpretation(dim.id, score)}
                     </p>
                   </div>
