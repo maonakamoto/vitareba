@@ -1,22 +1,16 @@
 import Link from "next/link";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
-import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, scoreColor, type AssessmentRow } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, DAY_MS } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 
-type AssessmentResult = {
-  overallScore: number;
-  completedAt: Date | string;
-  scores: unknown;
-};
-
 interface AssessmentSectionProps {
-  latestAssessment: AssessmentResult | null | undefined;
-  previousAssessment?: AssessmentResult | null;
+  latestAssessment: AssessmentRow | null | undefined;
+  previousAssessment?: AssessmentRow | null;
   latestBooking: Pick<BookingRow, "status" | "preferredDate"> | null | undefined;
   threadCount: number;
 }

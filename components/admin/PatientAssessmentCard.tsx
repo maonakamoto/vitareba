@@ -1,15 +1,8 @@
 import styles from "@/app/(admin)/admin.module.css";
-import { DIMENSIONS, getVerdict, getInterpretation, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, getInterpretation, scoreColor, type AssessmentRow } from "@/lib/assessment/data";
 import { formatDateShort } from "@/lib/utils/format";
 
-type AssessmentResult = {
-  id: string;
-  overallScore: number;
-  scores: unknown;
-  completedAt: Date;
-};
-
-export function PatientAssessmentCard({ assessmentResults }: { assessmentResults: AssessmentResult[] }) {
+export function PatientAssessmentCard({ assessmentResults }: { assessmentResults: AssessmentRow[] }) {
   const result = assessmentResults[0];
   return (
     <div className={styles.card}>

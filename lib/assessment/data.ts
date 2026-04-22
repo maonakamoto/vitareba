@@ -245,6 +245,14 @@ export const INTERPRETATIONS: Record<DimensionId, Interpretation[]> = {
   ],
 };
 
+/** Assessment result row — compatible with both Drizzle results (Date) and API responses (string) */
+export type AssessmentRow = {
+  id: string;
+  overallScore: number;
+  scores: unknown;
+  completedAt: Date | string;
+};
+
 export interface VerdictTier {
   minScore: number;
   maxScore: number;
