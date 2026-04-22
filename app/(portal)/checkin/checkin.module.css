@@ -234,3 +234,17 @@
   opacity: 0.45;
   cursor: default;
 }
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Hide "Poor" / "Excellent" labels — the 1–5 numbers are self-explanatory */
+  .scaleEdge {
+    display: none;
+  }
+
+  /* Allow buttons to shrink below 44px wide; height stays ≥44px for touch */
+  .scaleBtn {
+    min-width: 0;
+  }
+}

@@ -1018,3 +1018,35 @@
   line-height: 1.65;
 }
 
+/* ─── Dashboard mobile fixes ─────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Hero card: score block wraps below verdict title on narrow screens */
+  .heroCardHead {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .scoreBlock {
+    text-align: left;
+  }
+
+  /* Check-in prompt: CTA button stacks below text */
+  .checkinPrompt {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Messages row: link stacks below text */
+  .messagesRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* Page header: title row wraps on small screens */
+  .pageHeader {
+    flex-wrap: wrap;
+  }
+}
+
