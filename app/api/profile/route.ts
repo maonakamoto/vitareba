@@ -64,28 +64,21 @@ export async function PATCH(req: Request) {
 
   const { name, ...profileFields } = parsed.data;
 
-  if (name) {
-    await db.update(users).set({ name }).where(eq(users.id, session.user.id));
-  }
-
-  const existing = await db.query.profiles.findFirst({
-    where: eq(profiles.userId, session.user.id),
-  });
+  // Parallel: update name (if provided) + fetch existing profile for threshold check
+  const [, existing] = await Promise.all([
+    name ? db.update(users).set({ name }).where(eq(users.id, session.user.id)) : Promise.resolve(),
+    db.query.profiles.findFirst({ where: eq(profiles.userId, session.user.id) }),
+  ]);
 
   const oldPct = computeProfileCompleteness(existing as Record<string, unknown> | null);
 
-  if (existing) {
-    await db
-      .update(profiles)
-      .set({ ...profileFields, updatedAt: new Date() })
-      .where(eq(profiles.userId, session.user.id));
-  } else {
-    await db.insert(profiles).values({ userId: session.user.id, ...profileFields });
-  }
+  // Upsert profile and return updated row in one query
+  const [updated] = await db
+    .insert(profiles)
+    .values({ userId: session.user.id, ...profileFields })
+    .onConflictDoUpdate({ target: profiles.userId, set: { ...profileFields, updatedAt: new Date() } })
+    .returning();
 
-  const updated = await db.query.profiles.findFirst({
-    where: eq(profiles.userId, session.user.id),
-  });
   const newPct = computeProfileCompleteness(updated as Record<string, unknown> | null);
   const threshold = PROFILE_COMPLETION_THRESHOLD * 100;
 
