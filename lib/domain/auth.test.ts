@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { loginSchema, registerSchema, resolveRole } from "./auth";
+import { loginSchema, registerSchema, resolveRole, hashPassword, verifyPassword } from "./auth";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 // ─── loginSchema ──────────────────────────────────────────────────────────────
@@ -91,5 +91,32 @@ describe("resolveRole", () => {
   it("returns 'patient' when ADMIN_EMAILS is empty", () => {
     process.env.ADMIN_EMAILS = "";
     expect(resolveRole("anyone@example.com")).toBe("patient");
+  });
+});
+
+// ─── hashPassword / verifyPassword ────────────────────────────────────────────
+
+describe("hashPassword", () => {
+  it("returns a bcrypt hash (starts with $2b$)", async () => {
+    const hash = await hashPassword("secret123");
+    expect(hash).toMatch(/^\$2[ab]\$/);
+  });
+
+  it("produces a different hash each call (salted)", async () => {
+    const h1 = await hashPassword("secret123");
+    const h2 = await hashPassword("secret123");
+    expect(h1).not.toBe(h2);
+  });
+});
+
+describe("verifyPassword", () => {
+  it("returns true for a matching password", async () => {
+    const hash = await hashPassword("correct-horse");
+    expect(await verifyPassword("correct-horse", hash)).toBe(true);
+  });
+
+  it("returns false for a wrong password", async () => {
+    const hash = await hashPassword("correct-horse");
+    expect(await verifyPassword("wrong-password", hash)).toBe(false);
   });
 });
