@@ -1,23 +1,13 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { clinicalGoals } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { goalUpdateSchema } from "@/lib/domain/goals";
 
 type RouteContext = { params: Promise<{ goalId: string }> };
-
-const updateSchema = z.object({
-  title: z.string().min(1).max(300).optional(),
-  metric: z.string().max(50).optional().nullable(),
-  baseline: z.number().int().min(0).max(100).optional().nullable(),
-  target: z.number().int().min(0).max(100).optional().nullable(),
-  current: z.number().int().min(0).max(100).optional().nullable(),
-  notes: z.string().max(2000).optional().nullable(),
-  completed: z.boolean().optional(),
-});
 
 export async function PATCH(req: Request, { params }: RouteContext) {
   const guard = await requireAdmin();
@@ -26,7 +16,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
   const { goalId } = await params;
 
   const body = await req.json();
-  const parsed = updateSchema.safeParse(body);
+  const parsed = goalUpdateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
