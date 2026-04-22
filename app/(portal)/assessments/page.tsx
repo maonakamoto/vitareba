@@ -4,6 +4,7 @@ import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
+import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
 import { formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import styles from "../portal.module.css";
@@ -161,7 +162,7 @@ export default async function AssessmentsPage({
 
       <div className={assessStyles.retakeCta}>
         <p className={assessStyles.retakeHint}>
-          Retake every 30 days to see how your profile shifts with your programme.
+          Retake every {ASSESSMENT_STALE_DAYS} days to see how your profile shifts with your programme.
         </p>
         <Link href="/assessment" className={`btn-outline ${assessStyles.retakeBtn}`}>
           Retake assessment →

@@ -14,6 +14,7 @@ import { eq, desc, and, isNull } from "drizzle-orm";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
+import { COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { ProgrammeCard } from "./ProgrammeCard";
 import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
@@ -83,7 +84,7 @@ export default async function DashboardPage() {
       <h1 className={shared.pageTitle}>
         Welcome back, <em>{firstName}</em>
       </h1>
-      <p className={shared.pageSub}>Your VitaReBa patient portal</p>
+      <p className={shared.pageSub}>Your {COMPANY.shortName} patient portal</p>
 
       <div className={styles.dashStack}>
         {programmeAssignment && (

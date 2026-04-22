@@ -7,7 +7,7 @@ import { eq, gte, and, desc, inArray } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
-import { PORTAL_URL } from "@/lib/config/company";
+import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
@@ -132,7 +132,7 @@ export async function GET(req: Request) {
 
       await sendEmail({
         to: patient.email,
-        subject: "Your VitaReBa weekly summary",
+        subject: `Your ${COMPANY.shortName} weekly summary`,
         html,
       });
 
