@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
-import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 export async function GET(
   _req: Request,
@@ -110,7 +110,7 @@ export async function POST(
       to: adminEmails,
       subject: `New message from ${patient?.name ?? "patient"}: ${thread.subject}`,
       html: newMessageEmail({
-        recipientName: "Manuel",
+        recipientName: COMPANY.clinicianName,
         senderName: patient?.name ?? "Patient",
         subject: thread.subject,
         portalUrl: `${PORTAL_URL}/admin/messages/${threadId}`,

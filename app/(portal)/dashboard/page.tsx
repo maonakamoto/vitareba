@@ -9,6 +9,7 @@ import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
 import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateISO, DAY_MS } from "@/lib/utils/format";
+import { COMPANY } from "@/lib/config/company";
 import { ProgrammeCard } from "./ProgrammeCard";
 import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
@@ -264,7 +265,7 @@ export default async function DashboardPage() {
                 ) : (
                   <>
                     <p className={styles.bookingNoAppt}>
-                      Book a discovery call — no commitment, just a direct conversation with Manuel to see if VitaReBa is the right fit.
+                      Book a discovery call — no commitment, just a direct conversation with {COMPANY.clinicianName} to see if VitaReBa is the right fit.
                     </p>
                     <Link href="/bookings" className={`btn-dark ${shared.ctaBtnSmall}`}>
                       Book a call →
@@ -298,7 +299,7 @@ export default async function DashboardPage() {
                 Understand your neurotype in 10 minutes
               </p>
               <p className={styles.ctaBody}>
-                The Inflection Edge maps your ADHD profile across five dimensions: Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Your results are the clinical foundation for everything that follows — Manuel reviews them before every consultation.
+                The Inflection Edge maps your ADHD profile across five dimensions: Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Your results are the clinical foundation for everything that follows — {COMPANY.clinicianName} reviews them before every consultation.
               </p>
               <p className={styles.ctaBodySpaced}>
                 Most patients describe this as the first time they&apos;ve seen their performance pattern explained clearly. Take 10 minutes now.

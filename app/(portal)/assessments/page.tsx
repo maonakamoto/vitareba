@@ -5,6 +5,7 @@ import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
 import { formatDateLong } from "@/lib/utils/format";
+import { COMPANY } from "@/lib/config/company";
 import styles from "../portal.module.css";
 import assessStyles from "./assessments.module.css";
 import { AssessmentTrendChartWrapper } from "./AssessmentTrendChartWrapper";
@@ -60,10 +61,10 @@ export default async function AssessmentsPage({
             </p>
           </div>
           <p className={assessStyles.savedBody}>
-            This is your baseline. Every check-in, every retake builds on it — showing you exactly how your biology and performance evolve over time. Manuel reviews this data before every consultation to design your programme around your actual profile, not a generic template.
+            This is your baseline. Every check-in, every retake builds on it — showing you exactly how your biology and performance evolve over time. {COMPANY.clinicianName} reviews this data before every consultation to design your programme around your actual profile, not a generic template.
           </p>
           <p className={assessStyles.savedBody}>
-            The single highest-leverage next step: a 30-minute discovery call with Manuel to translate your scores into a concrete plan.
+            The single highest-leverage next step: a 30-minute discovery call with {COMPANY.clinicianName} to translate your scores into a concrete plan.
           </p>
           <div className={assessStyles.savedActions}>
             <Link href="/bookings" className="btn-dark">

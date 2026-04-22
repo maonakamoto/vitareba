@@ -14,7 +14,7 @@ import {
   assessmentCtaEmail,
 } from "@/lib/email/templates";
 import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data";
-import { PORTAL_URL } from "@/lib/config/company";
+import { COMPANY, PORTAL_URL } from "@/lib/config/company";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -79,7 +79,7 @@ export async function GET(req: Request) {
       } else if (item.templateKey === "assessmentBooking") {
         const overallScore = payload.overallScore as number;
         html = assessmentBookingEmail({ patientName, overallScore, portalUrl });
-        subject = "Book a consultation with Manuel";
+        subject = `Book a consultation with ${COMPANY.clinicianName}`;
       } else if (item.templateKey === "welcomePatient") {
         html = welcomePatientEmail({ patientName, portalUrl });
         subject = "Welcome to VitaReBa — here is where to start";

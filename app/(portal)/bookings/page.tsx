@@ -6,6 +6,7 @@ import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
 import { BOOKING_STATUS_CONFIG, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
+import { COMPANY } from "@/lib/config/company";
 
 const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL;
 
@@ -82,7 +83,7 @@ export default function BookingsPage() {
         <div className={bookingStyles.calendlyBanner}>
           <div>
             <p className={bookingStyles.calendlyBannerTitle}>
-              Book directly with Manuel
+              Book directly with {COMPANY.clinicianName}
             </p>
             <p className={bookingStyles.calendlyBannerSub}>
               Pick a time — instant confirmation
@@ -102,7 +103,7 @@ export default function BookingsPage() {
       {submitSuccess && (
         <div className={bookingStyles.successBanner}>
           <p className={bookingStyles.bannerTitle}>Booking request submitted</p>
-          <p>Manuel reviews all requests personally and will be in touch within 24 hours to confirm your appointment.</p>
+          <p>{COMPANY.clinicianName} reviews all requests personally and will be in touch within 24 hours to confirm your appointment.</p>
         </div>
       )}
 
@@ -110,7 +111,7 @@ export default function BookingsPage() {
         <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>Request a consultation</p>
           <p className={styles.formHint}>
-            Manuel reviews every request personally. Include anything that helps him prepare — your Inflection Edge scores are already on file.
+            {COMPANY.clinicianName} reviews every request personally. Include anything that helps him prepare — your Inflection Edge scores are already on file.
           </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
@@ -155,7 +156,7 @@ export default function BookingsPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>No bookings yet</p>
-            <p>A discovery call is the fastest way to find out if VitaReBa is right for you — 30 minutes with Manuel to look at your Inflection Edge results and map out a programme.</p>
+            <p>A discovery call is the fastest way to find out if VitaReBa is right for you — 30 minutes with {COMPANY.clinicianName} to look at your Inflection Edge results and map out a programme.</p>
           </div>
         </div>
       ) : (

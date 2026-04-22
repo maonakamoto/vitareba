@@ -6,6 +6,7 @@ import styles from "../portal.module.css";
 import authStyles from "../../(auth)/auth.module.css";
 import msgStyles from "./messages.module.css";
 import { formatDateNumeric } from "@/lib/utils/format";
+import { COMPANY } from "@/lib/config/company";
 
 type Thread = {
   id: string;
@@ -65,7 +66,7 @@ export default function MessagesPage() {
           <h1 className={styles.pageTitle}>
             My <em>Messages</em>
           </h1>
-          <p className={styles.pageSub}>Direct line to Manuel — secure and asynchronous</p>
+          <p className={styles.pageSub}>Direct line to {COMPANY.clinicianName} — secure and asynchronous</p>
         </div>
         <button type="button" className={`${authStyles.submit} ${styles.headerBtn}`} onClick={() => setShowForm(!showForm)}>
           + New message
@@ -76,7 +77,7 @@ export default function MessagesPage() {
         <div className={`${styles.card} ${styles.cardGap}`}>
           <p className={styles.cardTitle}>New message</p>
           <p className={styles.formHint}>
-            Manuel reads and responds to all messages personally. Typically within 24 hours on weekdays.
+            {COMPANY.clinicianName} reads and responds to all messages personally. Typically within 24 hours on weekdays.
           </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
@@ -91,7 +92,7 @@ export default function MessagesPage() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 required
-                placeholder="Write anything you&apos;d want Manuel to know — symptoms, questions, observations…"
+                placeholder={`Write anything you'd want ${COMPANY.clinicianName} to know — symptoms, questions, observations…`}
               />
             </div>
             {submitError && <p className={styles.formError}>{submitError}</p>}
@@ -122,7 +123,7 @@ export default function MessagesPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>No messages yet</p>
-            <p>This is your direct line to Manuel and the VitaReBa team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
+            <p>This is your direct line to {COMPANY.clinicianName} and the VitaReBa team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
           </div>
         </div>
       ) : (

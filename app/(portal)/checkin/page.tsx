@@ -7,6 +7,7 @@ import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 import { formatDateISO } from "@/lib/utils/format";
+import { COMPANY } from "@/lib/config/company";
 
 type MetricKey = "sleep" | "energy" | "mood" | "focus" | "stress";
 
@@ -176,7 +177,7 @@ export default function CheckinPage() {
               </div>
             </div>
             <p className={checkinStyles.successBody}>
-              Each data point refines your pattern. Manuel reviews your trend before every consultation — this is the raw material of your programme.
+              Each data point refines your pattern. {COMPANY.clinicianName} reviews your trend before every consultation — this is the raw material of your programme.
             </p>
             <div className={checkinStyles.successLinks}>
               <Link href="/dashboard" className={checkinStyles.successLinkPrimary}>Back to dashboard →</Link>

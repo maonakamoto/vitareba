@@ -12,6 +12,7 @@ import {
 } from "@/lib/config/portal";
 import type { ExerciseFrequency } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
+import { COMPANY } from "@/lib/config/company";
 
 type ProfileData = {
   name: string;
@@ -170,7 +171,7 @@ export default function ProfilePage() {
         </div>
         {pct < 100 && (
           <p className={profileStyles.completenessHint}>
-            A complete profile helps Manuel personalise your programme and provide
+            A complete profile helps {COMPANY.clinicianName} personalise your programme and provide
             24/7 tailored support.
           </p>
         )}
@@ -293,14 +294,14 @@ export default function ProfilePage() {
 
         {/* ── Notes ─────────────────────────────────────────────────── */}
         <div className={styles.card}>
-          <p className={styles.cardTitle}>Notes for Manuel</p>
+          <p className={styles.cardTitle}>Notes for {COMPANY.clinicianName}</p>
           <div className={authStyles.field}>
             <textarea
               id="notes"
               className={profileStyles.textareaLg}
               value={form.notes}
               onChange={set("notes")}
-              placeholder="Anything else you'd like Manuel to know before your first consultation…"
+              placeholder={`Anything else you'd like ${COMPANY.clinicianName} to know before your first consultation…`}
             />
           </div>
         </div>
