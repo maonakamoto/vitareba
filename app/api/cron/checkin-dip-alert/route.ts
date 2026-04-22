@@ -76,24 +76,26 @@ export async function GET(req: Request) {
     const patientName = patient.name ?? patient.email?.split("@")[0] ?? "Unknown";
     const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
-    for (const adminEmail of adminEmails) {
-      await sendEmail({
-        to: adminEmail,
-        subject: `⚠️ Check-in dip alert — ${patientName}`,
-        html: checkinDipAlertEmail({
-          patientName,
-          patientEmail: patient.email ?? "",
-          avgScore: overallAvg,
-          days: CHECKIN_DIP_ALERT_DAYS,
-          adminUrl,
-        }),
-      }).catch(console.error);
-    }
+    const alertHtml = checkinDipAlertEmail({
+      patientName,
+      patientEmail: patient.email ?? "",
+      avgScore: overallAvg,
+      days: CHECKIN_DIP_ALERT_DAYS,
+      adminUrl,
+    });
 
-    await db
-      .update(profiles)
-      .set({ dipAlertSentAt: new Date() })
-      .where(eq(profiles.userId, patient.id));
+    await Promise.all([
+      ...adminEmails.map((adminEmail) =>
+        sendEmail({
+          to: adminEmail,
+          subject: `⚠️ Check-in dip alert — ${patientName}`,
+          html: alertHtml,
+        }).catch(console.error)
+      ),
+      db.update(profiles)
+        .set({ dipAlertSentAt: new Date() })
+        .where(eq(profiles.userId, patient.id)),
+    ]);
 
     alerted++;
   }
