@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { DEFAULT_FROM_EMAIL } from "@/lib/config/company";
 
 // Lazy client — only instantiated when RESEND_API_KEY is present at call time
 let _resend: Resend | null = null;
@@ -7,10 +8,7 @@ function getResend(): Resend {
   return _resend;
 }
 
-// Sending from vitareba.ch requires domain verification in Resend dashboard:
-// https://resend.com/domains — add vitareba.ch and follow DNS instructions.
-// Until domain is verified, point RESEND_FROM to onboarding@resend.dev for testing.
-const FROM = process.env.RESEND_FROM ?? "VitaReBa <noreply@vitareba.ch>";
+const FROM = process.env.RESEND_FROM ?? DEFAULT_FROM_EMAIL;
 
 type SendOptions = {
   to: string | string[];
