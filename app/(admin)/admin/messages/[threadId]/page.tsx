@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../../admin.module.css";
 import { formatDateTime } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 type Message = {
   id: string;
@@ -77,7 +78,7 @@ export default function AdminThreadPage() {
 
       <div className={`${styles.card} ${styles.msgList}`}>
         {thread.messages.map((msg) => {
-          const isAdmin = msg.sender.role === "admin";
+          const isAdmin = msg.sender.role === USER_ROLE.admin;
           return (
             <div key={msg.id} className={`${styles.msgRow} ${isAdmin ? styles.msgRowAdmin : styles.msgRowPatient}`}>
               <div className={`${styles.msgBubble} ${isAdmin ? styles.msgBubbleAdmin : styles.msgBubblePatient}`}>

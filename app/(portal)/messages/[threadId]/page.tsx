@@ -6,6 +6,7 @@ import Link from "next/link";
 import styles from "../../portal.module.css";
 import msgStyles from "../messages.module.css";
 import { formatDateTime } from "@/lib/utils/format";
+import { USER_ROLE } from "@/lib/config/auth";
 
 type Message = {
   id: string;
@@ -88,7 +89,7 @@ export default function ThreadPage() {
 
       <div className={`${styles.card} ${msgStyles.msgList}`}>
         {thread.messages.map((msg) => {
-          const isAdmin = msg.sender.role === "admin";
+          const isAdmin = msg.sender.role === USER_ROLE.admin;
           return (
             <div key={msg.id} className={`${msgStyles.msgRow} ${isAdmin ? msgStyles.msgRowAdmin : msgStyles.msgRowPatient}`}>
               <div className={`${msgStyles.msgBubble} ${isAdmin ? msgStyles.msgBubbleAdmin : msgStyles.msgBubblePatient}`}>

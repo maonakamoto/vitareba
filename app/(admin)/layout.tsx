@@ -38,7 +38,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className={styles.mainWrap}>
         <header className={styles.header}>
           <div />
-          <UserDropdown name={name} email={email} role="admin" />
+          <UserDropdown name={name} email={email} role={USER_ROLE.admin} />
         </header>
         <main className={styles.main}>{children}</main>
       </div>

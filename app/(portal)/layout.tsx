@@ -38,7 +38,7 @@ export default async function PortalLayout({ children }: { children: React.React
       <div className={styles.mainWrap}>
         <header className={styles.header}>
           <NavBreadcrumb />
-          <UserDropdown name={name} email={email} role={session.user.role as "admin" | "patient"} />
+          <UserDropdown name={name} email={email} role={session.user.role} />
         </header>
         <main className={styles.main}>{children}</main>
       </div>
