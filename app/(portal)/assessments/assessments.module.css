@@ -222,3 +222,27 @@
   line-height: 1.65;
   margin: 0;
 }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Result card header: score block wraps below label on narrow screens */
+  .resultHeader {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .overallBlock {
+    text-align: left;
+  }
+
+  /* Interpretation rows: stack label above text so text gets full width */
+  .interpRow {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .interpMeta {
+    min-width: 0;
+  }
+}

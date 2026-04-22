@@ -138,7 +138,7 @@ export default async function PatientsPage() {
                     </td>
 
                     {/* Last check-in */}
-                    <td style={{ whiteSpace: "nowrap", fontSize: "0.78rem", color: lastCheckin ? "var(--ink2)" : "var(--muted)" }}>
+                    <td className={styles.cellNowrapSm} style={{ color: lastCheckin ? "var(--ink2)" : "var(--muted)" }}>
                       {lastCheckin ? relativeDate(lastCheckin.date, now) : "Never"}
                     </td>
 
