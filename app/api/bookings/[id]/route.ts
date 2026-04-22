@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
-import { PORTAL_URL } from "@/lib/config/company";
+import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { BOOKING_STATUS, BOOKING_STATUS_VALUES } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
@@ -48,8 +48,8 @@ export async function PATCH(
       sendEmail({
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
-          ? "Your consultation has been confirmed — VitaReBa"
-          : "Your consultation request — VitaReBa",
+          ? `Your consultation has been confirmed — ${COMPANY.shortName}`
+          : `Your consultation request — ${COMPANY.shortName}`,
         html,
       }).catch(console.error);
     }

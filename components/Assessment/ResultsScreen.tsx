@@ -84,7 +84,7 @@ export default function ResultsScreen({
       <div className={styles.rCta}>
         <div className={styles.rCtaTitle}>This is your starting point.</div>
         <div className={styles.rCtaSub}>
-          A 30-minute discovery call with Manuel translates these scores into a concrete plan — which dimensions to address first, what interventions are available, and what a VitaReBa programme looks like for your specific profile.
+          A 30-minute discovery call with {COMPANY.clinicianName} translates these scores into a concrete plan — which dimensions to address first, what interventions are available, and what a {COMPANY.shortName} programme looks like for your specific profile.
         </div>
         <div className={styles.rCtaSubSpaced}>
           No commitment. Just clarity.

@@ -83,7 +83,7 @@ export async function GET(req: Request) {
         subject = `Book a consultation with ${COMPANY.clinicianName}`;
       } else if (item.templateKey === EMAIL_TEMPLATE.welcomePatient) {
         html = welcomePatientEmail({ patientName, portalUrl });
-        subject = "Welcome to VitaReBa — here is where to start";
+        subject = `Welcome to ${COMPANY.shortName} — here is where to start`;
       } else if (item.templateKey === EMAIL_TEMPLATE.profileCompletion) {
         html = profileCompletionEmail({ patientName, portalUrl });
         subject = "One thing before your first consultation";

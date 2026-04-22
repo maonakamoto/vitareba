@@ -175,7 +175,7 @@ export function ProfileForm() {
           <div className={profileStyles.fieldStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="concern">Main concern</label>
-              <textarea id="concern" className={profileStyles.textarea} value={form.mainConcern} onChange={set("mainConcern")} placeholder="What brings you to VitaReBa?" />
+              <textarea id="concern" className={profileStyles.textarea} value={form.mainConcern} onChange={set("mainConcern")} placeholder={`What brings you to ${COMPANY.shortName}?`} />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="goals">Goals</label>
@@ -241,7 +241,7 @@ export function ProfileForm() {
 
         {/* ── How did you hear ─────────────────────────────────────── */}
         <div className={styles.card}>
-          <p className={styles.cardTitle}>How did you find VitaReBa?</p>
+          <p className={styles.cardTitle}>How did you find {COMPANY.shortName}?</p>
           <div className={authStyles.field}>
             <input id="referral" className={authStyles.input} value={form.referralSource} onChange={set("referralSource")} placeholder="Referral, social media, search…" />
           </div>

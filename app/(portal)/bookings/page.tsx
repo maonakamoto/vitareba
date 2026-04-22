@@ -155,7 +155,7 @@ export default function BookingsPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>No bookings yet</p>
-            <p>A discovery call is the fastest way to find out if VitaReBa is right for you — 30 minutes with {COMPANY.clinicianName} to look at your Inflection Edge results and map out a programme.</p>
+            <p>A discovery call is the fastest way to find out if {COMPANY.shortName} is right for you — 30 minutes with {COMPANY.clinicianName} to look at your Inflection Edge results and map out a programme.</p>
           </div>
         </div>
       ) : (

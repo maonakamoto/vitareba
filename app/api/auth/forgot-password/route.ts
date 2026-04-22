@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
-import { PORTAL_URL } from "@/lib/config/company";
+import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 
 const schema = z.object({ email: z.string().email() });
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   const resetUrl = `${PORTAL_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
   await sendEmail({
     to: email,
-    subject: "Reset your VitaReBa password",
+    subject: `Reset your ${COMPANY.shortName} password`,
     html: passwordResetEmail({ resetUrl }),
   });
 

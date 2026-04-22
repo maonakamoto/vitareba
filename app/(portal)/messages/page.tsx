@@ -123,7 +123,7 @@ export default function MessagesPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>No messages yet</p>
-            <p>This is your direct line to {COMPANY.clinicianName} and the VitaReBa team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
+            <p>This is your direct line to {COMPANY.clinicianName} and the {COMPANY.shortName} team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
           </div>
         </div>
       ) : (

@@ -162,7 +162,7 @@ export function AssessmentSection({
             <>
               <p className={styles.bookingNoAppt}>
                 Book a discovery call — no commitment, just a direct conversation with{" "}
-                {COMPANY.clinicianName} to see if VitaReBa is the right fit.
+                {COMPANY.clinicianName} to see if {COMPANY.shortName} is the right fit.
               </p>
               <Link href="/bookings" className={`btn-dark ${shared.ctaBtnSmall}`}>
                 Book a call →
@@ -178,7 +178,7 @@ export function AssessmentSection({
           <div>
             <p className={shared.cardTitle}>Messages</p>
             <p className={styles.messagesBody}>
-              {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the VitaReBa team
+              {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the {COMPANY.shortName} team
             </p>
           </div>
           <Link href="/messages" className={`${styles.cardLink} ${styles.noWrap}`}>
