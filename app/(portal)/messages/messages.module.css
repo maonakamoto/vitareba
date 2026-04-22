@@ -192,4 +192,12 @@
   cursor: pointer;
   font-size: inherit;
   padding: 0;
+  font-family: inherit;
+}
+
+.retryBtn:hover,
+.retryBtn:focus-visible {
+  color: var(--teal-dark);
+  outline: none;
+  text-decoration: underline;
 }

@@ -63,7 +63,7 @@ export default function ThreadPage() {
   if (loadError) return (
     <div className={styles.emptyState}>
       Could not load this conversation.{" "}
-      <button onClick={() => { setLoadError(false); load(); }} className={msgStyles.retryBtn}>
+      <button type="button" onClick={() => { setLoadError(false); load(); }} className={msgStyles.retryBtn}>
         Retry
       </button>
     </div>

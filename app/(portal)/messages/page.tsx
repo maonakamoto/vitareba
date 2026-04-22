@@ -106,7 +106,7 @@ export default function MessagesPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             Could not load messages.{" "}
-            <button onClick={load} className={styles.retryBtn}>
+            <button type="button" onClick={load} className={styles.retryBtn}>
               Retry
             </button>
           </div>

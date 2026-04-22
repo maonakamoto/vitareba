@@ -138,7 +138,7 @@ export default function BookingsPage() {
         <div className={styles.card}>
           <div className={styles.emptyState}>
             Could not load bookings.{" "}
-            <button onClick={load} className={styles.retryBtn}>
+            <button type="button" onClick={load} className={styles.retryBtn}>
               Retry
             </button>
           </div>
