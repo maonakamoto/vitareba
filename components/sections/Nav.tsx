@@ -7,6 +7,7 @@ import NextLink from "next/link";
 import Logo from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import styles from "./Nav.module.css";
+import { COMPANY } from "@/lib/config/company";
 
 // Megamenu config — sub-items link to on-page anchors
 const MEGA = {
@@ -34,7 +35,7 @@ export default function Nav() {
 
   return (
     <nav className={styles.nav}>
-      <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
+      <Link href="/" className={styles.logoLink} aria-label={`${COMPANY.shortName} — home`}>
         <Logo />
       </Link>
 

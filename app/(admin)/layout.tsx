@@ -10,6 +10,7 @@ import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
+import { COMPANY } from "@/lib/config/company";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -29,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
+        <Link href="/" className={styles.logoLink} aria-label={`${COMPANY.shortName} — home`}>
           <Logo />
         </Link>
         <p className={styles.adminBadge}>Admin</p>

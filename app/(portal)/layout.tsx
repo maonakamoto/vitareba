@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
+import { COMPANY } from "@/lib/config/company";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -29,7 +30,7 @@ export default async function PortalLayout({ children }: { children: React.React
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
-        <Link href="/" className={styles.logoLink} aria-label="VitaReBa — home">
+        <Link href="/" className={styles.logoLink} aria-label={`${COMPANY.shortName} — home`}>
           <Logo />
         </Link>
         <PortalNav unreadMessages={unreadMessages} />

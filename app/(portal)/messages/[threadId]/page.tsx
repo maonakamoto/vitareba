@@ -7,6 +7,7 @@ import styles from "../../portal.module.css";
 import msgStyles from "../messages.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { COMPANY } from "@/lib/config/company";
 
 type Message = {
   id: string;
@@ -96,7 +97,7 @@ export default function ThreadPage() {
                 {msg.body}
               </div>
               <p className={msgStyles.msgMeta}>
-                {isAdmin ? "VitaReBa team" : "You"} · {formatDateTime(msg.createdAt)}
+                {isAdmin ? `${COMPANY.shortName} team` : "You"} · {formatDateTime(msg.createdAt)}
                 {!isAdmin && msg.readAt && <span className={msgStyles.msgRead}> · Read</span>}
               </p>
             </div>
