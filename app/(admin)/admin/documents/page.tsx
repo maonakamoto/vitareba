@@ -20,6 +20,7 @@ export default function AdminDocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   const [patientId, setPatientId] = useState("");
@@ -33,7 +34,6 @@ export default function AdminDocumentsPage() {
     const res = await fetch("/api/documents");
     const data = await res.json();
     setDocuments(data.data ?? []);
-    setLoading(false);
   }, []);
 
   const loadPatients = useCallback(async () => {
@@ -43,7 +43,16 @@ export default function AdminDocumentsPage() {
   }, []);
 
   useEffect(() => {
-    Promise.all([loadDocuments(), loadPatients()]);
+    async function load() {
+      try {
+        await Promise.all([loadDocuments(), loadPatients()]);
+      } catch {
+        setLoadError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, [loadDocuments, loadPatients]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -162,6 +171,8 @@ export default function AdminDocumentsPage() {
 
       {loading ? (
         <div className={styles.emptyState}>Loading…</div>
+      ) : loadError ? (
+        <div className={styles.emptyState}>Failed to load documents. Please refresh the page.</div>
       ) : documents.length === 0 ? (
         <div className={styles.card}>
           <div className={styles.emptyState}>No documents yet.</div>

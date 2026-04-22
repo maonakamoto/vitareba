@@ -12,15 +12,20 @@ export default function AdminThreadPage() {
   const params = useParams();
   const threadId = params.threadId as string;
   const [thread, setThread] = useState<ThreadDetailWithPatient | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/messages/${threadId}`);
-    const data = await res.json();
-    setThread(data.data);
+    try {
+      const res = await fetch(`/api/messages/${threadId}`);
+      const data = await res.json();
+      setThread(data.data);
+    } catch {
+      setLoadError(true);
+    }
   }, [threadId]);
 
   useEffect(() => { load(); }, [load]);
@@ -42,6 +47,7 @@ export default function AdminThreadPage() {
     load();
   }
 
+  if (loadError) return <div className={styles.emptyState}>Failed to load thread. Please refresh the page.</div>;
   if (!thread) return <div className={styles.emptyState}>Loading…</div>;
 
   return (

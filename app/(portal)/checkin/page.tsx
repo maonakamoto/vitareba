@@ -71,6 +71,7 @@ export default function CheckinPage() {
   });
   const [history, setHistory] = useState<StoredCheckin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -96,6 +97,7 @@ export default function CheckinPage() {
           }
         }
       })
+      .catch(() => setLoadError(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -141,6 +143,7 @@ export default function CheckinPage() {
   const streak = computeStreak(history);
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
+  if (loadError) return <div className={styles.emptyState}>Failed to load your check-in history. Please refresh the page.</div>;
 
   return (
     <div>

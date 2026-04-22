@@ -12,15 +12,21 @@ type FilterOption = (typeof FILTER_OPTIONS)[number];
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<BookingRowWithUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterOption>(BOOKING_STATUS.pending);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/bookings");
-    const data = await res.json();
-    setBookings(data.data ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/bookings");
+      const data = await res.json();
+      setBookings(data.data ?? []);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -68,6 +74,8 @@ export default function AdminBookingsPage() {
 
       {loading ? (
         <div className={styles.emptyState}>Loading…</div>
+      ) : loadError ? (
+        <div className={styles.emptyState}>Failed to load bookings. Please refresh the page.</div>
       ) : filtered.length === 0 ? (
         <div className={styles.card}>
           <div className={styles.emptyState}>No {filter === "all" ? "" : filter} bookings.</div>
