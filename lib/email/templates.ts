@@ -28,7 +28,7 @@ function layout(body: string) {
 <div class="wrap">
   <div class="header"><h1>Vita<span>Re</span>Ba</h1></div>
   <div class="body">${body}</div>
-  <div class="footer">${COMPANY.name} · Zürich · <a href="${PORTAL_URL}" style="color:#2a7a8a">${PORTAL_URL.replace(/^https?:\/\//, "")}</a></div>
+  <div class="footer">${COMPANY.name} · ${COMPANY.address.city} · <a href="${PORTAL_URL}" style="color:#2a7a8a">${PORTAL_URL.replace(/^https?:\/\//, "")}</a></div>
 </div>
 </body>
 </html>`;
