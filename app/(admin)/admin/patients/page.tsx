@@ -6,7 +6,7 @@ import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import { scoreColor, getVerdictName } from "@/lib/assessment/data";
-import { computePatientSignal } from "@/lib/domain/signals";
+import { computePatientSignal, wellnessAvg } from "@/lib/domain/signals";
 import { computeProfileCompleteness, profileCompletenessColor } from "@/lib/domain/profile";
 import {
   SIGNAL_SORT_ORDER,
@@ -17,10 +17,6 @@ import {
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
-
-function wellnessAvg(c: { sleep: number; energy: number; mood: number; focus: number; stress: number }): number {
-  return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
-}
 
 function relativeDate(dateStr: string, now: Date): string {
   const d = new Date(dateStr + "T00:00:00");

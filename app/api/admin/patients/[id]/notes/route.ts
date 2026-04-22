@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/guards";
+import { PATIENT_NOTE_MAX_LENGTH } from "@/lib/config/portal";
 import { db } from "@/lib/db";
 import { patientNotes, users } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -25,7 +26,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
 }
 
 const createSchema = z.object({
-  body: z.string().min(1).max(5000),
+  body: z.string().min(1).max(PATIENT_NOTE_MAX_LENGTH),
 });
 
 export async function POST(req: Request, { params }: RouteContext) {

@@ -6,7 +6,7 @@ import { eq, and, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { dailyCheckins } from "@/lib/db/schema";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS } from "@/lib/config/portal";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS, CHECKIN_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 import { formatDateISO } from "@/lib/utils/format";
 
 const metricSchema = z
@@ -22,7 +22,7 @@ const checkinSchema = z.object({
   mood: metricSchema,
   focus: metricSchema,
   stress: metricSchema,
-  notes: z.string().max(1000).optional(),
+  notes: z.string().max(CHECKIN_NOTES_MAX_LENGTH).optional(),
 });
 
 export async function GET(req: Request) {

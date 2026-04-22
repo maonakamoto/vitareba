@@ -66,6 +66,12 @@ export const MESSAGE_SUBJECT_MAX_LENGTH = 200;
 /** Message body max length (applies to both thread creation and replies) */
 export const MESSAGE_BODY_MAX_LENGTH = 10_000;
 
+/** Patient note body max length (admin-only clinical notes) */
+export const PATIENT_NOTE_MAX_LENGTH = 5_000;
+
+/** Daily check-in optional notes max length */
+export const CHECKIN_NOTES_MAX_LENGTH = 1_000;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 

@@ -35,7 +35,7 @@ export type SignalResult = {
 };
 
 /** Wellness score per check-in day: 1–5 where 5 is best. Stress is inverted. */
-function wellnessAvg(c: CheckinRow): number {
+export function wellnessAvg(c: CheckinRow): number {
   return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
 }
 
