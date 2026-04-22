@@ -13,24 +13,18 @@ export function PatientMessagesCard({ threads, patientId }: { threads: Thread[];
     <div className={styles.card}>
       <p className={styles.cardLabel}>Messages ({threads.length})</p>
       {threads.length === 0 ? (
-        <div className={styles.emptyState} style={{ padding: "1rem 0" }}>No messages.</div>
+        <div className={styles.emptyState}>No messages.</div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+        <div className={styles.msgThreadList}>
           {threads.map((t) => (
-            <Link
-              key={t.id}
-              href={`/admin/messages/${t.id}`}
-              style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", fontSize: "0.82rem", textDecoration: "none", color: "inherit", paddingBottom: "0.65rem", borderBottom: "1px solid var(--border)" }}
-            >
+            <Link key={t.id} href={`/admin/messages/${t.id}`} className={styles.msgThreadRow}>
               <div>
-                <div style={{ color: "var(--ink2)" }}>{t.subject}</div>
+                <div className={styles.msgThreadSubject}>{t.subject}</div>
                 {t.messages[0] && (
-                  <div style={{ fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.2rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }}>
-                    {t.messages[0].body}
-                  </div>
+                  <div className={styles.msgThreadPreview}>{t.messages[0].body}</div>
                 )}
               </div>
-              <span style={{ fontSize: "0.7rem", color: "var(--teal)", whiteSpace: "nowrap" }}>View →</span>
+              <span className={styles.msgThreadViewLink}>View →</span>
             </Link>
           ))}
         </div>

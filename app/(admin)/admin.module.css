@@ -1652,3 +1652,42 @@
   composes: formInput;
   padding-top: 0.4rem;
 }
+
+/* ─── PatientMessagesCard ────────────────────────────────────────────────── */
+
+.msgThreadList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.msgThreadRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.msgThreadSubject {
+  color: var(--ink2);
+}
+
+.msgThreadPreview {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.msgThreadViewLink {
+  font-size: 0.7rem;
+  color: var(--teal);
+  white-space: nowrap;
+}
