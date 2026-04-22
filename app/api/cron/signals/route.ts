@@ -3,12 +3,12 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users, profiles, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
-import { eq, desc, and, isNull } from "drizzle-orm";
+import { eq, desc, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_CHECKIN_WINDOW_DAYS } from "@/lib/config/admin";
-import { PORTAL_URL } from "@/lib/config/company";
+import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -18,12 +18,8 @@ export async function GET(req: Request) {
 
   const now = new Date();
 
-  const admins = await db.query.users.findMany({
-    where: eq(users.role, "admin"),
-    columns: { email: true, name: true },
-  });
-
-  if (admins.length === 0) {
+  const adminEmails = getAdminEmails();
+  if (adminEmails.length === 0) {
     return NextResponse.json({ success: true, alerts: 0, checked: 0 });
   }
 
@@ -70,11 +66,10 @@ export async function GET(req: Request) {
       const patientName = patient.name ?? patient.email.split("@")[0];
       const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
-      for (const admin of admins) {
-        if (!admin.email) continue;
+      for (const adminEmail of adminEmails) {
         try {
           await sendEmail({
-            to: admin.email,
+            to: adminEmail,
             subject: `⚠ Critical patient: ${patientName}`,
             html: criticalPatientAlertEmail({
               patientName,
