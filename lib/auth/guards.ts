@@ -17,6 +17,19 @@ export async function requireSession(): Promise<
   return { session, error: null };
 }
 
+/**
+ * Verifies the request carries a valid CRON_SECRET bearer token.
+ * Returns a 401 NextResponse if the check fails, null if authorized.
+ * Usage: const cronError = requireCron(req); if (cronError) return cronError;
+ */
+export function requireCron(req: Request): NextResponse | null {
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+  return null;
+}
+
 export async function requireAdmin(): Promise<
   | { session: Session; error: null }
   | { session: null; error: NextResponse }

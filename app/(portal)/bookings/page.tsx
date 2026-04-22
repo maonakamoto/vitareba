@@ -7,8 +7,7 @@ import authStyles from "../../(auth)/auth.module.css";
 import { BOOKING_STATUS_CONFIG, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
-
-const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL;
+import { CALENDLY_URL } from "@/lib/config/portal";
 
 type Booking = {
   id: string;

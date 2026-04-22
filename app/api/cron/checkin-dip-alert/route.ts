@@ -13,12 +13,11 @@ import {
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { requireCron } from "@/lib/auth/guards";
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const cronError = requireCron(req);
+  if (cronError) return cronError;
 
   // Fetch last N days of check-ins for all active patients
   const cutoff = new Date();

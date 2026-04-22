@@ -17,12 +17,11 @@ import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data
 import { COMPANY, PORTAL_URL } from "@/lib/config/company";
 import { EMAIL_TEMPLATE } from "@/lib/config/email-sequences";
 import { EMAIL_QUEUE_STATUS } from "@/lib/config/email-queue";
+import { requireCron } from "@/lib/auth/guards";
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const cronError = requireCron(req);
+  if (cronError) return cronError;
 
   const now = new Date();
 

@@ -9,12 +9,11 @@ import { checkinReminderEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { requireCron } from "@/lib/auth/guards";
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const cronError = requireCron(req);
+  if (cronError) return cronError;
 
   const today = formatDateISO(new Date());
 
