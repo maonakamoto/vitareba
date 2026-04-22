@@ -191,6 +191,48 @@
   .pageTitle {
     font-size: 1.6rem;
   }
+
+  /* Page header: stack title + action button */
+  .pageHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Patient detail header: stack name + signal badge */
+  .patientHeaderRow {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  /* 2-column form grids → single column */
+  .formGrid2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* 3-column goal form grid → single column */
+  .goalFormGrid3 {
+    grid-template-columns: 1fr;
+  }
+
+  /* 5-column assessment dimension grid → 3 + 2 wrap */
+  .assessDimGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Thread compose: stack textarea + send button vertically */
+  .composeForm {
+    flex-direction: column;
+  }
+
+  .sendBtn {
+    width: 100%;
+  }
+
+  /* Widen thread detail to full viewport */
+  .threadDetail {
+    max-width: 100%;
+  }
 }
 
 /* Shared admin UI */
