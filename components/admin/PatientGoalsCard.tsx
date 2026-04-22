@@ -144,6 +144,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
         <form onSubmit={handleAdd} className={styles.goalForm}>
           <input
             required
+            aria-label="Goal title"
             placeholder="Goal title (e.g. Improve focus score to 70)"
             value={form.title}
             onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
@@ -152,6 +153,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
           <div className={styles.goalFormGrid3}>
             <input
               type="number" min="0" max="100"
+              aria-label="Baseline score (0–100)"
               placeholder="Baseline (0–100)"
               value={form.baseline}
               onChange={(e) => setForm((p) => ({ ...p, baseline: e.target.value }))}
@@ -159,6 +161,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             />
             <input
               type="number" min="0" max="100"
+              aria-label="Current score (0–100)"
               placeholder="Current (0–100)"
               value={form.current}
               onChange={(e) => setForm((p) => ({ ...p, current: e.target.value }))}
@@ -166,6 +169,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             />
             <input
               type="number" min="0" max="100"
+              aria-label="Target score (0–100)"
               placeholder="Target (0–100)"
               value={form.target}
               onChange={(e) => setForm((p) => ({ ...p, target: e.target.value }))}
@@ -173,6 +177,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             />
           </div>
           <textarea
+            aria-label="Notes"
             placeholder="Notes (optional)"
             value={form.notes}
             onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
@@ -225,6 +230,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
                 <div className={styles.goalEditRow}>
                   <input
                     type="number" min="0" max="100"
+                    aria-label="New score (0–100)"
                     value={editCurrent}
                     onChange={(e) => setEditCurrent(e.target.value)}
                     placeholder="New score"
