@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "../../admin.module.css";
-import { BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingStatus } from "@/lib/config/booking-status";
+import { BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
 
 type Booking = {
@@ -22,7 +22,7 @@ export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-  const [filter, setFilter] = useState<FilterOption>("pending");
+  const [filter, setFilter] = useState<FilterOption>(BOOKING_STATUS.pending);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -49,7 +49,7 @@ export default function AdminBookingsPage() {
   }
 
   const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === (filter as BookingStatus));
-  const pendingCount = bookings.filter((b) => b.status === "pending").length;
+  const pendingCount = bookings.filter((b) => b.status === BOOKING_STATUS.pending).length;
 
   return (
     <div>
@@ -68,7 +68,7 @@ export default function AdminBookingsPage() {
             onClick={() => setFilter(f)}
             className={`${styles.filterTab}${filter === f ? ` ${styles.filterTabActive}` : ""}`}
           >
-            {f}{f === "pending" && pendingCount > 0 ? ` (${pendingCount})` : ""}
+            {f}{f === BOOKING_STATUS.pending && pendingCount > 0 ? ` (${pendingCount})` : ""}
           </button>
         ))}
       </div>

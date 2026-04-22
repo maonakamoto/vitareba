@@ -16,6 +16,7 @@ import {
 import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data";
 import { COMPANY, PORTAL_URL } from "@/lib/config/company";
 import { EMAIL_TEMPLATE } from "@/lib/config/email-sequences";
+import { EMAIL_QUEUE_STATUS } from "@/lib/config/email-queue";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -27,7 +28,7 @@ export async function GET(req: Request) {
 
   const pending = await db.query.emailQueue.findMany({
     where: and(
-      eq(emailQueue.status, "pending"),
+      eq(emailQueue.status, EMAIL_QUEUE_STATUS.pending),
       lte(emailQueue.sendAt, now)
     ),
     with: { user: { columns: { name: true, email: true } } },
@@ -41,7 +42,7 @@ export async function GET(req: Request) {
     if (!user?.email) {
       await db
         .update(emailQueue)
-        .set({ status: "failed", sentAt: now })
+        .set({ status: EMAIL_QUEUE_STATUS.failed, sentAt: now })
         .where(eq(emailQueue.id, item.id));
       failed++;
       continue;
@@ -94,7 +95,7 @@ export async function GET(req: Request) {
         // Unknown template — mark failed, don't retry
         await db
           .update(emailQueue)
-          .set({ status: "failed", sentAt: now })
+          .set({ status: EMAIL_QUEUE_STATUS.failed, sentAt: now })
           .where(eq(emailQueue.id, item.id));
         failed++;
         continue;
@@ -104,14 +105,14 @@ export async function GET(req: Request) {
 
       await db
         .update(emailQueue)
-        .set({ status: "sent", sentAt: now })
+        .set({ status: EMAIL_QUEUE_STATUS.sent, sentAt: now })
         .where(eq(emailQueue.id, item.id));
       sent++;
     } catch (err) {
       console.error("[cron/emails] send failed for", item.id, err);
       await db
         .update(emailQueue)
-        .set({ status: "failed", sentAt: now })
+        .set({ status: EMAIL_QUEUE_STATUS.failed, sentAt: now })
         .where(eq(emailQueue.id, item.id));
       failed++;
     }
