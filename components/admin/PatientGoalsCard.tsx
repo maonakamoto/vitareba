@@ -32,6 +32,7 @@ function GoalProgressBar({ baseline, current, target }: { baseline: number | nul
 export function PatientGoalsCard({ patientId }: { patientId: string }) {
   const [goals, setGoals] = useState<GoalRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", metric: "", baseline: "", target: "", current: "", notes: "" });
   const [saving, setSaving] = useState(false);
@@ -39,11 +40,16 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
   const [editCurrent, setEditCurrent] = useState("");
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/admin/patients/${patientId}/goals`);
-    if (!res.ok) return;
-    const data = await res.json();
-    setGoals(data.data ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/admin/patients/${patientId}/goals`);
+      if (!res.ok) { setLoadError(true); return; }
+      const data = await res.json();
+      setGoals(data.data ?? []);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, [patientId]);
 
   useEffect(() => { load(); }, [load]);
@@ -160,6 +166,8 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
 
       {loading ? (
         <p className={styles.goalMutedText}>Loading…</p>
+      ) : loadError ? (
+        <p className={styles.goalMutedText}>Failed to load goals. Please refresh.</p>
       ) : goals.length === 0 ? (
         <p className={styles.goalMutedText}>No goals set yet.</p>
       ) : (
