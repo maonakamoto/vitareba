@@ -6,10 +6,11 @@ import { eq, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { threads, threadMessages } from "@/lib/db/schema";
+import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 
 const createSchema = z.object({
-  subject: z.string().min(1),
-  body: z.string().min(1),
+  subject: z.string().min(1).max(MESSAGE_SUBJECT_MAX_LENGTH),
+  body: z.string().min(1).max(MESSAGE_BODY_MAX_LENGTH),
   patientId: z.string().uuid().optional(), // admin can open thread on behalf of patient
 });
 

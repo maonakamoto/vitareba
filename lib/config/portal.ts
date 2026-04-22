@@ -51,6 +51,12 @@ export const PROFILE_COMPLETION_LOWER_THRESHOLD = 0.3;
 /** Maximum number of days of check-in history that can be requested via the API */
 export const CHECKIN_FETCH_MAX_DAYS = 90;
 
+/** Message thread subject max length */
+export const MESSAGE_SUBJECT_MAX_LENGTH = 200;
+
+/** Message body max length (applies to both thread creation and replies) */
+export const MESSAGE_BODY_MAX_LENGTH = 10_000;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 

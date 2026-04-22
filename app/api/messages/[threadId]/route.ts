@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { eq, asc, and, isNull, ne } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
@@ -8,6 +9,11 @@ import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
 import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+
+const replySchema = z.object({
+  body: z.string().min(1).max(MESSAGE_BODY_MAX_LENGTH),
+});
 
 export async function GET(
   _req: Request,
@@ -64,14 +70,14 @@ export async function POST(
     return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
   }
 
-  const { body } = await req.json();
-  if (!body?.trim()) {
-    return NextResponse.json({ success: false, error: "Message body required" }, { status: 400 });
+  const parsed = replySchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ success: false, error: "Invalid message body" }, { status: 400 });
   }
 
   const [message] = await db
     .insert(threadMessages)
-    .values({ threadId, senderId: session.user.id, body })
+    .values({ threadId, senderId: session.user.id, body: parsed.data.body })
     .returning();
 
   await db
