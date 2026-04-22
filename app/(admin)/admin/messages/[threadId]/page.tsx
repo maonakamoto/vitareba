@@ -10,6 +10,7 @@ type Message = {
   id: string;
   body: string;
   createdAt: string;
+  readAt: string | null;
   sender: { id: string; name: string | null; role: string };
 };
 
@@ -86,6 +87,7 @@ export default function AdminThreadPage() {
                 {isAdmin ? "You (Admin)" : (thread.patient.name ?? "Patient")}
                 {" · "}
                 {formatDateTime(msg.createdAt)}
+                {isAdmin && msg.readAt && <span className={styles.msgRead}> · Read</span>}
               </p>
             </div>
           );

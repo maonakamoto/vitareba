@@ -670,6 +670,10 @@
   margin-top: 0.25rem;
 }
 
+.msgRead {
+  color: var(--teal);
+}
+
 .composeForm {
   display: flex;
   gap: 0.75rem;

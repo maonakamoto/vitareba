@@ -22,6 +22,7 @@ export async function GET(
   const thread = await db.query.threads.findFirst({
     where: eq(threads.id, threadId),
     with: {
+      patient: { columns: { id: true, name: true, email: true } },
       messages: {
         orderBy: [asc(threadMessages.createdAt)],
         with: { sender: { columns: { id: true, name: true, role: true } } },

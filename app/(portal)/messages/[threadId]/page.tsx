@@ -11,6 +11,7 @@ type Message = {
   id: string;
   body: string;
   createdAt: string;
+  readAt: string | null;
   sender: { id: string; name: string | null; role: string };
 };
 
@@ -95,6 +96,7 @@ export default function ThreadPage() {
               </div>
               <p className={msgStyles.msgMeta}>
                 {isAdmin ? "VitaReBa team" : "You"} · {formatDateTime(msg.createdAt)}
+                {!isAdmin && msg.readAt && <span className={msgStyles.msgRead}> · Read</span>}
               </p>
             </div>
           );
