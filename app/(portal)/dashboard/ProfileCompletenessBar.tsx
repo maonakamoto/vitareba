@@ -2,6 +2,7 @@ import Link from "next/link";
 import styles from "./dashboard.module.css";
 import { profileCompletenessColor } from "@/lib/domain/profile";
 import { COMPANY } from "@/lib/config/company";
+import { PROFILE_COMPLETENESS_LOW_PCT, PROFILE_COMPLETENESS_HIGH_PCT } from "@/lib/config/portal";
 
 export function ProfileCompletenessBar({ pct }: { pct: number }) {
   if (pct >= 100) return null;
@@ -17,9 +18,9 @@ export function ProfileCompletenessBar({ pct }: { pct: number }) {
         <div className={styles.profileBarFill} style={{ width: `${pct}%` }} />
       </div>
       <p className={styles.profileBarText}>
-        {pct < 40
+        {pct < PROFILE_COMPLETENESS_LOW_PCT
           ? `A full profile lets ${COMPANY.clinicianName} arrive at your consultation already knowing your context — not spending the first 20 minutes gathering basics.`
-          : pct < 80
+          : pct < PROFILE_COMPLETENESS_HIGH_PCT
           ? `Almost there — a complete profile means ${COMPANY.clinicianName} can design your programme before you even walk in the door.`
           : `Just a few fields left — complete your profile so ${COMPANY.clinicianName} has the full picture.`}
         {" "}

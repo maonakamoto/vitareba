@@ -12,6 +12,8 @@ import {
   SIGNAL_SORT_ORDER,
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
+  SPARKLINE_LOW_THRESHOLD,
+  SPARKLINE_MID_THRESHOLD,
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO } from "@/lib/utils/format";
 
@@ -29,8 +31,8 @@ function relativeDate(dateStr: string, now: Date): string {
 }
 
 function sparkLevel(avg: number): string {
-  if (avg < 2.5) return "low";
-  if (avg < 3.5) return "mid";
+  if (avg < SPARKLINE_LOW_THRESHOLD) return "low";
+  if (avg < SPARKLINE_MID_THRESHOLD) return "mid";
   return "high";
 }
 

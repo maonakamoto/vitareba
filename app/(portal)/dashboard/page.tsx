@@ -6,7 +6,13 @@ import Link from "next/link";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
-import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
+import {
+  RECENT_ASSESSMENTS_LIMIT,
+  ASSESSMENT_STALE_DAYS,
+  GOAL_PROGRESS_COMPLETE_PCT,
+  GOAL_PROGRESS_HIGH_PCT,
+  GOAL_PROGRESS_LOW_PCT,
+} from "@/lib/config/portal";
 import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateISO, DAY_MS } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
@@ -73,7 +79,7 @@ export default async function DashboardPage() {
   const assessmentAgeDays = latestAssessment
     ? Math.floor((now - new Date(latestAssessment.completedAt).getTime()) / DAY_MS)
     : null;
-  const assessmentIsStale = assessmentAgeDays !== null && assessmentAgeDays >= 30;
+  const assessmentIsStale = assessmentAgeDays !== null && assessmentAgeDays >= ASSESSMENT_STALE_DAYS;
   const delta =
     latestAssessment && previousAssessment
       ? latestAssessment.overallScore - previousAssessment.overallScore
@@ -125,11 +131,11 @@ export default async function DashboardPage() {
                         </div>
                         <p className={styles.goalProgressMeta}>
                           {currentPct != null
-                            ? currentPct >= 100
+                            ? currentPct >= GOAL_PROGRESS_COMPLETE_PCT
                               ? "Goal reached — ready for review"
-                              : currentPct >= 75
+                              : currentPct >= GOAL_PROGRESS_HIGH_PCT
                               ? `${currentPct}% there — in the final stretch`
-                              : currentPct >= 40
+                              : currentPct >= GOAL_PROGRESS_LOW_PCT
                               ? `${currentPct}% progress — building momentum`
                               : `${currentPct}% progress — just getting started`
                             : goal.current != null

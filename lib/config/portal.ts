@@ -47,3 +47,15 @@ export const PROFILE_COMPLETION_THRESHOLD = 0.7;
 
 /** Below this fraction the profile completeness indicator shows a warning color */
 export const PROFILE_COMPLETION_LOWER_THRESHOLD = 0.3;
+
+/** Days after which an assessment is considered stale and the patient is nudged to retake */
+export const ASSESSMENT_STALE_DAYS = 30;
+
+/** Goal progress % thresholds for dashboard milestone messaging */
+export const GOAL_PROGRESS_COMPLETE_PCT = 100;
+export const GOAL_PROGRESS_HIGH_PCT = 75;
+export const GOAL_PROGRESS_LOW_PCT = 40;
+
+/** Profile completeness % thresholds for intake bar messaging */
+export const PROFILE_COMPLETENESS_LOW_PCT = 40;
+export const PROFILE_COMPLETENESS_HIGH_PCT = 80;
