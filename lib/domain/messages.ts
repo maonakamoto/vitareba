@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
 import { eq, and, isNull, ne, inArray } from "drizzle-orm";
+import { USER_ROLE } from "@/lib/config/auth";
 
 /**
  * Count threads that have at least one unread message for the given user.
@@ -45,7 +46,7 @@ export async function getAdminUnreadThreadCount(): Promise<number> {
  */
 export async function getAdminUnreadThreadIds(): Promise<Set<string>> {
   const patients = await db.query.users.findMany({
-    where: eq(users.role, "patient"),
+    where: eq(users.role, USER_ROLE.patient),
     columns: { id: true },
   });
 
