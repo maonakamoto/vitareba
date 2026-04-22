@@ -5,7 +5,7 @@ import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/sche
 import { eq, desc, gte } from "drizzle-orm";
 import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
-import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
+import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
 import { formatDateShort, formatDateISO } from "@/lib/utils/format";
@@ -98,7 +98,9 @@ export default async function ReportsPage() {
     phaseCounts[a.phase] = (phaseCounts[a.phase] ?? 0) + 1;
   }
 
-  const SIGNAL_ORDER: PatientSignal[] = ["critical", "attention", "active", "new"];
+  const SIGNAL_ORDER = (Object.keys(SIGNAL_SORT_ORDER) as PatientSignal[]).sort(
+    (a, b) => SIGNAL_SORT_ORDER[a] - SIGNAL_SORT_ORDER[b]
+  );
 
   return (
     <div>
