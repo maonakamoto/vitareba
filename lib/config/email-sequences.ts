@@ -37,3 +37,15 @@ export const WELCOME_EMAIL_SEQUENCE = [
 
 export type WelcomeTemplateKey =
   (typeof WELCOME_EMAIL_SEQUENCE)[number]["templateKey"];
+
+export type EmailTemplateKey = AssessmentTemplateKey | WelcomeTemplateKey;
+
+/** Named constants for all template keys — use in cron/emails comparisons instead of string literals */
+export const EMAIL_TEMPLATE = {
+  assessmentResults: "assessmentResults",
+  assessmentMeaning: "assessmentMeaning",
+  assessmentBooking: "assessmentBooking",
+  welcomePatient: "welcomePatient",
+  profileCompletion: "profileCompletion",
+  assessmentCta: "assessmentCta",
+} as const satisfies Record<EmailTemplateKey, EmailTemplateKey>;

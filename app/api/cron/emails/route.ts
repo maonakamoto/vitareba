@@ -15,6 +15,7 @@ import {
 } from "@/lib/email/templates";
 import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data";
 import { COMPANY, PORTAL_URL } from "@/lib/config/company";
+import { EMAIL_TEMPLATE } from "@/lib/config/email-sequences";
 
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -54,7 +55,7 @@ export async function GET(req: Request) {
       let html: string;
       let subject: string;
 
-      if (item.templateKey === "assessmentResults") {
+      if (item.templateKey === EMAIL_TEMPLATE.assessmentResults) {
         const overallScore = payload.overallScore as number;
         const scores = payload.scores as Record<string, number>;
         const verdict = getVerdict(overallScore);
@@ -73,20 +74,20 @@ export async function GET(req: Request) {
           portalUrl,
         });
         subject = `Your Inflection Edge results — ${verdict.name}`;
-      } else if (item.templateKey === "assessmentMeaning") {
+      } else if (item.templateKey === EMAIL_TEMPLATE.assessmentMeaning) {
         html = assessmentMeaningEmail({ patientName, portalUrl });
         subject = "What your Inflection Edge profile means clinically";
-      } else if (item.templateKey === "assessmentBooking") {
+      } else if (item.templateKey === EMAIL_TEMPLATE.assessmentBooking) {
         const overallScore = payload.overallScore as number;
         html = assessmentBookingEmail({ patientName, overallScore, portalUrl });
         subject = `Book a consultation with ${COMPANY.clinicianName}`;
-      } else if (item.templateKey === "welcomePatient") {
+      } else if (item.templateKey === EMAIL_TEMPLATE.welcomePatient) {
         html = welcomePatientEmail({ patientName, portalUrl });
         subject = "Welcome to VitaReBa — here is where to start";
-      } else if (item.templateKey === "profileCompletion") {
+      } else if (item.templateKey === EMAIL_TEMPLATE.profileCompletion) {
         html = profileCompletionEmail({ patientName, portalUrl });
         subject = "One thing before your first consultation";
-      } else if (item.templateKey === "assessmentCta") {
+      } else if (item.templateKey === EMAIL_TEMPLATE.assessmentCta) {
         html = assessmentCtaEmail({ patientName, portalUrl });
         subject = "Your Inflection Edge is waiting";
       } else {
