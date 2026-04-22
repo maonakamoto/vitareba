@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { profiles, users } from "@/lib/db/schema";
-import { SLEEP_HOURS_MIN, SLEEP_HOURS_MAX, EXERCISE_FREQUENCY_OPTIONS, PROFILE_COMPLETION_THRESHOLD } from "@/lib/config/portal";
+import { SLEEP_HOURS_MIN, SLEEP_HOURS_MAX, PROFILE_COMPLETION_THRESHOLD } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { profileCompletedAdminEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email";

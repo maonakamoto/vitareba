@@ -1,8 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { users, assessmentResults, bookings, dailyCheckins, programmeAssignments } from "@/lib/db/schema";
-import { eq, desc, gte, sql } from "drizzle-orm";
+import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
+import { eq, desc, gte } from "drizzle-orm";
 import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";

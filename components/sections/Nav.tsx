@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { Link } from "@/lib/i18n/navigation";
+import NextLink from "next/link";
 import Logo from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import styles from "./Nav.module.css";
@@ -114,14 +115,14 @@ export default function Nav() {
       <div className={styles.navActions}>
         <LanguageSwitcher />
         {session ? (
-          <a href="/dashboard" className={styles.navBtn}>
+          <NextLink href="/dashboard" className={styles.navBtn}>
             {t("dashboard")} &rarr;
-          </a>
+          </NextLink>
         ) : (
           <>
-            <a href="/login" className={styles.navSignIn}>
+            <NextLink href="/login" className={styles.navSignIn}>
               {t("signIn")}
-            </a>
+            </NextLink>
             <Link href="/assessment" className={styles.navBtn}>
               {t("cta")}
             </Link>

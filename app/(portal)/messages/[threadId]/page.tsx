@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../portal.module.css";
@@ -31,14 +31,14 @@ export default function ThreadPage() {
   const [sendError, setSendError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch(`/api/messages/${threadId}`);
     if (!res.ok) { setLoadError(true); return; }
     const data = await res.json();
     setThread(data.data);
-  }
+  }, [threadId]);
 
-  useEffect(() => { load(); }, [threadId]);
+  useEffect(() => { load(); }, [load]);
 
   // Poll for new messages every 30 s while the tab is focused
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function ThreadPage() {
       if (!document.hidden) load();
     }, 30_000);
     return () => clearInterval(interval);
-  }, [threadId]);
+  }, [load]);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [thread?.messages.length]);
 

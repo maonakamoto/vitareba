@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../../../admin.module.css";
@@ -30,13 +30,13 @@ export default function AdminThreadPage() {
   const [sendError, setSendError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch(`/api/messages/${threadId}`);
     const data = await res.json();
     setThread(data.data);
-  }
+  }, [threadId]);
 
-  useEffect(() => { load(); }, [threadId]);
+  useEffect(() => { load(); }, [load]);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [thread?.messages.length]);
 
   async function handleSend(e: React.FormEvent) {

@@ -23,7 +23,8 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) return null;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const now = Date.now();
+  const today = new Date(now).toISOString().slice(0, 10);
 
   const [recentAssessments, latestBooking, threadCount, dbUser, todayCheckin, programmeAssignment, profile, activeGoals] = await Promise.all([
     db.query.assessmentResults.findMany({
@@ -69,7 +70,7 @@ export default async function DashboardPage() {
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
   const verdict = latestAssessment ? getVerdict(latestAssessment.overallScore) : null;
   const assessmentAgeDays = latestAssessment
-    ? Math.floor((Date.now() - new Date(latestAssessment.completedAt).getTime()) / (24 * 60 * 60 * 1000))
+    ? Math.floor((now - new Date(latestAssessment.completedAt).getTime()) / (24 * 60 * 60 * 1000))
     : null;
   const assessmentIsStale = assessmentAgeDays !== null && assessmentAgeDays >= 30;
   const delta =

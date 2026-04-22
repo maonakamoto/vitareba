@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
@@ -28,22 +28,22 @@ export default function AdminDocumentsPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  async function loadDocuments() {
+  const loadDocuments = useCallback(async () => {
     const res = await fetch("/api/documents");
     const data = await res.json();
     setDocuments(data.data ?? []);
     setLoading(false);
-  }
+  }, []);
 
-  async function loadPatients() {
+  const loadPatients = useCallback(async () => {
     const res = await fetch("/api/admin/patients");
     const data = await res.json();
     setPatients(data.data ?? []);
-  }
+  }, []);
 
   useEffect(() => {
     Promise.all([loadDocuments(), loadPatients()]);
-  }, []);
+  }, [loadDocuments, loadPatients]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

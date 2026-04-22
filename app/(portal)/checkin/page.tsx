@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
@@ -177,8 +178,8 @@ export default function CheckinPage() {
               Each data point refines your pattern. Manuel reviews your trend before every consultation — this is the raw material of your programme.
             </p>
             <div className={checkinStyles.successLinks}>
-              <a href="/dashboard" className={checkinStyles.successLinkPrimary}>Back to dashboard →</a>
-              <a href="/assessments" className={checkinStyles.successLinkMuted}>View full results</a>
+              <Link href="/dashboard" className={checkinStyles.successLinkPrimary}>Back to dashboard →</Link>
+              <Link href="/assessments" className={checkinStyles.successLinkMuted}>View full results</Link>
             </div>
           </div>
         )}

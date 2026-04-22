@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { users, profiles, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
+import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
 import { eq, gte, and, desc } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
@@ -86,10 +86,6 @@ export async function GET(req: Request) {
         gte(dailyCheckins.date, dateStr(cutoffDate))
       ),
     });
-
-    const hasRecentActivity = recentCheckins.some(
-      (c) => c.date >= dateStr(thisWeekStart)
-    );
 
     // Skip if no assessments AND no recent activity
     if (!hasAssessment && recentCheckins.length === 0) { skipped++; continue; }

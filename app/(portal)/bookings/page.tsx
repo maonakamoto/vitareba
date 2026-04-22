@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "../portal.module.css";
 import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
@@ -29,16 +29,16 @@ export default function BookingsPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoadError(false);
     const res = await fetch("/api/bookings");
     if (!res.ok) { setLoading(false); setLoadError(true); return; }
     const data = await res.json();
     setBookings(data.data ?? []);
     setLoading(false);
-  }
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

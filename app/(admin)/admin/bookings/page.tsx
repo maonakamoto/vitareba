@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "../../admin.module.css";
 import { BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
@@ -25,14 +25,14 @@ export default function AdminBookingsPage() {
   const [filter, setFilter] = useState<FilterOption>("pending");
   const [error, setError] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch("/api/bookings");
     const data = await res.json();
     setBookings(data.data ?? []);
     setLoading(false);
-  }
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   async function updateStatus(id: string, status: BookingStatus) {
     setUpdating(id);

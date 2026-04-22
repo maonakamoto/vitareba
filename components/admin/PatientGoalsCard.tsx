@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
 
 type Goal = {
@@ -49,15 +49,15 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCurrent, setEditCurrent] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch(`/api/admin/patients/${patientId}/goals`);
     if (!res.ok) return;
     const data = await res.json();
     setGoals(data.data ?? []);
     setLoading(false);
-  }
+  }, [patientId]);
 
-  useEffect(() => { load(); }, [patientId]);
+  useEffect(() => { load(); }, [load]);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();

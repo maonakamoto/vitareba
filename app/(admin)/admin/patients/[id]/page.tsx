@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { users, assessmentResults, bookings, documents, threads, threadMessages, dailyCheckins, patientNotes, programmeAssignments } from "@/lib/db/schema";
+import { users, assessmentResults, bookings, documents, threads, threadMessages, dailyCheckins, patientNotes } from "@/lib/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../../admin.module.css";

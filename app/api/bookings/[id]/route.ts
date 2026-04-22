@@ -21,7 +21,6 @@ export async function PATCH(
 ) {
   const guard = await requireAdmin();
   if (guard.error) return guard.error;
-  const { session } = guard;
 
   const { id } = await params;
   const body = await req.json();

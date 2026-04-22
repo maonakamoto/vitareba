@@ -12,7 +12,6 @@ type RouteContext = { params: Promise<{ id: string }> };
 export async function GET(_req: Request, { params }: RouteContext) {
   const guard = await requireAdmin();
   if (guard.error) return guard.error;
-  const { session } = guard;
 
   const { id } = await params;
 

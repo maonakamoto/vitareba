@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users, dailyCheckins, profiles } from "@/lib/db/schema";
-import { eq, desc, and, gte } from "drizzle-orm";
+import { eq, desc, gte } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { checkinDipAlertEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";

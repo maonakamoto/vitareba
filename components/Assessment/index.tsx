@@ -100,9 +100,9 @@ export default function Assessment({ onClose, onComplete }: Props) {
     return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
   }, [dimScores]);
 
-  // Call onComplete once when results appear — use ref to avoid stale closure
+  // Keep ref in sync with latest onComplete (avoids stale closure without re-subscribing)
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
   useEffect(() => {
     if (screen === "results") {
       onCompleteRef.current?.(dimScores, overallScore);

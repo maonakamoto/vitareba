@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { eq, asc, and, isNull, ne } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";

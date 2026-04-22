@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { emailQueue, users } from "@/lib/db/schema";
+import { emailQueue } from "@/lib/db/schema";
 import { eq, lte, and } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import {

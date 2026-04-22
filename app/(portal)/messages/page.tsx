@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "../portal.module.css";
 import authStyles from "../../(auth)/auth.module.css";
@@ -26,16 +26,16 @@ export default function MessagesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoadError(false);
     const res = await fetch("/api/messages");
     if (!res.ok) { setLoading(false); setLoadError(true); return; }
     const data = await res.json();
     setThreads(data.data ?? []);
     setLoading(false);
-  }
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
