@@ -12,15 +12,7 @@ import { COMPANY } from "@/lib/config/company";
 import { computeStreak } from "@/lib/domain/checkin";
 
 
-type CheckinData = {
-  date: string;
-  sleep: number;
-  energy: number;
-  mood: number;
-  focus: number;
-  stress: number;
-  notes: string;
-};
+type CheckinData = { date: string; notes: string } & Record<MetricKey, number>;
 
 type StoredCheckin = Omit<CheckinData, "notes"> & { notes: string | null; id: string };
 
@@ -119,11 +111,7 @@ export default function CheckinPage() {
 
   const chartData = history.map((c) => ({
     date: formatDateMonthDay(c.date + "T00:00:00"),
-    sleep: c.sleep,
-    energy: c.energy,
-    mood: c.mood,
-    focus: c.focus,
-    stress: c.stress,
+    ...Object.fromEntries(CHECKIN_METRICS.map(({ key }) => [key, c[key]])) as Record<MetricKey, number>,
   }));
 
   const allFilled = CHECKIN_METRICS.every(({ key }) => form[key] > 0);
