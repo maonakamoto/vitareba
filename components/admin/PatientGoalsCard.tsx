@@ -36,6 +36,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", metric: "", baseline: "", target: "", current: "", notes: "" });
   const [saving, setSaving] = useState(false);
+  const [actionError, setActionError] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCurrent, setEditCurrent] = useState("");
 
@@ -57,49 +58,73 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    const res = await fetch(`/api/admin/patients/${patientId}/goals`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: form.title,
-        metric: form.metric || null,
-        baseline: form.baseline !== "" ? Number(form.baseline) : null,
-        target: form.target !== "" ? Number(form.target) : null,
-        current: form.current !== "" ? Number(form.current) : null,
-        notes: form.notes || null,
-      }),
-    });
-    setSaving(false);
-    if (!res.ok) return;
-    setForm({ title: "", metric: "", baseline: "", target: "", current: "", notes: "" });
-    setShowForm(false);
-    load();
+    setActionError("");
+    try {
+      const res = await fetch(`/api/admin/patients/${patientId}/goals`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          metric: form.metric || null,
+          baseline: form.baseline !== "" ? Number(form.baseline) : null,
+          target: form.target !== "" ? Number(form.target) : null,
+          current: form.current !== "" ? Number(form.current) : null,
+          notes: form.notes || null,
+        }),
+      });
+      if (!res.ok) { setActionError("Failed to add goal."); return; }
+      setForm({ title: "", metric: "", baseline: "", target: "", current: "", notes: "" });
+      setShowForm(false);
+      load();
+    } catch {
+      setActionError("Failed to add goal.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleUpdateCurrent(goalId: string) {
     if (editCurrent === "") return;
-    await fetch(`/api/admin/goals/${goalId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ current: Number(editCurrent) }),
-    });
-    setEditingId(null);
-    setEditCurrent("");
-    load();
+    setActionError("");
+    try {
+      const res = await fetch(`/api/admin/goals/${goalId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ current: Number(editCurrent) }),
+      });
+      if (!res.ok) { setActionError("Failed to update score."); return; }
+      setEditingId(null);
+      setEditCurrent("");
+      load();
+    } catch {
+      setActionError("Failed to update score.");
+    }
   }
 
   async function handleToggleComplete(goal: GoalRow) {
-    await fetch(`/api/admin/goals/${goal.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: !goal.completedAt }),
-    });
-    load();
+    setActionError("");
+    try {
+      const res = await fetch(`/api/admin/goals/${goal.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: !goal.completedAt }),
+      });
+      if (!res.ok) { setActionError("Failed to update goal."); return; }
+      load();
+    } catch {
+      setActionError("Failed to update goal.");
+    }
   }
 
   async function handleDelete(goalId: string) {
-    await fetch(`/api/admin/goals/${goalId}`, { method: "DELETE" });
-    load();
+    setActionError("");
+    try {
+      const res = await fetch(`/api/admin/goals/${goalId}`, { method: "DELETE" });
+      if (!res.ok) { setActionError("Failed to delete goal."); return; }
+      load();
+    } catch {
+      setActionError("Failed to delete goal.");
+    }
   }
 
   const active = goals.filter((g) => !g.completedAt);
@@ -113,6 +138,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
           + Add goal
         </button>
       </div>
+      {actionError && <p className={styles.formError}>{actionError}</p>}
 
       {showForm && (
         <form onSubmit={handleAdd} className={styles.goalForm}>

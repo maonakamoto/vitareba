@@ -134,7 +134,7 @@ export default async function PatientsPage() {
                     </td>
 
                     {/* Last check-in */}
-                    <td className={styles.cellNowrapSm} style={{ color: lastCheckin ? "var(--ink2)" : "var(--muted)" }}>
+                    <td className={`${styles.cellNowrapSm}${lastCheckin ? "" : ` ${styles.cellMuted}`}`}>
                       {lastCheckin ? relativeDate(lastCheckin.date, now) : "Never"}
                     </td>
 
