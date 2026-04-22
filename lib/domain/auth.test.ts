@@ -6,7 +6,7 @@ vi.mock("@/lib/config/auth", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/config/auth")>();
   return { ...actual, BCRYPT_SALT_ROUNDS: 4 };
 });
-import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, EMAIL_MAX_LENGTH } from "@/lib/config/auth";
 
 // ─── loginSchema ──────────────────────────────────────────────────────────────
 
@@ -25,6 +25,23 @@ describe("loginSchema", () => {
 
   it("rejects missing fields", () => {
     expect(loginSchema.safeParse({}).success).toBe(false);
+  });
+
+  it("rejects email over EMAIL_MAX_LENGTH", () => {
+    const longEmail = "a".repeat(EMAIL_MAX_LENGTH) + "@x.com"; // total > EMAIL_MAX_LENGTH
+    expect(loginSchema.safeParse({ email: longEmail, password: "abc" }).success).toBe(false);
+  });
+
+  it("rejects password over PASSWORD_MAX_LENGTH", () => {
+    expect(
+      loginSchema.safeParse({ email: "user@example.com", password: "a".repeat(PASSWORD_MAX_LENGTH + 1) }).success
+    ).toBe(false);
+  });
+
+  it("accepts password at exactly PASSWORD_MAX_LENGTH", () => {
+    expect(
+      loginSchema.safeParse({ email: "user@example.com", password: "a".repeat(PASSWORD_MAX_LENGTH) }).success
+    ).toBe(true);
   });
 });
 
@@ -58,6 +75,23 @@ describe("registerSchema", () => {
   it("rejects invalid email", () => {
     const result = registerSchema.safeParse({
       email: "bad-email",
+      password: "a".repeat(PASSWORD_MIN_LENGTH),
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects password over PASSWORD_MAX_LENGTH", () => {
+    const result = registerSchema.safeParse({
+      email: "user@example.com",
+      password: "a".repeat(PASSWORD_MAX_LENGTH + 1),
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects email over EMAIL_MAX_LENGTH", () => {
+    const longEmail = "a".repeat(EMAIL_MAX_LENGTH) + "@x.com"; // total > EMAIL_MAX_LENGTH
+    const result = registerSchema.safeParse({
+      email: longEmail,
       password: "a".repeat(PASSWORD_MIN_LENGTH),
     });
     expect(result.success).toBe(false);
