@@ -1,3 +1,5 @@
+/* ─── Portal shell ───────────────────────────────────────────────────────── */
+
 .shell {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -97,7 +99,7 @@
   flex: 1;
 }
 
-/* ─── Unread badge ────────────────────────────────────────────────────────── */
+/* ─── Unread badges ──────────────────────────────────────────────────────── */
 
 .navBadge {
   min-width: 18px;
@@ -134,7 +136,7 @@
   line-height: 1;
 }
 
-/* ─── Main area ───────────────────────────────────────────────────────────── */
+/* ─── Main area ──────────────────────────────────────────────────────────── */
 
 .mainWrap {
   display: flex;
@@ -162,7 +164,7 @@
   flex: 1;
 }
 
-/* ─── Header breadcrumb ─────────────────────────────────────────────────── */
+/* ─── Header breadcrumb ──────────────────────────────────────────────────── */
 
 .breadcrumb {
   font-size: 0.78rem;
@@ -171,7 +173,7 @@
   font-weight: 400;
 }
 
-/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+/* ─── Mobile shell ───────────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {
   .shell {
@@ -264,7 +266,8 @@
   text-transform: uppercase;
 }
 
-/* ─── Shared portal card/section styles ─── */
+/* ─── Shared page primitives ─────────────────────────────────────────────── */
+
 .pageTitle {
   font-family: var(--font-cormorant), serif;
   font-size: 2rem;
@@ -315,31 +318,6 @@
   }
 }
 
-.statCard {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 0.875rem;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.statLabel {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.statValue {
-  font-family: var(--font-cormorant), serif;
-  font-size: 2.4rem;
-  font-weight: 300;
-  color: var(--teal);
-  line-height: 1;
-}
-
 .emptyState {
   text-align: center;
   padding: 3rem 2rem;
@@ -347,352 +325,12 @@
   font-size: 0.85rem;
 }
 
-/* ─── Dashboard ─────────────────────────────────────────────────────────── */
-
-.dashStack {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.emptyTitle {
+  font-weight: 500;
+  margin: 0 0 0.5rem;
 }
 
-/* Dark hero card (assessment result / CTA) */
-.heroCard {
-  background: var(--ink);
-  border-radius: 0.875rem;
-  padding: 2rem;
-}
-
-.heroCardHead {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
-}
-
-.heroEyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55); /* teal on #1a1a22 is only 3.5:1 — use lighter value */
-  margin-bottom: 0.4rem;
-}
-
-.heroTitle {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.8rem;
-  font-weight: 300;
-  color: #fff;
-  line-height: 1.1;
-}
-
-.heroBody {
-  font-size: 0.85rem;
-  color: var(--faint);
-  line-height: 1.75;
-  max-width: 540px;
-}
-
-.heroLinks {
-  margin-top: 1.25rem;
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.heroLinkPrimary {
-  font-size: 0.75rem;
-  color: var(--teal);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-}
-
-.heroLinkMuted {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.58);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-}
-
-.scoreBlock {
-  text-align: right;
-}
-
-.scoreValue {
-  font-family: var(--font-cormorant), serif;
-  font-size: 3.2rem;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.scoreDenom {
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-}
-
-.scoreDelta {
-  font-size: 0.72rem;
-  margin-top: 0.2rem;
-}
-
-.scoreDeltaUp {
-  composes: scoreDelta;
-  color: var(--teal);
-}
-
-.scoreDeltaDown {
-  composes: scoreDelta;
-  color: var(--danger);
-}
-
-/* Intervention area card */
-.interventionScore {
-  font-family: var(--font-cormorant), serif;
-  font-size: 2.2rem;
-  font-weight: 300;
-  line-height: 1;
-  margin-bottom: 0.75rem;
-}
-
-.interventionName {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: var(--ink);
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
-.cardWarn {
-  composes: card;
-  border-left: 3px solid var(--warn);
-}
-
-.cardLink {
-  font-size: 0.78rem;
-  color: var(--teal);
-  text-decoration: none;
-}
-
-/* Booking status */
-.bookingStatus {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: var(--ink);
-  text-transform: capitalize;
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
-.bookingDate {
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-bottom: 0.75rem;
-}
-
-.bookingNoAppt {
-  font-size: 0.85rem;
-  color: var(--ink2);
-  margin-bottom: 0.75rem;
-  line-height: 1.7;
-}
-
-/* Messages row */
-.messagesRow {
-  composes: card;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.messagesBody {
-  font-size: 0.85rem;
-  color: var(--ink2);
-}
-
-/* No assessment CTA */
-.ctaBody {
-  font-size: 0.85rem;
-  color: var(--faint);
-  line-height: 1.75;
-  max-width: 480px;
-  margin-bottom: 1.5rem;
-}
-
-.ctaBodySpaced {
-  composes: ctaBody;
-  margin-top: 0.75rem;
-}
-
-/* Check-in prompt */
-.checkinPrompt {
-  composes: card;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.checkinPromptText {
-  font-size: 0.85rem;
-  color: var(--ink2);
-  line-height: 1.6;
-}
-
-.checkinPromptLabel {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--teal);
-  margin-bottom: 0.35rem;
-}
-
-/* Check-in done (already checked in today) */
-.checkinDone {
-  composes: card;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: var(--off);
-}
-
-.checkinDoneCheck {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  background: var(--teal);
-  color: #fff;
-  border-radius: 50%;
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.checkinDoneLabel {
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--teal);
-  margin-bottom: 0.2rem;
-}
-
-.checkinDoneText {
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-.cardLinkMuted {
-  font-size: 0.78rem;
-  color: var(--muted);
-  text-decoration: none;
-  margin-left: auto;
-  flex-shrink: 0;
-  transition: color 0.15s;
-}
-
-.cardLinkMuted:hover {
-  color: var(--ink);
-}
-
-/* Intervention hint */
-.interventionHint {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.5;
-  margin-bottom: 0.75rem;
-}
-
-/* Chart section */
-.chartCard {
-  composes: card;
-}
-
-.chartTitle {
-  composes: cardTitle;
-  margin-bottom: 1.25rem;
-}
-
-/* ─── Clinical goals ──────────────────────────────────────────────────────── */
-
-.goalsList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.goalTitle {
-  font-size: 0.85rem;
-  color: var(--ink);
-  margin: 0 0 0.25rem;
-}
-
-.goalProgressTrack {
-  height: 5px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.goalProgressFill {
-  height: 100%;
-  background: var(--teal);
-  border-radius: 3px;
-  transition: width 0.3s;
-}
-
-.goalProgressMeta {
-  font-size: 0.72rem;
-  color: var(--muted);
-  margin: 0.2rem 0 0;
-}
-
-/* ─── Assessment stale notice ─────────────────────────────────────────────── */
-
-.assessmentStaleNotice {
-  font-size: 0.78rem;
-  color: var(--warn);
-  margin: 0.5rem 0 0;
-  padding: 0.5rem 0.75rem;
-  background: color-mix(in srgb, var(--warn) 8%, transparent);
-  border-radius: 0.5rem;
-}
-
-/* ─── Booking status badge ────────────────────────────────────────────────── */
-
-.bookingStatusBadge {
-  display: inline-block;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.25rem 0.65rem;
-  border-radius: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-/* ─── CTA button overrides (btn-dark used with portal sizing) ─────────────── */
-
-.ctaBtnLarge {
-  display: inline-block;
-  padding: 0.75rem 1.75rem;
-  font-size: 0.78rem;
-}
-
-.ctaBtnSmall {
-  display: inline-block;
-  padding: 0.6rem 1.25rem;
-  font-size: 0.75rem;
-}
-
-/* ─── Nowrap utility (links that must not break across lines) ─────────────── */
-
-.noWrap {
-  white-space: nowrap;
-}
-
-/* ─── Page header row (title + action button) ─────────────────────────────── */
+/* ─── Page header row (title + action button) ────────────────────────────── */
 
 .pageHeader {
   display: flex;
@@ -708,15 +346,19 @@
   width: auto !important;
 }
 
-/* ─── Vertical list of cards ──────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .pageHeader {
+    flex-wrap: wrap;
+  }
+}
+
+/* ─── List and form utilities ────────────────────────────────────────────── */
 
 .listStack {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
-
-/* ─── Inline form inside a card ───────────────────────────────────────────── */
 
 .formStack {
   display: flex;
@@ -733,18 +375,6 @@
   font-size: 0.9rem;
   resize: vertical;
   min-height: 80px;
-  box-sizing: border-box;
-}
-
-.formTextareaLg {
-  width: 100%;
-  padding: 0.65rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-family: inherit;
-  font-size: 0.9rem;
-  resize: vertical;
-  min-height: 120px;
   box-sizing: border-box;
 }
 
@@ -784,13 +414,19 @@
   background: var(--light);
 }
 
-/* ─── Card with bottom gap (used when a card appears above a list) ─────────── */
+.formHint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+/* ─── Card with bottom gap (card above a list) ───────────────────────────── */
 
 .cardGap {
   margin-bottom: 1.5rem;
 }
 
-/* ─── Retry inline button (plain text style) ──────────────────────────────── */
+/* ─── Retry inline button ────────────────────────────────────────────────── */
 
 .retryBtn {
   color: var(--teal);
@@ -802,251 +438,10 @@
   font-family: inherit;
 }
 
-/* ─── Calendly banner ─────────────────────────────────────────────────────── */
+/* ─── CTA button sizing (shared across dashboard + bookings) ─────────────── */
 
-.calendlyBanner {
-  background: color-mix(in srgb, var(--teal) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
-  border-radius: 0.875rem;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.calendlyBannerTitle {
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--ink);
-  margin: 0 0 0.2rem;
-}
-
-.calendlyBannerSub {
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* ─── Success / info inline banners ───────────────────────────────────────── */
-
-.successBanner {
-  background: color-mix(in srgb, var(--teal) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
-  border-radius: 0.75rem;
-  padding: 1rem 1.5rem;
-  margin-bottom: 1.25rem;
-  font-size: 0.85rem;
-  color: var(--teal);
-}
-
-/* ─── Booking list item ───────────────────────────────────────────────────── */
-
-.bookingItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.bookingItemInfo {
-  min-width: 0;
-}
-
-.bookingItemDate {
-  font-size: 0.85rem;
-  color: var(--ink);
-  margin: 0 0 0.35rem;
-}
-
-.bookingNotes {
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin: 0;
-}
-
-.bookingRequested {
-  font-size: 0.7rem;
-  color: var(--muted);
-  margin: 0.5rem 0 0;
-}
-
-.bookingBadge {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.3rem 0.75rem;
-  border-radius: 1rem;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* ─── Shared text utilities (success banners, form hints, empty states) ──── */
-
-.bannerTitle {
-  font-weight: 500;
-  margin: 0 0 0.25rem;
-}
-
-.formHint {
-  font-size: 0.82rem;
-  color: var(--muted);
-  margin-bottom: 1rem;
-}
-
-.emptyTitle {
-  font-weight: 500;
-  margin: 0 0 0.5rem;
-}
-
-/* ─── Email preferences checkbox row ─────────────────────────────────────── */
-
-.checkboxRow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.85rem;
-  color: var(--ink2);
-  cursor: pointer;
-}
-
-.checkboxInput {
-  width: 1rem;
-  height: 1rem;
-  accent-color: var(--teal);
-}
-
-.checkboxHint {
+.ctaBtnSmall {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
   font-size: 0.75rem;
-  color: var(--muted);
-  margin: 0.5rem 0 0;
 }
-
-/* ─── Password form ───────────────────────────────────────────────────────── */
-
-.pwFormCard {
-  margin-top: 1.25rem;
-}
-
-.pwForm {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: 26rem;
-}
-
-.pwSubmitBtn {
-  align-self: flex-start;
-}
-
-/* ─── ProfileCompletenessBar ──────────────────────────────────────────────── */
-
-.profileBar {
-  composes: card;
-  padding: 1.25rem 1.75rem;
-}
-
-.profileBarHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.6rem;
-}
-
-.profileBarTitle {
-  composes: cardTitle;
-  margin: 0;
-}
-
-.profileBarPct {
-  font-size: 0.82rem;
-  font-weight: 400;
-}
-
-.profileBarTrack {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--light);
-  margin-bottom: 0.75rem;
-}
-
-.profileBarFill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--teal);
-  transition: width 0.3s ease;
-}
-
-.profileBarText {
-  font-size: 0.82rem;
-  color: var(--ink2);
-  margin: 0;
-}
-
-.profileBarLink {
-  color: var(--teal);
-  text-decoration: none;
-}
-
-.profileBarLink:hover {
-  text-decoration: underline;
-}
-
-/* ─── ProgrammeCard ───────────────────────────────────────────────────────── */
-
-.progName {
-  font-family: var(--font-cormorant), serif;
-  font-size: 1.6rem;
-  font-weight: 300;
-  color: var(--ink);
-  margin: 0 0 0.25rem;
-}
-
-.progPhase {
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--teal);
-  margin-bottom: 0.75rem;
-}
-
-.progDesc {
-  font-size: 0.82rem;
-  color: var(--ink2);
-  line-height: 1.65;
-}
-
-/* ─── Dashboard mobile fixes ─────────────────────────────────────────────── */
-
-@media (max-width: 767px) {
-  /* Hero card: score block wraps below verdict title on narrow screens */
-  .heroCardHead {
-    flex-direction: column-reverse;
-    gap: 0.5rem;
-  }
-
-  .scoreBlock {
-    text-align: left;
-  }
-
-  /* Check-in prompt: CTA button stacks below text */
-  .checkinPrompt {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  /* Messages row: link stacks below text */
-  .messagesRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  /* Page header: title row wraps on small screens */
-  .pageHeader {
-    flex-wrap: wrap;
-  }
-}
-

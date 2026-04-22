@@ -104,3 +104,43 @@
   line-height: 1.6;
   margin: 0;
 }
+
+/* ─── Email preferences ───────────────────────────────────────────────────── */
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--ink2);
+  cursor: pointer;
+}
+
+.checkboxInput {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--teal);
+}
+
+.checkboxHint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
+/* ─── Password change form ────────────────────────────────────────────────── */
+
+.pwFormCard {
+  margin-top: 1.25rem;
+}
+
+.pwForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 26rem;
+}
+
+.pwSubmitBtn {
+  align-self: flex-start;
+}

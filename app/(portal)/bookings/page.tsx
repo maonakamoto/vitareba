@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "../portal.module.css";
+import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
 import { BOOKING_STATUS_CONFIG, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
@@ -78,12 +79,12 @@ export default function BookingsPage() {
 
       {/* Calendly shortcut */}
       {CALENDLY_URL && (
-        <div className={styles.calendlyBanner}>
+        <div className={bookingStyles.calendlyBanner}>
           <div>
-            <p className={styles.calendlyBannerTitle}>
+            <p className={bookingStyles.calendlyBannerTitle}>
               Book directly with Manuel
             </p>
-            <p className={styles.calendlyBannerSub}>
+            <p className={bookingStyles.calendlyBannerSub}>
               Pick a time — instant confirmation
             </p>
           </div>
@@ -99,8 +100,8 @@ export default function BookingsPage() {
       )}
 
       {submitSuccess && (
-        <div className={styles.successBanner}>
-          <p className={styles.bannerTitle}>Booking request submitted</p>
+        <div className={bookingStyles.successBanner}>
+          <p className={bookingStyles.bannerTitle}>Booking request submitted</p>
           <p>Manuel reviews all requests personally and will be in touch within 24 hours to confirm your appointment.</p>
         </div>
       )}
@@ -163,18 +164,18 @@ export default function BookingsPage() {
             const s = BOOKING_STATUS_CONFIG[b.status] ?? BOOKING_STATUS_CONFIG.pending;
             return (
               <div key={b.id} className={styles.card}>
-                <div className={styles.bookingItem}>
-                  <div className={styles.bookingItemInfo}>
-                    <p className={styles.bookingItemDate}>
+                <div className={bookingStyles.bookingItem}>
+                  <div className={bookingStyles.bookingItemInfo}>
+                    <p className={bookingStyles.bookingItemDate}>
                       {b.preferredDate ? `Preferred: ${formatDateLong(b.preferredDate)}` : "No preferred date"}
                     </p>
-                    {b.notes && <p className={styles.bookingNotes}>{b.notes}</p>}
-                    <p className={styles.bookingRequested}>
+                    {b.notes && <p className={bookingStyles.bookingNotes}>{b.notes}</p>}
+                    <p className={bookingStyles.bookingRequested}>
                       Requested {formatDateNumeric(b.createdAt)}
                     </p>
                   </div>
                   <span
-                    className={styles.bookingBadge}
+                    className={bookingStyles.bookingBadge}
                     style={{ color: s.color, background: s.bg }}
                   >
                     {b.status}

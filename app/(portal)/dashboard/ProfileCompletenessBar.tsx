@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "../portal.module.css";
+import styles from "./dashboard.module.css";
 import { profileCompletenessColor } from "@/lib/domain/profile";
 
 export function ProfileCompletenessBar({ pct }: { pct: number }) {

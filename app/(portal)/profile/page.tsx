@@ -316,16 +316,16 @@ export default function ProfilePage() {
         {/* ── Email preferences ─────────────────────────────────────── */}
         <div className={styles.card} id="digest-optout">
           <p className={styles.cardTitle}>Email preferences</p>
-          <label className={styles.checkboxRow}>
+          <label className={profileStyles.checkboxRow}>
             <input
               type="checkbox"
-              className={styles.checkboxInput}
+              className={profileStyles.checkboxInput}
               checked={form.digestOptOut}
               onChange={(e) => setForm((prev) => ({ ...prev, digestOptOut: e.target.checked }))}
             />
             Opt out of weekly summary emails
           </label>
-          <p className={styles.checkboxHint}>
+          <p className={profileStyles.checkboxHint}>
             Weekly summaries include your check-in averages, latest score, and booking status. Uncheck to receive them.
           </p>
         </div>
@@ -337,9 +337,9 @@ export default function ProfilePage() {
       </form>
 
       {/* ── Change password ─────────────────────────────────────────── */}
-      <div className={`${styles.card} ${styles.pwFormCard}`}>
+      <div className={`${styles.card} ${profileStyles.pwFormCard}`}>
         <p className={styles.cardTitle}>Change password</p>
-        <form onSubmit={handlePasswordChange} className={styles.pwForm}>
+        <form onSubmit={handlePasswordChange} className={profileStyles.pwForm}>
           <div className={authStyles.field}>
             <label className={authStyles.label} htmlFor="currentPassword">Current password</label>
             <input
@@ -366,7 +366,7 @@ export default function ProfilePage() {
           {pwError && <p className={styles.formError}>{pwError}</p>}
           <button
             type="submit"
-            className={`${authStyles.submit} ${styles.pwSubmitBtn}`}
+            className={`${authStyles.submit} ${profileStyles.pwSubmitBtn}`}
             disabled={pwSaving || !pwForm.currentPassword || !pwForm.newPassword}
           >
             {pwSaving ? "Saving…" : pwSaved ? "Saved ✓" : "Update password"}

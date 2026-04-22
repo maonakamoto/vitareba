@@ -3,7 +3,8 @@ import { db } from "@/lib/db";
 import { assessmentResults, bookings, threads, users, dailyCheckins, programmeAssignments, profiles, clinicalGoals } from "@/lib/db/schema";
 import { eq, desc, and, isNull } from "drizzle-orm";
 import Link from "next/link";
-import styles from "../portal.module.css";
+import shared from "../portal.module.css";
+import styles from "./dashboard.module.css";
 import { DIMENSIONS, VERDICT_TIERS, scoreColor } from "@/lib/assessment/data";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
 import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
@@ -84,10 +85,10 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className={styles.pageTitle}>
+      <h1 className={shared.pageTitle}>
         Welcome back, <em>{firstName}</em>
       </h1>
-      <p className={styles.pageSub}>Your VitaReBa patient portal</p>
+      <p className={shared.pageSub}>Your VitaReBa patient portal</p>
 
       <div className={styles.dashStack}>
 
@@ -101,8 +102,8 @@ export default async function DashboardPage() {
 
         {/* ── Clinical goals ─────────────────────────────────────────── */}
         {activeGoals.length > 0 && (
-          <div className={styles.card}>
-            <p className={styles.cardTitle}>Your goals</p>
+          <div className={shared.card}>
+            <p className={shared.cardTitle}>Your goals</p>
             <div className={styles.goalsList}>
               {activeGoals.map((goal) => {
                 const hasProgress = goal.baseline != null || goal.current != null || goal.target != null;
@@ -215,11 +216,11 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            <div className={styles.grid2}>
+            <div className={shared.grid2}>
               {/* ── Key intervention area ─────────────────────────── */}
               {lowestDim && (
                 <div className={styles.cardWarn}>
-                  <p className={styles.cardTitle}>Highest-leverage area</p>
+                  <p className={shared.cardTitle}>Highest-leverage area</p>
                   <p className={styles.interventionName}>
                     {lowestDim.icon} {lowestDim.name}
                   </p>
@@ -239,8 +240,8 @@ export default async function DashboardPage() {
               )}
 
               {/* ── Consultation ─────────────────────────────────── */}
-              <div className={styles.card}>
-                <p className={styles.cardTitle}>Consultation</p>
+              <div className={shared.card}>
+                <p className={shared.cardTitle}>Consultation</p>
                 {latestBooking ? (
                   <>
                     {(() => {
@@ -268,7 +269,7 @@ export default async function DashboardPage() {
                     <p className={styles.bookingNoAppt}>
                       Book a discovery call — no commitment, just a direct conversation with Manuel to see if VitaReBa is the right fit.
                     </p>
-                    <Link href="/bookings" className={`btn-dark ${styles.ctaBtnSmall}`}>
+                    <Link href="/bookings" className={`btn-dark ${shared.ctaBtnSmall}`}>
                       Book a call →
                     </Link>
                   </>
@@ -280,7 +281,7 @@ export default async function DashboardPage() {
             {threadCount > 0 && (
               <div className={styles.messagesRow}>
                 <div>
-                  <p className={styles.cardTitle}>Messages</p>
+                  <p className={shared.cardTitle}>Messages</p>
                   <p className={styles.messagesBody}>
                     {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the VitaReBa team
                   </p>
