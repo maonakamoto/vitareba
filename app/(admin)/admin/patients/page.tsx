@@ -100,7 +100,7 @@ export default async function PatientsPage() {
                 <th>Signal</th>
                 <th>Patient</th>
                 <th>Last check-in</th>
-                <th>7 days</th>
+                <th>{SIGNAL_CHECKIN_WINDOW_DAYS} days</th>
                 <th>Score</th>
                 <th>Profile</th>
                 <th></th>

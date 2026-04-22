@@ -98,7 +98,7 @@ export async function POST(
     if (patient?.email) {
       sendEmail({
         to: patient.email,
-        subject: `New message: ${thread.subject} — VitaReBa`,
+        subject: `New message: ${thread.subject} — ${COMPANY.shortName}`,
         html: newMessageEmail({
           recipientName: patient.name ?? "there",
           senderName: sender?.name ?? COMPANY.shortName,
