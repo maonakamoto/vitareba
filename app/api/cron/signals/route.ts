@@ -46,6 +46,7 @@ export async function GET(req: Request) {
   });
 
   let alerts = 0;
+  const dbWrites: Promise<unknown>[] = [];
 
   for (const patient of patients) {
     const { signal, reason } = computePatientSignal({
@@ -85,7 +86,7 @@ export async function GET(req: Request) {
       }
     }
 
-    // Auto-update goal current values from live data when metric is set
+    // Collect goal current-value updates (batched below)
     const latestAssessment = patient.assessmentResults[0];
     const checkins = patient.dailyCheckins;
     for (const goal of patient.clinicalGoals ?? []) {
@@ -104,31 +105,26 @@ export async function GET(req: Request) {
       }
 
       if (liveValue !== null && liveValue !== goal.current) {
-        await db
-          .update(clinicalGoals)
-          .set({ current: liveValue, updatedAt: new Date() })
-          .where(eq(clinicalGoals.id, goal.id));
+        dbWrites.push(
+          db.update(clinicalGoals)
+            .set({ current: liveValue, updatedAt: new Date() })
+            .where(eq(clinicalGoals.id, goal.id))
+        );
       }
     }
 
-    // Update lastKnownSignal if it changed
+    // Collect signal upsert if it changed
     if (signal !== previousSignal) {
-      if (patient.profile) {
-        await db
-          .update(profiles)
-          .set({ lastKnownSignal: signal })
-          .where(eq(profiles.userId, patient.id));
-      } else {
-        await db
-          .insert(profiles)
+      dbWrites.push(
+        db.insert(profiles)
           .values({ userId: patient.id, lastKnownSignal: signal })
-          .onConflictDoUpdate({
-            target: profiles.userId,
-            set: { lastKnownSignal: signal },
-          });
-      }
+          .onConflictDoUpdate({ target: profiles.userId, set: { lastKnownSignal: signal } })
+      );
     }
   }
+
+  // Flush all goal and signal updates in parallel
+  await Promise.all(dbWrites);
 
   return NextResponse.json({ success: true, alerts, checked: patients.length });
 }
