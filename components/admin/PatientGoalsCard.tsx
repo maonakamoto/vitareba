@@ -2,18 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-
-type Goal = {
-  id: string;
-  title: string;
-  metric: string | null;
-  baseline: number | null;
-  target: number | null;
-  current: number | null;
-  notes: string | null;
-  completedAt: string | null;
-  createdAt: string;
-};
+import { type GoalRow } from "@/lib/config/portal";
 
 function GoalProgressBar({ baseline, current, target }: { baseline: number | null; current: number | null; target: number | null }) {
   if (current == null && target == null) return null;
@@ -41,7 +30,7 @@ function GoalProgressBar({ baseline, current, target }: { baseline: number | nul
 }
 
 export function PatientGoalsCard({ patientId }: { patientId: string }) {
-  const [goals, setGoals] = useState<Goal[]>([]);
+  const [goals, setGoals] = useState<GoalRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: "", metric: "", baseline: "", target: "", current: "", notes: "" });
@@ -93,7 +82,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
     load();
   }
 
-  async function handleToggleComplete(goal: Goal) {
+  async function handleToggleComplete(goal: GoalRow) {
     await fetch(`/api/admin/goals/${goal.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

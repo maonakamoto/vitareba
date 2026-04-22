@@ -87,6 +87,19 @@ export const PROFILE_COMPLETENESS_HIGH_PCT = 80;
 /** Calendly booking URL embedded in the patient bookings page (null when not configured) */
 export const CALENDLY_URL = process.env.NEXT_PUBLIC_CALENDLY_URL ?? null;
 
+/** Clinical goal row as returned by the goals API (dates are strings) */
+export type GoalRow = {
+  id: string;
+  title: string;
+  metric: string | null;
+  baseline: number | null;
+  target: number | null;
+  current: number | null;
+  notes: string | null;
+  completedAt: string | null;
+  createdAt: string;
+};
+
 /** How long (ms) to show the booking submission success banner before hiding it */
 export const BOOKING_SUCCESS_MS = 5_000;
 

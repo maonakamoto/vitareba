@@ -4,17 +4,10 @@ import {
   GOAL_PROGRESS_COMPLETE_PCT,
   GOAL_PROGRESS_HIGH_PCT,
   GOAL_PROGRESS_LOW_PCT,
+  type GoalRow,
 } from "@/lib/config/portal";
 
-type Goal = {
-  id: string;
-  title: string;
-  baseline: number | null;
-  current: number | null;
-  target: number | null;
-};
-
-export function GoalsCard({ goals }: { goals: Goal[] }) {
+export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "baseline" | "current" | "target">[] }) {
   if (goals.length === 0) return null;
 
   return (
