@@ -12,7 +12,20 @@ export const NEW_PATIENT_GRACE_DAYS = 3;
 /** Days of check-in history to fetch for sparkline and signal computation */
 export const SIGNAL_CHECKIN_WINDOW_DAYS = 7;
 
-export type PatientSignal = "critical" | "attention" | "active" | "new";
+export const PATIENT_SIGNAL_VALUES = ["critical", "attention", "active", "new"] as const;
+export type PatientSignal = (typeof PATIENT_SIGNAL_VALUES)[number];
+
+/** Named constants for patient signal values — use in comparisons instead of string literals */
+export const PATIENT_SIGNAL = {
+  critical: "critical",
+  attention: "attention",
+  active: "active",
+  new: "new",
+} as const satisfies Record<PatientSignal, PatientSignal>;
+
+/** Check-in metric keys that can be linked to clinical goals */
+export const CHECKIN_GOAL_METRICS = ["focus", "mood", "energy", "sleep", "stress"] as const;
+export type CheckinGoalMetric = (typeof CHECKIN_GOAL_METRICS)[number];
 
 /** Sort order for signal severity — lower = shown first */
 export const SIGNAL_SORT_ORDER: Record<PatientSignal, number> = {

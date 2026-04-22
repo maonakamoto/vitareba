@@ -7,7 +7,7 @@ import { eq, desc, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
-import { SIGNAL_CHECKIN_WINDOW_DAYS } from "@/lib/config/admin";
+import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 export async function GET(req: Request) {
@@ -63,7 +63,7 @@ export async function GET(req: Request) {
     const previousSignal = patient.profile?.lastKnownSignal ?? null;
 
     // Alert only on first transition into critical
-    if (signal === "critical" && previousSignal !== "critical") {
+    if (signal === PATIENT_SIGNAL.critical && previousSignal !== PATIENT_SIGNAL.critical) {
       const patientName = patient.name ?? patient.email.split("@")[0];
       const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
@@ -96,9 +96,9 @@ export async function GET(req: Request) {
 
       if (goal.metric === "overallScore" && latestAssessment) {
         liveValue = latestAssessment.overallScore;
-      } else if (["focus", "mood", "energy", "sleep", "stress"].includes(goal.metric) && checkins.length > 0) {
+      } else if ((CHECKIN_GOAL_METRICS as readonly string[]).includes(goal.metric) && checkins.length > 0) {
         // 7-day average of the metric (scale 1–5 → 0–100)
-        const key = goal.metric as "focus" | "mood" | "energy" | "sleep" | "stress";
+        const key = goal.metric as CheckinGoalMetric;
         const sum = checkins.reduce((acc, c) => acc + c[key], 0);
         const raw = sum / checkins.length; // 1–5
         liveValue = Math.round(((raw - 1) / 4) * 100); // normalize to 0–100

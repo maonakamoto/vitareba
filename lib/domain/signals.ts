@@ -1,5 +1,6 @@
-import type { PatientSignal } from "@/lib/config/admin";
 import {
+  type PatientSignal,
+  PATIENT_SIGNAL,
   NO_CHECKIN_CRITICAL_DAYS,
   SCORE_DROP_CRITICAL,
   NEW_PATIENT_GRACE_DAYS,
@@ -51,7 +52,7 @@ export function computePatientSignal({
 
   // New: registered recently, no activity expected yet
   if (daysSinceRegistration < NEW_PATIENT_GRACE_DAYS) {
-    return { signal: "new", reason: "Registered recently — grace period active" };
+    return { signal: PATIENT_SIGNAL.new, reason: "Registered recently — grace period active" };
   }
 
   // Check-in based signals
@@ -65,7 +66,7 @@ export function computePatientSignal({
     // Critical: has check-in history but gone silent ≥ threshold days
     if (daysSinceLast >= NO_CHECKIN_CRITICAL_DAYS) {
       return {
-        signal: "critical",
+        signal: PATIENT_SIGNAL.critical,
         reason: `No check-in for ${daysSinceLast} days (last: ${sorted[0].date})`,
       };
     }
@@ -76,7 +77,7 @@ export function computePatientSignal({
       const [d0, d1, d2] = last3.map(wellnessAvg); // d0 = most recent
       if (d0 < d1 && d1 < d2) {
         return {
-          signal: "critical",
+          signal: PATIENT_SIGNAL.critical,
           reason: `Wellness declining 3 consecutive days (${d2.toFixed(1)} → ${d1.toFixed(1)} → ${d0.toFixed(1)})`,
         };
       }
@@ -88,7 +89,7 @@ export function computePatientSignal({
     const drop = assessments[0].overallScore - assessments[1].overallScore;
     if (drop < -SCORE_DROP_CRITICAL) {
       return {
-        signal: "critical",
+        signal: PATIENT_SIGNAL.critical,
         reason: `Assessment score dropped ${Math.abs(drop)} points (${assessments[1].overallScore} → ${assessments[0].overallScore})`,
       };
     }
@@ -96,13 +97,13 @@ export function computePatientSignal({
 
   // Attention: registered but never taken assessment
   if (assessments.length === 0) {
-    return { signal: "attention", reason: "No assessment taken yet" };
+    return { signal: PATIENT_SIGNAL.attention, reason: "No assessment taken yet" };
   }
 
   // Attention: has assessment but no booking yet
   if (bookings.length === 0) {
-    return { signal: "attention", reason: "Assessment done — no booking yet" };
+    return { signal: PATIENT_SIGNAL.attention, reason: "Assessment done — no booking yet" };
   }
 
-  return { signal: "active", reason: "All signals normal" };
+  return { signal: PATIENT_SIGNAL.active, reason: "All signals normal" };
 }
