@@ -1,15 +1,10 @@
 import styles from "@/app/(admin)/admin.module.css";
-import { BOOKING_STATUS_CONFIG, type BookingStatus } from "@/lib/config/booking-status";
+import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong } from "@/lib/utils/format";
 
-type Booking = {
-  id: string;
-  status: BookingStatus;
-  preferredDate: string | null;
-  notes: string | null;
-};
-
-export function PatientBookingsCard({ bookings }: { bookings: Booking[] }) {
+// Omit createdAt: this card is called from both the server (Drizzle Date) and client (API string).
+// The component only renders id/status/preferredDate/notes so we don't need to constrain the date type.
+export function PatientBookingsCard({ bookings }: { bookings: Omit<BookingRow, "createdAt">[] }) {
   return (
     <div className={styles.card}>
       <p className={styles.cardLabel}>Bookings ({bookings.length})</p>

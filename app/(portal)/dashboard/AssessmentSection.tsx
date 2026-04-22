@@ -3,7 +3,7 @@ import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { DIMENSIONS, getVerdict, scoreColor } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
-import { BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
+import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, DAY_MS } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 
@@ -13,15 +13,10 @@ type AssessmentResult = {
   scores: unknown;
 };
 
-type Booking = {
-  status: string;
-  preferredDate: string | null;
-};
-
 interface AssessmentSectionProps {
   latestAssessment: AssessmentResult | null | undefined;
   previousAssessment?: AssessmentResult | null;
-  latestBooking: Booking | null | undefined;
+  latestBooking: Pick<BookingRow, "status" | "preferredDate"> | null | undefined;
   threadCount: number;
 }
 
@@ -140,8 +135,7 @@ export function AssessmentSection({
             <>
               {(() => {
                 const s =
-                  BOOKING_STATUS_CONFIG[latestBooking.status as keyof typeof BOOKING_STATUS_CONFIG] ??
-                  BOOKING_STATUS_CONFIG.pending;
+                  BOOKING_STATUS_CONFIG[latestBooking.status] ?? BOOKING_STATUS_CONFIG.pending;
                 return (
                   <span
                     className={styles.bookingStatusBadge}

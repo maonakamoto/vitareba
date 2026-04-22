@@ -4,22 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "../portal.module.css";
 import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
-import { BOOKING_STATUS_CONFIG, type BookingStatus } from "@/lib/config/booking-status";
+import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { CALENDLY_URL } from "@/lib/config/portal";
 
-type Booking = {
-  id: string;
-  status: BookingStatus;
-  preferredDate: string | null;
-  notes: string | null;
-  createdAt: string;
-};
-
 
 export default function BookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);

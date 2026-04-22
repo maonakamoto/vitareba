@@ -11,6 +11,20 @@ export const BOOKING_STATUS = {
   cancelled: "cancelled",
 } as const satisfies Record<BookingStatus, BookingStatus>;
 
+/** Serialised booking row returned by API endpoints (dates are strings, not Date objects) */
+export type BookingRow = {
+  id: string;
+  status: BookingStatus;
+  preferredDate: string | null;
+  notes: string | null;
+  createdAt: string;
+};
+
+/** BookingRow extended with joined user data (admin-only endpoints) */
+export type BookingRowWithUser = BookingRow & {
+  user: { id: string; name: string | null; email: string };
+};
+
 export const BOOKING_STATUS_CONFIG: Record<BookingStatus, { color: string; bg: string }> = {
   pending: {
     color: "var(--warn)",

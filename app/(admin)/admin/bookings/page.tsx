@@ -2,24 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "../../admin.module.css";
-import { BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingStatus } from "@/lib/config/booking-status";
+import { BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingRowWithUser, type BookingStatus } from "@/lib/config/booking-status";
 import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
-
-type Booking = {
-  id: string;
-  status: BookingStatus;
-  preferredDate: string | null;
-  notes: string | null;
-  createdAt: string;
-  user: { id: string; name: string | null; email: string };
-};
 
 
 const FILTER_OPTIONS = ["all", ...BOOKING_STATUS_VALUES] as const;
 type FilterOption = (typeof FILTER_OPTIONS)[number];
 
 export default function AdminBookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingRowWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterOption>(BOOKING_STATUS.pending);
