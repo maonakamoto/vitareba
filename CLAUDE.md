@@ -15,7 +15,7 @@ The platform has two parts:
 ## Architecture
 
 ```
-middleware.ts             → Auth guard (portal/admin) + locale routing (marketing)
+proxy.ts                  → Auth guard (portal/admin) + locale routing (marketing) [Next.js middleware]
 
 app/
   (auth)/                 → Non-localized auth pages (/login, /register, etc.) — portal users
@@ -124,7 +124,8 @@ Tables: `users`, `accounts`, `sessions`, `verificationTokens` (NextAuth), `profi
 | Signal thresholds + labels | `lib/config/admin.ts` | Any component |
 | Assessment questions, scoring | `lib/assessment/data.ts` | Any component |
 | DB schema | `lib/db/schema.ts` | Separate type files |
-| Auth pages routing | `middleware.ts` PORTAL_PREFIXES | Scattered guards |
+| Portal route paths | `lib/config/routes.ts` PORTAL_ROUTES | Hardcoded strings |
+| Auth pages routing | `proxy.ts` (derives from PORTAL_ROUTES) | Scattered guards |
 
 **The 2-file test:** Adding a team member = 1 file. Changing company email = 1 file. Adding a programme phase = 1 file. More than that → architecture is wrong.
 
@@ -132,7 +133,7 @@ Tables: `users`, `accounts`, `sessions`, `verificationTokens` (NextAuth), `profi
 
 ## Middleware Routing Model
 
-`middleware.ts` at the project root handles two distinct routing concerns:
+`proxy.ts` at the project root handles two distinct routing concerns (Next.js middleware):
 
 ```
 /dashboard, /assessment, /assessments, /bookings, /checkin,
@@ -146,7 +147,7 @@ Everything else (/, /de/*, /en/*, etc.)
   → Logged-in users on /de/login, /de/register, etc. → redirect to /dashboard or /admin/patients
 ```
 
-**Critical:** If you add a new portal route (e.g. `/reports`), add it to `PORTAL_PREFIXES` in `middleware.ts` or unauthenticated users will get locale-routed to a 404.
+**Adding a new portal route:** Add it to `PORTAL_ROUTES` in `lib/config/routes.ts` — the middleware derives `PORTAL_PREFIXES` from this automatically. No need to touch `proxy.ts`.
 
 ---
 
@@ -331,7 +332,7 @@ If deployment fails: `vercel logs <url>` → fix → `pnpm build` → push again
 
 - Color hex directly in component → use `var(--teal)` etc.
 - Inline `style={{}}` in a component → move to co-located `.module.css`
-- New portal route not in `PORTAL_PREFIXES` in `middleware.ts` → unauthenticated users get a 404
+- New portal route not added to `PORTAL_ROUTES` in `lib/config/routes.ts` → unauthenticated users get a 404
 - Signal threshold hardcoded in a cron route → belongs in `lib/config/admin.ts`
 - Email template inline in an API route → belongs in `lib/email/templates.ts`
 - `style={{}}` props on portal/admin pages → use portal.module.css / admin.module.css
