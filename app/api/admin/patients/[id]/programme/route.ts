@@ -17,9 +17,15 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
   const { id } = await params;
 
-  const assignment = await db.query.programmeAssignments.findFirst({
-    where: eq(programmeAssignments.patientId, id),
-  });
+  let assignment;
+  try {
+    assignment = await db.query.programmeAssignments.findFirst({
+      where: eq(programmeAssignments.patientId, id),
+    });
+  } catch (err) {
+    console.error("[api/admin/programme] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: assignment ?? null });
 }
@@ -44,12 +50,11 @@ export async function PATCH(req: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const existing = await db.query.programmeAssignments.findFirst({
-    where: eq(programmeAssignments.patientId, id),
-  });
-
   let result: typeof programmeAssignments.$inferSelect;
   try {
+    const existing = await db.query.programmeAssignments.findFirst({
+      where: eq(programmeAssignments.patientId, id),
+    });
     if (existing) {
       [result] = await db
         .update(programmeAssignments)

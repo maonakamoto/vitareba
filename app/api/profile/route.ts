@@ -53,9 +53,15 @@ export async function GET() {
   if (guard.error) return guard.error;
   const { session } = guard;
 
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.userId, session.user.id),
-  });
+  let profile;
+  try {
+    profile = await db.query.profiles.findFirst({
+      where: eq(profiles.userId, session.user.id),
+    });
+  } catch (err) {
+    console.error("[api/profile] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: profile ?? null });
 }

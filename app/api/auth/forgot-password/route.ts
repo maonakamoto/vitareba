@@ -22,10 +22,17 @@ export async function POST(req: Request) {
 
   const { email } = parsed.data;
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.email, email),
-    columns: { id: true, name: true, email: true, password: true },
-  });
+  let user;
+  try {
+    user = await db.query.users.findFirst({
+      where: eq(users.email, email),
+      columns: { id: true, name: true, email: true, password: true },
+    });
+  } catch (err) {
+    // Log but still return OK — never reveal whether the email exists or the DB failed
+    console.error("[api/auth/forgot-password] user lookup failed:", err);
+    return OK;
+  }
 
   // No account or OAuth-only account (no password set) → silently do nothing
   if (!user?.password) return OK;

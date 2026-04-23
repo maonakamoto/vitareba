@@ -11,17 +11,23 @@ export async function GET() {
   const guard = await requireAdmin();
   if (guard.error) return guard.error;
 
-  const patients = await db.query.users.findMany({
-    where: eq(users.role, USER_ROLE.patient),
-    orderBy: [desc(users.createdAt)],
-    with: {
-      profile: true,
-      assessmentResults: {
-        orderBy: [desc(assessmentResults.completedAt)],
-        limit: 1,
+  let patients;
+  try {
+    patients = await db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      orderBy: [desc(users.createdAt)],
+      with: {
+        profile: true,
+        assessmentResults: {
+          orderBy: [desc(assessmentResults.completedAt)],
+          limit: 1,
+        },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[api/admin/patients] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: patients });
 }

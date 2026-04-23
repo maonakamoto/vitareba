@@ -42,11 +42,17 @@ export async function GET(req: Request) {
   const cutoffStr = formatDateISO(cutoff);
 
   // Fetch recent check-ins ordered ascending for chart rendering
-  const allCheckins = await db.query.dailyCheckins.findMany({
-    where: eq(dailyCheckins.userId, session.user.id),
-    orderBy: [desc(dailyCheckins.date)],
-    limit: days,
-  });
+  let allCheckins;
+  try {
+    allCheckins = await db.query.dailyCheckins.findMany({
+      where: eq(dailyCheckins.userId, session.user.id),
+      orderBy: [desc(dailyCheckins.date)],
+      limit: days,
+    });
+  } catch (err) {
+    console.error("[api/checkin] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   // Today's check-in
   const today = formatDateISO(new Date());
@@ -75,15 +81,15 @@ export async function POST(req: Request) {
 
   const { date, ...metrics } = parsed.data;
 
-  // Upsert: update if exists for this date, else insert
-  const existing = await db.query.dailyCheckins.findFirst({
-    where: and(
-      eq(dailyCheckins.userId, session.user.id),
-      eq(dailyCheckins.date, date)
-    ),
-  });
-
+  // Upsert: check existence then update or insert — all inside one try-catch
   try {
+    const existing = await db.query.dailyCheckins.findFirst({
+      where: and(
+        eq(dailyCheckins.userId, session.user.id),
+        eq(dailyCheckins.date, date)
+      ),
+    });
+
     if (existing) {
       await db
         .update(dailyCheckins)

@@ -27,10 +27,16 @@ export async function POST(req: Request) {
 
   const { currentPassword, newPassword } = parsed.data;
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, session.user.id),
-    columns: { password: true },
-  });
+  let user;
+  try {
+    user = await db.query.users.findFirst({
+      where: eq(users.id, session.user.id),
+      columns: { password: true },
+    });
+  } catch (err) {
+    console.error("[api/auth/change-password] user lookup failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   // No password set means OAuth-only account — can't change what doesn't exist
   if (!user?.password) {

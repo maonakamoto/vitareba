@@ -15,10 +15,16 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
   const { id } = await params;
 
-  const goals = await db.query.clinicalGoals.findMany({
-    where: eq(clinicalGoals.patientId, id),
-    orderBy: [asc(clinicalGoals.createdAt)],
-  });
+  let goals;
+  try {
+    goals = await db.query.clinicalGoals.findMany({
+      where: eq(clinicalGoals.patientId, id),
+      orderBy: [asc(clinicalGoals.createdAt)],
+    });
+  } catch (err) {
+    console.error("[api/admin/goals] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: goals });
 }

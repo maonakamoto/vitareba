@@ -23,13 +23,19 @@ export async function POST(req: Request) {
 
   const { token, email, password } = parsed.data;
 
-  const record = await db.query.verificationTokens.findFirst({
-    where: and(
-      eq(verificationTokens.identifier, `reset:${email}`),
-      eq(verificationTokens.token, token),
-      gt(verificationTokens.expires, new Date())
-    ),
-  });
+  let record;
+  try {
+    record = await db.query.verificationTokens.findFirst({
+      where: and(
+        eq(verificationTokens.identifier, `reset:${email}`),
+        eq(verificationTokens.token, token),
+        gt(verificationTokens.expires, new Date())
+      ),
+    });
+  } catch (err) {
+    console.error("[api/auth/reset-password] token lookup failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   if (!record) {
     return NextResponse.json({ success: false, error: "Invalid or expired link" }, { status: 400 });

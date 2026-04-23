@@ -16,11 +16,17 @@ export async function GET(_req: Request, { params }: RouteContext) {
 
   const { id } = await params;
 
-  const notes = await db.query.patientNotes.findMany({
-    where: eq(patientNotes.patientId, id),
-    orderBy: [desc(patientNotes.createdAt)],
-    with: { admin: { columns: { name: true } } },
-  });
+  let notes;
+  try {
+    notes = await db.query.patientNotes.findMany({
+      where: eq(patientNotes.patientId, id),
+      orderBy: [desc(patientNotes.createdAt)],
+      with: { admin: { columns: { name: true } } },
+    });
+  } catch (err) {
+    console.error("[api/admin/notes] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: notes });
 }
@@ -60,7 +66,7 @@ export async function POST(req: Request, { params }: RouteContext) {
   const admin = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),
     columns: { name: true },
-  });
+  }).catch(() => null);
 
   return NextResponse.json(
     { success: true, data: { ...note, admin: { name: admin?.name ?? null } } },

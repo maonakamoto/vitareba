@@ -54,10 +54,16 @@ export async function GET() {
   if (guard.error) return guard.error;
   const { session } = guard;
 
-  const results = await db.query.assessmentResults.findMany({
-    where: eq(assessmentResults.userId, session.user.id),
-    orderBy: [desc(assessmentResults.completedAt)],
-  });
+  let results;
+  try {
+    results = await db.query.assessmentResults.findMany({
+      where: eq(assessmentResults.userId, session.user.id),
+      orderBy: [desc(assessmentResults.completedAt)],
+    });
+  } catch (err) {
+    console.error("[api/assessment] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: results });
 }

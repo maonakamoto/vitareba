@@ -26,11 +26,17 @@ export async function GET() {
     ? undefined
     : eq(bookings.userId, session.user.id);
 
-  const results = await db.query.bookings.findMany({
-    where,
-    orderBy: [desc(bookings.createdAt)],
-    with: { user: { columns: { id: true, name: true, email: true } } },
-  });
+  let results;
+  try {
+    results = await db.query.bookings.findMany({
+      where,
+      orderBy: [desc(bookings.createdAt)],
+      with: { user: { columns: { id: true, name: true, email: true } } },
+    });
+  } catch (err) {
+    console.error("[api/bookings] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: results });
 }
@@ -63,7 +69,7 @@ export async function POST(req: Request) {
     const patient = await db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true, email: true },
-    });
+    }).catch(() => null);
     sendEmail({
       to: adminEmails,
       subject: `New consultation request — ${patient?.name ?? session.user.email}`,

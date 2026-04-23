@@ -25,14 +25,20 @@ export async function GET() {
       ? undefined
       : eq(threads.patientId, session.user.id);
 
-  const results = await db.query.threads.findMany({
-    where,
-    orderBy: [desc(threads.lastMessageAt)],
-    with: {
-      patient: { columns: { id: true, name: true, email: true } },
-      messages: { orderBy: [desc(threadMessages.createdAt)], limit: 1 },
-    },
-  });
+  let results;
+  try {
+    results = await db.query.threads.findMany({
+      where,
+      orderBy: [desc(threads.lastMessageAt)],
+      with: {
+        patient: { columns: { id: true, name: true, email: true } },
+        messages: { orderBy: [desc(threadMessages.createdAt)], limit: 1 },
+      },
+    });
+  } catch (err) {
+    console.error("[api/messages] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: results });
 }

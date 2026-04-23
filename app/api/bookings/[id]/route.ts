@@ -29,18 +29,24 @@ export async function PATCH(
     return NextResponse.json({ success: false, error: "Invalid status" }, { status: 400 });
   }
 
-  const [updated] = await db
-    .update(bookings)
-    .set({ status: parsed.data.status })
-    .where(eq(bookings.id, id))
-    .returning();
+  let updated: typeof bookings.$inferSelect;
+  try {
+    [updated] = await db
+      .update(bookings)
+      .set({ status: parsed.data.status })
+      .where(eq(bookings.id, id))
+      .returning();
+  } catch (err) {
+    console.error("[api/bookings/id] update failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to update booking — please try again" }, { status: 500 });
+  }
 
   // Notify patient of status change (fire-and-forget)
   if (parsed.data.status === BOOKING_STATUS.confirmed || parsed.data.status === BOOKING_STATUS.cancelled) {
     const patient = await db.query.users.findFirst({
       where: eq(users.id, updated.userId),
       columns: { name: true, email: true },
-    });
+    }).catch(() => null);
     if (patient?.email) {
       const html = parsed.data.status === BOOKING_STATUS.confirmed
         ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` })

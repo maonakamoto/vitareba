@@ -19,9 +19,15 @@ export async function POST(req: Request) {
 
   const { email, password } = parsed.data;
 
-  const existing = await db.query.users.findFirst({
-    where: eq(users.email, email),
-  });
+  let existing;
+  try {
+    existing = await db.query.users.findFirst({
+      where: eq(users.email, email),
+    });
+  } catch (err) {
+    console.error("[api/account] email check failed:", err);
+    return NextResponse.json({ success: false, error: "Registration failed — please try again" }, { status: 500 });
+  }
   if (existing) {
     return NextResponse.json(
       { success: false, error: { email: ["Email already registered"] } },

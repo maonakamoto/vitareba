@@ -15,24 +15,30 @@ export async function GET(
 
   const { id } = await params;
 
-  const patient = await db.query.users.findFirst({
-    where: eq(users.id, id),
-    with: {
-      profile: true,
-      assessmentResults: { orderBy: [desc(assessmentResults.completedAt)] },
-      bookings: { orderBy: [desc(bookings.createdAt)] },
-      documents: { orderBy: [desc(documents.createdAt)] },
-      threads: {
-        orderBy: [desc(threads.lastMessageAt)],
-        with: {
-          messages: {
-            orderBy: [desc(threadMessages.createdAt)],
-            limit: 1,
+  let patient;
+  try {
+    patient = await db.query.users.findFirst({
+      where: eq(users.id, id),
+      with: {
+        profile: true,
+        assessmentResults: { orderBy: [desc(assessmentResults.completedAt)] },
+        bookings: { orderBy: [desc(bookings.createdAt)] },
+        documents: { orderBy: [desc(documents.createdAt)] },
+        threads: {
+          orderBy: [desc(threads.lastMessageAt)],
+          with: {
+            messages: {
+              orderBy: [desc(threadMessages.createdAt)],
+              limit: 1,
+            },
           },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[api/admin/patients/id] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+  }
 
   if (!patient) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
 

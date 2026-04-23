@@ -29,24 +29,28 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid patientId" }, { status: 400 });
   }
 
-  // Admin with no patientId filter → return all documents with user info
-  if (session.user.role === USER_ROLE.admin && !patientId) {
+  try {
+    // Admin with no patientId filter → return all documents with user info
+    if (session.user.role === USER_ROLE.admin && !patientId) {
+      const results = await db.query.documents.findMany({
+        orderBy: [desc(documents.createdAt)],
+        with: { user: { columns: { id: true, name: true, email: true } } },
+      });
+      return NextResponse.json({ success: true, data: results });
+    }
+
+    const targetId =
+      session.user.role === USER_ROLE.admin && patientId ? patientId : session.user.id;
+
     const results = await db.query.documents.findMany({
+      where: eq(documents.userId, targetId),
       orderBy: [desc(documents.createdAt)],
-      with: { user: { columns: { id: true, name: true, email: true } } },
     });
     return NextResponse.json({ success: true, data: results });
+  } catch (err) {
+    console.error("[api/documents] GET failed:", err);
+    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
   }
-
-  const targetId =
-    session.user.role === USER_ROLE.admin && patientId ? patientId : session.user.id;
-
-  const results = await db.query.documents.findMany({
-    where: eq(documents.userId, targetId),
-    orderBy: [desc(documents.createdAt)],
-  });
-
-  return NextResponse.json({ success: true, data: results });
 }
 
 export async function POST(req: Request) {
