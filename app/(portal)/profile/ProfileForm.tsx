@@ -239,6 +239,7 @@ export function ProfileForm() {
           <div className={authStyles.field}>
             <textarea
               id="notes"
+              aria-label={`Notes for ${COMPANY.clinicianName}`}
               className={profileStyles.textareaLg}
               value={form.notes}
               onChange={set("notes")}
@@ -251,7 +252,7 @@ export function ProfileForm() {
         <div className={styles.card}>
           <p className={styles.cardTitle}>How did you find {COMPANY.shortName}?</p>
           <div className={authStyles.field}>
-            <input id="referral" className={authStyles.input} value={form.referralSource} onChange={set("referralSource")} placeholder="Referral, social media, search…" />
+            <input id="referral" aria-label={`How did you find ${COMPANY.shortName}?`} className={authStyles.input} value={form.referralSource} onChange={set("referralSource")} placeholder="Referral, social media, search…" />
           </div>
         </div>
 
