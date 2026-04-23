@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -12,6 +12,13 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
+  const [hasAssessment, setHasAssessment] = useState(false);
+
+  useEffect(() => {
+    try {
+      setHasAssessment(!!sessionStorage.getItem("pendingAssessment"));
+    } catch {}
+  }, []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,8 +60,13 @@ function RegisterForm() {
 
   return (
     <>
+      {hasAssessment && (
+        <div className={styles.contextBanner}>
+          Your Inflection Edge results are ready to save. Create your account and they&apos;ll be waiting in your portal — along with a direct line to Manuel to discuss next steps.
+        </div>
+      )}
       <h2 className={styles.title}>Create<br />your account</h2>
-      <p className={styles.subtitle}>Email and password — nothing more</p>
+      <p className={styles.subtitle}>{hasAssessment ? "One step to save your results." : "Email and password — nothing more"}</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>
