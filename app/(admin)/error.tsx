@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import styles from "./admin.module.css";
 
 export default function AdminError({
@@ -24,9 +25,9 @@ export default function AdminError({
         <button type="button" onClick={reset} className={styles.errorRetry}>
           Try again
         </button>
-        <a href="/admin/patients" className={styles.errorHome}>
+        <Link href="/admin/patients" className={styles.errorHome}>
           Back to patients
-        </a>
+        </Link>
       </div>
     </div>
   );
