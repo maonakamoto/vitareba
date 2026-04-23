@@ -6,6 +6,7 @@ export const PORTAL_ROUTES = {
   checkin:     "/checkin",
   assessment:  "/assessment",
   assessments: "/assessments",
+  goals:       "/goals",
   bookings:    "/bookings",
   messages:    "/messages",
   profile:     "/profile",

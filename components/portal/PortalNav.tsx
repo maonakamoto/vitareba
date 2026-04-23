@@ -56,6 +56,17 @@ const IcoMessages = () => (
   </svg>
 );
 
+const IcoGoals = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="8" cy="8" r="6"/>
+    <circle cx="8" cy="8" r="2.5"/>
+    <line x1="8" y1="1.5" x2="8" y2="2.5"/>
+    <line x1="8" y1="13.5" x2="8" y2="14.5"/>
+    <line x1="1.5" y1="8" x2="2.5" y2="8"/>
+    <line x1="13.5" y1="8" x2="14.5" y2="8"/>
+  </svg>
+);
+
 const IcoProfile = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="8" cy="5.5" r="3"/>
@@ -80,6 +91,7 @@ const NAV_GROUPS: NavItem[][] = [
     { href: PORTAL_ROUTES.checkin,     label: "Daily Check-in", Icon: IcoCheckin },
     { href: PORTAL_ROUTES.assessment,  label: "Assessment",     Icon: IcoAssessment },
     { href: PORTAL_ROUTES.assessments, label: "My Results",     Icon: IcoResults },
+    { href: PORTAL_ROUTES.goals,       label: "My Goals",       Icon: IcoGoals },
   ],
   [
     { href: PORTAL_ROUTES.bookings, label: "Bookings",                      Icon: IcoBookings },
