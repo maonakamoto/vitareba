@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { goalCreateSchema, goalUpdateSchema, computeGoalProgress } from "./goals";
+import { goalCreateSchema, goalUpdateSchema, computeGoalProgress, goalProgressLabel } from "./goals";
 
 // ─── goalCreateSchema ──────────────────────────────────────────────────────────
 
@@ -211,5 +211,37 @@ describe("computeGoalProgress", () => {
 
   it("handles zero-based goals with no explicit baseline", () => {
     expect(computeGoalProgress(0, 40, 100)).toBe(40);
+  });
+});
+
+// ─── goalProgressLabel ────────────────────────────────────────────────────────
+
+describe("goalProgressLabel", () => {
+  it("returns completion message at 100%", () => {
+    expect(goalProgressLabel(100)).toBe("Goal reached — ready for review");
+  });
+
+  it("returns high-stretch message at 75% (threshold)", () => {
+    expect(goalProgressLabel(75)).toBe("75% — in the final stretch");
+  });
+
+  it("returns high-stretch message above 75%", () => {
+    expect(goalProgressLabel(90)).toBe("90% — in the final stretch");
+  });
+
+  it("returns momentum message at 40% (threshold)", () => {
+    expect(goalProgressLabel(40)).toBe("40% — building momentum");
+  });
+
+  it("returns momentum message between 40% and 74%", () => {
+    expect(goalProgressLabel(60)).toBe("60% — building momentum");
+  });
+
+  it("returns getting-started message below 40%", () => {
+    expect(goalProgressLabel(20)).toBe("20% — just getting started");
+  });
+
+  it("returns getting-started message at 0%", () => {
+    expect(goalProgressLabel(0)).toBe("0% — just getting started");
   });
 });

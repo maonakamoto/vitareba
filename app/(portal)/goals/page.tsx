@@ -4,13 +4,8 @@ import { clinicalGoals } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
 import styles from "../portal.module.css";
 import goalStyles from "./goals.module.css";
-import { computeGoalProgress } from "@/lib/domain/goals";
-import {
-  GOAL_PROGRESS_COMPLETE_PCT,
-  GOAL_PROGRESS_HIGH_PCT,
-  GOAL_PROGRESS_LOW_PCT,
-  CHECKIN_METRICS,
-} from "@/lib/config/portal";
+import { computeGoalProgress, goalProgressLabel } from "@/lib/domain/goals";
+import { CHECKIN_METRICS } from "@/lib/config/portal";
 import { formatDateLong } from "@/lib/utils/format";
 
 /** Map check-in metric keys to human-readable labels for goal display */
@@ -19,12 +14,6 @@ const METRIC_LABELS: Record<string, string> = Object.fromEntries(
 );
 METRIC_LABELS["overallScore"] = "Assessment overall score";
 
-function progressLabel(pct: number): string {
-  if (pct >= GOAL_PROGRESS_COMPLETE_PCT) return "Goal reached — ready for review";
-  if (pct >= GOAL_PROGRESS_HIGH_PCT) return `${pct}% — in the final stretch`;
-  if (pct >= GOAL_PROGRESS_LOW_PCT) return `${pct}% — building momentum`;
-  return `${pct}% — just getting started`;
-}
 
 export default async function GoalsPage() {
   const session = await auth();
@@ -94,7 +83,7 @@ export default async function GoalsPage() {
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
-                              <p className={goalStyles.progressLabel}>{progressLabel(pct)}</p>
+                              <p className={goalStyles.progressLabel}>{goalProgressLabel(pct)}</p>
                             </>
                           ) : null}
 

@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH } from "@/lib/config/portal";
+import {
+  GOAL_TITLE_MAX_LENGTH,
+  GOAL_NOTES_MAX_LENGTH,
+  GOAL_PROGRESS_COMPLETE_PCT,
+  GOAL_PROGRESS_HIGH_PCT,
+  GOAL_PROGRESS_LOW_PCT,
+} from "@/lib/config/portal";
 
 /**
  * Compute goal progress as a 0–100 integer percentage of the target range achieved.
@@ -22,6 +28,17 @@ export function computeGoalProgress(
   const range = target - base;
   if (range === 0) return null;
   return Math.min(100, Math.max(0, Math.round(((current - base) / range) * 100)));
+}
+
+/**
+ * Return a human-readable progress label for a goal percentage.
+ * Single source of truth — used by GoalsCard and GoalsPage.
+ */
+export function goalProgressLabel(pct: number): string {
+  if (pct >= GOAL_PROGRESS_COMPLETE_PCT) return "Goal reached — ready for review";
+  if (pct >= GOAL_PROGRESS_HIGH_PCT) return `${pct}% — in the final stretch`;
+  if (pct >= GOAL_PROGRESS_LOW_PCT) return `${pct}% — building momentum`;
+  return `${pct}% — just getting started`;
 }
 
 const goalFieldsSchema = z.object({
