@@ -1,22 +1,19 @@
 import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/config/company";
+import { PROGRAMME_ENUM_VALUES, PROGRAMME_CONFIG } from "@/lib/config/programmes";
 import styles from "./Programs.module.css";
 
-const PROGRAM_META = [
-  { name: "Edge Diagnostic", price: "CHF 2,400", featured: false, btnStyle: "outline" as const },
-  { name: "Riding the Wave", price: "CHF 8,500", featured: true, btnStyle: "primary" as const },
-  { name: "Full Ocean", price: "CHF 18,000", featured: false, btnStyle: "outline" as const },
-];
+type ProgramItem = {
+  note: string;
+  desc: string;
+  badge: string | null;
+  btnLabel: string;
+  features: string[];
+};
 
 export default async function Programs() {
   const t = await getTranslations("programs");
-  const items = t.raw("items") as Array<{
-    note: string;
-    desc: string;
-    badge: string | null;
-    btnLabel: string;
-    features: string[];
-  }>;
+  const items = t.raw("items") as Record<string, ProgramItem>;
 
   return (
     <section id="pricing" className={styles.section}>
@@ -29,16 +26,18 @@ export default async function Programs() {
         </h2>
 
         <div className={styles.grid}>
-          {PROGRAM_META.map((meta, i) => {
-            const prog = items[i];
+          {PROGRAMME_ENUM_VALUES.map((key) => {
+            const meta = PROGRAMME_CONFIG[key];
+            const prog = items[key];
+            if (!prog) return null;
             return (
               <div
-                key={meta.name}
+                key={key}
                 className={`${styles.prog} ${meta.featured ? styles.featured : ""}`}
               >
                 {prog.badge && <div className={styles.badge}>{prog.badge}</div>}
                 <div className={`${styles.name}${meta.featured ? ` ${styles.nameFeatured}` : ""}`}>
-                  {meta.name}
+                  {meta.label}
                 </div>
                 <div className={styles.price}>{meta.price}</div>
                 <div className={styles.note}>{prog.note}</div>

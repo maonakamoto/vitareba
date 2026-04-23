@@ -16,7 +16,14 @@
     "titleLine2": "Métabolique &",
     "titleEm": "Longévité Systémique.",
     "sub": "Nous allons au-delà du diagnostic. Nous décodons la biologie de votre esprit — et l'environnement qui l'entoure — pour concevoir un parcours personnalisé vers une haute performance durable, la longévité et le bien-être.",
-    "specialties": ["ADHD", "Longévité", "Addiction", "Burnout", "Haute Performance", "Psychedelic Therapy"],
+    "specialties": [
+      "ADHD",
+      "Longévité",
+      "Addiction",
+      "Burnout",
+      "Haute Performance",
+      "Psychedelic Therapy"
+    ],
     "flagship": "Notre Programme Phare",
     "flagshipTitle": "ADHD & l'",
     "flagshipTitleEm": "Esprit Haute Performance",
@@ -66,17 +73,34 @@
       {
         "name": "Psychiatrie Métabolique",
         "desc": "Le cadre général. Nous évaluons les troubles psychiatriques à travers leurs causes profondes métaboliques, biologiques et physiologiques — neuroinflammation, santé mitochondriale, axe intestin-cerveau, rythmes circadiens et marqueurs de stress. Parce que la santé mentale et la longévité partagent les mêmes fondements biologiques. Diagnostics avancés disponibles en clinique et via des kits de test à domicile.",
-        "tags": ["Neuroinflammation", "Gut-Brain Axis", "Mitochondrial", "Longévité", "Home Test Kits"]
+        "tags": [
+          "Neuroinflammation",
+          "Gut-Brain Axis",
+          "Mitochondrial",
+          "Longévité",
+          "Home Test Kits"
+        ]
       },
       {
         "name": "ADHD pour les Hauts Performeurs",
         "desc": "Notre programme phare avec le SYL Clock propriétaire — cartographiant vos symptômes selon quatre dimensions de vie : santé, mindset, relations et carrière. Diagnostic formel, bilan métabolique, médecine de longévité et 90 jours de coaching de transformation Surf Your Life.",
-        "tags": ["SYL Clock", "4 Dimensions", "Coaching 90 jours", "Surf Your Life"]
+        "tags": [
+          "SYL Clock",
+          "4 Dimensions",
+          "Coaching 90 jours",
+          "Surf Your Life"
+        ]
       },
       {
         "name": "Psychedelic Readiness",
         "desc": "Un protocole de préparation structuré sur trois mois combinant diagnostics physiques, optimisation métabolique et évaluation de la préparation psychologique. Les recherches émergentes montrent que les psychédéliques ne soutiennent pas seulement la neuroplasticité — ils peuvent prolonger la durée de vie cellulaire, préserver les télomères et favoriser un vieillissement plus sain.",
-        "tags": ["Protocole 3 mois", "Préparation physique", "Neuroplasticité", "Longévité", "Cadre suisse"]
+        "tags": [
+          "Protocole 3 mois",
+          "Préparation physique",
+          "Neuroplasticité",
+          "Longévité",
+          "Cadre suisse"
+        ]
       }
     ]
   },
@@ -113,37 +137,66 @@
         "sub": "Point d'entrée",
         "title": "Inflection Edge Assessment",
         "text": "Notre instrument de performance propriétaire à 30 questions et 5 dimensions. Génère votre Neurotype Blueprint et structure l'ensemble de la conversation diagnostique.",
-        "tags": ["En ligne · Gratuit", "5 Dimensions", "Performance Blueprint"]
+        "tags": [
+          "En ligne · Gratuit",
+          "5 Dimensions",
+          "Performance Blueprint"
+        ]
       },
       {
         "sub": "Diagnostic clinique",
         "title": "Diagnostic Formel de l'ADHD",
         "text": "Évaluation psychiatrique complète par notre psychiatre métabolique. Au-delà des listes de contrôle — nous évaluons le type d'ADHD, les comorbidités, la sensibilité au rejet, la fonction exécutive et votre phénotype de performance spécifique.",
-        "tags": ["DSM-5 / ICD-11", "Cartographie des comorbidités", "Révision médicamenteuse"]
+        "tags": [
+          "DSM-5 / ICD-11",
+          "Cartographie des comorbidités",
+          "Révision médicamenteuse"
+        ]
       },
       {
         "sub": "Niveau biologique",
         "title": "Bilan Métabolique Complet",
         "text": "L'évaluation qui distingue VitaReBa. Nous examinons les systèmes biologiques qui déterminent votre tableau clinique — axe intestin-cerveau, neurotransmetteurs, fonction mitochondriale, hormones, micronutriments, toxines, HRV, rythme circadien et plus encore.",
-        "tags": ["Gut · Brain Axis", "Mitochondrial", "HRV · Circadien", "Toxines"]
+        "tags": [
+          "Gut · Brain Axis",
+          "Mitochondrial",
+          "HRV · Circadien",
+          "Toxines"
+        ]
       },
       {
         "sub": "Neuroplasticité & Longévité",
         "title": "Thérapie en État Psychédélique",
         "text": "Thérapie assistée par kétamine et protocoles de respiration structurés induisant des états non ordinaires — créant des fenêtres de neuroplasticité accrue. Les recherches montrent désormais que les psychédéliques préservent également la longueur des télomères, surexpriment les gènes de longévité (SIRT1) et réduisent le stress oxydatif au niveau cellulaire.",
-        "tags": ["Assisté par kétamine", "Respiration", "Neuroplasticité", "Longévité", "Droit suisse"]
+        "tags": [
+          "Assisté par kétamine",
+          "Respiration",
+          "Neuroplasticité",
+          "Longévité",
+          "Droit suisse"
+        ]
       },
       {
         "sub": "Médecine de la Longévité",
         "title": "Protocole Technologique VitaReBa",
         "text": "L'ADHD réduit l'espérance de vie jusqu'à 13 ans. Nos technologies de médecine de la longévité traitent directement ce problème — santé mitochondriale, récupération du système nerveux, longévité cellulaire et fondements biologiques d'une performance cognitive durable.",
-        "tags": ["H₂ Therapy", "IHHT", "PEMF", "Infrarouge", "HRV Biofeedback"]
+        "tags": [
+          "H₂ Therapy",
+          "IHHT",
+          "PEMF",
+          "Infrarouge",
+          "HRV Biofeedback"
+        ]
       },
       {
         "sub": "Architecture de Performance",
         "title": "Surf Your Life + Home Harmony",
         "text": "La couche de coaching qui convertit les insights cliniques en architecture quotidienne. Vous repensez votre façon de travailler, de diriger, de décider et de récupérer — en fonction de votre neurotype spécifique. Comprend un audit complet de vos environnements personnels et professionnels.",
-        "tags": ["Surf Your Life", "Home Harmony", "Programme 90 jours"]
+        "tags": [
+          "Surf Your Life",
+          "Home Harmony",
+          "Programme 90 jours"
+        ]
       }
     ]
   },
@@ -156,27 +209,57 @@
     "categories": [
       {
         "cat": "Gut · Brain Axis",
-        "items": ["Analyse complète du microbiome", "Marqueurs de perméabilité intestinale", "Statut des précurseurs de neurotransmetteurs", "Cartographie des cascades inflammatoires"]
+        "items": [
+          "Analyse complète du microbiome",
+          "Marqueurs de perméabilité intestinale",
+          "Statut des précurseurs de neurotransmetteurs",
+          "Cartographie des cascades inflammatoires"
+        ]
       },
       {
         "cat": "Santé Mitochondriale",
-        "items": ["Capacité de production d'énergie cellulaire", "Charge de stress oxydatif", "Marqueurs d'efficacité mitochondriale", "Voies du métabolisme énergétique"]
+        "items": [
+          "Capacité de production d'énergie cellulaire",
+          "Charge de stress oxydatif",
+          "Marqueurs d'efficacité mitochondriale",
+          "Voies du métabolisme énergétique"
+        ]
       },
       {
         "cat": "Hormones",
-        "items": ["Rythme cortisol complet & axe du stress", "Panel thyroïdien complet", "Hormones sexuelles & fonction surrénale", "Insuline & régulateurs métaboliques"]
+        "items": [
+          "Rythme cortisol complet & axe du stress",
+          "Panel thyroïdien complet",
+          "Hormones sexuelles & fonction surrénale",
+          "Insuline & régulateurs métaboliques"
+        ]
       },
       {
         "cat": "Micronutriments & Toxines",
-        "items": ["Statut minéraux & vitamines essentiels", "Profil des acides gras oméga", "Charge en métaux lourds & toxines environnementales", "Marqueurs inflammatoires & oxydatifs"]
+        "items": [
+          "Statut minéraux & vitamines essentiels",
+          "Profil des acides gras oméga",
+          "Charge en métaux lourds & toxines environnementales",
+          "Marqueurs inflammatoires & oxydatifs"
+        ]
       },
       {
         "cat": "HRV · Circadien · Sommeil",
-        "items": ["Variabilité de la fréquence cardiaque de base", "Cartographie du rythme circadien", "Évaluation de l'architecture du sommeil", "Régulation du système nerveux autonome"]
+        "items": [
+          "Variabilité de la fréquence cardiaque de base",
+          "Cartographie du rythme circadien",
+          "Évaluation de l'architecture du sommeil",
+          "Régulation du système nerveux autonome"
+        ]
       },
       {
         "cat": "Marqueurs de Stress & Sérotonine",
-        "items": ["Métabolisme de la sérotonine & dopamine", "Réponse du cortisol au réveil", "Équilibre GABA & glutamate", "Capacité de réserve surrénale"]
+        "items": [
+          "Métabolisme de la sérotonine & dopamine",
+          "Réponse du cortisol au réveil",
+          "Équilibre GABA & glutamate",
+          "Capacité de réserve surrénale"
+        ]
       }
     ]
   },
@@ -260,29 +343,48 @@
     "eyebrow": "Architecture des Programmes",
     "heading": "Trois points d'entrée.",
     "headingEm": "Une destination.",
-    "items": [
-      {
+    "items": {
+      "edge_diagnostic": {
         "note": "Ponctuel · 2 séances",
         "desc": "L'image biologique ADHD la plus complète disponible en Suisse. Diagnostic formel, bilan métabolique complet et votre Neurotype Blueprint personnalisé.",
         "badge": null,
         "btnLabel": "Demander",
-        "features": ["Inflection Edge assessment", "Diagnostic formel de l'ADHD", "Bilan métabolique complet", "Séance Neurotype Blueprint", "Protocole médicaments & suppléments"]
+        "features": [
+          "Inflection Edge assessment",
+          "Diagnostic formel de l'ADHD",
+          "Bilan métabolique complet",
+          "Séance Neurotype Blueprint",
+          "Protocole médicaments & suppléments"
+        ]
       },
-      {
+      "riding_the_wave": {
         "note": "Programme 90 jours",
         "desc": "Le programme intégré complet — diagnostic clinique, optimisation biologique, médecine de longévité et 90 jours de coaching de transformation Surf Your Life.",
         "badge": "Le plus choisi",
         "btnLabel": "Commencer le voyage",
-        "features": ["Tout ce qu'inclut Edge Diagnostic", "Coaching Surf Your Life 90 jours", "Cartographie complète SYL Clock", "Protocole technologique VitaReBa", "Audit environnemental Home Harmony", "Évaluation thérapie psychédélique"]
+        "features": [
+          "Tout ce qu'inclut Edge Diagnostic",
+          "Coaching Surf Your Life 90 jours",
+          "Cartographie complète SYL Clock",
+          "Protocole technologique VitaReBa",
+          "Audit environnemental Home Harmony",
+          "Évaluation thérapie psychédélique"
+        ]
       },
-      {
+      "total_longevity": {
         "note": "Annuel · Entièrement concierge",
         "desc": "L'architecture annuelle complète — surveillance biologique continue, consultations régulières, thérapie psychédélique et optimisation continue de la performance.",
         "badge": null,
         "btnLabel": "Demander",
-        "features": ["Tout ce qu'inclut Riding the Wave", "Thérapie assistée par psychédéliques", "Retesting métabolique trimestriel", "Consultations mensuelles", "Reprise annuelle des instruments Inflection"]
+        "features": [
+          "Tout ce qu'inclut Riding the Wave",
+          "Thérapie assistée par psychédéliques",
+          "Retesting métabolique trimestriel",
+          "Consultations mensuelles",
+          "Reprise annuelle des instruments Inflection"
+        ]
       }
-    ]
+    }
   },
   "team": {
     "eyebrow": "Équipe Clinique",

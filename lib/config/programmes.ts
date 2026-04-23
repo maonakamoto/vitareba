@@ -20,25 +20,34 @@ export type PhaseKey = (typeof PHASE_ENUM_VALUES)[number];
 
 export const PROGRAMME_CONFIG: Record<
   ProgrammeKey,
-  { label: string; description: string; duration: string }
+  { label: string; description: string; duration: string; price: string; featured: boolean; btnStyle: "primary" | "outline" }
 > = {
   edge_diagnostic: {
     label: "Edge Diagnostic",
     description:
       "Comprehensive metabolic and neuropsychological profiling to map your ADHD phenotype. Includes full biomarker panel, Inflection Edge assessment, and a detailed clinical report.",
     duration: "4–6 weeks",
+    price: "CHF 2,400",
+    featured: false,
+    btnStyle: "outline",
   },
   riding_the_wave: {
     label: "Riding the Wave",
     description:
       "Structured 12-week optimisation programme targeting the specific bottlenecks in your neurotype. Combines metabolic intervention, environment design, and regular check-ins with Manuel.",
     duration: "12 weeks",
+    price: "CHF 8,500",
+    featured: true,
+    btnStyle: "primary",
   },
   total_longevity: {
-    label: "Total Longevity",
+    label: "Full Ocean",
     description:
       "Full systemic health and cognitive longevity programme. Deep metabolic work, cognitive enhancement stack, and long-term monitoring. For patients committed to sustained peak performance.",
     duration: "Ongoing",
+    price: "CHF 18,000",
+    featured: false,
+    btnStyle: "outline",
   },
 };
 
