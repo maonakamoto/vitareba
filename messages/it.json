@@ -288,20 +288,16 @@
     "eyebrow": "Team Clinico",
     "heading": "Costruito intorno alla",
     "headingEm": "precisione.",
-    "members": [
-      {
+    "members": {
+      "manuel": {
         "role": "Fondatrice · Surf Your Life",
         "bio": "L'architetta dietro l'approccio integrato di VitaReBa. Combina coaching di performance con psichiatria metabolica per costruire l'architettura di vita di cui le menti ad alta performance hanno bisogno."
       },
-      {
+      "montagna": {
         "role": "Psichiatra Metabolico",
         "bio": "Specialista in psichiatria metabolica con profonda competenza in ADHD, dipendenze e substrati biologici della performance cognitiva."
-      },
-      {
-        "role": "Responsabile Clinico",
-        "bio": "Guida il protocollo diagnostico clinico e supervisiona l'integrazione delle valutazioni metaboliche con la valutazione psichiatrica e la pianificazione del trattamento."
       }
-    ]
+    }
   },
   "cta": {
     "eyebrow": "Inizia qui",

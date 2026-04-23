@@ -288,20 +288,16 @@
     "eyebrow": "Klinisches Team",
     "heading": "Aufgebaut rund um",
     "headingEm": "Präzision.",
-    "members": [
-      {
+    "members": {
+      "manuel": {
         "role": "Gründerin · Surf Your Life",
         "bio": "Die Architektin hinter VitaReBas integriertem Ansatz. Sie verbindet Performance-Coaching mit metabolischer Psychiatrie, um die Lebensarchitektur zu entwickeln, die hochleistende Geister brauchen."
       },
-      {
+      "montagna": {
         "role": "Metabolischer Psychiater",
         "bio": "Spezialist für metabolische Psychiatrie mit tiefem Fachwissen in ADHD, Sucht und den biologischen Substraten kognitiver Leistung."
-      },
-      {
-        "role": "Klinischer Leiter",
-        "bio": "Leitung des klinischen Diagnoseprotokolls und Überwachung der Integration metabolischer Workups mit psychiatrischer Beurteilung und Behandlungsplanung."
       }
-    ]
+    }
   },
   "cta": {
     "eyebrow": "Hier beginnen",

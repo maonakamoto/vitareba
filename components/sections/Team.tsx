@@ -1,16 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./Team.module.css";
-import { COMPANY } from "@/lib/config/company";
-
-const TEAM_META = [
-  { initials: "M", name: COMPANY.clinicianName },
-  { initials: "DM", name: "Dr. Montagna" },
-  { initials: "DK", name: "Dr. Kondratiuk" },
-];
+import { TEAM_MEMBERS } from "@/lib/config/team";
 
 export default async function Team() {
   const t = await getTranslations("team");
-  const members = t.raw("members") as Array<{ role: string; bio: string }>;
+  const members = t.raw("members") as Record<string, { role: string; bio: string }>;
 
   return (
     <section id="team" className={styles.section}>
@@ -22,14 +16,18 @@ export default async function Team() {
           {t("heading")} <em>{t("headingEm")}</em>
         </h2>
         <div className={styles.grid}>
-          {TEAM_META.map((meta, i) => (
-            <div key={meta.name} className={styles.card}>
-              <div className={styles.avatar}>{meta.initials}</div>
-              <div className={styles.name}>{meta.name}</div>
-              <div className={styles.role}>{members[i].role}</div>
-              <p className={styles.bio}>{members[i].bio}</p>
-            </div>
-          ))}
+          {TEAM_MEMBERS.map((member) => {
+            const m = members[member.key];
+            if (!m) return null;
+            return (
+              <div key={member.key} className={styles.card}>
+                <div className={styles.avatar}>{member.initials}</div>
+                <div className={styles.name}>{member.name}</div>
+                <div className={styles.role}>{m.role}</div>
+                <p className={styles.bio}>{m.bio}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
