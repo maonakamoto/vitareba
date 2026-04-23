@@ -19,9 +19,20 @@ type Props = {
   data: DataPoint[];
 };
 
+function srSummary(data: DataPoint[]): string {
+  if (data.length === 0) return "No assessment data available.";
+  const first = data[0];
+  const last = data[data.length - 1];
+  if (data.length === 1) return `Assessment score: ${last.score}/100 on ${last.date}.`;
+  const direction = last.score > first.score ? "up" : last.score < first.score ? "down" : "unchanged";
+  return `Assessment score trend over ${data.length} assessments: ${first.score}/100 on ${first.date} to ${last.score}/100 on ${last.date} — ${direction}.`;
+}
+
 export function AssessmentTrendChart({ data }: Props) {
   return (
-    <ResponsiveContainer width="100%" height={180}>
+    <div role="img" aria-label={`Assessment score trend chart. ${srSummary(data)}`}>
+      <p className="sr-only">{srSummary(data)}</p>
+      <ResponsiveContainer width="100%" height={180}>
       <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis
@@ -57,6 +68,7 @@ export function AssessmentTrendChart({ data }: Props) {
           activeDot={{ r: 5, fill: "var(--teal)" }}
         />
       </LineChart>
-    </ResponsiveContainer>
+      </ResponsiveContainer>
+    </div>
   );
 }

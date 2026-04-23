@@ -20,9 +20,18 @@ type Props = {
   data: DataPoint[];
 };
 
+function srSummary(data: DataPoint[]): string {
+  if (data.length === 0) return "No check-in data available.";
+  const last = data[data.length - 1];
+  const metrics = CHECKIN_METRICS.map(({ key, label }) => `${label}: ${(last as DataPoint)[key]}/5`).join(", ");
+  return `Daily check-in trend over ${data.length} day${data.length === 1 ? "" : "s"}. Most recent (${last.date}): ${metrics}.`;
+}
+
 export function CheckinTrendChart({ data }: Props) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <div role="img" aria-label={`Check-in trend chart. ${srSummary(data)}`}>
+      <p className="sr-only">{srSummary(data)}</p>
+      <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis
@@ -67,6 +76,7 @@ export function CheckinTrendChart({ data }: Props) {
           />
         ))}
       </LineChart>
-    </ResponsiveContainer>
+      </ResponsiveContainer>
+    </div>
   );
 }

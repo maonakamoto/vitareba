@@ -1,3 +1,4 @@
+import Link from "next/link";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import {
@@ -6,6 +7,7 @@ import {
   GOAL_PROGRESS_LOW_PCT,
   type GoalRow,
 } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { computeGoalProgress } from "@/lib/domain/goals";
 
 export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "baseline" | "current" | "target">[] }) {
@@ -13,7 +15,10 @@ export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "ba
 
   return (
     <div className={shared.card}>
-      <p className={shared.cardTitle}>Your goals</p>
+      <div className={styles.goalsCardHeader}>
+        <p className={shared.cardTitle} style={{ margin: 0 }}>Your goals</p>
+        <Link href={PORTAL_ROUTES.goals} className={styles.goalsViewAll}>View all</Link>
+      </div>
       <div className={styles.goalsList}>
         {goals.map((goal) => {
           const hasProgress = goal.baseline != null || goal.current != null || goal.target != null;

@@ -292,6 +292,24 @@
 
 /* ─── Clinical goals ─────────────────────────────────────────────────────── */
 
+.goalsCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.goalsViewAll {
+  font-size: 0.72rem;
+  color: var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.goalsViewAll:hover {
+  text-decoration: underline;
+}
+
 .goalsList {
   display: flex;
   flex-direction: column;
