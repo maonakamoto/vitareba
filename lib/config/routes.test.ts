@@ -29,7 +29,7 @@ describe("PORTAL_ROUTES", () => {
   });
 
   it("no portal route overlaps with auth routes", () => {
-    const authValues = new Set(Object.values(AUTH_ROUTES));
+    const authValues = new Set<string>(Object.values(AUTH_ROUTES));
     for (const route of Object.values(PORTAL_ROUTES)) {
       expect(authValues.has(route)).toBe(false);
     }

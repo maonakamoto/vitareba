@@ -1,7 +1,5 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/config/company";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
 import styles from "./Hero.module.css";
 
 export default async function Hero() {
@@ -39,9 +37,9 @@ export default async function Hero() {
         <p className={styles.rightSub}>{t("flagshipSub")}</p>
         <div className={styles.quoteBar}>&ldquo;{t("quote")}&rdquo;</div>
         <div className={styles.btns}>
-          <Link href={PORTAL_ROUTES.assessment} className={styles.btnDark}>
+          <a href="?assessment=open" className={styles.btnDark}>
             {t("ctaPrimary")}
-          </Link>
+          </a>
           <a href={`mailto:${COMPANY.email}`} className={styles.btnOutline}>
             {t("ctaSecondary")}
           </a>

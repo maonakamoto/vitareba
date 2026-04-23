@@ -12,6 +12,14 @@ The platform has two parts:
 
 ---
 
+## Mission
+
+**Who:** Manuel Schabus, metabolic psychiatry clinician at VitaReBa Zürich, and his high-performer ADHD patients.
+**Problem:** Patients need frictionless daily data collection so their biology is visible; Manuel needs instant clarity on which patients need attention — and the marketing site must let curious visitors experience the Inflection Edge *before* hitting an auth wall.
+**Success:** Manuel opens the admin and knows — without calling anyone — exactly who needs attention today. Patients check in daily because the portal shows them it matters. Visitors complete the Inflection Edge without being asked to register first, then convert because the results made them want to.
+
+---
+
 ## Architecture
 
 ```

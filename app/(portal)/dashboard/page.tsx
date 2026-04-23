@@ -22,6 +22,7 @@ import { GoalsCard } from "./GoalsCard";
 import { CheckinCard } from "./CheckinCard";
 import { AssessmentSection } from "./AssessmentSection";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
+import { PendingAssessmentSaver } from "./PendingAssessmentSaver";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -81,6 +82,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
+      <PendingAssessmentSaver />
       <h1 className={shared.pageTitle}>
         Welcome back, <em>{firstName}</em>
       </h1>

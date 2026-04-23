@@ -1,7 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
 import { COMPANY } from "@/lib/config/company";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
 import styles from "./Cta.module.css";
 
 export default async function Cta() {
@@ -19,9 +17,9 @@ export default async function Cta() {
         {t("sub")}
       </p>
       <div className={styles.btns}>
-        <Link href={PORTAL_ROUTES.assessment} className={styles.btnPrimary}>
+        <a href="?assessment=open" className={styles.btnPrimary}>
           {t("ctaPrimary")}
-        </Link>
+        </a>
         <a
           href={`mailto:${COMPANY.email}`}
           className={styles.btnOutline}

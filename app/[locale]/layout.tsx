@@ -4,6 +4,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/config/company";
+import { AssessmentOverlay } from "@/components/sections/AssessmentOverlay";
 
 type Props = {
   children: React.ReactNode;
@@ -42,6 +43,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <AssessmentOverlay />
       {children}
     </NextIntlClientProvider>
   );

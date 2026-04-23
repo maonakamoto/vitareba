@@ -90,8 +90,21 @@ export default function ResultsScreen({
           No commitment. Just clarity.
         </div>
         <div className={styles.rCtaBtns}>
-          <a href={`mailto:${COMPANY.email}`} className={styles.rBtnP}>
-            Book a Discovery Call →
+          <a
+            href="/register"
+            className={styles.rBtnP}
+            onClick={() => {
+              try {
+                sessionStorage.setItem(
+                  "pendingAssessment",
+                  JSON.stringify({ scores, overallScore: overall })
+                );
+              } catch {
+                // sessionStorage unavailable — proceed without saving
+              }
+            }}
+          >
+            Save results + book a call →
           </a>
           <button type="button" className={styles.rBtnO} onClick={onRestart}>
             Retake Assessment
