@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { emailQueue } from "@/lib/db/schema";
+import { emailQueue, assessmentResults } from "@/lib/db/schema";
 import { eq, lte, and } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import {
@@ -95,6 +95,19 @@ export async function GET(req: Request) {
         html = profileCompletionEmail({ patientName, portalUrl });
         subject = "One thing before your first consultation";
       } else if (item.templateKey === EMAIL_TEMPLATE.assessmentCta) {
+        // Skip if the patient already has assessment results (e.g. registered via guest overlay)
+        const existingResult = await db.query.assessmentResults.findFirst({
+          where: eq(assessmentResults.userId, item.userId),
+          columns: { id: true },
+        });
+        if (existingResult) {
+          await db
+            .update(emailQueue)
+            .set({ status: EMAIL_QUEUE_STATUS.sent, sentAt: now })
+            .where(eq(emailQueue.id, item.id));
+          sent++;
+          continue;
+        }
         html = assessmentCtaEmail({ patientName, portalUrl });
         subject = "Your Inflection Edge is waiting";
       } else {
