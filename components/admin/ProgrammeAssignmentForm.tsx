@@ -34,27 +34,31 @@ export function ProgrammeAssignmentForm({
     setSaving(true);
     setError("");
 
-    const res = await fetch(`/api/admin/patients/${patientId}/programme`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        programme,
-        phase,
-        startDate: startDate || null,
-        notes: notes || null,
-      }),
-    });
+    try {
+      const res = await fetch(`/api/admin/patients/${patientId}/programme`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          programme,
+          phase,
+          startDate: startDate || null,
+          notes: notes || null,
+        }),
+      });
 
-    const data = await res.json();
-    setSaving(false);
+      const data = await res.json();
+      if (!data.success) {
+        setError("Failed to save assignment.");
+        return;
+      }
 
-    if (!data.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
+    } catch {
       setError("Failed to save assignment.");
-      return;
+    } finally {
+      setSaving(false);
     }
-
-    setSaved(true);
-    setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
   }
 
   return (

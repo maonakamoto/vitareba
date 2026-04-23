@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import styles from "@/app/(admin)/admin.module.css";
+import { DOCUMENT_MAX_FILE_SIZE_MB } from "@/lib/config/portal";
 
 export function DocumentAddForm({ patientId }: { patientId: string }) {
   const [title, setTitle] = useState("");
@@ -19,26 +20,32 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
     setProgress("uploading");
     setErrorMsg("");
 
-    const formData = new FormData();
-    formData.set("file", file);
-    formData.set("title", title.trim());
-    formData.set("patientId", patientId);
+    try {
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("title", title.trim());
+      formData.set("patientId", patientId);
 
-    const res = await fetch("/api/documents/upload", { method: "POST", body: formData });
-    const data = await res.json();
+      const res = await fetch("/api/documents/upload", { method: "POST", body: formData });
+      const data = await res.json();
 
-    setUploading(false);
-    if (!data.success) {
+      if (!data.success) {
+        setProgress("error");
+        setErrorMsg(data.error ?? "Upload failed.");
+        return;
+      }
+
+      setTitle("");
+      setFile(null);
+      if (fileRef.current) fileRef.current.value = "";
+      setProgress("done");
+      setTimeout(() => setProgress("idle"), 3000);
+    } catch {
       setProgress("error");
-      setErrorMsg(data.error ?? "Upload failed.");
-      return;
+      setErrorMsg("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
     }
-
-    setTitle("");
-    setFile(null);
-    if (fileRef.current) fileRef.current.value = "";
-    setProgress("done");
-    setTimeout(() => setProgress("idle"), 3000);
   }
 
   return (
@@ -57,7 +64,7 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
           />
         </div>
         <div className={styles.formField}>
-          <label className={styles.formLabel} htmlFor="doc-file">File (max 20 MB)</label>
+          <label className={styles.formLabel} htmlFor="doc-file">File (max {DOCUMENT_MAX_FILE_SIZE_MB} MB)</label>
           <input
             id="doc-file"
             ref={fileRef}

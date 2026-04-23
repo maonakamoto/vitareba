@@ -30,21 +30,26 @@ export function AdminNotesForm({
     if (!body.trim()) return;
     setSaving(true);
     setError("");
-    const res = await fetch(`/api/admin/patients/${patientId}/notes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body: body.trim() }),
-    });
-    const data = await res.json();
-    setSaving(false);
-    if (!data.success) {
+    try {
+      const res = await fetch(`/api/admin/patients/${patientId}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: body.trim() }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError("Failed to save note.");
+        return;
+      }
+      setNotes((prev) => [data.data, ...prev]);
+      setBody("");
+      setSaved(true);
+      setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
+    } catch {
       setError("Failed to save note.");
-      return;
+    } finally {
+      setSaving(false);
     }
-    setNotes((prev) => [data.data, ...prev]);
-    setBody("");
-    setSaved(true);
-    setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
   }
 
   return (

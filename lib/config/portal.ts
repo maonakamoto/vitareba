@@ -93,6 +93,9 @@ export const BOOKING_NOTES_MAX_LENGTH = 1_000;
 /** Document title max length (shared between JSON and multipart upload routes) */
 export const DOCUMENT_TITLE_MAX_LENGTH = 200;
 
+/** Document upload max file size in MB (enforced server-side; shown in upload form label) */
+export const DOCUMENT_MAX_FILE_SIZE_MB = 20;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 

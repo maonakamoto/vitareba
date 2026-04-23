@@ -17,21 +17,26 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
     if (!subject.trim() || !body.trim()) return;
     setSending(true);
     setError("");
-    const res = await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subject: subject.trim(), body: body.trim(), patientId }),
-    });
-    const data = await res.json();
-    setSending(false);
-    if (!data.success) {
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject: subject.trim(), body: body.trim(), patientId }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError("Failed to send message.");
+        return;
+      }
+      setSentThreadId(data.data?.threadId ?? data.data?.id ?? null);
+      setExpanded(false);
+      setSubject("");
+      setBody("");
+    } catch {
       setError("Failed to send message.");
-      return;
+    } finally {
+      setSending(false);
     }
-    setSentThreadId(data.data?.threadId ?? data.data?.id ?? null);
-    setExpanded(false);
-    setSubject("");
-    setBody("");
   }
 
   if (sentThreadId) {
