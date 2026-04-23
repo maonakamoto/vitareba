@@ -43,6 +43,37 @@
   margin: 0 0 0.25rem;
 }
 
+/* ─── Booking type toggle ────────────────────────────────────────────────── */
+
+.typeToggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.typeBtn {
+  flex: 1;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.typeBtn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.typeBtnActive {
+  border-color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 10%, transparent);
+  color: var(--teal);
+  font-weight: 500;
+}
+
 /* ─── Booking list item ──────────────────────────────────────────────────── */
 
 .bookingItem {

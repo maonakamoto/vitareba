@@ -48,6 +48,17 @@ export const emailQueueStatusEnum = pgEnum("email_queue_status", [
   "sent",
   "failed",
 ]);
+export const bookingTypeEnum = pgEnum("booking_type", [
+  "consultation",
+  "machine",
+]);
+export const machineTypeEnum = pgEnum("machine_type", [
+  "h2_therapy",
+  "ihht",
+  "pemf",
+  "infrared",
+  "hrv_biofeedback",
+]);
 
 // ─── Auth tables (required by NextAuth DrizzleAdapter) ───────────────────────
 
@@ -177,6 +188,8 @@ export const bookings = pgTable("bookings", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   status: bookingStatusEnum("status").notNull().default("pending"),
+  bookingType: bookingTypeEnum("booking_type").notNull().default("consultation"),
+  machineType: machineTypeEnum("machine_type"),
   preferredDate: varchar("preferred_date", { length: 50 }),
   notes: text("notes"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),

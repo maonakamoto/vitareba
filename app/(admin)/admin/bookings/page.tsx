@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "../../admin.module.css";
-import { BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES, type BookingRowWithUser, type BookingStatus } from "@/lib/config/booking-status";
+import {
+  BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES,
+  BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG,
+  type BookingRowWithUser, type BookingStatus,
+} from "@/lib/config/booking-status";
 import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
 
 
@@ -91,6 +95,7 @@ export default function AdminBookingsPage() {
             <thead>
               <tr>
                 <th>Patient</th>
+                <th>Type</th>
                 <th>Preferred date</th>
                 <th>Notes</th>
                 <th>Requested</th>
@@ -109,6 +114,12 @@ export default function AdminBookingsPage() {
                         {b.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
                       <div className={styles.cellSub}>{b.user.email}</div>
+                    </td>
+                    <td className={styles.cellNowrap}>
+                      <div>{BOOKING_TYPE_CONFIG[b.bookingType]?.label ?? b.bookingType}</div>
+                      {b.machineType && (
+                        <div className={styles.cellSub}>{MACHINE_TYPE_CONFIG[b.machineType]?.label}</div>
+                      )}
                     </td>
                     <td className={styles.cellNowrap}>
                       {b.preferredDate

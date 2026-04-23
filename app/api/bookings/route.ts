@@ -10,6 +10,7 @@ import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { USER_ROLE } from "@/lib/config/auth";
 import { bookingCreateSchema } from "@/lib/domain/bookings";
+import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 
 export async function GET() {
   const guard = await requireSession();
@@ -64,12 +65,18 @@ export async function POST(req: Request) {
       where: eq(users.id, session.user.id),
       columns: { name: true, email: true },
     }).catch(() => null);
+    const bookingTypeLabel = BOOKING_TYPE_CONFIG[parsed.data.bookingType].label;
+    const machineTypeLabel = parsed.data.machineType
+      ? MACHINE_TYPE_CONFIG[parsed.data.machineType].label
+      : null;
     sendEmail({
       to: adminEmails,
-      subject: `New consultation request — ${patient?.name ?? session.user.email}`,
+      subject: `New ${bookingTypeLabel.toLowerCase()} request — ${patient?.name ?? session.user.email}`,
       html: bookingRequestAdminEmail({
         patientName: patient?.name ?? "Unknown",
         patientEmail: patient?.email ?? "",
+        bookingTypeLabel,
+        machineTypeLabel,
         notes: parsed.data.notes,
         preferredDate: parsed.data.preferredDate,
         adminUrl: `${PORTAL_URL}/admin/patients/${session.user.id}`,

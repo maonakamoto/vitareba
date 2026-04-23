@@ -12,10 +12,39 @@ export const BOOKING_STATUS = {
   cancelled: "cancelled",
 } as const satisfies Record<BookingStatus, BookingStatus>;
 
+/** Canonical booking type values */
+export const BOOKING_TYPE_VALUES = ["consultation", "machine"] as const;
+export type BookingType = (typeof BOOKING_TYPE_VALUES)[number];
+
+export const BOOKING_TYPE_CONFIG: Record<BookingType, { label: string }> = {
+  consultation: { label: "Consultation" },
+  machine:      { label: "Technology Session" },
+};
+
+/** Canonical machine type values */
+export const MACHINE_TYPE_VALUES = [
+  "h2_therapy",
+  "ihht",
+  "pemf",
+  "infrared",
+  "hrv_biofeedback",
+] as const;
+export type MachineType = (typeof MACHINE_TYPE_VALUES)[number];
+
+export const MACHINE_TYPE_CONFIG: Record<MachineType, { label: string }> = {
+  h2_therapy:     { label: "H₂ Therapy" },
+  ihht:           { label: "IHHT" },
+  pemf:           { label: "PEMF" },
+  infrared:       { label: "Infrared" },
+  hrv_biofeedback:{ label: "HRV Biofeedback" },
+};
+
 /** Serialised booking row returned by API endpoints (dates are strings, not Date objects) */
 export type BookingRow = {
   id: string;
   status: BookingStatus;
+  bookingType: BookingType;
+  machineType: MachineType | null;
   preferredDate: string | null;
   notes: string | null;
   createdAt: string;

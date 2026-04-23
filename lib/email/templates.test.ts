@@ -28,6 +28,7 @@ describe("email templates — structure", () => {
     const html = bookingRequestAdminEmail({
       patientName: "Anna Müller",
       patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
       notes: "Prefer mornings",
       preferredDate: "2026-05-01",
       adminUrl: "https://vitareba.ch/admin/patients/1",
@@ -85,6 +86,7 @@ describe("email templates — personalisation", () => {
     const html = bookingRequestAdminEmail({
       patientName: "Anna Müller",
       patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
       adminUrl: "https://vitareba.ch/admin",
     });
     expect(html).toContain("Anna Müller");
@@ -95,6 +97,7 @@ describe("email templates — personalisation", () => {
     const html = bookingRequestAdminEmail({
       patientName: "Anna",
       patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
       preferredDate: "2026-05-10",
       adminUrl: "https://vitareba.ch/admin",
     });
@@ -105,6 +108,7 @@ describe("email templates — personalisation", () => {
     const html = bookingRequestAdminEmail({
       patientName: "Anna",
       patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
       adminUrl: "https://vitareba.ch/admin",
     });
     expect(html).not.toContain("Preferred date");
@@ -112,7 +116,7 @@ describe("email templates — personalisation", () => {
 
   it("bookingRequestAdminEmail includes adminUrl as link href", () => {
     const adminUrl = "https://vitareba.ch/admin/patients/42";
-    const html = bookingRequestAdminEmail({ patientName: "Anna", patientEmail: "anna@example.com", adminUrl });
+    const html = bookingRequestAdminEmail({ patientName: "Anna", patientEmail: "anna@example.com", bookingTypeLabel: "Consultation", adminUrl });
     expect(html).toContain(adminUrl);
   });
 

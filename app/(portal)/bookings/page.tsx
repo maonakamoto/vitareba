@@ -4,7 +4,15 @@ import { useState, useEffect, useCallback } from "react";
 import styles from "../portal.module.css";
 import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
-import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
+import {
+  BOOKING_STATUS_CONFIG,
+  BOOKING_TYPE_CONFIG,
+  MACHINE_TYPE_CONFIG,
+  MACHINE_TYPE_VALUES,
+  type BookingRow,
+  type BookingType,
+  type MachineType,
+} from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { CALENDLY_URL, BOOKING_SUCCESS_MS, BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
@@ -15,6 +23,8 @@ export default function BookingsPage() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [bookingType, setBookingType] = useState<BookingType>("consultation");
+  const [machineType, setMachineType] = useState<MachineType | "">("");
   const [preferredDate, setPreferredDate] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -37,23 +47,37 @@ export default function BookingsPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  function resetForm() {
+    setBookingType("consultation");
+    setMachineType("");
+    setPreferredDate("");
+    setNotes("");
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
     try {
+      const body: Record<string, unknown> = {
+        bookingType,
+        preferredDate: preferredDate || undefined,
+        notes: notes || undefined,
+      };
+      if (bookingType === "machine" && machineType) {
+        body.machineType = machineType;
+      }
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preferredDate, notes }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!data.success) {
         setSubmitError("Failed to submit booking. Please try again.");
         return;
       }
-      setPreferredDate("");
-      setNotes("");
+      resetForm();
       setShowForm(false);
       setSubmitSuccess(true);
       setTimeout(() => setSubmitSuccess(false), BOOKING_SUCCESS_MS);
@@ -110,32 +134,78 @@ export default function BookingsPage() {
 
       {showForm && (
         <div className={`${styles.card} ${styles.cardGap}`}>
-          <p className={styles.cardTitle}>Request a consultation</p>
+          <p className={styles.cardTitle}>Request a booking</p>
           <p className={styles.formHint}>
             {COMPANY.clinicianName} reviews every request personally. Include anything that helps him prepare — your Inflection Edge scores are already on file.
           </p>
           <form onSubmit={handleSubmit} className={styles.formStack}>
+            {/* Booking type */}
+            <div className={authStyles.field}>
+              <label className={authStyles.label}>Type</label>
+              <div className={bookingStyles.typeToggle}>
+                {(["consultation", "machine"] as BookingType[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`${bookingStyles.typeBtn}${bookingType === t ? ` ${bookingStyles.typeBtnActive}` : ""}`}
+                    onClick={() => { setBookingType(t); setMachineType(""); }}
+                  >
+                    {BOOKING_TYPE_CONFIG[t].label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Machine type — only shown for technology sessions */}
+            {bookingType === "machine" && (
+              <div className={authStyles.field}>
+                <label className={authStyles.label} htmlFor="machineType">Technology</label>
+                <select
+                  id="machineType"
+                  className={authStyles.input}
+                  value={machineType}
+                  onChange={(e) => setMachineType(e.target.value as MachineType | "")}
+                  required
+                >
+                  <option value="">Select technology…</option>
+                  {MACHINE_TYPE_VALUES.map((m) => (
+                    <option key={m} value={m}>{MACHINE_TYPE_CONFIG[m].label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="date">Preferred date (optional)</label>
               <input id="date" className={authStyles.input} type="date" value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
             </div>
             <div className={authStyles.field}>
-              <label className={authStyles.label} htmlFor="notes">What would you like to focus on?</label>
+              <label className={authStyles.label} htmlFor="notes">
+                {bookingType === "machine" ? "Anything to prepare?" : "What would you like to focus on?"}
+              </label>
               <textarea
                 id="notes"
                 className={styles.formTextarea}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 maxLength={BOOKING_NOTES_MAX_LENGTH}
-                placeholder="e.g. I want to understand my ADHD diagnosis and what a programme could look like for me…"
+                placeholder={
+                  bookingType === "machine"
+                    ? "e.g. First session, looking to try PEMF for focus…"
+                    : "e.g. I want to understand my ADHD diagnosis and what a programme could look like for me…"
+                }
               />
             </div>
             {submitError && <p className={styles.formError}>{submitError}</p>}
             <div className={styles.formActions}>
-              <button type="submit" className={`${authStyles.submit} ${styles.formActionPrimary}`} disabled={submitting}>
+              <button
+                type="submit"
+                className={`${authStyles.submit} ${styles.formActionPrimary}`}
+                disabled={submitting || (bookingType === "machine" && !machineType)}
+              >
                 {submitting ? "Submitting…" : "Submit request"}
               </button>
-              <button type="button" onClick={() => setShowForm(false)} className={styles.cancelBtn}>
+              <button type="button" onClick={() => { setShowForm(false); resetForm(); }} className={styles.cancelBtn}>
                 Cancel
               </button>
             </div>
@@ -165,12 +235,15 @@ export default function BookingsPage() {
         <div className={styles.listStack}>
           {bookings.map((b) => {
             const s = BOOKING_STATUS_CONFIG[b.status] ?? BOOKING_STATUS_CONFIG.pending;
+            const typeLabel = BOOKING_TYPE_CONFIG[b.bookingType]?.label ?? b.bookingType;
+            const machineLabel = b.machineType ? MACHINE_TYPE_CONFIG[b.machineType]?.label : null;
             return (
               <div key={b.id} className={styles.card}>
                 <div className={bookingStyles.bookingItem}>
                   <div className={bookingStyles.bookingItemInfo}>
                     <p className={bookingStyles.bookingItemDate}>
-                      {b.preferredDate ? `Preferred: ${formatDateLong(b.preferredDate)}` : "No preferred date"}
+                      {machineLabel ? `${typeLabel} — ${machineLabel}` : typeLabel}
+                      {b.preferredDate ? ` · Preferred: ${formatDateLong(b.preferredDate)}` : ""}
                     </p>
                     {b.notes && <p className={bookingStyles.bookingNotes}>{b.notes}</p>}
                     <p className={bookingStyles.bookingRequested}>

@@ -40,20 +40,25 @@ function layout(body: string) {
 export function bookingRequestAdminEmail({
   patientName,
   patientEmail,
+  bookingTypeLabel,
+  machineTypeLabel,
   notes,
   preferredDate,
   adminUrl,
 }: {
   patientName: string;
   patientEmail: string;
+  bookingTypeLabel: string;
+  machineTypeLabel?: string | null;
   notes?: string | null;
   preferredDate?: string | null;
   adminUrl: string;
 }) {
   return layout(`
-    <p>A new consultation request has been submitted.</p>
+    <p>A new booking request has been submitted.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
+    <p class="meta"><strong>Type:</strong> ${bookingTypeLabel}${machineTypeLabel ? ` — ${machineTypeLabel}` : ""}</p>
     ${preferredDate ? `<p class="meta"><strong>Preferred date:</strong> ${preferredDate}</p>` : ""}
     ${notes ? `<p class="meta"><strong>Notes:</strong> ${notes}</p>` : ""}
     <div class="divider"></div>
