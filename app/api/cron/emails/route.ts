@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { emailQueue, assessmentResults } from "@/lib/db/schema";
+import { emailQueue, assessmentResults, bookings, profiles } from "@/lib/db/schema";
 import { eq, lte, and } from "drizzle-orm";
+import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { sendEmail } from "@/lib/email/index";
 import {
   assessmentResultsEmail,
@@ -85,6 +86,19 @@ export async function GET(req: Request) {
         html = assessmentMeaningEmail({ patientName, portalUrl });
         subject = "What your Inflection Edge profile means clinically";
       } else if (item.templateKey === EMAIL_TEMPLATE.assessmentBooking) {
+        // Skip if the patient already has a booking (e.g. booked before the +5-day email fires)
+        const existingBooking = await db.query.bookings.findFirst({
+          where: eq(bookings.userId, item.userId),
+          columns: { id: true },
+        });
+        if (existingBooking) {
+          await db
+            .update(emailQueue)
+            .set({ status: EMAIL_QUEUE_STATUS.sent, sentAt: now })
+            .where(eq(emailQueue.id, item.id));
+          sent++;
+          continue;
+        }
         const overallScore = payload.overallScore as number;
         html = assessmentBookingEmail({ patientName, overallScore, portalUrl });
         subject = `Book a consultation with ${COMPANY.clinicianName}`;
@@ -92,6 +106,18 @@ export async function GET(req: Request) {
         html = welcomePatientEmail({ patientName, portalUrl });
         subject = `Welcome to ${COMPANY.shortName} — here is where to start`;
       } else if (item.templateKey === EMAIL_TEMPLATE.profileCompletion) {
+        // Skip if the patient already completed their profile
+        const existingProfile = await db.query.profiles.findFirst({
+          where: eq(profiles.userId, item.userId),
+        });
+        if (computeProfileCompleteness(existingProfile as Record<string, unknown> | null) >= 100) {
+          await db
+            .update(emailQueue)
+            .set({ status: EMAIL_QUEUE_STATUS.sent, sentAt: now })
+            .where(eq(emailQueue.id, item.id));
+          sent++;
+          continue;
+        }
         html = profileCompletionEmail({ patientName, portalUrl });
         subject = "One thing before your first consultation";
       } else if (item.templateKey === EMAIL_TEMPLATE.assessmentCta) {
