@@ -299,6 +299,15 @@
   margin-bottom: 1rem;
 }
 
+/* Inline expansion of .cardTitle with margin: 0 (header context, no bottom margin needed) */
+.goalsCardTitle {
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0;
+}
+
 .goalsViewAll {
   font-size: 0.72rem;
   color: var(--teal);

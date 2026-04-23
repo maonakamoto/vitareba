@@ -16,7 +16,7 @@ export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "ba
   return (
     <div className={shared.card}>
       <div className={styles.goalsCardHeader}>
-        <p className={shared.cardTitle} style={{ margin: 0 }}>Your goals</p>
+        <p className={styles.goalsCardTitle}>Your goals</p>
         <Link href={PORTAL_ROUTES.goals} className={styles.goalsViewAll}>View all</Link>
       </div>
       <div className={styles.goalsList}>
