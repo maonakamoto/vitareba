@@ -17,6 +17,14 @@ export const checkinSchema = z.object({
 });
 
 /**
+ * Normalize a raw 1–5 check-in metric value to the 0–100 integer scale used
+ * for goal tracking and progress display.
+ */
+export function normalizeCheckinMetric(raw: number): number {
+  return Math.round(((raw - CHECKIN_SCALE_MIN) / (CHECKIN_SCALE_MAX - CHECKIN_SCALE_MIN)) * 100);
+}
+
+/**
  * Compute the current consecutive daily check-in streak.
  * Streak counts backwards from today: if today is checked in → 1+,
  * if yesterday is also checked in → 2+, etc.

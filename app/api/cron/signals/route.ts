@@ -7,12 +7,12 @@ import { eq, desc, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
+import { normalizeCheckinMetric } from "@/lib/domain/checkin";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { requireCron } from "@/lib/auth/guards";
 import { displayName } from "@/lib/utils/format";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX } from "@/lib/config/portal";
 
 export async function GET(req: Request) {
   const cronError = requireCron(req);
@@ -114,7 +114,7 @@ export async function GET(req: Request) {
         const key = goal.metric as CheckinGoalMetric;
         const sum = checkins.reduce((acc, c) => acc + c[key], 0);
         const raw = sum / checkins.length; // 1–5
-        liveValue = Math.round(((raw - CHECKIN_SCALE_MIN) / (CHECKIN_SCALE_MAX - CHECKIN_SCALE_MIN)) * 100); // normalize to 0–100
+        liveValue = normalizeCheckinMetric(raw); // normalize to 0–100
       }
 
       if (liveValue !== null && liveValue !== goal.current) {
