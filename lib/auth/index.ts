@@ -7,6 +7,7 @@ import { getInstance } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { loginSchema, resolveRole, verifyPassword } from "@/lib/domain/auth";
 import { USER_ROLE, type UserRole } from "@/lib/config/auth";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 // Functional config pattern — DrizzleAdapter(getInstance()) is only called on the
 // first actual request, never at module evaluation time. This prevents Next.js build
@@ -17,8 +18,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
     adapter: DrizzleAdapter(db),
     session: { strategy: "jwt" },
     pages: {
-      signIn: "/login",
-      error: "/login",
+      signIn: AUTH_ROUTES.login,
+      error: AUTH_ROUTES.login,
     },
     providers: [
       Google({

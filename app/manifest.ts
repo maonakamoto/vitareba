@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
 import { COMPANY } from "@/lib/config/company";
 import { COLOR_OFF, COLOR_INK } from "@/lib/config/theme";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: `${COMPANY.shortName} Portal`,
     short_name: COMPANY.shortName,
     description: `Your ${COMPANY.shortName} patient portal — daily check-in, assessments, and consultations.`,
-    start_url: "/dashboard",
+    start_url: PORTAL_ROUTES.dashboard,
     display: "standalone",
     orientation: "portrait",
     background_color: COLOR_OFF,

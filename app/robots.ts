@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/config/company";
+import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,16 +8,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // Keep portal and admin out of search indices
+        // Keep portal and admin out of search indices — derived from PORTAL_ROUTES and ADMIN_ROUTES SSOT
         disallow: [
-          "/dashboard",
-          "/assessment",
-          "/assessments",
-          "/checkin",
-          "/bookings",
-          "/messages",
-          "/profile",
-          "/admin",
+          ...Object.values(PORTAL_ROUTES),
+          ADMIN_ROUTES.root,
           "/api/",
         ],
       },

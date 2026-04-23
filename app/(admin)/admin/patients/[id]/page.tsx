@@ -17,7 +17,7 @@ import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
 import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
-import { ADMIN_ROUTES } from "@/lib/config/routes";
+import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 
 export default async function PatientDetailPage({
   params,
@@ -25,7 +25,7 @@ export default async function PatientDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect(PORTAL_ROUTES.dashboard);
 
   const { id } = await params;
 

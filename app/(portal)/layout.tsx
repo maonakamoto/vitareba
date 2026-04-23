@@ -11,10 +11,11 @@ import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { COMPANY } from "@/lib/config/company";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session) redirect("/login");
+  if (!session) redirect(AUTH_ROUTES.login);
 
   const [dbUser, unreadMessages] = await Promise.all([
     db.query.users.findFirst({

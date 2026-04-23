@@ -5,10 +5,11 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import type { UserRole } from "@/lib/config/auth";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 const edgeConfig: NextAuthConfig = {
   session: { strategy: "jwt" },
-  pages: { signIn: "/login", error: "/login" },
+  pages: { signIn: AUTH_ROUTES.login, error: AUTH_ROUTES.login },
   providers: [], // No providers needed for token verification in middleware
   callbacks: {
     session({ session, token }) {

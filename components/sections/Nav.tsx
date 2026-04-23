@@ -8,7 +8,7 @@ import Logo from "@/components/Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import styles from "./Nav.module.css";
 import { COMPANY } from "@/lib/config/company";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
 
 // Structural config — hrefs only; labels come from translations (nav.mega)
 const MEGA_HREFS = {
@@ -117,7 +117,7 @@ export default function Nav() {
           </NextLink>
         ) : (
           <>
-            <NextLink href="/login" className={styles.navSignIn}>
+            <NextLink href={AUTH_ROUTES.login} className={styles.navSignIn}>
               {t("signIn")}
             </NextLink>
             <Link href={PORTAL_ROUTES.assessment} className={styles.navBtn}>

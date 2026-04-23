@@ -15,11 +15,12 @@ import {
 } from "@/lib/config/admin";
 import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 
 export default async function PatientsPage() {
   const session = await auth();
-  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect(PORTAL_ROUTES.dashboard);
 
   const now = new Date();
 

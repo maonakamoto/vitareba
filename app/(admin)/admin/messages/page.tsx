@@ -8,10 +8,11 @@ import styles from "../../admin.module.css";
 import { formatDateShort } from "@/lib/utils/format";
 import { getAdminUnreadThreadIds } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export default async function AdminMessagesPage() {
   const session = await auth();
-  if (!session || session.user.role !== USER_ROLE.admin) redirect("/dashboard");
+  if (!session || session.user.role !== USER_ROLE.admin) redirect(PORTAL_ROUTES.dashboard);
 
   const [allThreads, unreadIds] = await Promise.all([
     db.query.threads.findMany({
