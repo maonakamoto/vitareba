@@ -37,6 +37,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "file, title, and patientId required" }, { status: 400 });
   }
 
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!UUID_RE.test(patientId)) {
+    return NextResponse.json({ success: false, error: "Invalid patientId" }, { status: 400 });
+  }
+
   if (title.trim().length > DOCUMENT_TITLE_MAX_LENGTH) {
     return NextResponse.json({ success: false, error: `Title must be ${DOCUMENT_TITLE_MAX_LENGTH} characters or fewer` }, { status: 400 });
   }
