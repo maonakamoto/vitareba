@@ -7,7 +7,7 @@ import authStyles from "../../(auth)/auth.module.css";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
-import { CALENDLY_URL, BOOKING_SUCCESS_MS } from "@/lib/config/portal";
+import { CALENDLY_URL, BOOKING_SUCCESS_MS, BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 
 
 export default function BookingsPage() {
@@ -126,6 +126,7 @@ export default function BookingsPage() {
                 className={styles.formTextarea}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
+                maxLength={BOOKING_NOTES_MAX_LENGTH}
                 placeholder="e.g. I want to understand my ADHD diagnosis and what a programme could look like for me…"
               />
             </div>

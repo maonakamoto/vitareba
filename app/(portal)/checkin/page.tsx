@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRICS, CHECKIN_NOTES_MAX_LENGTH, type MetricKey } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
@@ -196,6 +196,7 @@ export default function CheckinPage() {
               className={checkinStyles.notesTextarea}
               value={form.notes}
               onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+              maxLength={CHECKIN_NOTES_MAX_LENGTH}
               placeholder="Anything worth noting today?"
             />
           </div>

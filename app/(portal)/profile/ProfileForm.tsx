@@ -9,6 +9,7 @@ import {
   EXERCISE_FREQUENCY_OPTIONS,
   SLEEP_HOURS_MIN,
   SLEEP_HOURS_MAX,
+  PATIENT_NOTE_MAX_LENGTH,
 } from "@/lib/config/portal";
 import type { ExerciseFrequency } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
@@ -188,23 +189,23 @@ export function ProfileForm() {
           <div className={profileStyles.fieldStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="concern">Main concern</label>
-              <textarea id="concern" className={profileStyles.textarea} value={form.mainConcern} onChange={set("mainConcern")} placeholder={`What brings you to ${COMPANY.shortName}?`} />
+              <textarea id="concern" className={profileStyles.textarea} value={form.mainConcern} onChange={set("mainConcern")} maxLength={PATIENT_NOTE_MAX_LENGTH} placeholder={`What brings you to ${COMPANY.shortName}?`} />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="goals">Goals</label>
-              <textarea id="goals" className={profileStyles.textarea} value={form.goals} onChange={set("goals")} placeholder="What would success look like in 6 months?" />
+              <textarea id="goals" className={profileStyles.textarea} value={form.goals} onChange={set("goals")} maxLength={PATIENT_NOTE_MAX_LENGTH} placeholder="What would success look like in 6 months?" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="diagnosis">Diagnosis history</label>
-              <textarea id="diagnosis" className={profileStyles.textarea} value={form.diagnosisHistory} onChange={set("diagnosisHistory")} placeholder="Any prior diagnoses (ADHD, anxiety, depression, etc.)" />
+              <textarea id="diagnosis" className={profileStyles.textarea} value={form.diagnosisHistory} onChange={set("diagnosisHistory")} maxLength={PATIENT_NOTE_MAX_LENGTH} placeholder="Any prior diagnoses (ADHD, anxiety, depression, etc.)" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="meds">Current medications</label>
-              <textarea id="meds" className={profileStyles.textarea} value={form.currentMedications} onChange={set("currentMedications")} placeholder="Name, dose, frequency — or 'none'" />
+              <textarea id="meds" className={profileStyles.textarea} value={form.currentMedications} onChange={set("currentMedications")} maxLength={PATIENT_NOTE_MAX_LENGTH} placeholder="Name, dose, frequency — or 'none'" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="supps">Current supplements</label>
-              <textarea id="supps" className={profileStyles.textarea} value={form.currentSupplements} onChange={set("currentSupplements")} placeholder="Omega-3, magnesium, creatine…" />
+              <textarea id="supps" className={profileStyles.textarea} value={form.currentSupplements} onChange={set("currentSupplements")} maxLength={PATIENT_NOTE_MAX_LENGTH} placeholder="Omega-3, magnesium, creatine…" />
             </div>
           </div>
         </div>
@@ -248,6 +249,7 @@ export function ProfileForm() {
               className={profileStyles.textareaLg}
               value={form.notes}
               onChange={set("notes")}
+              maxLength={PATIENT_NOTE_MAX_LENGTH}
               placeholder={`Anything else you'd like ${COMPANY.clinicianName} to know before your first consultation…`}
             />
           </div>

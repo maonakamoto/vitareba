@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "@/app/(admin)/admin.module.css";
+import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 
 export function InlineMessageCompose({ patientId }: { patientId: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -65,6 +66,7 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
         aria-label="Message subject"
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
+        maxLength={MESSAGE_SUBJECT_MAX_LENGTH}
         placeholder="Subject"
         className={styles.composeInput}
       />
@@ -72,6 +74,7 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
         aria-label="Message body"
         value={body}
         onChange={(e) => setBody(e.target.value)}
+        maxLength={MESSAGE_BODY_MAX_LENGTH}
         placeholder="Write a message…"
         rows={3}
         className={styles.composeTextarea}

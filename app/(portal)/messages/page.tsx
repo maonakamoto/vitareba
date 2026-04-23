@@ -8,6 +8,7 @@ import msgStyles from "./messages.module.css";
 import { formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { type ThreadListItem } from "@/lib/config/messages";
+import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 
 export default function MessagesPage() {
   const [threads, setThreads] = useState<ThreadListItem[]>([]);
@@ -84,7 +85,7 @@ export default function MessagesPage() {
           <form onSubmit={handleSubmit} className={styles.formStack}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="subject">Subject</label>
-              <input id="subject" className={authStyles.input} value={subject} onChange={(e) => setSubject(e.target.value)} required placeholder="e.g. Question about my medication protocol" />
+              <input id="subject" className={authStyles.input} value={subject} onChange={(e) => setSubject(e.target.value)} required maxLength={MESSAGE_SUBJECT_MAX_LENGTH} placeholder="e.g. Question about my medication protocol" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="body">Message</label>
@@ -94,6 +95,7 @@ export default function MessagesPage() {
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
                 required
+                maxLength={MESSAGE_BODY_MAX_LENGTH}
                 placeholder={`Write anything you'd want ${COMPANY.clinicianName} to know — symptoms, questions, observations…`}
               />
             </div>
