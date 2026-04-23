@@ -11,7 +11,7 @@ import {
   CHECKIN_DIP_ALERT_THRESHOLD,
   CHECKIN_DIP_ALERT_DAYS,
 } from "@/lib/config/admin";
-import { DAY_MS, formatDateISO } from "@/lib/utils/format";
+import { DAY_MS, formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 
@@ -73,7 +73,7 @@ export async function GET(req: Request) {
       }
     }
 
-    const patientName = patient.name ?? patient.email?.split("@")[0] ?? "Unknown";
+    const patientName = displayName(patient.name, patient.email, "Unknown");
     const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
     const alertHtml = checkinDipAlertEmail({

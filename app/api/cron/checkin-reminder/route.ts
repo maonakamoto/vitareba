@@ -7,7 +7,7 @@ import { eq, desc } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
 import { checkinReminderEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
-import { formatDateISO } from "@/lib/utils/format";
+import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 
@@ -43,7 +43,7 @@ export async function GET(req: Request) {
     // Skip if already checked in today
     if (patient.dailyCheckins.length > 0) { skipped++; continue; }
 
-    const patientName = patient.name ?? patient.email?.split("@")[0] ?? "there";
+    const patientName = displayName(patient.name, patient.email);
     await sendEmail({
       to: patient.email ?? "",
       subject: "How are you doing today?",

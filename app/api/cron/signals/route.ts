@@ -11,6 +11,7 @@ import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type 
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { requireCron } from "@/lib/auth/guards";
+import { displayName } from "@/lib/utils/format";
 
 export async function GET(req: Request) {
   const cronError = requireCron(req);
@@ -64,7 +65,7 @@ export async function GET(req: Request) {
 
     // Alert only on first transition into critical
     if (signal === PATIENT_SIGNAL.critical && previousSignal !== PATIENT_SIGNAL.critical) {
-      const patientName = patient.name ?? patient.email.split("@")[0];
+      const patientName = displayName(patient.name, patient.email);
       const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
       for (const adminEmail of adminEmails) {

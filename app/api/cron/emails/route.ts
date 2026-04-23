@@ -18,6 +18,7 @@ import { COMPANY, PORTAL_URL } from "@/lib/config/company";
 import { EMAIL_TEMPLATE } from "@/lib/config/email-sequences";
 import { EMAIL_QUEUE_STATUS } from "@/lib/config/email-queue";
 import { requireCron } from "@/lib/auth/guards";
+import { displayName } from "@/lib/utils/format";
 
 export async function GET(req: Request) {
   const cronError = requireCron(req);
@@ -48,7 +49,7 @@ export async function GET(req: Request) {
     }
 
     const payload = item.payload as Record<string, unknown>;
-    const patientName = user.name ?? user.email.split("@")[0];
+    const patientName = displayName(user.name, user.email);
     const portalUrl = PORTAL_URL;
 
     try {

@@ -39,3 +39,16 @@ export function formatDateMonthDay(date: Date | string): string {
 export function formatDateISO(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
+
+/**
+ * Returns the patient's display name: their name if set, otherwise the
+ * local part of their email address, otherwise the fallback string.
+ * Used wherever a human-readable name is needed for emails and alerts.
+ */
+export function displayName(
+  name: string | null | undefined,
+  email: string | null | undefined,
+  fallback = "there"
+): string {
+  return name ?? email?.split("@")[0] ?? fallback;
+}

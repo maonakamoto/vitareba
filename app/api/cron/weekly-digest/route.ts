@@ -8,7 +8,7 @@ import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { formatDateISO } from "@/lib/utils/format";
+import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
@@ -105,7 +105,7 @@ export async function GET(req: Request) {
     const verdictName = latestScore !== null ? getVerdictName(latestScore) : null;
     const nextBookingStatus = patient.bookings[0]?.status ?? null;
 
-    const patientName = patient.name ?? patient.email.split("@")[0];
+    const patientName = displayName(patient.name, patient.email);
 
     try {
       const html = weeklyDigestEmail({
