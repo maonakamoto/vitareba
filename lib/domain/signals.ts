@@ -9,6 +9,7 @@ import {
 } from "@/lib/config/admin";
 import { DAY_MS } from "@/lib/utils/format";
 import { CHECKIN_SCALE_MAX } from "@/lib/config/portal";
+import { BOOKING_STATUS, type BookingStatus } from "@/lib/config/booking-status";
 
 type CheckinRow = {
   date: string; // YYYY-MM-DD
@@ -28,7 +29,7 @@ export type SignalInput = {
   registeredAt: Date;
   checkins: CheckinRow[];       // last N days, descending by date
   assessments: AssessmentRow[]; // latest 2, descending
-  bookings: { id: string }[];
+  bookings: { id: string; status: BookingStatus }[];
   now?: Date;                   // injectable for tests; defaults to new Date()
 };
 
@@ -103,8 +104,11 @@ export function computePatientSignal({
     return { signal: PATIENT_SIGNAL.attention, reason: "No assessment taken yet" };
   }
 
-  // Attention: has assessment but no booking yet
-  if (bookings.length === 0) {
+  // Attention: has assessment but no active booking (confirmed or attended)
+  const activeBookings = bookings.filter(
+    (b) => b.status === BOOKING_STATUS.confirmed || b.status === BOOKING_STATUS.attended
+  );
+  if (activeBookings.length === 0) {
     return { signal: PATIENT_SIGNAL.attention, reason: "Assessment done — no booking yet" };
   }
 

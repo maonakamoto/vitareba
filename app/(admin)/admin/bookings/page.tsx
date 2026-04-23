@@ -132,7 +132,7 @@ export default function AdminBookingsPage() {
                     </td>
                     <td>
                       <div className={styles.actionGroup}>
-                        {b.status !== BOOKING_STATUS.confirmed && (
+                        {b.status === BOOKING_STATUS.pending && (
                           <button
                             type="button"
                             onClick={() => updateStatus(b.id, BOOKING_STATUS.confirmed)}
@@ -143,7 +143,18 @@ export default function AdminBookingsPage() {
                             Confirm
                           </button>
                         )}
-                        {b.status !== BOOKING_STATUS.cancelled && (
+                        {b.status === BOOKING_STATUS.confirmed && (
+                          <button
+                            type="button"
+                            onClick={() => updateStatus(b.id, BOOKING_STATUS.attended)}
+                            disabled={isUpdating}
+                            aria-label={`Mark attended for ${b.user.name ?? b.user.email}`}
+                            className={styles.actionBtnAttended}
+                          >
+                            Attended
+                          </button>
+                        )}
+                        {b.status !== BOOKING_STATUS.cancelled && b.status !== BOOKING_STATUS.attended && (
                           <button
                             type="button"
                             onClick={() => updateStatus(b.id, BOOKING_STATUS.cancelled)}

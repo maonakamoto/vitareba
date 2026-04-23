@@ -1053,8 +1053,27 @@
   outline: none;
 }
 
+.actionBtnAttended {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.75rem;
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  color: var(--gold);
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-family: var(--font-dm-sans), sans-serif;
+  transition: background 0.15s;
+}
+
+.actionBtnAttended:hover:not(:disabled),
+.actionBtnAttended:focus-visible:not(:disabled) {
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  outline: none;
+}
+
 .actionBtnConfirm:disabled,
-.actionBtnCancel:disabled {
+.actionBtnCancel:disabled,
+.actionBtnAttended:disabled {
   opacity: 0.45;
   cursor: default;
 }

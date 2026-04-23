@@ -20,6 +20,7 @@ export const roleEnum = pgEnum("role", ["patient", "admin"]);
 export const bookingStatusEnum = pgEnum("booking_status", [
   "pending",
   "confirmed",
+  "attended",
   "cancelled",
 ]);
 export const exerciseFrequencyEnum = pgEnum("exercise_frequency", [

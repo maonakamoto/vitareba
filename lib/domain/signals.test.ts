@@ -80,7 +80,7 @@ describe("computePatientSignal", () => {
       registeredAt: daysAgo(30),
       checkins: [checkin(NO_CHECKIN_CRITICAL_DAYS, 3)], // last checkin exactly at threshold
       assessments: [GOOD_ASSESSMENT],
-      bookings: [{ id: "b1" }],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
       now: NOW,
     });
     expect(result.signal).toBe("critical");
@@ -96,7 +96,7 @@ describe("computePatientSignal", () => {
         checkin(2, 4), // oldest of the 3 — best
       ],
       assessments: [GOOD_ASSESSMENT],
-      bookings: [{ id: "b1" }],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
       now: NOW,
     });
     expect(result.signal).toBe("critical");
@@ -112,7 +112,7 @@ describe("computePatientSignal", () => {
         checkin(2, 4),
       ],
       assessments: [GOOD_ASSESSMENT],
-      bookings: [{ id: "b1" }],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
       now: NOW,
     });
     expect(result.signal).not.toBe("critical");
@@ -126,7 +126,7 @@ describe("computePatientSignal", () => {
         LOW_ASSESSMENT,   // latest — dropped
         GOOD_ASSESSMENT,  // previous — was high
       ],
-      bookings: [{ id: "b1" }],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
       now: NOW,
     });
     expect(result.signal).toBe("critical");
@@ -162,10 +162,45 @@ describe("computePatientSignal", () => {
       registeredAt: daysAgo(30),
       checkins: [checkin(0, 3), checkin(1, 3), checkin(2, 3)],
       assessments: [GOOD_ASSESSMENT, DECENT_ASSESSMENT],
-      bookings: [{ id: "b1" }],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
       now: NOW,
     });
     expect(result.signal).toBe("active");
+  });
+
+  it("returns 'active' when booking is attended (attended counts as active)", () => {
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [checkin(0, 3)],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "attended" as const }],
+      now: NOW,
+    });
+    expect(result.signal).toBe("active");
+  });
+
+  it("returns 'attention' when only booking is cancelled (cancelled does not count)", () => {
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [checkin(0, 3)],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "cancelled" as const }],
+      now: NOW,
+    });
+    expect(result.signal).toBe("attention");
+    expect(result.reason).toMatch(/no booking/);
+  });
+
+  it("returns 'attention' when only booking is pending (pending does not count)", () => {
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [checkin(0, 3)],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "pending" as const }],
+      now: NOW,
+    });
+    expect(result.signal).toBe("attention");
+    expect(result.reason).toMatch(/no booking/);
   });
 });
 
