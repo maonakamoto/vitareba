@@ -10,6 +10,11 @@ import {
   SLEEP_HOURS_MIN,
   SLEEP_HOURS_MAX,
   PATIENT_NOTE_MAX_LENGTH,
+  PROFILE_NAME_MAX_LENGTH,
+  PROFILE_PHONE_MAX_LENGTH,
+  PROFILE_CITY_MAX_LENGTH,
+  PROFILE_OCCUPATION_MAX_LENGTH,
+  PROFILE_REFERRAL_SOURCE_MAX_LENGTH,
 } from "@/lib/config/portal";
 import type { ExerciseFrequency } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
@@ -162,7 +167,7 @@ export function ProfileForm() {
           <div className={profileStyles.fieldGrid}>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="name">Full name</label>
-              <input id="name" className={authStyles.input} value={form.name} onChange={set("name")} />
+              <input id="name" className={authStyles.input} value={form.name} onChange={set("name")} maxLength={PROFILE_NAME_MAX_LENGTH} />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="dob">Date of birth</label>
@@ -170,15 +175,15 @@ export function ProfileForm() {
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="phone">Phone</label>
-              <input id="phone" className={authStyles.input} type="tel" value={form.phone} onChange={set("phone")} placeholder="+41 79 000 00 00" />
+              <input id="phone" className={authStyles.input} type="tel" value={form.phone} onChange={set("phone")} maxLength={PROFILE_PHONE_MAX_LENGTH} placeholder="+41 79 000 00 00" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="city">City</label>
-              <input id="city" className={authStyles.input} value={form.city} onChange={set("city")} placeholder="Zürich" />
+              <input id="city" className={authStyles.input} value={form.city} onChange={set("city")} maxLength={PROFILE_CITY_MAX_LENGTH} placeholder="Zürich" />
             </div>
             <div className={authStyles.field}>
               <label className={authStyles.label} htmlFor="occupation">Occupation</label>
-              <input id="occupation" className={authStyles.input} value={form.occupation} onChange={set("occupation")} placeholder="Founder, engineer, executive…" />
+              <input id="occupation" className={authStyles.input} value={form.occupation} onChange={set("occupation")} maxLength={PROFILE_OCCUPATION_MAX_LENGTH} placeholder="Founder, engineer, executive…" />
             </div>
           </div>
         </div>
@@ -259,7 +264,7 @@ export function ProfileForm() {
         <div className={styles.card}>
           <p className={styles.cardTitle}>How did you find {COMPANY.shortName}?</p>
           <div className={authStyles.field}>
-            <input id="referral" aria-label={`How did you find ${COMPANY.shortName}?`} className={authStyles.input} value={form.referralSource} onChange={set("referralSource")} placeholder="Referral, social media, search…" />
+            <input id="referral" aria-label={`How did you find ${COMPANY.shortName}?`} className={authStyles.input} value={form.referralSource} onChange={set("referralSource")} maxLength={PROFILE_REFERRAL_SOURCE_MAX_LENGTH} placeholder="Referral, social media, search…" />
           </div>
         </div>
 

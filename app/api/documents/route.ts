@@ -24,6 +24,11 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const patientId = searchParams.get("patientId");
 
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (patientId && !UUID_RE.test(patientId)) {
+    return NextResponse.json({ success: false, error: "Invalid patientId" }, { status: 400 });
+  }
+
   // Admin with no patientId filter → return all documents with user info
   if (session.user.role === USER_ROLE.admin && !patientId) {
     const results = await db.query.documents.findMany({

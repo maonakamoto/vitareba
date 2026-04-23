@@ -12,6 +12,12 @@ import {
   PROFILE_COMPLETION_THRESHOLD,
   EXERCISE_FREQUENCY_VALUES,
   PATIENT_NOTE_MAX_LENGTH,
+  PROFILE_NAME_MAX_LENGTH,
+  PROFILE_PHONE_MAX_LENGTH,
+  PROFILE_DOB_MAX_LENGTH,
+  PROFILE_CITY_MAX_LENGTH,
+  PROFILE_OCCUPATION_MAX_LENGTH,
+  PROFILE_REFERRAL_SOURCE_MAX_LENGTH,
 } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { profileCompletedAdminEmail } from "@/lib/email/templates";
@@ -19,11 +25,11 @@ import { sendEmail } from "@/lib/email";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 
 const updateSchema = z.object({
-  name: z.string().min(1).max(200).optional(),
-  phone: z.string().max(50).optional(),
-  dateOfBirth: z.string().max(20).optional(),
-  city: z.string().max(100).optional(),
-  occupation: z.string().max(150).optional(),
+  name: z.string().min(1).max(PROFILE_NAME_MAX_LENGTH).optional(),
+  phone: z.string().max(PROFILE_PHONE_MAX_LENGTH).optional(),
+  dateOfBirth: z.string().max(PROFILE_DOB_MAX_LENGTH).optional(),
+  city: z.string().max(PROFILE_CITY_MAX_LENGTH).optional(),
+  occupation: z.string().max(PROFILE_OCCUPATION_MAX_LENGTH).optional(),
   mainConcern: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
   goals: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
   diagnosisHistory: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
@@ -37,7 +43,7 @@ const updateSchema = z.object({
     .nullable()
     .optional(),
   exerciseFrequency: z.enum(EXERCISE_FREQUENCY_VALUES).nullable().optional(),
-  referralSource: z.string().max(500).optional(),
+  referralSource: z.string().max(PROFILE_REFERRAL_SOURCE_MAX_LENGTH).optional(),
   notes: z.string().max(PATIENT_NOTE_MAX_LENGTH).optional(),
   digestOptOut: z.boolean().optional(),
 });

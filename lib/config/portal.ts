@@ -75,6 +75,14 @@ export const PROFILE_COMPLETION_LOWER_THRESHOLD = 0.3;
 /** Maximum number of days of check-in history that can be requested via the API */
 export const CHECKIN_FETCH_MAX_DAYS = 90;
 
+/** Profile short-text field max lengths (Zod schema + form inputs) */
+export const PROFILE_NAME_MAX_LENGTH = 200;
+export const PROFILE_PHONE_MAX_LENGTH = 50;
+export const PROFILE_DOB_MAX_LENGTH = 20;
+export const PROFILE_CITY_MAX_LENGTH = 100;
+export const PROFILE_OCCUPATION_MAX_LENGTH = 150;
+export const PROFILE_REFERRAL_SOURCE_MAX_LENGTH = 500;
+
 /** Message thread subject max length */
 export const MESSAGE_SUBJECT_MAX_LENGTH = 200;
 
