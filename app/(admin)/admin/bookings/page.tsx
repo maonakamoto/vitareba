@@ -137,6 +137,7 @@ export default function AdminBookingsPage() {
                             type="button"
                             onClick={() => updateStatus(b.id, BOOKING_STATUS.confirmed)}
                             disabled={isUpdating}
+                            aria-label={`Confirm booking for ${b.user.name ?? b.user.email}`}
                             className={styles.actionBtnConfirm}
                           >
                             Confirm
@@ -147,6 +148,7 @@ export default function AdminBookingsPage() {
                             type="button"
                             onClick={() => updateStatus(b.id, BOOKING_STATUS.cancelled)}
                             disabled={isUpdating}
+                            aria-label={`Cancel booking for ${b.user.name ?? b.user.email}`}
                             className={styles.actionBtnCancel}
                           >
                             Cancel

@@ -210,10 +210,10 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
               <div className={styles.goalItemHeader}>
                 <p className={styles.goalTitle}>{goal.title}</p>
                 <div className={styles.goalItemActions}>
-                  <button type="button" onClick={() => handleToggleComplete(goal)} title="Mark complete" className={styles.goalDoneBtn}>
+                  <button type="button" onClick={() => handleToggleComplete(goal)} aria-label={`Mark "${goal.title}" as complete`} className={styles.goalDoneBtn}>
                     ✓ Done
                   </button>
-                  <button type="button" onClick={() => handleDelete(goal.id)} title="Delete goal" className={styles.goalDeleteBtn}>
+                  <button type="button" onClick={() => handleDelete(goal.id)} aria-label={`Delete goal "${goal.title}"`} className={styles.goalDeleteBtn}>
                     ✕
                   </button>
                 </div>
@@ -270,10 +270,10 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
                     <div className={styles.goalCompletedHeader}>
                       <p className={styles.goalCompletedTitle}>{goal.title}</p>
                       <div className={styles.goalCompletedActions}>
-                        <button type="button" onClick={() => handleToggleComplete(goal)} className={styles.goalCompletedBtn}>
+                        <button type="button" onClick={() => handleToggleComplete(goal)} aria-label={`Reopen goal "${goal.title}"`} className={styles.goalCompletedBtn}>
                           Reopen
                         </button>
-                        <button type="button" onClick={() => handleDelete(goal.id)} className={styles.goalCompletedBtn}>
+                        <button type="button" onClick={() => handleDelete(goal.id)} aria-label={`Delete goal "${goal.title}"`} className={styles.goalCompletedBtn}>
                           ✕
                         </button>
                       </div>
