@@ -97,8 +97,8 @@
     "heading": "Drei Programme.",
     "headingEm": "Ein integrierter Ansatz.",
     "sub": "Jedes Programm adressiert einen anderen Einstiegspunkt — aber alle teilen dieselbe metabolische Grundlage, dieselbe klinische Strenge und dasselbe Engagement, Ursachen statt Symptome zu behandeln.",
-    "items": [
-      {
+    "items": {
+      "metabolic": {
         "name": "Metabolische Psychiatrie",
         "desc": "Das übergeordnete Framework. Wir beurteilen psychiatrische Zustände anhand metabolischer, biologischer und physiologischer Ursachen — Neuroinflammation, mitochondriale Gesundheit, Darm-Hirn-Achse, zirkadiane Rhythmik und Stressmarker. Denn psychische Gesundheit und Longevity teilen dieselbe biologische Grundlage. Erweiterte Diagnostik über Kliniktermine und Heimtestkits.",
         "tags": [
@@ -109,7 +109,7 @@
           "Home Test Kits"
         ]
       },
-      {
+      "adhd": {
         "name": "ADHD für Hochleistende",
         "desc": "Unser Flaggschiff-Programm mit dem proprietären SYL Clock — Ihre Symptome werden über vier Lebensdimensionen kartiert: Gesundheit, Mindset, Beziehungen und Karriere. Formale Diagnose, metabolisches Workup, Longevity-Medizin und 90 Tage Surf Your Life Transformations-Coaching.",
         "tags": [
@@ -119,7 +119,7 @@
           "Surf Your Life"
         ]
       },
-      {
+      "psychedelic": {
         "name": "Psychedelic Readiness",
         "desc": "Ein dreimonatiges strukturiertes Vorbereitungsprotokoll, das körperliche Diagnostik, metabolische Optimierung und psychologische Bereitschaftsbeurteilung kombiniert. Aktuelle Forschung zeigt: Psychedelika unterstützen nicht nur Neuroplastizität — sie können die zelluläre Lebensdauer verlängern, Telomere erhalten und gesünderes Altern fördern.",
         "tags": [
@@ -130,7 +130,7 @@
           "Schweizer Rahmen"
         ]
       }
-    ]
+    }
   },
   "approach": {
     "eyebrow": "Unser Ansatz",
@@ -296,24 +296,24 @@
     "heading": "Der SYL Clock.",
     "headingEm": "Vier Dimensionen. Ein Bild.",
     "body": "Der Surf Your Life Clock kartiert Ihre ADHD-Symptome über die vier wichtigsten Dimensionen. Nicht nur, wie Ihr Gehirn funktioniert — sondern wie es sich in jedem Lebensbereich zeigt. Das Ergebnis ist die umsetzbarste Leistungskarte, die verfügbar ist.",
-    "dimensions": [
-      {
+    "dimensions": {
+      "health": {
         "name": "Gesundheit",
         "text": "Energie, Schlaf, Ernährung, Bewegung, Substanzkonsum — das biologische Fundament, auf dem alles andere ruht."
       },
-      {
+      "mindset": {
         "name": "Mindset",
         "text": "Fokusmuster, emotionale Regulation, innerer Monolog, Entscheidungsqualität und kognitive Leistung unter Druck."
       },
-      {
+      "relationships": {
         "name": "Beziehungen",
         "text": "Kommunikationsmuster, Zurückweisungsempfindlichkeit, Vertrauen, Intimität und wie Ihr Neurotyp Ihre Verbindungen prägt."
       },
-      {
+      "career": {
         "name": "Karriere",
         "text": "Führungsstil, Produktivitätsarchitektur, Teamdynamik, strategisches Denken und berufliche Entwicklung."
       }
-    ]
+    }
   },
   "psychedelicReadiness": {
     "eyebrow": "Psychedelic Readiness Programm",

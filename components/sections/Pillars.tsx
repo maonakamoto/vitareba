@@ -1,19 +1,20 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./Pillars.module.css";
 
-const PILLAR_META = [
-  { icon: "🧬", featured: false },
-  { icon: "⚡", featured: true },
-  { icon: "🍄", featured: false },
-];
+const PILLAR_KEYS = ["metabolic", "adhd", "psychedelic"] as const;
+type PillarKey = (typeof PILLAR_KEYS)[number];
+
+const PILLAR_META: Record<PillarKey, { icon: string; featured: boolean }> = {
+  metabolic:   { icon: "🧬", featured: false },
+  adhd:        { icon: "⚡", featured: true },
+  psychedelic: { icon: "🍄", featured: false },
+};
+
+type PillarItem = { name: string; desc: string; tags: string[] };
 
 export default async function Pillars() {
   const t = await getTranslations("pillars");
-  const items = t.raw("items") as Array<{
-    name: string;
-    desc: string;
-    tags: string[];
-  }>;
+  const items = t.raw("items") as Record<PillarKey, PillarItem>;
 
   return (
     <section id="pillars" className={styles.section}>
@@ -26,23 +27,28 @@ export default async function Pillars() {
         </h2>
         <p className={`sec-sub ${styles.secSub}`}>{t("sub")}</p>
         <div className={styles.grid}>
-          {items.map((item, i) => (
-            <div
-              key={item.name}
-              className={`${styles.pillar} ${PILLAR_META[i].featured ? styles.featured : ""}`}
-            >
-              <div className={styles.icon}>{PILLAR_META[i].icon}</div>
-              <div className={styles.name}>{item.name}</div>
-              <p className={styles.desc}>{item.desc}</p>
-              <div className="tags">
-                {item.tags.map((tag) => (
-                  <span key={tag} className="tag">
-                    {tag}
-                  </span>
-                ))}
+          {PILLAR_KEYS.map((key) => {
+            const meta = PILLAR_META[key];
+            const item = items[key];
+            if (!item) return null;
+            return (
+              <div
+                key={key}
+                className={`${styles.pillar} ${meta.featured ? styles.featured : ""}`}
+              >
+                <div className={styles.icon}>{meta.icon}</div>
+                <div className={styles.name}>{item.name}</div>
+                <p className={styles.desc}>{item.desc}</p>
+                <div className="tags">
+                  {item.tags.map((tag) => (
+                    <span key={tag} className="tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

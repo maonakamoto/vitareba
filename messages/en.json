@@ -97,8 +97,8 @@
     "heading": "Three programmes.",
     "headingEm": "One integrated approach.",
     "sub": "Each programme addresses a different entry point — but all share the same metabolic foundation, the same clinical rigour, and the same commitment to treating root causes, not symptoms.",
-    "items": [
-      {
+    "items": {
+      "metabolic": {
         "name": "Metabolic Psychiatry",
         "desc": "The overarching framework. We assess psychiatric conditions through metabolic, biological and physiological root causes — neuroinflammation, mitochondrial health, gut-brain axis, circadian rhythmics, and stress markers. Because mental health and longevity share the same biological foundation. Advanced diagnostics delivered via clinic sessions and home test kits.",
         "tags": [
@@ -109,7 +109,7 @@
           "Home Test Kits"
         ]
       },
-      {
+      "adhd": {
         "name": "ADHD for High Performers",
         "desc": "Our flagship programme featuring the proprietary SYL Clock — mapping your symptoms across four life dimensions: health, mindset, relationships and career. Formal diagnosis, metabolic workup, longevity medicine and 90 days of Surf Your Life transformation coaching.",
         "tags": [
@@ -119,7 +119,7 @@
           "Surf Your Life"
         ]
       },
-      {
+      "psychedelic": {
         "name": "Psychedelic Readiness",
         "desc": "A three-month structured preparation protocol combining physical diagnostics, metabolic optimisation and psychological readiness assessment. Emerging research shows psychedelics don't just support neuroplasticity — they may extend cellular lifespan, preserve telomeres, and promote healthier aging.",
         "tags": [
@@ -130,7 +130,7 @@
           "Swiss Framework"
         ]
       }
-    ]
+    }
   },
   "approach": {
     "eyebrow": "Our Approach",
@@ -296,24 +296,24 @@
     "heading": "The SYL Clock.",
     "headingEm": "Four dimensions. One picture.",
     "body": "The Surf Your Life Clock maps your ADHD symptoms across the four dimensions that matter most. Not just how your brain works — but how it shows up in every area of your life. The result is the most actionable performance map available.",
-    "dimensions": [
-      {
+    "dimensions": {
+      "health": {
         "name": "Health",
         "text": "Energy, sleep, nutrition, exercise, substance use — the biological foundation everything else rests on."
       },
-      {
+      "mindset": {
         "name": "Mindset",
         "text": "Focus patterns, emotional regulation, inner narrative, decision quality and cognitive performance under pressure."
       },
-      {
+      "relationships": {
         "name": "Relationships",
         "text": "Communication patterns, rejection sensitivity, trust, intimacy and how your neurotype shapes your connections."
       },
-      {
+      "career": {
         "name": "Career",
         "text": "Leadership style, productivity architecture, team dynamics, strategic thinking and professional trajectory."
       }
-    ]
+    }
   },
   "psychedelicReadiness": {
     "eyebrow": "Psychedelic Readiness Programme",
