@@ -200,7 +200,12 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
       {loading ? (
         <p className={styles.goalMutedText}>Loading…</p>
       ) : loadError ? (
-        <p className={styles.goalMutedText}>Failed to load goals. Please refresh.</p>
+        <p className={styles.goalMutedText}>
+          Failed to load goals.{" "}
+          <button type="button" onClick={load} className={styles.goalRetryBtn}>
+            Retry
+          </button>
+        </p>
       ) : goals.length === 0 ? (
         <p className={styles.goalMutedText}>No goals set yet.</p>
       ) : (
