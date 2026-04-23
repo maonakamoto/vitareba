@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "@/app/(admin)/admin.module.css";
 import { InlineMessageCompose } from "./InlineMessageCompose";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 type Thread = {
   id: string;
@@ -17,7 +18,7 @@ export function PatientMessagesCard({ threads, patientId }: { threads: Thread[];
       ) : (
         <div className={styles.msgThreadList}>
           {threads.map((t) => (
-            <Link key={t.id} href={`/admin/messages/${t.id}`} className={styles.msgThreadRow}>
+            <Link key={t.id} href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.msgThreadRow}>
               <div>
                 <div className={styles.msgThreadSubject}>{t.subject}</div>
                 {t.messages[0] && (

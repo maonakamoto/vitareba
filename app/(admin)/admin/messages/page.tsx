@@ -8,7 +8,7 @@ import styles from "../../admin.module.css";
 import { formatDateShort } from "@/lib/utils/format";
 import { getAdminUnreadThreadIds } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default async function AdminMessagesPage() {
   const session = await auth();
@@ -82,7 +82,7 @@ export default async function AdminMessagesPage() {
                       {formatDateShort(t.lastMessageAt)}
                     </td>
                     <td>
-                      <Link href={`/admin/messages/${t.id}`} className={styles.cellLink}>
+                      <Link href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.cellLink}>
                         {isUnread ? "Reply →" : "Open →"}
                       </Link>
                     </td>

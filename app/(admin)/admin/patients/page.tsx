@@ -15,7 +15,7 @@ import {
 } from "@/lib/config/admin";
 import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 
 
 export default async function PatientsPage() {
@@ -164,7 +164,7 @@ export default async function PatientsPage() {
 
                     {/* View */}
                     <td>
-                      <Link href={`/admin/patients/${p.id}`} className={styles.cellLink}>
+                      <Link href={`${ADMIN_ROUTES.patients}/${p.id}`} className={styles.cellLink}>
                         View →
                       </Link>
                     </td>

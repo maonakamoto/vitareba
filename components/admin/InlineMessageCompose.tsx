@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "@/app/(admin)/admin.module.css";
 import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export function InlineMessageCompose({ patientId }: { patientId: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -44,7 +45,7 @@ export function InlineMessageCompose({ patientId }: { patientId: string }) {
     return (
       <div className={styles.composeSent}>
         Sent —{" "}
-        <Link href={`/admin/messages/${sentThreadId}`} className={styles.composeSentLink}>
+        <Link href={`${ADMIN_ROUTES.messages}/${sentThreadId}`} className={styles.composeSentLink}>
           View conversation →
         </Link>
       </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "../../admin.module.css";
 import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 import { formatDateShort } from "@/lib/utils/format";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 type Patient = { id: string; name: string | null; email: string };
 type Document = {
@@ -197,7 +198,7 @@ export default function AdminDocumentsPage() {
               {documents.map((doc) => (
                 <tr key={doc.id}>
                   <td>
-                    <Link href={`/admin/patients/${doc.user.id}`} className={styles.linkPlain}>
+                    <Link href={`${ADMIN_ROUTES.patients}/${doc.user.id}`} className={styles.linkPlain}>
                       <div className={styles.cellName}>
                         {doc.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>

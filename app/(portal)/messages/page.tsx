@@ -9,6 +9,7 @@ import { formatDateNumeric } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { type ThreadListItem } from "@/lib/config/messages";
 import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export default function MessagesPage() {
   const [threads, setThreads] = useState<ThreadListItem[]>([]);
@@ -136,7 +137,7 @@ export default function MessagesPage() {
             const lastMsg = t.messages[0];
             const isUnread = !!lastMsg && lastMsg.senderId !== t.patient.id && lastMsg.readAt === null;
             return (
-              <Link key={t.id} href={`/messages/${t.id}`} className={msgStyles.threadLink}>
+              <Link key={t.id} href={`${PORTAL_ROUTES.messages}/${t.id}`} className={msgStyles.threadLink}>
                 <div className={styles.card}>
                   <div className={msgStyles.threadRow}>
                     <div className={msgStyles.threadSubjectRow}>
