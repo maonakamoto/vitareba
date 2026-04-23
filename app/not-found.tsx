@@ -1,17 +1,15 @@
 import Link from "next/link";
-import { COLOR_INK, COLOR_MUTED, COLOR_TEAL } from "@/lib/config/theme";
+import styles from "./not-found.module.css";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 export default function NotFound() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", gap: "0.75rem", textAlign: "center", padding: "2rem", fontFamily: "DM Sans, sans-serif" }}>
-      <p style={{ fontSize: "1.25rem", fontWeight: 500, color: COLOR_INK, margin: 0 }}>
-        Page not found
-      </p>
-      <p style={{ color: COLOR_MUTED, maxWidth: 400, margin: 0 }}>
+    <div className={styles.page}>
+      <p className={styles.title}>Page not found</p>
+      <p className={styles.body}>
         The page you were looking for doesn&apos;t exist or has been moved.
       </p>
-      <Link href={PORTAL_ROUTES.dashboard} style={{ marginTop: "0.5rem", color: COLOR_TEAL, fontSize: "0.875rem" }}>
+      <Link href={PORTAL_ROUTES.dashboard} className={styles.link}>
         Go to dashboard
       </Link>
     </div>
