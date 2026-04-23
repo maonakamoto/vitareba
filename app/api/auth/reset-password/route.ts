@@ -36,8 +36,13 @@ export async function POST(req: Request) {
   }
 
   const hashed = await hashPassword(password);
-  await db.update(users).set({ password: hashed }).where(eq(users.email, email));
-  await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
+  try {
+    await db.update(users).set({ password: hashed }).where(eq(users.email, email));
+    await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
+  } catch (err) {
+    console.error("[api/auth/reset-password] update failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to reset password — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

@@ -32,7 +32,10 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const limitParam = searchParams.get("days");
-  const days = limitParam ? Math.min(parseInt(limitParam, 10), CHECKIN_FETCH_MAX_DAYS) : CHECKIN_HISTORY_DAYS;
+  const parsedDays = limitParam ? parseInt(limitParam, 10) : NaN;
+  const days = !isNaN(parsedDays) && parsedDays > 0
+    ? Math.min(parsedDays, CHECKIN_FETCH_MAX_DAYS)
+    : CHECKIN_HISTORY_DAYS;
 
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);

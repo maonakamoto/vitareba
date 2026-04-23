@@ -49,7 +49,12 @@ export async function POST(req: Request) {
   }
 
   const hashed = await hashPassword(newPassword);
-  await db.update(users).set({ password: hashed }).where(eq(users.id, session.user.id));
+  try {
+    await db.update(users).set({ password: hashed }).where(eq(users.id, session.user.id));
+  } catch (err) {
+    console.error("[api/auth/change-password] update failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to update password — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true });
 }

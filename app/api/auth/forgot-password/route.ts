@@ -31,23 +31,28 @@ export async function POST(req: Request) {
   if (!user?.password) return OK;
 
   // Invalidate any existing reset token for this email
-  await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
+  try {
+    await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
 
-  const token = randomBytes(32).toString("hex");
-  const expires = new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY_MS);
+    const token = randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY_MS);
 
-  await db.insert(verificationTokens).values({
-    identifier: `reset:${email}`,
-    token,
-    expires,
-  });
+    await db.insert(verificationTokens).values({
+      identifier: `reset:${email}`,
+      token,
+      expires,
+    });
 
-  const resetUrl = `${PORTAL_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
-  await sendEmail({
-    to: email,
-    subject: `Reset your ${COMPANY.shortName} password`,
-    html: passwordResetEmail({ resetUrl }),
-  });
+    const resetUrl = `${PORTAL_URL}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+    await sendEmail({
+      to: email,
+      subject: `Reset your ${COMPANY.shortName} password`,
+      html: passwordResetEmail({ resetUrl }),
+    });
+  } catch (err) {
+    // Log but still return OK — never reveal whether the email exists or the operation failed
+    console.error("[api/auth/forgot-password] failed:", err);
+  }
 
   return OK;
 }
