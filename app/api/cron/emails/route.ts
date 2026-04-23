@@ -26,13 +26,19 @@ export async function GET(req: Request) {
 
   const now = new Date();
 
-  const pending = await db.query.emailQueue.findMany({
-    where: and(
-      eq(emailQueue.status, EMAIL_QUEUE_STATUS.pending),
-      lte(emailQueue.sendAt, now)
-    ),
-    with: { user: { columns: { name: true, email: true } } },
-  });
+  let pending;
+  try {
+    pending = await db.query.emailQueue.findMany({
+      where: and(
+        eq(emailQueue.status, EMAIL_QUEUE_STATUS.pending),
+        lte(emailQueue.sendAt, now)
+      ),
+      with: { user: { columns: { name: true, email: true } } },
+    });
+  } catch (err) {
+    console.error("[cron/emails] DB read failed:", err);
+    return NextResponse.json({ success: false, error: "Database unavailable" }, { status: 500 });
+  }
 
   let sent = 0;
   let failed = 0;

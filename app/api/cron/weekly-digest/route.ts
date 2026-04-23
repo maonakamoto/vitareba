@@ -37,25 +37,33 @@ export async function GET(req: Request) {
   const prevWeekISO = formatDateISO(prevWeekStart);
 
   // Fetch all patients with their profile, latest assessment, and latest booking
-  const patients = await db.query.users.findMany({
-    where: eq(users.role, USER_ROLE.patient),
-    with: {
-      profile: { columns: { digestOptOut: true } },
-      assessmentResults: {
-        orderBy: [desc(assessmentResults.completedAt)],
-        limit: 1,
+  let patients;
+  try {
+    patients = await db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      with: {
+        profile: { columns: { digestOptOut: true } },
+        assessmentResults: {
+          orderBy: [desc(assessmentResults.completedAt)],
+          limit: 1,
+        },
+        bookings: {
+          orderBy: [desc(bookings.createdAt)],
+          limit: 1,
+        },
       },
-      bookings: {
-        orderBy: [desc(bookings.createdAt)],
-        limit: 1,
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[cron/weekly-digest] DB read failed:", err);
+    return NextResponse.json({ success: false, error: "Database unavailable" }, { status: 500 });
+  }
 
   // Batch-load last 14 days of check-ins for all patients in a single query
   const patientIds = patients.map((p) => p.id);
-  const allCheckins = patientIds.length > 0
-    ? await db
+  let allCheckins: (typeof dailyCheckins.$inferSelect)[] = [];
+  if (patientIds.length > 0) {
+    try {
+      allCheckins = await db
         .select()
         .from(dailyCheckins)
         .where(
@@ -63,8 +71,12 @@ export async function GET(req: Request) {
             inArray(dailyCheckins.userId, patientIds),
             gte(dailyCheckins.date, prevWeekISO)
           )
-        )
-    : [];
+        );
+    } catch (err) {
+      console.error("[cron/weekly-digest] checkins DB read failed:", err);
+      return NextResponse.json({ success: false, error: "Database unavailable" }, { status: 500 });
+    }
+  }
 
   // Group check-ins by userId for O(1) lookup
   const checkinsByPatient = new Map<string, typeof allCheckins>();

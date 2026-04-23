@@ -17,24 +17,32 @@ export async function GET(req: Request) {
 
   const today = formatDateISO(new Date());
 
-  const patients = await db.query.users.findMany({
-    where: eq(users.role, USER_ROLE.patient),
-    with: {
-      profile: { columns: { digestOptOut: true } },
-      assessmentResults: {
-        orderBy: [desc(assessmentResults.completedAt)],
-        limit: 1,
+  let patients;
+  try {
+    patients = await db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      with: {
+        profile: { columns: { digestOptOut: true } },
+        assessmentResults: {
+          orderBy: [desc(assessmentResults.completedAt)],
+          limit: 1,
+        },
+        dailyCheckins: {
+          where: eq(dailyCheckins.date, today),
+          limit: 1,
+        },
       },
-      dailyCheckins: {
-        where: eq(dailyCheckins.date, today),
-        limit: 1,
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[cron/checkin-reminder] DB read failed:", err);
+    return NextResponse.json({ success: false, error: "Database unavailable" }, { status: 500 });
+  }
 
-  // Filter to patients who should receive a reminder
+  // Filter to patients who should receive a reminder (email required, not opted out,
+  // has completed at least one assessment, and hasn't checked in today)
   const sendable = patients.filter(
     (p) =>
+      p.email &&
       !p.profile?.digestOptOut &&
       p.assessmentResults.length > 0 &&
       p.dailyCheckins.length === 0
@@ -46,10 +54,10 @@ export async function GET(req: Request) {
     sendable.map((patient) => {
       const patientName = displayName(patient.name, patient.email);
       return sendEmail({
-        to: patient.email ?? "",
+        to: patient.email!,
         subject: "How are you doing today?",
         html: checkinReminderEmail({ patientName, portalUrl: PORTAL_URL }),
-      }).catch(console.error);
+      }).catch((err) => console.error("[cron/checkin-reminder] send failed for", patient.id, err));
     })
   );
 

@@ -25,27 +25,33 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: true, alerts: 0, checked: 0 });
   }
 
-  const patients = await db.query.users.findMany({
-    where: eq(users.role, USER_ROLE.patient),
-    with: {
-      profile: { columns: { lastKnownSignal: true } },
-      assessmentResults: {
-        orderBy: [desc(assessmentResults.completedAt)],
-        limit: 2,
+  let patients;
+  try {
+    patients = await db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      with: {
+        profile: { columns: { lastKnownSignal: true } },
+        assessmentResults: {
+          orderBy: [desc(assessmentResults.completedAt)],
+          limit: 2,
+        },
+        bookings: {
+          orderBy: [desc(bookings.createdAt)],
+          limit: 1,
+        },
+        dailyCheckins: {
+          orderBy: [desc(dailyCheckins.date)],
+          limit: SIGNAL_CHECKIN_WINDOW_DAYS,
+        },
+        clinicalGoals: {
+          where: isNull(clinicalGoals.completedAt),
+        },
       },
-      bookings: {
-        orderBy: [desc(bookings.createdAt)],
-        limit: 1,
-      },
-      dailyCheckins: {
-        orderBy: [desc(dailyCheckins.date)],
-        limit: SIGNAL_CHECKIN_WINDOW_DAYS,
-      },
-      clinicalGoals: {
-        where: isNull(clinicalGoals.completedAt),
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("[cron/signals] DB read failed:", err);
+    return NextResponse.json({ success: false, error: "Database unavailable" }, { status: 500 });
+  }
 
   let alerts = 0;
   const dbWrites: Promise<unknown>[] = [];
