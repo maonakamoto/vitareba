@@ -84,7 +84,7 @@ export default async function PatientDetailPage({
           <p className={styles.cardLabel}>Check-in trend</p>
           <CheckinTrendChart
             data={patient.dailyCheckins.map((c) => ({
-              date: c.date.slice(5),
+              date: formatDateMonthDay(c.date + "T00:00:00"),
               sleep: c.sleep,
               energy: c.energy,
               mood: c.mood,
