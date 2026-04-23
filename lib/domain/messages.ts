@@ -1,7 +1,14 @@
+import { z } from "zod";
+import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 import { db } from "@/lib/db";
 import { threads, threadMessages, users } from "@/lib/db/schema";
 import { eq, and, isNull, ne, inArray } from "drizzle-orm";
 import { USER_ROLE } from "@/lib/config/auth";
+
+/** Validates a message reply body (used for both patient and admin replies) */
+export const replySchema = z.object({
+  body: z.string().min(1).max(MESSAGE_BODY_MAX_LENGTH),
+});
 
 /**
  * Count threads that have at least one unread message for the given user.

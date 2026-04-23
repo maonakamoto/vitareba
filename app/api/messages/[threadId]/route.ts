@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { eq, asc, and, isNull, ne } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
@@ -9,12 +8,8 @@ import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
 import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
-import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 import { USER_ROLE } from "@/lib/config/auth";
-
-const replySchema = z.object({
-  body: z.string().min(1).max(MESSAGE_BODY_MAX_LENGTH),
-});
+import { replySchema } from "@/lib/domain/messages";
 
 export async function GET(
   _req: Request,

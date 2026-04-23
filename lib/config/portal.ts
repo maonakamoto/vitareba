@@ -98,6 +98,9 @@ export const CHECKIN_NOTES_MAX_LENGTH = 1_000;
 /** Booking preferred date string max length (YYYY-MM-DD format from date input) */
 export const BOOKING_PREFERRED_DATE_MAX_LENGTH = 50;
 
+/** Programme start date ISO string max length (YYYY-MM-DD = 10 chars) */
+export const PROGRAMME_START_DATE_MAX_LENGTH = 10;
+
 /** Booking request notes max length */
 export const BOOKING_NOTES_MAX_LENGTH = 1_000;
 

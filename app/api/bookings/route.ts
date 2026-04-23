@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
@@ -10,12 +9,7 @@ import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { USER_ROLE } from "@/lib/config/auth";
-import { BOOKING_PREFERRED_DATE_MAX_LENGTH, BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
-
-const createSchema = z.object({
-  preferredDate: z.string().max(BOOKING_PREFERRED_DATE_MAX_LENGTH).optional(),
-  notes: z.string().max(BOOKING_NOTES_MAX_LENGTH).optional(),
-});
+import { bookingCreateSchema } from "@/lib/domain/bookings";
 
 export async function GET() {
   const guard = await requireSession();
@@ -47,7 +41,7 @@ export async function POST(req: Request) {
   const { session } = guard;
 
   const body = await req.json();
-  const parsed = createSchema.safeParse(body);
+  const parsed = bookingCreateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
