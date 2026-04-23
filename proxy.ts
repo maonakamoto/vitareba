@@ -3,7 +3,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import { USER_ROLE } from "@/lib/config/auth";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, ADMIN_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -17,27 +17,23 @@ const PORTAL_PREFIXES = [
 ];
 
 // Auth paths as they appear under a locale prefix (e.g. /de/login)
-const LOCALE_AUTH_SUFFIXES = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-];
+// Derived from AUTH_ROUTES so adding a new auth page only requires updating lib/config/routes.ts
+const LOCALE_AUTH_SUFFIXES = Object.values(AUTH_ROUTES);
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
-  const dest = session?.user.role === USER_ROLE.admin ? "/admin/patients" : "/dashboard";
+  const dest = session?.user.role === USER_ROLE.admin ? ADMIN_ROUTES.patients : PORTAL_ROUTES.dashboard;
 
   // ── Portal / admin ─────────────────────────────────────────────────────
   if (PORTAL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
     if (!session) {
-      const loginUrl = new URL("/login", req.url);
+      const loginUrl = new URL(AUTH_ROUTES.login, req.url);
       loginUrl.searchParams.set("returnTo", pathname);
       return NextResponse.redirect(loginUrl);
     }
-    if (pathname.startsWith("/admin") && session.user.role !== USER_ROLE.admin) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+    if (pathname.startsWith(ADMIN_ROUTES.root) && session.user.role !== USER_ROLE.admin) {
+      return NextResponse.redirect(new URL(PORTAL_ROUTES.dashboard, req.url));
     }
     return NextResponse.next();
   }
