@@ -9,7 +9,7 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { BOOKING_STATUS, BOOKING_STATUS_VALUES } from "@/lib/config/booking-status";
+import { BOOKING_STATUS, BOOKING_STATUS_VALUES, BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
   status: z.enum(BOOKING_STATUS_VALUES),
@@ -48,14 +48,17 @@ export async function PATCH(
       columns: { name: true, email: true },
     }).catch(() => null);
     if (patient?.email) {
+      const bookingTypeLabel = BOOKING_TYPE_CONFIG[updated.bookingType]?.label ?? "Booking";
+      const machineLabel = updated.machineType ? MACHINE_TYPE_CONFIG[updated.machineType]?.label : null;
+      const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
       const html = parsed.data.status === BOOKING_STATUS.confirmed
         ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` })
         : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` });
       sendEmail({
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
-          ? `Your consultation has been confirmed — ${COMPANY.shortName}`
-          : `Your consultation request — ${COMPANY.shortName}`,
+          ? `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`
+          : `Your ${sessionLabel.toLowerCase()} request — ${COMPANY.shortName}`,
         html,
       }).catch(console.error);
     }

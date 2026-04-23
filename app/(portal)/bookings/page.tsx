@@ -143,7 +143,7 @@ export default function BookingsPage() {
             <div className={authStyles.field}>
               <label className={authStyles.label}>Type</label>
               <div className={bookingStyles.typeToggle}>
-                {(["consultation", "machine"] as BookingType[]).map((t) => (
+                {BOOKING_TYPE_VALUES.map((t) => (
                   <button
                     key={t}
                     type="button"
