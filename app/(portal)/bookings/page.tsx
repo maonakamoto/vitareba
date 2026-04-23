@@ -23,11 +23,16 @@ export default function BookingsPage() {
 
   const load = useCallback(async () => {
     setLoadError(false);
-    const res = await fetch("/api/bookings");
-    if (!res.ok) { setLoading(false); setLoadError(true); return; }
-    const data = await res.json();
-    setBookings(data.data ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/bookings");
+      if (!res.ok) { setLoadError(true); return; }
+      const data = await res.json();
+      setBookings(data.data ?? []);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -36,23 +41,28 @@ export default function BookingsPage() {
     e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
-    const res = await fetch("/api/bookings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ preferredDate, notes }),
-    });
-    const data = await res.json();
-    setSubmitting(false);
-    if (!data.success) {
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferredDate, notes }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setSubmitError("Failed to submit booking. Please try again.");
+        return;
+      }
+      setPreferredDate("");
+      setNotes("");
+      setShowForm(false);
+      setSubmitSuccess(true);
+      setTimeout(() => setSubmitSuccess(false), BOOKING_SUCCESS_MS);
+      load();
+    } catch {
       setSubmitError("Failed to submit booking. Please try again.");
-      return;
+    } finally {
+      setSubmitting(false);
     }
-    setPreferredDate("");
-    setNotes("");
-    setShowForm(false);
-    setSubmitSuccess(true);
-    setTimeout(() => setSubmitSuccess(false), BOOKING_SUCCESS_MS);
-    load();
   }
 
   return (

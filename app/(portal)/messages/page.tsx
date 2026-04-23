@@ -21,11 +21,16 @@ export default function MessagesPage() {
 
   const load = useCallback(async () => {
     setLoadError(false);
-    const res = await fetch("/api/messages");
-    if (!res.ok) { setLoading(false); setLoadError(true); return; }
-    const data = await res.json();
-    setThreads(data.data ?? []);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/messages");
+      if (!res.ok) { setLoadError(true); return; }
+      const data = await res.json();
+      setThreads(data.data ?? []);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -34,21 +39,26 @@ export default function MessagesPage() {
     e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
-    const res = await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subject, body }),
-    });
-    const data = await res.json();
-    setSubmitting(false);
-    if (!res.ok || !data.success) {
+    try {
+      const res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, body }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setSubmitError("Failed to send message. Please try again.");
+        return;
+      }
+      setSubject("");
+      setBody("");
+      setShowForm(false);
+      load();
+    } catch {
       setSubmitError("Failed to send message. Please try again.");
-      return;
+    } finally {
+      setSubmitting(false);
     }
-    setSubject("");
-    setBody("");
-    setShowForm(false);
-    load();
   }
 
   return (
