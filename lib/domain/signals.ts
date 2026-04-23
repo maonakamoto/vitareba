@@ -6,6 +6,7 @@ import {
   NEW_PATIENT_GRACE_DAYS,
 } from "@/lib/config/admin";
 import { DAY_MS } from "@/lib/utils/format";
+import { CHECKIN_SCALE_MAX } from "@/lib/config/portal";
 
 type CheckinRow = {
   date: string; // YYYY-MM-DD
@@ -36,7 +37,7 @@ export type SignalResult = {
 
 /** Wellness score per check-in day: 1–5 where 5 is best. Stress is inverted. */
 export function wellnessAvg(c: CheckinRow): number {
-  return (c.sleep + c.energy + c.mood + c.focus + (6 - c.stress)) / 5;
+  return (c.sleep + c.energy + c.mood + c.focus + (CHECKIN_SCALE_MAX + 1 - c.stress)) / 5;
 }
 
 export function computePatientSignal({
