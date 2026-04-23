@@ -190,7 +190,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             <button type="submit" disabled={saving} className={styles.goalFormSubmit}>
               {saving ? "Saving…" : "Add goal"}
             </button>
-            <button type="button" onClick={() => setShowForm(false)} className={styles.goalFormCancel}>
+            <button type="button" onClick={() => setShowForm(false)} aria-label="Cancel adding new goal" className={styles.goalFormCancel}>
               Cancel
             </button>
           </div>
@@ -239,10 +239,10 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
                     className={styles.goalEditInput}
                     autoFocus
                   />
-                  <button type="button" onClick={() => handleUpdateCurrent(goal.id)} className={styles.goalEditSave}>
+                  <button type="button" onClick={() => handleUpdateCurrent(goal.id)} aria-label={`Save score update for "${goal.title}"`} className={styles.goalEditSave}>
                     Save
                   </button>
-                  <button type="button" onClick={() => setEditingId(null)} className={styles.goalEditCancel}>
+                  <button type="button" onClick={() => setEditingId(null)} aria-label={`Cancel score edit for "${goal.title}"`} className={styles.goalEditCancel}>
                     Cancel
                   </button>
                 </div>

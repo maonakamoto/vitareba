@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { DOCUMENT_MAX_FILE_SIZE_MB } from "@/lib/config/portal";
+import { DOCUMENT_MAX_FILE_SIZE_MB, DOCUMENT_TITLE_MAX_LENGTH, SAVED_FEEDBACK_MS } from "@/lib/config/portal";
 
 export function DocumentAddForm({ patientId }: { patientId: string }) {
   const [title, setTitle] = useState("");
@@ -39,7 +39,7 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
       setFile(null);
       if (fileRef.current) fileRef.current.value = "";
       setProgress("done");
-      setTimeout(() => setProgress("idle"), 3000);
+      setTimeout(() => setProgress("idle"), SAVED_FEEDBACK_MS);
     } catch {
       setProgress("error");
       setErrorMsg("Upload failed. Please try again.");
@@ -60,6 +60,7 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Lab results, Assessment report…"
+            maxLength={DOCUMENT_TITLE_MAX_LENGTH}
             required
           />
         </div>

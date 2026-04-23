@@ -46,10 +46,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const [booking] = await db
-    .insert(bookings)
-    .values({ userId: session.user.id, ...parsed.data })
-    .returning();
+  let booking: typeof bookings.$inferSelect;
+  try {
+    [booking] = await db
+      .insert(bookings)
+      .values({ userId: session.user.id, ...parsed.data })
+      .returning();
+  } catch (err) {
+    console.error("[api/bookings] insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to create booking — please try again" }, { status: 500 });
+  }
 
   // Notify admin of new booking request (fire-and-forget — don't block the response)
   const adminEmails = getAdminEmails();
