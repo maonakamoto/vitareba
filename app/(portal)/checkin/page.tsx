@@ -74,6 +74,8 @@ export default function CheckinPage() {
               notes: tc.notes ?? "",
             });
           }
+        } else {
+          setLoadError(true);
         }
       })
       .catch(() => setLoadError(true))

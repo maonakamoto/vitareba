@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./Team.module.css";
+import { COMPANY } from "@/lib/config/company";
 
 const TEAM_META = [
-  { initials: "M", name: "Manuel" },
+  { initials: "M", name: COMPANY.clinicianName },
   { initials: "DM", name: "Dr. Montagna" },
   { initials: "DK", name: "Dr. Kondratiuk" },
 ];
