@@ -4,6 +4,8 @@ import {
   NO_CHECKIN_CRITICAL_DAYS,
   SCORE_DROP_CRITICAL,
   NEW_PATIENT_GRACE_DAYS,
+  SPARKLINE_LOW_THRESHOLD,
+  SPARKLINE_MID_THRESHOLD,
 } from "@/lib/config/admin";
 import { DAY_MS } from "@/lib/utils/format";
 import { CHECKIN_SCALE_MAX } from "@/lib/config/portal";
@@ -107,4 +109,14 @@ export function computePatientSignal({
   }
 
   return { signal: PATIENT_SIGNAL.active, reason: "All signals normal" };
+}
+
+/**
+ * Maps a wellness average (1–5 scale) to a CSS modifier class token:
+ * "low" | "mid" | "high". Thresholds are sourced from admin config SSOT.
+ */
+export function sparkLevel(avg: number): "low" | "mid" | "high" {
+  if (avg < SPARKLINE_LOW_THRESHOLD) return "low";
+  if (avg < SPARKLINE_MID_THRESHOLD) return "mid";
+  return "high";
 }

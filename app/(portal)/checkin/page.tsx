@@ -9,22 +9,13 @@ import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRIC
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
-import { computeStreak } from "@/lib/domain/checkin";
+import { computeStreak, streakMessage } from "@/lib/domain/checkin";
 
 
 type CheckinData = { date: string; notes: string } & Record<MetricKey, number>;
 
 type StoredCheckin = Omit<CheckinData, "notes"> & { notes: string | null; id: string };
 
-
-function streakMessage(streak: number): string {
-  if (streak >= 30) return "30-day streak — elite consistency. You're in rare company.";
-  if (streak >= 14) return `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
-  if (streak >= 7) return `${streak}-day streak — a full week. Your nervous system is being mapped.`;
-  if (streak >= 3) return `${streak} days in a row. Patterns are already forming.`;
-  if (streak === 2) return "2 days running. Keep it going.";
-  return "First data point saved. Come back tomorrow to start your streak.";
-}
 
 
 const SCALE = Array.from(

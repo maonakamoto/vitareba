@@ -25,6 +25,20 @@ export function normalizeCheckinMetric(raw: number): number {
 }
 
 /**
+ * Returns a motivational message for the patient's current streak.
+ * Milestones are domain decisions about what constitutes a significant
+ * check-in cadence, not UI copy — they live here alongside computeStreak().
+ */
+export function streakMessage(streak: number): string {
+  if (streak >= 30) return "30-day streak — elite consistency. You're in rare company.";
+  if (streak >= 14) return `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
+  if (streak >= 7) return `${streak}-day streak — a full week. Your nervous system is being mapped.`;
+  if (streak >= 3) return `${streak} days in a row. Patterns are already forming.`;
+  if (streak === 2) return "2 days running. Keep it going.";
+  return "First data point saved. Come back tomorrow to start your streak.";
+}
+
+/**
  * Compute the current consecutive daily check-in streak.
  * Streak counts backwards from today: if today is checked in → 1+,
  * if yesterday is also checked in → 2+, etc.

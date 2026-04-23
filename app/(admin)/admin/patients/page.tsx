@@ -6,32 +6,16 @@ import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
 import { scoreColor, getVerdictName } from "@/lib/assessment/data";
-import { computePatientSignal, wellnessAvg } from "@/lib/domain/signals";
+import { computePatientSignal, wellnessAvg, sparkLevel } from "@/lib/domain/signals";
 import { computeProfileCompleteness, profileCompletenessColor } from "@/lib/domain/profile";
 import {
   SIGNAL_SORT_ORDER,
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
-  SPARKLINE_LOW_THRESHOLD,
-  SPARKLINE_MID_THRESHOLD,
 } from "@/lib/config/admin";
-import { DAY_MS, formatDateISO } from "@/lib/utils/format";
+import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 
-function relativeDate(dateStr: string, now: Date): string {
-  const d = new Date(dateStr + "T00:00:00");
-  const diffMs = now.getTime() - d.getTime();
-  const days = Math.floor(diffMs / DAY_MS);
-  if (days === 0) return "Today";
-  if (days === 1) return "Yesterday";
-  return `${days}d ago`;
-}
-
-function sparkLevel(avg: number): string {
-  if (avg < SPARKLINE_LOW_THRESHOLD) return "low";
-  if (avg < SPARKLINE_MID_THRESHOLD) return "mid";
-  return "high";
-}
 
 export default async function PatientsPage() {
   const session = await auth();

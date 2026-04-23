@@ -27,7 +27,7 @@ export default async function ReportsPage() {
 
   const now = new Date();
   const weekAgo = new Date(now);
-  weekAgo.setDate(weekAgo.getDate() - 7);
+  weekAgo.setDate(weekAgo.getDate() - SIGNAL_CHECKIN_WINDOW_DAYS);
   const weekAgoStr = formatDateISO(weekAgo);
 
   // Fetch all patients with signal-relevant data

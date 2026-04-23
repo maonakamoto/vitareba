@@ -41,6 +41,18 @@ export function formatDateISO(date: Date): string {
 }
 
 /**
+ * Human-readable relative date label for admin lists: "Today", "Yesterday", "Nd ago".
+ * Accepts an ISO date string (YYYY-MM-DD) and a reference Date for testability.
+ */
+export function relativeDate(dateStr: string, now: Date): string {
+  const d = new Date(dateStr + "T00:00:00");
+  const days = Math.floor((now.getTime() - d.getTime()) / DAY_MS);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return `${days}d ago`;
+}
+
+/**
  * Returns the patient's display name: their name if set, otherwise the
  * local part of their email address, otherwise the fallback string.
  * Used wherever a human-readable name is needed for emails and alerts.
