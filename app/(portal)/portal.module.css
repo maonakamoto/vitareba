@@ -492,6 +492,7 @@
 }
 
 .errorRetry {
+  display: inline-block;
   background: var(--teal);
   color: #fff;
   border: none;
@@ -500,6 +501,7 @@
   font-size: 0.875rem;
   cursor: pointer;
   letter-spacing: 0.04em;
+  text-decoration: none;
 }
 
 .errorRetry:hover {

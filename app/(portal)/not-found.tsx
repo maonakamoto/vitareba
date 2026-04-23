@@ -10,7 +10,7 @@ export default function PortalNotFound() {
         The page you were looking for doesn&apos;t exist or has been moved.
       </p>
       <div className={styles.errorActions}>
-        <Link href={PORTAL_ROUTES.dashboard} className={styles.errorRetry} style={{ textDecoration: "none", display: "inline-block" }}>
+        <Link href={PORTAL_ROUTES.dashboard} className={styles.errorRetry}>
           Go to dashboard
         </Link>
       </div>

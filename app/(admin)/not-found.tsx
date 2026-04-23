@@ -10,7 +10,7 @@ export default function AdminNotFound() {
         The page you were looking for doesn&apos;t exist or has been moved.
       </p>
       <div className={styles.errorActions}>
-        <Link href={ADMIN_ROUTES.patients} className={styles.errorRetry} style={{ textDecoration: "none", display: "inline-block" }}>
+        <Link href={ADMIN_ROUTES.patients} className={styles.errorRetry}>
           Back to patients
         </Link>
       </div>
