@@ -6,6 +6,7 @@ import {
   GOAL_PROGRESS_LOW_PCT,
   type GoalRow,
 } from "@/lib/config/portal";
+import { computeGoalProgress } from "@/lib/domain/goals";
 
 export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "baseline" | "current" | "target">[] }) {
   if (goals.length === 0) return null;
@@ -16,12 +17,7 @@ export function GoalsCard({ goals }: { goals: Pick<GoalRow, "id" | "title" | "ba
       <div className={styles.goalsList}>
         {goals.map((goal) => {
           const hasProgress = goal.baseline != null || goal.current != null || goal.target != null;
-          const base = goal.baseline ?? 0;
-          const range = (goal.target ?? 0) - base;
-          const currentPct =
-            goal.current != null && goal.target != null && range > 0
-              ? Math.min(100, Math.max(0, Math.round(((goal.current - base) / range) * 100)))
-              : null;
+          const currentPct = computeGoalProgress(goal.baseline, goal.current, goal.target);
           return (
             <div key={goal.id}>
               <p className={styles.goalTitle}>{goal.title}</p>

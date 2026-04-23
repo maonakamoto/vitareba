@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { goalCreateSchema, goalUpdateSchema } from "./goals";
+import { goalCreateSchema, goalUpdateSchema, computeGoalProgress } from "./goals";
 
 // ─── goalCreateSchema ──────────────────────────────────────────────────────────
 
@@ -143,5 +143,73 @@ describe("goalUpdateSchema", () => {
       completed: false,
     });
     expect(result.success).toBe(true);
+  });
+});
+
+// ─── computeGoalProgress ──────────────────────────────────────────────────────
+
+describe("computeGoalProgress", () => {
+  // Core formula: ((current - baseline) / (target - baseline)) * 100
+
+  it("returns 0% when current equals baseline", () => {
+    expect(computeGoalProgress(20, 20, 80)).toBe(0);
+  });
+
+  it("returns 100% when current equals target", () => {
+    expect(computeGoalProgress(20, 80, 80)).toBe(100);
+  });
+
+  it("returns 50% at the midpoint of the range", () => {
+    expect(computeGoalProgress(20, 50, 80)).toBe(50);
+  });
+
+  it("returns 25% at a quarter of the range", () => {
+    expect(computeGoalProgress(20, 35, 80)).toBe(25);
+  });
+
+  it("treats null baseline as 0 (default offset)", () => {
+    expect(computeGoalProgress(null, 40, 80)).toBe(50);
+  });
+
+  it("treats undefined baseline as 0", () => {
+    expect(computeGoalProgress(undefined, 40, 80)).toBe(50);
+  });
+
+  it("returns null when current is null (no data yet)", () => {
+    expect(computeGoalProgress(20, null, 80)).toBeNull();
+  });
+
+  it("returns null when target is null (goal not fully defined)", () => {
+    expect(computeGoalProgress(20, 50, null)).toBeNull();
+  });
+
+  it("returns null when range is zero (baseline equals target)", () => {
+    expect(computeGoalProgress(50, 50, 50)).toBeNull();
+  });
+
+  it("clamps to 0 when current is below baseline (regression)", () => {
+    expect(computeGoalProgress(30, 10, 80)).toBe(0);
+  });
+
+  it("clamps to 100 when current exceeds target (overachievement)", () => {
+    expect(computeGoalProgress(20, 100, 80)).toBe(100);
+  });
+
+  it("is NOT current/target — baseline offset matters", () => {
+    // Without baseline: 45/75 * 100 = 60%
+    // With baseline 30: (45-30)/(75-30) * 100 = 15/45 * 100 ≈ 33%
+    expect(computeGoalProgress(30, 45, 75)).toBe(33);
+    expect(computeGoalProgress(30, 45, 75)).not.toBe(60);
+  });
+
+  it("rounds to the nearest integer", () => {
+    // 1/3 * 100 = 33.33... → 33
+    expect(computeGoalProgress(0, 1, 3)).toBe(33);
+    // 2/3 * 100 = 66.66... → 67
+    expect(computeGoalProgress(0, 2, 3)).toBe(67);
+  });
+
+  it("handles zero-based goals with no explicit baseline", () => {
+    expect(computeGoalProgress(0, 40, 100)).toBe(40);
   });
 });
