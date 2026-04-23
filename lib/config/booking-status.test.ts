@@ -3,7 +3,13 @@ import {
   BOOKING_STATUS_VALUES,
   BOOKING_STATUS,
   BOOKING_STATUS_CONFIG,
+  BOOKING_TYPE_VALUES,
+  BOOKING_TYPE_CONFIG,
+  MACHINE_TYPE_VALUES,
+  MACHINE_TYPE_CONFIG,
   type BookingStatus,
+  type BookingType,
+  type MachineType,
 } from "./booking-status";
 
 describe("BOOKING_STATUS config integrity", () => {
@@ -42,5 +48,64 @@ describe("BOOKING_STATUS config integrity", () => {
     const configKeys = Object.keys(BOOKING_STATUS_CONFIG).sort();
     const valuesKeys = [...BOOKING_STATUS_VALUES].sort();
     expect(configKeys).toEqual(valuesKeys);
+  });
+});
+
+describe("BOOKING_TYPE_CONFIG integrity", () => {
+  it("BOOKING_TYPE_CONFIG has an entry for every BOOKING_TYPE_VALUES item", () => {
+    for (const type of BOOKING_TYPE_VALUES) {
+      expect(BOOKING_TYPE_CONFIG).toHaveProperty(type);
+    }
+  });
+
+  it("every BOOKING_TYPE_CONFIG entry has a non-empty label", () => {
+    for (const type of BOOKING_TYPE_VALUES) {
+      const cfg = BOOKING_TYPE_CONFIG[type as BookingType];
+      expect(typeof cfg.label).toBe("string");
+      expect(cfg.label.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("BOOKING_TYPE_CONFIG has no extra keys beyond BOOKING_TYPE_VALUES", () => {
+    const configKeys = Object.keys(BOOKING_TYPE_CONFIG).sort();
+    const valuesKeys = [...BOOKING_TYPE_VALUES].sort();
+    expect(configKeys).toEqual(valuesKeys);
+  });
+
+  it("covers consultation and machine", () => {
+    const set = new Set(BOOKING_TYPE_VALUES);
+    expect(set.has("consultation")).toBe(true);
+    expect(set.has("machine")).toBe(true);
+  });
+});
+
+describe("MACHINE_TYPE_CONFIG integrity", () => {
+  it("MACHINE_TYPE_CONFIG has an entry for every MACHINE_TYPE_VALUES item", () => {
+    for (const type of MACHINE_TYPE_VALUES) {
+      expect(MACHINE_TYPE_CONFIG).toHaveProperty(type);
+    }
+  });
+
+  it("every MACHINE_TYPE_CONFIG entry has a non-empty label", () => {
+    for (const type of MACHINE_TYPE_VALUES) {
+      const cfg = MACHINE_TYPE_CONFIG[type as MachineType];
+      expect(typeof cfg.label).toBe("string");
+      expect(cfg.label.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("MACHINE_TYPE_CONFIG has no extra keys beyond MACHINE_TYPE_VALUES", () => {
+    const configKeys = Object.keys(MACHINE_TYPE_CONFIG).sort();
+    const valuesKeys = [...MACHINE_TYPE_VALUES].sort();
+    expect(configKeys).toEqual(valuesKeys);
+  });
+
+  it("covers all five VitaReBa technology machines", () => {
+    const set = new Set(MACHINE_TYPE_VALUES);
+    expect(set.has("h2_therapy")).toBe(true);
+    expect(set.has("ihht")).toBe(true);
+    expect(set.has("pemf")).toBe(true);
+    expect(set.has("infrared")).toBe(true);
+    expect(set.has("hrv_biofeedback")).toBe(true);
   });
 });

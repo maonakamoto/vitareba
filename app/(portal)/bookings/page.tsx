@@ -7,6 +7,7 @@ import authStyles from "../../(auth)/auth.module.css";
 import {
   BOOKING_STATUS_CONFIG,
   BOOKING_TYPE_CONFIG,
+  BOOKING_TYPE_VALUES,
   MACHINE_TYPE_CONFIG,
   MACHINE_TYPE_VALUES,
   type BookingRow,
