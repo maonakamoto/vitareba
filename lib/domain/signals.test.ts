@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { computePatientSignal } from "./signals";
+import { computePatientSignal, wellnessAvg } from "./signals";
 import { NEW_PATIENT_GRACE_DAYS, NO_CHECKIN_CRITICAL_DAYS, SCORE_DROP_CRITICAL } from "@/lib/config/admin";
 import { formatDateISO } from "@/lib/utils/format";
 
@@ -36,6 +36,30 @@ const DECENT_ASSESSMENT = { overallScore: 60, completedAt: daysAgo(30) };
 const LOW_ASSESSMENT = { overallScore: 60 - SCORE_DROP_CRITICAL - 1, completedAt: daysAgo(1) };
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
+
+describe("wellnessAvg", () => {
+  it("returns 5 when all dims are at max (stress=1 → least stressed)", () => {
+    expect(wellnessAvg({ sleep: 5, energy: 5, mood: 5, focus: 5, stress: 1 })).toBe(5);
+  });
+
+  it("returns 1 when all dims are at min (stress=5 → most stressed)", () => {
+    expect(wellnessAvg({ sleep: 1, energy: 1, mood: 1, focus: 1, stress: 5 })).toBe(1);
+  });
+
+  it("returns 3 when all dims including inverted stress are equal (stress=3)", () => {
+    expect(wellnessAvg({ sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 })).toBe(3);
+  });
+
+  it("stress is inverted: high stress (5) drags the score down", () => {
+    // sleep=5, energy=5, mood=5, focus=5, stress=5 → (5+5+5+5+(6-5))/5 = 21/5 = 4.2
+    expect(wellnessAvg({ sleep: 5, energy: 5, mood: 5, focus: 5, stress: 5 })).toBeCloseTo(4.2);
+  });
+
+  it("computes a mixed-value average correctly", () => {
+    // (4+3+2+5+(6-2))/5 = 18/5 = 3.6
+    expect(wellnessAvg({ sleep: 4, energy: 3, mood: 2, focus: 5, stress: 2 })).toBeCloseTo(3.6);
+  });
+});
 
 describe("computePatientSignal", () => {
   it("returns 'new' when patient registered within grace period", () => {
