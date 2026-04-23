@@ -59,25 +59,29 @@ export default function AdminDocumentsPage() {
     e.preventDefault();
     setSubmitting(true);
     setError("");
-    const res = await fetch("/api/documents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: patientId, title, fileUrl }),
-    });
-    const data = await res.json();
-    if (!data.success) {
+    try {
+      const res = await fetch("/api/documents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: patientId, title, fileUrl }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError("Failed to add document.");
+        return;
+      }
+      setPatientId("");
+      setTitle("");
+      setFileUrl("");
+      setSuccess(true);
+      setShowForm(false);
+      setTimeout(() => setSuccess(false), SAVED_FEEDBACK_MS);
+      loadDocuments();
+    } catch {
       setError("Failed to add document.");
+    } finally {
       setSubmitting(false);
-      return;
     }
-    setPatientId("");
-    setTitle("");
-    setFileUrl("");
-    setSubmitting(false);
-    setSuccess(true);
-    setShowForm(false);
-    setTimeout(() => setSuccess(false), SAVED_FEEDBACK_MS);
-    loadDocuments();
   }
 
   return (

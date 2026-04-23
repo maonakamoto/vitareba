@@ -98,24 +98,29 @@ export function ProfileForm() {
     e.preventDefault();
     setSaving(true);
     setSaveError("");
-    const res = await fetch("/api/profile", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        sleepHoursAvg: form.sleepHoursAvg === "" ? null : Number(form.sleepHoursAvg),
-        exerciseFrequency: form.exerciseFrequency === "" ? null : form.exerciseFrequency,
-        digestOptOut: form.digestOptOut,
-      }),
-    });
-    const data = await res.json();
-    setSaving(false);
-    if (!data.success) {
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          sleepHoursAvg: form.sleepHoursAvg === "" ? null : Number(form.sleepHoursAvg),
+          exerciseFrequency: form.exerciseFrequency === "" ? null : form.exerciseFrequency,
+          digestOptOut: form.digestOptOut,
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setSaveError("Failed to save changes. Please try again.");
+        return;
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
+    } catch {
       setSaveError("Failed to save changes. Please try again.");
-      return;
+    } finally {
+      setSaving(false);
     }
-    setSaved(true);
-    setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
   }
 
   function set(field: keyof ProfileData) {

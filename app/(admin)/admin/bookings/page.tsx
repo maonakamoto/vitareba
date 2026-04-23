@@ -34,15 +34,20 @@ export default function AdminBookingsPage() {
   async function updateStatus(id: string, status: BookingStatus) {
     setUpdating(id);
     setError("");
-    const res = await fetch(`/api/bookings/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    const data = await res.json();
-    if (!data.success) setError("Failed to update booking status.");
-    setUpdating(null);
-    load();
+    try {
+      const res = await fetch(`/api/bookings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+      if (!data.success) setError("Failed to update booking status.");
+      load();
+    } catch {
+      setError("Failed to update booking status.");
+    } finally {
+      setUpdating(null);
+    }
   }
 
   const filtered = filter === "all" ? bookings : bookings.filter((b) => b.status === (filter as BookingStatus));

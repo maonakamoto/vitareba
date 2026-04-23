@@ -85,24 +85,29 @@ export default function CheckinPage() {
     if (CHECKIN_METRICS.some(({ key }) => form[key] === 0)) return; // all metrics required
     setSaving(true);
     setSaveError("");
-    const res = await fetch("/api/checkin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const json = await res.json();
-    setSaving(false);
-    if (!res.ok || !json.success) {
+    try {
+      const res = await fetch("/api/checkin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        setSaveError("Failed to save check-in. Please try again.");
+        return;
+      }
+      setSaved(true);
+      setHistory((prev) => {
+        const without = prev.filter((c) => c.date !== today);
+        const updated: StoredCheckin = { id: "", ...form, notes: form.notes || null };
+        return [...without, updated].sort((a, b) => a.date.localeCompare(b.date));
+      });
+      setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
+    } catch {
       setSaveError("Failed to save check-in. Please try again.");
-      return;
+    } finally {
+      setSaving(false);
     }
-    setSaved(true);
-    setHistory((prev) => {
-      const without = prev.filter((c) => c.date !== today);
-      const updated: StoredCheckin = { id: "", ...form, notes: form.notes || null };
-      return [...without, updated].sort((a, b) => a.date.localeCompare(b.date));
-    });
-    setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
   }
 
   function setMetric(key: MetricKey, value: number) {

@@ -36,15 +36,20 @@ export default function AdminThreadPage() {
     if (!body.trim()) return;
     setSending(true);
     setSendError("");
-    const res = await fetch(`/api/messages/${threadId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body }),
-    });
-    setSending(false);
-    if (!res.ok) { setSendError("Failed to send. Please try again."); return; }
-    setBody("");
-    load();
+    try {
+      const res = await fetch(`/api/messages/${threadId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (!res.ok) { setSendError("Failed to send. Please try again."); return; }
+      setBody("");
+      load();
+    } catch {
+      setSendError("Failed to send. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (loadError) return <div className={styles.emptyState}>Failed to load thread. Please refresh the page.</div>;

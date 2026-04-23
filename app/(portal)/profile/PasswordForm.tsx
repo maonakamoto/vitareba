@@ -17,20 +17,25 @@ export function PasswordForm() {
     e.preventDefault();
     setPwSaving(true);
     setPwError("");
-    const res = await fetch("/api/auth/change-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pwForm),
-    });
-    const data = await res.json();
-    setPwSaving(false);
-    if (!data.success) {
-      setPwError(data.error ?? "Failed to change password.");
-      return;
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pwForm),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setPwError(data.error ?? "Failed to change password.");
+        return;
+      }
+      setPwForm({ currentPassword: "", newPassword: "" });
+      setPwSaved(true);
+      setTimeout(() => setPwSaved(false), SAVED_FEEDBACK_MS);
+    } catch {
+      setPwError("Failed to change password. Please try again.");
+    } finally {
+      setPwSaving(false);
     }
-    setPwForm({ currentPassword: "", newPassword: "" });
-    setPwSaved(true);
-    setTimeout(() => setPwSaved(false), SAVED_FEEDBACK_MS);
   }
 
   return (
