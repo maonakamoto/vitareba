@@ -6,12 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
+import { AUTH_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 
 function RegisterForm() {
   const t = useTranslations("auth.register");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") ?? "/dashboard";
+  const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,7 +40,7 @@ function RegisterForm() {
 
       const signInRes = await signIn("credentials", { email, password, redirect: false });
       if (signInRes?.error) {
-        router.push(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+        router.push(`${AUTH_ROUTES.login}?returnTo=${encodeURIComponent(returnTo)}`);
         return;
       }
 
@@ -100,7 +101,7 @@ function RegisterForm() {
           {t("hasAccount")}{" "}
           <Link
             className={styles.link}
-            href={`/login${returnTo !== "/dashboard" ? `?returnTo=${returnTo}` : ""}`}
+            href={`${AUTH_ROUTES.login}${returnTo !== PORTAL_ROUTES.dashboard ? `?returnTo=${returnTo}` : ""}`}
           >
             {t("signInLink")}
           </Link>

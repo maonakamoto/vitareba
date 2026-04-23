@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../auth.module.css";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
 
 function LoginForm() {
   const router = useRouter();
@@ -78,11 +78,11 @@ function LoginForm() {
       <div className={styles.linkRow}>
         <span>
           No account?{" "}
-          <Link className={styles.link} href={`/register${returnTo !== PORTAL_ROUTES.dashboard ? `?returnTo=${returnTo}` : ""}`}>
+          <Link className={styles.link} href={`${AUTH_ROUTES.register}${returnTo !== PORTAL_ROUTES.dashboard ? `?returnTo=${returnTo}` : ""}`}>
             Register
           </Link>
         </span>
-        <Link className={styles.link} href="/forgot-password">Forgot password?</Link>
+        <Link className={styles.link} href={AUTH_ROUTES.forgotPassword}>Forgot password?</Link>
       </div>
     </>
   );

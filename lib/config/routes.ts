@@ -1,5 +1,12 @@
-// Route path constants — SSOT for all portal and admin URL paths
+// Route path constants — SSOT for all portal, admin, and auth URL paths
 // Adding a new portal route: update here + middleware.ts PORTAL_PREFIXES
+
+export const AUTH_ROUTES = {
+  login:          "/login",
+  register:       "/register",
+  forgotPassword: "/forgot-password",
+  resetPassword:  "/reset-password",
+} as const satisfies Record<string, string>;
 
 export const PORTAL_ROUTES = {
   dashboard:   "/dashboard",

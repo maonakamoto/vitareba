@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 function ResetPasswordForm() {
   const t = useTranslations("auth.resetPassword");
@@ -55,7 +56,7 @@ function ResetPasswordForm() {
         <h1 className={styles.title}>{t("invalidTitle")}</h1>
         <p className={styles.subtitle}>{t("invalidSub")}</p>
         <div className={styles.linkRow}>
-          <Link className={styles.link} href="/forgot-password">{t("requestNew")}</Link>
+          <Link className={styles.link} href={AUTH_ROUTES.forgotPassword}>{t("requestNew")}</Link>
         </div>
       </>
     );

@@ -6,12 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
+import { AUTH_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 
 function LoginForm() {
   const t = useTranslations("auth.login");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") ?? "/dashboard";
+  const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -85,12 +86,12 @@ function LoginForm() {
           {t("noAccount")}{" "}
           <Link
             className={styles.link}
-            href={`/register${returnTo !== "/dashboard" ? `?returnTo=${returnTo}` : ""}`}
+            href={`${AUTH_ROUTES.register}${returnTo !== PORTAL_ROUTES.dashboard ? `?returnTo=${returnTo}` : ""}`}
           >
             {t("registerLink")}
           </Link>
         </span>
-        <Link className={styles.link} href="/forgot-password">
+        <Link className={styles.link} href={AUTH_ROUTES.forgotPassword}>
           {t("forgotPassword")}
         </Link>
       </div>

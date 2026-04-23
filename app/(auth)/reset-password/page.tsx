@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../auth.module.css";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -39,7 +40,7 @@ function ResetPasswordForm() {
         return;
       }
 
-      router.push("/login?reset=1");
+      router.push(`${AUTH_ROUTES.login}?reset=1`);
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -53,7 +54,7 @@ function ResetPasswordForm() {
         <h1 className={styles.title}>Invalid link</h1>
         <p className={styles.subtitle}>This password reset link is missing required parameters.</p>
         <div className={styles.linkRow}>
-          <Link className={styles.link} href="/forgot-password">Request a new link</Link>
+          <Link className={styles.link} href={AUTH_ROUTES.forgotPassword}>Request a new link</Link>
         </div>
       </>
     );

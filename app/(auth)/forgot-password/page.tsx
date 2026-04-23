@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "../auth.module.css";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ export default function ForgotPasswordPage() {
           password reset link within a few minutes.
         </p>
         <div className={styles.linkRow}>
-          <Link className={styles.link} href="/login">← Back to sign in</Link>
+          <Link className={styles.link} href={AUTH_ROUTES.login}>← Back to sign in</Link>
         </div>
       </>
     );
@@ -67,7 +68,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <div className={styles.linkRow}>
-        <Link className={styles.link} href="/login">← Back to sign in</Link>
+        <Link className={styles.link} href={AUTH_ROUTES.login}>← Back to sign in</Link>
       </div>
     </>
   );

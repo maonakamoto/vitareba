@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth.forgotPassword");
@@ -36,7 +37,7 @@ export default function ForgotPasswordPage() {
           {t("successSub", { email })}
         </p>
         <div className={styles.linkRow}>
-          <Link className={styles.link} href="/login">{t("backToSignIn")}</Link>
+          <Link className={styles.link} href={AUTH_ROUTES.login}>{t("backToSignIn")}</Link>
         </div>
       </>
     );
@@ -67,7 +68,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <div className={styles.linkRow}>
-        <Link className={styles.link} href="/login">{t("backToSignIn")}</Link>
+        <Link className={styles.link} href={AUTH_ROUTES.login}>{t("backToSignIn")}</Link>
       </div>
     </>
   );
