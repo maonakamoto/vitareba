@@ -23,15 +23,19 @@ function LoginForm() {
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", { email, password, redirect: false });
-    if (res?.error) {
+    try {
+      const res = await signIn("credentials", { email, password, redirect: false });
+      if (res?.error) {
+        setError(t("error"));
+        return;
+      }
+      router.push(returnTo);
+      router.refresh();
+    } catch {
       setError(t("error"));
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push(returnTo);
-    router.refresh();
   }
 
   return (
