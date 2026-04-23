@@ -9,6 +9,7 @@ import {
   formatDateMonthDay,
   formatDateISO,
   displayName,
+  relativeDate,
 } from "./format";
 
 // Fixed reference date: 2 April 2025, 10:05 UTC
@@ -132,6 +133,31 @@ describe("displayName", () => {
 
   it("returns name even when email is also provided", () => {
     expect(displayName("Bob", "bob@example.com")).toBe("Bob");
+  });
+});
+
+// ─── relativeDate ─────────────────────────────────────────────────────────────
+
+describe("relativeDate", () => {
+  // Use a fixed noon reference to avoid midnight boundary ambiguity
+  const now = new Date("2025-04-10T12:00:00");
+
+  it("returns 'Today' when the date matches today", () => {
+    expect(relativeDate("2025-04-10", now)).toBe("Today");
+  });
+
+  it("returns 'Yesterday' for one day ago", () => {
+    expect(relativeDate("2025-04-09", now)).toBe("Yesterday");
+  });
+
+  it("returns 'Nd ago' for N days ago", () => {
+    expect(relativeDate("2025-04-07", now)).toBe("3d ago");
+    expect(relativeDate("2025-04-03", now)).toBe("7d ago");
+  });
+
+  it("never returns 'Yesterday' for two days ago", () => {
+    expect(relativeDate("2025-04-08", now)).not.toBe("Yesterday");
+    expect(relativeDate("2025-04-08", now)).toBe("2d ago");
   });
 });
 

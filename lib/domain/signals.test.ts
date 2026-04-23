@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { computePatientSignal, wellnessAvg } from "./signals";
+import { computePatientSignal, wellnessAvg, sparkLevel } from "./signals";
 import { NEW_PATIENT_GRACE_DAYS, NO_CHECKIN_CRITICAL_DAYS, SCORE_DROP_CRITICAL } from "@/lib/config/admin";
 import { formatDateISO } from "@/lib/utils/format";
 
@@ -166,5 +166,26 @@ describe("computePatientSignal", () => {
       now: NOW,
     });
     expect(result.signal).toBe("active");
+  });
+});
+
+// ─── sparkLevel ───────────────────────────────────────────────────────────────
+
+describe("sparkLevel", () => {
+  it("returns 'low' for averages below SPARKLINE_LOW_THRESHOLD (2.5)", () => {
+    expect(sparkLevel(1)).toBe("low");
+    expect(sparkLevel(2.4)).toBe("low");
+  });
+
+  it("returns 'mid' for averages at or above low threshold but below mid threshold", () => {
+    expect(sparkLevel(2.5)).toBe("mid");
+    expect(sparkLevel(3)).toBe("mid");
+    expect(sparkLevel(3.4)).toBe("mid");
+  });
+
+  it("returns 'high' for averages at or above SPARKLINE_MID_THRESHOLD (3.5)", () => {
+    expect(sparkLevel(3.5)).toBe("high");
+    expect(sparkLevel(4)).toBe("high");
+    expect(sparkLevel(5)).toBe("high");
   });
 });
