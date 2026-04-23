@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { SAVED_FEEDBACK_MS, PATIENT_NOTE_MAX_LENGTH } from "@/lib/config/portal";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, PROGRAMME_ENUM_VALUES, PHASE_ENUM_VALUES } from "@/lib/config/programmes";
 import type { ProgrammeKey, PhaseKey } from "@/lib/config/programmes";
 
@@ -113,6 +113,7 @@ export function ProgrammeAssignmentForm({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
+          maxLength={PATIENT_NOTE_MAX_LENGTH}
           placeholder="Any notes about this assignment…"
           className={styles.assignFieldTextarea}
         />

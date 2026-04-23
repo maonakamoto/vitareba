@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { SAVED_FEEDBACK_MS, PATIENT_NOTE_MAX_LENGTH } from "@/lib/config/portal";
 import { formatDateShort } from "@/lib/utils/format";
 
 type Note = {
@@ -72,6 +72,7 @@ export function AdminNotesForm({
           aria-label="Clinical note"
           value={body}
           onChange={(e) => setBody(e.target.value)}
+          maxLength={PATIENT_NOTE_MAX_LENGTH}
           placeholder="Add a clinical note…"
           rows={3}
           className={styles.composeTextarea}
