@@ -66,7 +66,7 @@ export async function GET(req: Request) {
         )
     : [];
 
-  // Group check-ins by userId for O(1) lookup in the loop
+  // Group check-ins by userId for O(1) lookup
   const checkinsByPatient = new Map<string, typeof allCheckins>();
   for (const checkin of allCheckins) {
     const list = checkinsByPatient.get(checkin.userId) ?? [];
@@ -74,62 +74,56 @@ export async function GET(req: Request) {
     checkinsByPatient.set(checkin.userId, list);
   }
 
-  let sent = 0;
-  let skipped = 0;
+  // Filter to patients who should receive a digest
+  const sendable = patients.filter((p) => {
+    if (!p.email) return false;
+    if (p.profile?.digestOptOut) return false;
+    const hasAssessment = p.assessmentResults.length > 0;
+    const recentCheckins = checkinsByPatient.get(p.id) ?? [];
+    return hasAssessment || recentCheckins.length > 0;
+  });
+  const skippedCount = patients.length - sendable.length;
 
-  for (const patient of patients) {
-    if (!patient.email) { skipped++; continue; }
+  // Send all digests in parallel — independent per-patient, no ordering needed
+  const results = await Promise.allSettled(
+    sendable.map((patient) => {
+      const recentCheckins = checkinsByPatient.get(patient.id) ?? [];
+      const thisWeekCheckins = recentCheckins.filter((c) => c.date >= thisWeekISO);
+      const prevWeekCheckins = recentCheckins.filter(
+        (c) => c.date >= prevWeekISO && c.date < thisWeekISO
+      );
 
-    // Skip opted-out patients
-    if (patient.profile?.digestOptOut) { skipped++; continue; }
+      const latestAssessment = patient.assessmentResults[0];
+      const latestScore = latestAssessment?.overallScore ?? null;
 
-    // Skip patients with no assessments and no recent activity
-    const hasAssessment = patient.assessmentResults.length > 0;
-
-    const recentCheckins = checkinsByPatient.get(patient.id) ?? [];
-
-    // Skip if no assessments AND no recent activity
-    if (!hasAssessment && recentCheckins.length === 0) { skipped++; continue; }
-
-    // Compute week averages
-    const thisWeekCheckins = recentCheckins.filter((c) => c.date >= thisWeekISO);
-    const prevWeekCheckins = recentCheckins.filter(
-      (c) => c.date >= prevWeekISO && c.date < thisWeekISO
-    );
-
-    const thisWeekAvgs = avgMetrics(thisWeekCheckins);
-    const prevWeekAvgs = avgMetrics(prevWeekCheckins);
-
-    const latestAssessment = patient.assessmentResults[0];
-    const latestScore = latestAssessment?.overallScore ?? null;
-    const verdictName = latestScore !== null ? getVerdictName(latestScore) : null;
-    const nextBookingStatus = patient.bookings[0]?.status ?? null;
-
-    const patientName = displayName(patient.name, patient.email);
-
-    try {
       const html = weeklyDigestEmail({
-        patientName,
-        thisWeekAvgs,
-        prevWeekAvgs,
+        patientName: displayName(patient.name, patient.email),
+        thisWeekAvgs: avgMetrics(thisWeekCheckins),
+        prevWeekAvgs: avgMetrics(prevWeekCheckins),
         latestScore,
-        verdictName,
-        nextBookingStatus,
+        verdictName: latestScore !== null ? getVerdictName(latestScore) : null,
+        nextBookingStatus: patient.bookings[0]?.status ?? null,
         portalUrl: PORTAL_URL,
       });
 
-      await sendEmail({
-        to: patient.email,
+      return sendEmail({
+        to: patient.email!,
         subject: `Your ${COMPANY.shortName} weekly summary`,
         html,
       });
+    })
+  );
 
+  let sent = 0;
+  let failed = 0;
+  results.forEach((r, i) => {
+    if (r.status === "fulfilled") {
       sent++;
-    } catch (err) {
-      console.error("[cron/weekly-digest] send failed for", patient.id, err);
-      skipped++;
+    } else {
+      failed++;
+      console.error("[cron/weekly-digest] send failed for", sendable[i].id, r.reason);
     }
-  }
+  });
 
-  return NextResponse.json({ success: true, sent, skipped });
+  return NextResponse.json({ success: true, sent, skipped: skippedCount + failed });
 }

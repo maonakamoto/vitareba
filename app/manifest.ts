@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { COMPANY } from "@/lib/config/company";
+import { COLOR_OFF, COLOR_INK } from "@/lib/config/theme";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -9,8 +10,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/dashboard",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#f8f7f4",
-    theme_color: "#1a1a22",
+    background_color: COLOR_OFF,
+    theme_color: COLOR_INK,
     icons: [
       {
         src: "/icon-192.png",
