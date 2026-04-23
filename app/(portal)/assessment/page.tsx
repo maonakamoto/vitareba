@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import Assessment from "@/components/Assessment";
 import type { DimensionId } from "@/lib/assessment/data";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import styles from "./assessment.module.css";
 
 export default function AssessmentPage() {
@@ -16,13 +17,13 @@ export default function AssessmentPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ scores, overallScore }),
       });
-      router.push("/assessments?saved=1");
+      router.push(`${PORTAL_ROUTES.assessments}?saved=1`);
     },
     [router]
   );
 
   const handleClose = useCallback(() => {
-    router.push("/dashboard");
+    router.push(PORTAL_ROUTES.dashboard);
   }, [router]);
 
   return (

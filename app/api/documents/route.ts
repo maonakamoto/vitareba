@@ -10,9 +10,9 @@ import { USER_ROLE } from "@/lib/config/auth";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
-  title: z.string().min(1),
+  title: z.string().min(1).max(200),
   fileUrl: z.string().url(),
-  mimeType: z.string().optional(),
+  mimeType: z.string().max(100).optional(),
 });
 
 export async function GET(req: Request) {
