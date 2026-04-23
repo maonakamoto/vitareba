@@ -8,6 +8,7 @@ import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { type ThreadDetailWithPatient } from "@/lib/config/messages";
 import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default function AdminThreadPage() {
   const params = useParams();
@@ -58,7 +59,7 @@ export default function AdminThreadPage() {
 
   return (
     <div className={styles.threadDetail}>
-      <Link href="/admin/messages" className={styles.threadBackLink}>
+      <Link href={ADMIN_ROUTES.messages} className={styles.threadBackLink}>
         ← All messages
       </Link>
 

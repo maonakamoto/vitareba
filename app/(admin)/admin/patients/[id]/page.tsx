@@ -17,6 +17,7 @@ import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
 import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default async function PatientDetailPage({
   params,
@@ -56,7 +57,7 @@ export default async function PatientDetailPage({
     <div>
       {/* Header */}
       <div className={styles.patientHeader}>
-        <Link href="/admin/patients" className={styles.patientBackLink}>
+        <Link href={ADMIN_ROUTES.patients} className={styles.patientBackLink}>
           ← All patients
         </Link>
         <div className={styles.patientHeaderRow}>

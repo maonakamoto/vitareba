@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import styles from "./admin.module.css";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default function AdminError({
   error,
@@ -25,7 +26,7 @@ export default function AdminError({
         <button type="button" onClick={reset} className={styles.errorRetry}>
           Try again
         </button>
-        <Link href="/admin/patients" className={styles.errorHome}>
+        <Link href={ADMIN_ROUTES.patients} className={styles.errorHome}>
           Back to patients
         </Link>
       </div>
