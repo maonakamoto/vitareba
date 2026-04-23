@@ -23,10 +23,14 @@ export default function ThreadPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/messages/${threadId}`);
-    if (!res.ok) { setLoadError(true); return; }
-    const data = await res.json();
-    setThread(data.data);
+    try {
+      const res = await fetch(`/api/messages/${threadId}`);
+      if (!res.ok) { setLoadError(true); return; }
+      const data = await res.json();
+      setThread(data.data);
+    } catch {
+      setLoadError(true);
+    }
   }, [threadId]);
 
   useEffect(() => { load(); }, [load]);
@@ -46,18 +50,23 @@ export default function ThreadPage() {
     if (!body.trim()) return;
     setSending(true);
     setSendError("");
-    const res = await fetch(`/api/messages/${threadId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ body }),
-    });
-    setSending(false);
-    if (!res.ok) {
+    try {
+      const res = await fetch(`/api/messages/${threadId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (!res.ok) {
+        setSendError("Failed to send. Please try again.");
+        return;
+      }
+      setBody("");
+      load();
+    } catch {
       setSendError("Failed to send. Please try again.");
-      return;
+    } finally {
+      setSending(false);
     }
-    setBody("");
-    load();
   }
 
   if (loadError) return (
