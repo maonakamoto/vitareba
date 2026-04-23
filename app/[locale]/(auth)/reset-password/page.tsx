@@ -28,20 +28,25 @@ function ResetPasswordForm() {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/auth/reset-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, email, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, email, password }),
+      });
 
-    const data = await res.json();
-    if (!data.success) {
-      setError(data.error ?? t("genericError"));
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.error ?? t("genericError"));
+        return;
+      }
+
+      router.push("/login?reset=1");
+    } catch {
+      setError(t("genericError"));
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/login?reset=1");
   }
 
   if (!token || !email) {
