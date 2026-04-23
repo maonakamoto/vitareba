@@ -10,28 +10,23 @@ import styles from "./Nav.module.css";
 import { COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 
-// Megamenu config — sub-items link to on-page anchors
-const MEGA = {
-  programmes: [
-    { label: "ADHD & High Performance", sub: "Decode your neurotype, then optimise it", href: "#pillars" },
-    { label: "Metabolic Psychiatry",    sub: "Biology-first approach to mental health",  href: "#pillars" },
-    { label: "Psychedelic Readiness",   sub: "Preparation, integration & aftercare",      href: "#pillars" },
-  ],
-  approach: [
-    { label: "Metabolic Assessment",         href: "#approach" },
-    { label: "ADHD as Performance System",   href: "#approach" },
-    { label: "Psychedelic-assisted Therapy", href: "#approach" },
-    { label: "International Patients",       href: "#approach" },
-  ],
-  diagnostics: [
-    { label: "Full Metabolic Workup",      href: "#diagnostics" },
-    { label: "Neuropsychological Testing", href: "#diagnostics" },
-    { label: "Home Test Kits",             href: "#diagnostics" },
-  ],
+// Structural config — hrefs only; labels come from translations (nav.mega)
+const MEGA_HREFS = {
+  programmes: ["#pillars", "#pillars", "#pillars"] as const,
+  approach: ["#approach", "#approach", "#approach", "#approach"] as const,
+  diagnostics: ["#diagnostics", "#diagnostics", "#diagnostics"] as const,
 } as const;
+
+type MegaItem = { label: string; sub?: string };
 
 export default function Nav() {
   const t = useTranslations("nav");
+  const mega = t.raw("mega") as {
+    programmesFooter: string;
+    programmes: MegaItem[];
+    approach: string[];
+    diagnostics: string[];
+  };
   const { data: session } = useSession();
 
   return (
@@ -52,15 +47,15 @@ export default function Nav() {
           <div className={styles.megaPanel}>
             <div className={styles.megaPanelInner}>
               <div className={styles.megaCards}>
-                {MEGA.programmes.map((item) => (
-                  <a key={item.label} href={item.href} className={styles.megaCard}>
+                {mega.programmes.map((item, i) => (
+                  <a key={item.label} href={MEGA_HREFS.programmes[i]} className={styles.megaCard}>
                     <span className={styles.megaCardLabel}>{item.label}</span>
-                    <span className={styles.megaCardSub}>{item.sub}</span>
+                    {item.sub && <span className={styles.megaCardSub}>{item.sub}</span>}
                   </a>
                 ))}
               </div>
               <div className={styles.megaPanelFooter}>
-                <a href="#pillars" className={styles.megaFooterLink}>View all programmes →</a>
+                <a href="#pillars" className={styles.megaFooterLink}>{mega.programmesFooter}</a>
               </div>
             </div>
           </div>
@@ -77,9 +72,9 @@ export default function Nav() {
           <div className={styles.megaPanel}>
             <div className={styles.megaPanelInner}>
               <div className={styles.megaList}>
-                {MEGA.approach.map((item) => (
-                  <a key={item.label} href={item.href} className={styles.megaListItem}>
-                    {item.label}
+                {mega.approach.map((label, i) => (
+                  <a key={label} href={MEGA_HREFS.approach[i]} className={styles.megaListItem}>
+                    {label}
                   </a>
                 ))}
               </div>
@@ -98,9 +93,9 @@ export default function Nav() {
           <div className={styles.megaPanel}>
             <div className={styles.megaPanelInner}>
               <div className={styles.megaList}>
-                {MEGA.diagnostics.map((item) => (
-                  <a key={item.label} href={item.href} className={styles.megaListItem}>
-                    {item.label}
+                {mega.diagnostics.map((label, i) => (
+                  <a key={label} href={MEGA_HREFS.diagnostics[i]} className={styles.megaListItem}>
+                    {label}
                   </a>
                 ))}
               </div>

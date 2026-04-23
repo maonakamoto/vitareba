@@ -8,7 +8,35 @@
     "team": "Équipe",
     "signIn": "Se connecter",
     "dashboard": "Dashboard",
-    "cta": "Faire l'Inflection Edge"
+    "cta": "Faire l'Inflection Edge",
+    "mega": {
+      "programmesFooter": "Voir tous les programmes →",
+      "programmes": [
+        {
+          "label": "TDAH & Haute Performance",
+          "sub": "Décodez votre neurotype, puis optimisez-le"
+        },
+        {
+          "label": "Psychiatrie Métabolique",
+          "sub": "Approche centrée sur la biologie pour la santé mentale"
+        },
+        {
+          "label": "Préparation aux Psychédéliques",
+          "sub": "Préparation, intégration & suivi"
+        }
+      ],
+      "approach": [
+        "Bilan Métabolique",
+        "TDAH comme système de performance",
+        "Thérapie assistée par psychédéliques",
+        "Patients internationaux"
+      ],
+      "diagnostics": [
+        "Bilan métabolique complet",
+        "Tests neuropsychologiques",
+        "Kits de test à domicile"
+      ]
+    }
   },
   "hero": {
     "eyebrow": "Zürich · 8008 · Patients internationaux bienvenus",

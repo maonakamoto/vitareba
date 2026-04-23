@@ -8,7 +8,35 @@
     "team": "Team",
     "signIn": "Sign in",
     "dashboard": "Dashboard",
-    "cta": "Take the Inflection Edge"
+    "cta": "Take the Inflection Edge",
+    "mega": {
+      "programmesFooter": "View all programmes →",
+      "programmes": [
+        {
+          "label": "ADHD & High Performance",
+          "sub": "Decode your neurotype, then optimise it"
+        },
+        {
+          "label": "Metabolic Psychiatry",
+          "sub": "Biology-first approach to mental health"
+        },
+        {
+          "label": "Psychedelic Readiness",
+          "sub": "Preparation, integration & aftercare"
+        }
+      ],
+      "approach": [
+        "Metabolic Assessment",
+        "ADHD as Performance System",
+        "Psychedelic-assisted Therapy",
+        "International Patients"
+      ],
+      "diagnostics": [
+        "Full Metabolic Workup",
+        "Neuropsychological Testing",
+        "Home Test Kits"
+      ]
+    }
   },
   "hero": {
     "eyebrow": "Zürich · 8008 · International Patients Welcome",

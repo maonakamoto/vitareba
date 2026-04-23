@@ -8,7 +8,35 @@
     "team": "Team",
     "signIn": "Accedi",
     "dashboard": "Dashboard",
-    "cta": "Fai l'Inflection Edge"
+    "cta": "Fai l'Inflection Edge",
+    "mega": {
+      "programmesFooter": "Vedi tutti i programmi →",
+      "programmes": [
+        {
+          "label": "ADHD & Alta Performance",
+          "sub": "Decodifica il tuo neurotipo, poi ottimizzalo"
+        },
+        {
+          "label": "Psichiatria Metabolica",
+          "sub": "Approccio incentrato sulla biologia per la salute mentale"
+        },
+        {
+          "label": "Preparazione agli Psichedelici",
+          "sub": "Preparazione, integrazione & follow-up"
+        }
+      ],
+      "approach": [
+        "Valutazione Metabolica",
+        "ADHD come sistema di performance",
+        "Terapia assistita da psichedelici",
+        "Pazienti internazionali"
+      ],
+      "diagnostics": [
+        "Workup metabolico completo",
+        "Test neuropsicologici",
+        "Kit per test a casa"
+      ]
+    }
   },
   "hero": {
     "eyebrow": "Zürich · 8008 · Pazienti internazionali benvenuti",

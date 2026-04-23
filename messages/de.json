@@ -8,7 +8,35 @@
     "team": "Team",
     "signIn": "Anmelden",
     "dashboard": "Dashboard",
-    "cta": "Inflection Edge starten"
+    "cta": "Inflection Edge starten",
+    "mega": {
+      "programmesFooter": "Alle Programme ansehen →",
+      "programmes": [
+        {
+          "label": "ADHD & Höchstleistung",
+          "sub": "Neurotyp entschlüsseln, dann optimieren"
+        },
+        {
+          "label": "Metabolische Psychiatrie",
+          "sub": "Biologieorientierter Ansatz für psychische Gesundheit"
+        },
+        {
+          "label": "Psychedelische Therapiebereitschaft",
+          "sub": "Vorbereitung, Integration & Nachbetreuung"
+        }
+      ],
+      "approach": [
+        "Metabolisches Assessment",
+        "ADHD als Leistungssystem",
+        "Psychedelisch-assistierte Therapie",
+        "Internationale Patienten"
+      ],
+      "diagnostics": [
+        "Vollständiges metabolisches Workup",
+        "Neuropsychologische Testung",
+        "Home-Test-Kits"
+      ]
+    }
   },
   "hero": {
     "eyebrow": "Zürich · 8008 · Internationale Patienten willkommen",
