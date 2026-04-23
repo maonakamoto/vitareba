@@ -90,6 +90,9 @@ export const CHECKIN_NOTES_MAX_LENGTH = 1_000;
 /** Booking request notes max length */
 export const BOOKING_NOTES_MAX_LENGTH = 1_000;
 
+/** Document title max length (shared between JSON and multipart upload routes) */
+export const DOCUMENT_TITLE_MAX_LENGTH = 200;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 

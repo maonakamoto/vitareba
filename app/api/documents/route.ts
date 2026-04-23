@@ -7,10 +7,11 @@ import { requireSession, requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
 import { USER_ROLE } from "@/lib/config/auth";
+import { DOCUMENT_TITLE_MAX_LENGTH } from "@/lib/config/portal";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
-  title: z.string().min(1).max(200),
+  title: z.string().min(1).max(DOCUMENT_TITLE_MAX_LENGTH),
   fileUrl: z.string().url(),
   mimeType: z.string().max(100).optional(),
 });

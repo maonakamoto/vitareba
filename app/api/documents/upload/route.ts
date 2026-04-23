@@ -5,9 +5,11 @@ import { put } from "@vercel/blob";
 import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
+import { DOCUMENT_TITLE_MAX_LENGTH } from "@/lib/config/portal";
 
 // Max file size: 20 MB
 const MAX_BYTES = 20 * 1024 * 1024;
+const MAX_MB = MAX_BYTES / (1024 * 1024);
 
 // Server-side MIME type allowlist — must stay in sync with DocumentAddForm's accept attribute
 const ALLOWED_MIME_TYPES = new Set([
@@ -37,8 +39,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "file, title, and patientId required" }, { status: 400 });
   }
 
+  if (title.trim().length > DOCUMENT_TITLE_MAX_LENGTH) {
+    return NextResponse.json({ success: false, error: `Title must be ${DOCUMENT_TITLE_MAX_LENGTH} characters or fewer` }, { status: 400 });
+  }
+
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ success: false, error: "File exceeds 20 MB limit" }, { status: 413 });
+    return NextResponse.json({ success: false, error: `File exceeds ${MAX_MB} MB limit` }, { status: 413 });
   }
 
   if (file.type && !ALLOWED_MIME_TYPES.has(file.type)) {
