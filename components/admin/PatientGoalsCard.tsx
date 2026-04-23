@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH } from "@/lib/config/portal";
+import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH, CHECKIN_METRICS } from "@/lib/config/portal";
+
+const GOAL_METRIC_OPTIONS: { value: string; label: string }[] = [
+  { value: "", label: "None — track manually" },
+  { value: "overallScore", label: "Assessment overall score" },
+  ...CHECKIN_METRICS.map((m) => ({ value: m.key, label: `Check-in: ${m.label}` })),
+];
 
 function GoalProgressBar({ baseline, current, target }: { baseline: number | null; current: number | null; target: number | null }) {
   if (current == null && target == null) return null;
@@ -151,6 +157,16 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             maxLength={GOAL_TITLE_MAX_LENGTH}
             className={styles.goalFormInput}
           />
+          <select
+            aria-label="Auto-update metric (optional)"
+            value={form.metric}
+            onChange={(e) => setForm((p) => ({ ...p, metric: e.target.value }))}
+            className={styles.goalFormSelect}
+          >
+            {GOAL_METRIC_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
           <div className={styles.goalFormGrid3}>
             <input
               type="number" min="0" max="100"
@@ -259,6 +275,11 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
                 >
                   Update score
                 </button>
+              )}
+              {goal.metric && (
+                <p className={styles.goalMetricTag}>
+                  Auto-updated from: {GOAL_METRIC_OPTIONS.find((o) => o.value === goal.metric)?.label ?? goal.metric}
+                </p>
               )}
               {goal.notes && <p className={styles.goalNotes}>{goal.notes}</p>}
             </div>

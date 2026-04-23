@@ -1395,6 +1395,13 @@
   width: 100%;
 }
 
+.goalFormSelect {
+  composes: goalFormInput;
+  cursor: pointer;
+  color: var(--ink2);
+  background: #fff;
+}
+
 .goalFormTextarea {
   composes: goalFormInput;
   resize: vertical;
@@ -1588,6 +1595,12 @@
 .goalNotes {
   font-size: 0.75rem;
   color: var(--muted);
+  margin: 0.3rem 0 0;
+}
+
+.goalMetricTag {
+  font-size: 0.72rem;
+  color: var(--teal);
   margin: 0.3rem 0 0;
 }
 
