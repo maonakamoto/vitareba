@@ -1,6 +1,7 @@
 // ─── Shared layout ────────────────────────────────────────────────────────────
 
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type MetricKey } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 
@@ -154,7 +155,7 @@ export function welcomePatientEmail({
     <p>2. <strong>Take the Inflection Edge</strong> — 30 questions, 5 minutes. Your results map your ADHD profile across five dimensions and unlock ${COMPANY.clinicianName}'s ability to personalise your protocol.</p>
     <p>3. <strong>Check in daily</strong> — takes 30 seconds. Sleep, energy, mood, focus, stress. Over time this becomes your most valuable clinical dataset.</p>
     <div class="divider"></div>
-    <p><a class="btn" href="${portalUrl}/dashboard">Open your portal</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.dashboard}">Open your portal</a></p>
     <p class="meta">If you have any questions before your first consultation, reply to this email.</p>
   `);
 }
@@ -173,7 +174,7 @@ export function profileCompletionEmail({
     <p>One quick thing before your first consultation: your profile.</p>
     <p>${COMPANY.clinicianName} reviews every patient's profile before meeting them. Your clinical history, current medications, and lifestyle baseline allow for your first session to already be built around your situation — not spending the first 20 minutes gathering basics.</p>
     <p>It takes about 5 minutes and makes a measurable difference to the quality of your first consultation.</p>
-    <p><a class="btn" href="${portalUrl}/profile">Complete your profile</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.profile}">Complete your profile</a></p>
     <p class="meta">Already done? Ignore this email.</p>
   `);
 }
@@ -193,7 +194,7 @@ export function assessmentCtaEmail({
     <p>It maps your ADHD profile across five dimensions — Arousal, Divergent Output, Hyperfocus, Volatility, and Environment Design. Each dimension produces a 0–100 score that tells ${COMPANY.clinicianName} where your highest-leverage intervention points are.</p>
     <p>Without it, ${COMPANY.clinicianName} is working blind. With it, your protocol can be designed before you even sit down together.</p>
     <p>It takes 5 minutes.</p>
-    <p><a class="btn" href="${portalUrl}/assessment">Take the Inflection Edge →</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.assessment}">Take the Inflection Edge →</a></p>
   `);
 }
 
@@ -313,7 +314,7 @@ export function assessmentBookingEmail({
     <p>Hi ${patientName},</p>
     <p>${COMPANY.clinicianName} has had time to review your Inflection Edge profile (overall score: <strong>${overallScore}/100</strong>).</p>
     <p>If you would like to discuss what your results mean for your specific situation — and what interventions are most relevant for your neurotype — you can book a consultation directly.</p>
-    <p><a class="btn" href="${portalUrl}/bookings">Book a consultation</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.bookings}">Book a consultation</a></p>
     <div class="divider"></div>
     <p class="meta">If you have already booked, you can safely ignore this email.</p>
   `);
@@ -397,9 +398,9 @@ export function weeklyDigestEmail({
     ${checkinSection}
     ${assessmentSection}
     ${bookingSection}
-    <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in</a></p>
     <div class="divider"></div>
-    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
   `);
 }
 
@@ -415,9 +416,9 @@ export function checkinReminderEmail({
   return layout(`
     <p>How are you doing today, <strong>${patientName}</strong>?</p>
     <p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>
-    <p><a class="btn" href="${portalUrl}/checkin">Log today's check-in →</a></p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in →</a></p>
     <div class="divider"></div>
-    <p class="meta">You receive this reminder on weekdays while enrolled in a ${COMPANY.shortName} programme. To stop, visit your <a href="${portalUrl}/profile#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">You receive this reminder on weekdays while enrolled in a ${COMPANY.shortName} programme. To stop, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
   `);
 }
 

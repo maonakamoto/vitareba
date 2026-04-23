@@ -6,6 +6,7 @@ import {
   type DimensionId,
 } from "@/lib/assessment/data";
 import { COMPANY } from "@/lib/config/company";
+import { AUTH_ROUTES } from "@/lib/config/routes";
 import styles from "./Assessment.module.css";
 
 interface ResultsScreenProps {
@@ -91,7 +92,7 @@ export default function ResultsScreen({
         </div>
         <div className={styles.rCtaBtns}>
           <a
-            href="/register"
+            href={AUTH_ROUTES.register}
             className={styles.rBtnP}
             onClick={() => {
               try {
