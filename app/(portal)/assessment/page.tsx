@@ -12,12 +12,16 @@ export default function AssessmentPage() {
 
   const handleComplete = useCallback(
     async (scores: Record<DimensionId, number>, overallScore: number) => {
-      await fetch("/api/assessment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scores, overallScore }),
-      });
-      router.push(`${PORTAL_ROUTES.assessments}?saved=1`);
+      try {
+        const res = await fetch("/api/assessment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ scores, overallScore }),
+        });
+        router.push(res.ok ? `${PORTAL_ROUTES.assessments}?saved=1` : PORTAL_ROUTES.assessments);
+      } catch {
+        router.push(PORTAL_ROUTES.assessments);
+      }
     },
     [router]
   );
