@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import styles from "./portal.module.css";
 
 export default function PortalError({
@@ -24,9 +25,9 @@ export default function PortalError({
         <button type="button" onClick={reset} className={styles.errorRetry}>
           Try again
         </button>
-        <a href="/dashboard" className={styles.errorHome}>
+        <Link href="/dashboard" className={styles.errorHome}>
           Go to dashboard
-        </a>
+        </Link>
       </div>
     </div>
   );
