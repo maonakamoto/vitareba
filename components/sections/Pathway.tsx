@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./Pathway.module.css";
 
-const STEP_NUMBERS = ["1", "2", "3", "4", "5", "6"];
-
 export default async function Pathway() {
   const t = await getTranslations("pathway");
   const steps = t.raw("steps") as Array<{
@@ -23,8 +21,8 @@ export default async function Pathway() {
         </h2>
         <div className={styles.grid}>
           {steps.map((step, i) => (
-            <div key={STEP_NUMBERS[i]} className={styles.card}>
-              <div className={styles.n}>{STEP_NUMBERS[i]}</div>
+            <div key={step.title} className={styles.card}>
+              <div className={styles.n}>{i + 1}</div>
               <div className={styles.sub}>{step.sub}</div>
               <div className={styles.title}>{step.title}</div>
               <p className={styles.text}>{step.text}</p>

@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import styles from "./Approach.module.css";
 
-const ITEM_NUMBERS = ["01", "02", "03", "04"];
-
 export default async function Approach() {
   const t = await getTranslations("approach");
   const items = t.raw("items") as Array<{ title: string; body: string }>;
@@ -28,8 +26,8 @@ export default async function Approach() {
           </div>
           <div className={styles.items}>
             {items.map((item, i) => (
-              <div key={ITEM_NUMBERS[i]} className={styles.item}>
-                <div className={styles.itemN}>{ITEM_NUMBERS[i]}</div>
+              <div key={item.title} className={styles.item}>
+                <div className={styles.itemN}>{String(i + 1).padStart(2, "0")}</div>
                 <div className={styles.itemTitle}>{item.title}</div>
                 <p className={styles.itemBody}>{item.body}</p>
               </div>
