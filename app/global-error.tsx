@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { COLOR_INK, COLOR_MUTED, COLOR_OFF, COLOR_TEAL, COLOR_WHITE } from "@/lib/config/theme";
 
 export default function GlobalError({
   error,
@@ -15,18 +16,18 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body style={{ fontFamily: "DM Sans, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", margin: 0, background: "#f8f7f4" }}>
+      <body style={{ fontFamily: "DM Sans, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", margin: 0, background: COLOR_OFF }}>
         <div style={{ textAlign: "center", maxWidth: 480, padding: "2rem" }}>
-          <p style={{ fontSize: "1.25rem", fontWeight: 500, color: "#1a1a22", marginBottom: "0.75rem" }}>
+          <p style={{ fontSize: "1.25rem", fontWeight: 500, color: COLOR_INK, marginBottom: "0.75rem" }}>
             Something went wrong
           </p>
-          <p style={{ color: "#888a96", marginBottom: "1.5rem" }}>
+          <p style={{ color: COLOR_MUTED, marginBottom: "1.5rem" }}>
             The application hit an unexpected error. Please try again.
           </p>
           <button
             type="button"
             onClick={reset}
-            style={{ background: "#2a7a8a", color: "#fff", border: "none", borderRadius: 6, padding: "0.625rem 1.5rem", cursor: "pointer", fontSize: "0.9rem" }}
+            style={{ background: COLOR_TEAL, color: COLOR_WHITE, border: "none", borderRadius: 6, padding: "0.625rem 1.5rem", cursor: "pointer", fontSize: "0.9rem" }}
           >
             Try again
           </button>

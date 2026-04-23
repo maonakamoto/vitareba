@@ -13,6 +13,7 @@ export const PORTAL_ROUTES = {
 } as const satisfies Record<string, string>;
 
 export const ADMIN_ROUTES = {
+  root:      "/admin",
   patients:  "/admin/patients",
   bookings:  "/admin/bookings",
   messages:  "/admin/messages",

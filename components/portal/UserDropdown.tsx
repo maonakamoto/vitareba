@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import styles from "./UserDropdown.module.css";
 import { USER_ROLE, type UserRole } from "@/lib/config/auth";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 
 interface Props {
   name: string;
@@ -62,7 +62,7 @@ export function UserDropdown({ name, email, role }: Props) {
           </div>
           <div className={styles.items}>
             {role === USER_ROLE.admin && (
-              <Link href="/admin" className={styles.item} onClick={() => setOpen(false)}>
+              <Link href={ADMIN_ROUTES.root} className={styles.item} onClick={() => setOpen(false)}>
                 Admin Panel ↗
               </Link>
             )}

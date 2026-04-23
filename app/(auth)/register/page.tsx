@@ -6,11 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import styles from "../auth.module.css";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") ?? "/dashboard";
+  const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,7 +94,7 @@ function RegisterForm() {
       <div className={styles.linkRow}>
         <span>
           Already have an account?{" "}
-          <Link className={styles.link} href={`/login${returnTo !== "/dashboard" ? `?returnTo=${returnTo}` : ""}`}>
+          <Link className={styles.link} href={`/login${returnTo !== PORTAL_ROUTES.dashboard ? `?returnTo=${returnTo}` : ""}`}>
             Sign in
           </Link>
         </span>
