@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { COLOR_INK, COLOR_OFF, COLOR_TEAL } from "@/lib/config/theme";
 
 export const runtime = "edge";
 export const alt = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
@@ -10,7 +11,7 @@ export default function OgImage() {
     (
       <div
         style={{
-          background: "#1a1a22",
+          background: COLOR_INK,
           width: "100%",
           height: "100%",
           display: "flex",
@@ -28,7 +29,7 @@ export default function OgImage() {
             left: 0,
             right: 0,
             height: "4px",
-            background: "#2a7a8a",
+            background: COLOR_TEAL,
           }}
         />
 
@@ -51,14 +52,14 @@ export default function OgImage() {
           style={{
             fontSize: 64,
             fontWeight: 300,
-            color: "#f8f7f4",
+            color: COLOR_OFF,
             lineHeight: 1.1,
             marginBottom: 24,
             display: "flex",
           }}
         >
           Vita
-          <span style={{ color: "#2a7a8a" }}>Re</span>
+          <span style={{ color: COLOR_TEAL }}>Re</span>
           Ba
         </div>
 
@@ -94,7 +95,7 @@ export default function OgImage() {
                   textTransform: "uppercase",
                   padding: "8px 16px",
                   background: "rgba(42,122,138,0.12)",
-                  color: "#2a7a8a",
+                  color: COLOR_TEAL,
                   borderRadius: 20,
                   display: "flex",
                 }}
