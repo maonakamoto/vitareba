@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { type GoalRow } from "@/lib/config/portal";
+import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 
 function GoalProgressBar({ baseline, current, target }: { baseline: number | null; current: number | null; target: number | null }) {
   if (current == null && target == null) return null;
@@ -148,6 +148,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             placeholder="Goal title (e.g. Improve focus score to 70)"
             value={form.title}
             onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+            maxLength={GOAL_TITLE_MAX_LENGTH}
             className={styles.goalFormInput}
           />
           <div className={styles.goalFormGrid3}>
@@ -182,6 +183,7 @@ export function PatientGoalsCard({ patientId }: { patientId: string }) {
             value={form.notes}
             onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))}
             rows={2}
+            maxLength={GOAL_NOTES_MAX_LENGTH}
             className={styles.goalFormTextarea}
           />
           <div className={styles.goalFormActions}>

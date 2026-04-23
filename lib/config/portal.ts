@@ -96,6 +96,12 @@ export const DOCUMENT_TITLE_MAX_LENGTH = 200;
 /** Document upload max file size in MB (enforced server-side; shown in upload form label) */
 export const DOCUMENT_MAX_FILE_SIZE_MB = 20;
 
+/** Clinical goal title max length (Zod schema + form input) */
+export const GOAL_TITLE_MAX_LENGTH = 300;
+
+/** Clinical goal notes max length (Zod schema + form textarea) */
+export const GOAL_NOTES_MAX_LENGTH = 2_000;
+
 /** Days after which an assessment is considered stale and the patient is nudged to retake */
 export const ASSESSMENT_STALE_DAYS = 30;
 
