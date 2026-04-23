@@ -48,31 +48,36 @@ export async function PATCH(req: Request, { params }: RouteContext) {
     where: eq(programmeAssignments.patientId, id),
   });
 
-  let result;
-  if (existing) {
-    [result] = await db
-      .update(programmeAssignments)
-      .set({
-        programme: parsed.data.programme,
-        phase: parsed.data.phase,
-        startDate: parsed.data.startDate ?? null,
-        notes: parsed.data.notes ?? null,
-        updatedAt: new Date(),
-      })
-      .where(eq(programmeAssignments.patientId, id))
-      .returning();
-  } else {
-    [result] = await db
-      .insert(programmeAssignments)
-      .values({
-        patientId: id,
-        programme: parsed.data.programme,
-        phase: parsed.data.phase,
-        startDate: parsed.data.startDate ?? null,
-        notes: parsed.data.notes ?? null,
-        assignedBy: session.user.id,
-      })
-      .returning();
+  let result: typeof programmeAssignments.$inferSelect;
+  try {
+    if (existing) {
+      [result] = await db
+        .update(programmeAssignments)
+        .set({
+          programme: parsed.data.programme,
+          phase: parsed.data.phase,
+          startDate: parsed.data.startDate ?? null,
+          notes: parsed.data.notes ?? null,
+          updatedAt: new Date(),
+        })
+        .where(eq(programmeAssignments.patientId, id))
+        .returning();
+    } else {
+      [result] = await db
+        .insert(programmeAssignments)
+        .values({
+          patientId: id,
+          programme: parsed.data.programme,
+          phase: parsed.data.phase,
+          startDate: parsed.data.startDate ?? null,
+          notes: parsed.data.notes ?? null,
+          assignedBy: session.user.id,
+        })
+        .returning();
+    }
+  } catch (err) {
+    console.error("[api/admin/programme] upsert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save assignment — please try again" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true, data: result });

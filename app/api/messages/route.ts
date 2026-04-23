@@ -53,16 +53,21 @@ export async function POST(req: Request) {
       ? parsed.data.patientId
       : session.user.id;
 
-  const [thread] = await db
-    .insert(threads)
-    .values({ patientId, subject: parsed.data.subject })
-    .returning();
-
-  await db.insert(threadMessages).values({
-    threadId: thread.id,
-    senderId: session.user.id,
-    body: parsed.data.body,
-  });
+  let thread: typeof threads.$inferSelect;
+  try {
+    [thread] = await db
+      .insert(threads)
+      .values({ patientId, subject: parsed.data.subject })
+      .returning();
+    await db.insert(threadMessages).values({
+      threadId: thread.id,
+      senderId: session.user.id,
+      body: parsed.data.body,
+    });
+  } catch (err) {
+    console.error("[api/messages] thread creation failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to send message — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: thread }, { status: 201 });
 }

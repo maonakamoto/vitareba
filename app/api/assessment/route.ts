@@ -24,14 +24,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const [result] = await db
-    .insert(assessmentResults)
-    .values({
-      userId: session.user.id,
-      scores: parsed.data.scores,
-      overallScore: parsed.data.overallScore,
-    })
-    .returning();
+  let result: typeof assessmentResults.$inferSelect;
+  try {
+    [result] = await db
+      .insert(assessmentResults)
+      .values({
+        userId: session.user.id,
+        scores: parsed.data.scores,
+        overallScore: parsed.data.overallScore,
+      })
+      .returning();
+  } catch (err) {
+    console.error("[api/assessment] insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save assessment — please try again" }, { status: 500 });
+  }
 
   enqueueAssessmentEmails({
     userId: session.user.id,

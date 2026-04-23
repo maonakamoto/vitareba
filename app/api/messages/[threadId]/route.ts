@@ -76,15 +76,20 @@ export async function POST(
     return NextResponse.json({ success: false, error: "Invalid message body" }, { status: 400 });
   }
 
-  const [message] = await db
-    .insert(threadMessages)
-    .values({ threadId, senderId: session.user.id, body: parsed.data.body })
-    .returning();
-
-  await db
-    .update(threads)
-    .set({ lastMessageAt: new Date() })
-    .where(eq(threads.id, threadId));
+  let message: typeof threadMessages.$inferSelect;
+  try {
+    [message] = await db
+      .insert(threadMessages)
+      .values({ threadId, senderId: session.user.id, body: parsed.data.body })
+      .returning();
+    await db
+      .update(threads)
+      .set({ lastMessageAt: new Date() })
+      .where(eq(threads.id, threadId));
+  } catch (err) {
+    console.error("[api/messages/threadId] send failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to send message — please try again" }, { status: 500 });
+  }
 
   // Notify the other party (fire-and-forget)
   const adminEmails = getAdminEmails();

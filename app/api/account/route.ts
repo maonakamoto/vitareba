@@ -30,13 +30,19 @@ export async function POST(req: Request) {
   }
 
   const hashed = await hashPassword(password);
-  const [newUser] = await db
-    .insert(users)
-    .values({ email, password: hashed })
-    .returning({ id: users.id });
 
-  // Create empty profile row so profile-dependent features work immediately
-  await db.insert(profiles).values({ userId: newUser.id });
+  let newUser: { id: string };
+  try {
+    [newUser] = await db
+      .insert(users)
+      .values({ email, password: hashed })
+      .returning({ id: users.id });
+    // Create empty profile row so profile-dependent features work immediately
+    await db.insert(profiles).values({ userId: newUser.id });
+  } catch (err) {
+    console.error("[api/account] registration failed:", err);
+    return NextResponse.json({ success: false, error: "Registration failed — please try again" }, { status: 500 });
+  }
 
   enqueueWelcomeEmails({ userId: newUser.id, triggeredAt: new Date() })
     .catch((err) => console.error("[email-queue] welcome enqueue failed:", err));

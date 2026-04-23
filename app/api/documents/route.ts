@@ -55,10 +55,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const [doc] = await db
-    .insert(documents)
-    .values({ ...parsed.data, uploadedBy: session.user.id })
-    .returning();
+  let doc: typeof documents.$inferSelect;
+  try {
+    [doc] = await db
+      .insert(documents)
+      .values({ ...parsed.data, uploadedBy: session.user.id })
+      .returning();
+  } catch (err) {
+    console.error("[api/documents] insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save document — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: doc }, { status: 201 });
 }

@@ -42,14 +42,20 @@ export async function POST(req: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const [note] = await db
-    .insert(patientNotes)
-    .values({
-      patientId: id,
-      adminId: session.user.id,
-      body: parsed.data.body,
-    })
-    .returning();
+  let note: typeof patientNotes.$inferSelect;
+  try {
+    [note] = await db
+      .insert(patientNotes)
+      .values({
+        patientId: id,
+        adminId: session.user.id,
+        body: parsed.data.body,
+      })
+      .returning();
+  } catch (err) {
+    console.error("[api/admin/notes] insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save note — please try again" }, { status: 500 });
+  }
 
   const admin = await db.query.users.findFirst({
     where: eq(users.id, session.user.id),

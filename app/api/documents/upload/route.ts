@@ -58,21 +58,33 @@ export async function POST(req: Request) {
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/\.{2,}/g, "_");
   const blobPath = `documents/${patientId}/${Date.now()}_${safeName}`;
 
-  const blob = await put(blobPath, file, {
-    access: "public",
-    contentType: file.type || "application/octet-stream",
-  });
+  let blob: { url: string };
+  try {
+    blob = await put(blobPath, file, {
+      access: "public",
+      contentType: file.type || "application/octet-stream",
+    });
+  } catch (err) {
+    console.error("[api/documents/upload] blob upload failed:", err);
+    return NextResponse.json({ success: false, error: "File upload failed — please try again" }, { status: 500 });
+  }
 
-  const [doc] = await db
-    .insert(documents)
-    .values({
-      userId: patientId,
-      uploadedBy: session.user.id,
-      title: title.trim(),
-      fileUrl: blob.url,
-      mimeType: file.type || null,
-    })
-    .returning();
+  let doc: typeof documents.$inferSelect;
+  try {
+    [doc] = await db
+      .insert(documents)
+      .values({
+        userId: patientId,
+        uploadedBy: session.user.id,
+        title: title.trim(),
+        fileUrl: blob.url,
+        mimeType: file.type || null,
+      })
+      .returning();
+  } catch (err) {
+    console.error("[api/documents/upload] db insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save document record — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: doc }, { status: 201 });
 }

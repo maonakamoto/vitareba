@@ -80,20 +80,25 @@ export async function POST(req: Request) {
     ),
   });
 
-  if (existing) {
-    await db
-      .update(dailyCheckins)
-      .set(metrics)
-      .where(and(
-        eq(dailyCheckins.userId, session.user.id),
-        eq(dailyCheckins.date, date)
-      ));
-  } else {
-    await db.insert(dailyCheckins).values({
-      userId: session.user.id,
-      date,
-      ...metrics,
-    });
+  try {
+    if (existing) {
+      await db
+        .update(dailyCheckins)
+        .set(metrics)
+        .where(and(
+          eq(dailyCheckins.userId, session.user.id),
+          eq(dailyCheckins.date, date)
+        ));
+    } else {
+      await db.insert(dailyCheckins).values({
+        userId: session.user.id,
+        date,
+        ...metrics,
+      });
+    }
+  } catch (err) {
+    console.error("[api/checkin] save failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save check-in — please try again" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

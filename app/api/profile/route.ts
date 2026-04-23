@@ -67,21 +67,27 @@ export async function PATCH(req: Request) {
 
   const { name, ...profileFields } = parsed.data;
 
-  // Parallel: update name (if provided) + fetch existing profile for threshold check
-  const [, existing] = await Promise.all([
-    name ? db.update(users).set({ name }).where(eq(users.id, session.user.id)) : Promise.resolve(),
-    db.query.profiles.findFirst({ where: eq(profiles.userId, session.user.id) }),
-  ]);
+  let existing: typeof profiles.$inferSelect | undefined;
+  let updated: typeof profiles.$inferSelect;
+  try {
+    // Parallel: update name (if provided) + fetch existing profile for threshold check
+    [, existing] = await Promise.all([
+      name ? db.update(users).set({ name }).where(eq(users.id, session.user.id)) : Promise.resolve(),
+      db.query.profiles.findFirst({ where: eq(profiles.userId, session.user.id) }),
+    ]);
+
+    // Upsert profile and return updated row in one query
+    [updated] = await db
+      .insert(profiles)
+      .values({ userId: session.user.id, ...profileFields })
+      .onConflictDoUpdate({ target: profiles.userId, set: { ...profileFields, updatedAt: new Date() } })
+      .returning();
+  } catch (err) {
+    console.error("[api/profile] upsert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to save profile — please try again" }, { status: 500 });
+  }
 
   const oldPct = computeProfileCompleteness(existing as Record<string, unknown> | null);
-
-  // Upsert profile and return updated row in one query
-  const [updated] = await db
-    .insert(profiles)
-    .values({ userId: session.user.id, ...profileFields })
-    .onConflictDoUpdate({ target: profiles.userId, set: { ...profileFields, updatedAt: new Date() } })
-    .returning();
-
   const newPct = computeProfileCompleteness(updated as Record<string, unknown> | null);
   const threshold = PROFILE_COMPLETION_THRESHOLD * 100;
 

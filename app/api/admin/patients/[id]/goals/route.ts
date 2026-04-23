@@ -36,19 +36,25 @@ export async function POST(req: Request, { params }: RouteContext) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
-  const [goal] = await db
-    .insert(clinicalGoals)
-    .values({
-      patientId: id,
-      setByAdminId: session.user.id,
-      title: parsed.data.title,
-      metric: parsed.data.metric ?? null,
-      baseline: parsed.data.baseline ?? null,
-      target: parsed.data.target ?? null,
-      current: parsed.data.current ?? null,
-      notes: parsed.data.notes ?? null,
-    })
-    .returning();
+  let goal: typeof clinicalGoals.$inferSelect;
+  try {
+    [goal] = await db
+      .insert(clinicalGoals)
+      .values({
+        patientId: id,
+        setByAdminId: session.user.id,
+        title: parsed.data.title,
+        metric: parsed.data.metric ?? null,
+        baseline: parsed.data.baseline ?? null,
+        target: parsed.data.target ?? null,
+        current: parsed.data.current ?? null,
+        notes: parsed.data.notes ?? null,
+      })
+      .returning();
+  } catch (err) {
+    console.error("[api/admin/goals] insert failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to create goal — please try again" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, data: goal }, { status: 201 });
 }

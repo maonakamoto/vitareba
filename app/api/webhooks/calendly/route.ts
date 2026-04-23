@@ -82,26 +82,31 @@ export async function POST(req: Request) {
 
   if (event === "invitee.created") {
     // Check if there's an existing pending booking to upgrade; otherwise create one
-    const existingPending = await db.query.bookings.findFirst({
-      where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.pending)),
-      orderBy: [desc(bookings.createdAt)],
-    });
-
-    if (existingPending) {
-      await db
-        .update(bookings)
-        .set({
-          status: BOOKING_STATUS.confirmed,
-          preferredDate: startTime ? formatDateISO(new Date(startTime)) : existingPending.preferredDate,
-        })
-        .where(eq(bookings.id, existingPending.id));
-    } else {
-      await db.insert(bookings).values({
-        userId: patient.id,
-        status: BOOKING_STATUS.confirmed,
-        preferredDate: startTime ? formatDateISO(new Date(startTime)) : null,
-        notes: "Booked directly via Calendly",
+    try {
+      const existingPending = await db.query.bookings.findFirst({
+        where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.pending)),
+        orderBy: [desc(bookings.createdAt)],
       });
+
+      if (existingPending) {
+        await db
+          .update(bookings)
+          .set({
+            status: BOOKING_STATUS.confirmed,
+            preferredDate: startTime ? formatDateISO(new Date(startTime)) : existingPending.preferredDate,
+          })
+          .where(eq(bookings.id, existingPending.id));
+      } else {
+        await db.insert(bookings).values({
+          userId: patient.id,
+          status: BOOKING_STATUS.confirmed,
+          preferredDate: startTime ? formatDateISO(new Date(startTime)) : null,
+          notes: "Booked directly via Calendly",
+        });
+      }
+    } catch (err) {
+      console.error("[webhooks/calendly] invitee.created db failed:", err);
+      return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, action: BOOKING_STATUS.confirmed });
@@ -109,16 +114,21 @@ export async function POST(req: Request) {
 
   if (event === "invitee.canceled") {
     // Cancel the most recent confirmed booking for this patient
-    const existing = await db.query.bookings.findFirst({
-      where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.confirmed)),
-      orderBy: [desc(bookings.createdAt)],
-    });
+    try {
+      const existing = await db.query.bookings.findFirst({
+        where: and(eq(bookings.userId, patient.id), eq(bookings.status, BOOKING_STATUS.confirmed)),
+        orderBy: [desc(bookings.createdAt)],
+      });
 
-    if (existing) {
-      await db
-        .update(bookings)
-        .set({ status: BOOKING_STATUS.cancelled })
-        .where(eq(bookings.id, existing.id));
+      if (existing) {
+        await db
+          .update(bookings)
+          .set({ status: BOOKING_STATUS.cancelled })
+          .where(eq(bookings.id, existing.id));
+      }
+    } catch (err) {
+      console.error("[webhooks/calendly] invitee.canceled db failed:", err);
+      return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, action: BOOKING_STATUS.cancelled });
