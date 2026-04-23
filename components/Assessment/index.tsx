@@ -156,17 +156,17 @@ export default function Assessment({ onClose, onComplete }: Props) {
           </div>
           <div className={styles.ovH2}>Your neurotype. Mapped precisely.</div>
           <p className={styles.ovSub}>
-            30 questions · 5 dimensions · One precision performance blueprint
+            {QUESTIONS.length} questions · {DIMENSIONS.length} dimensions · One precision performance blueprint
             mapping when your ADHD brain operates at its ceiling — and what is
             currently preventing it.
           </p>
           <div className={styles.ovStats}>
             <div>
-              <div className={styles.ovStatN}>30</div>
+              <div className={styles.ovStatN}>{QUESTIONS.length}</div>
               <div className={styles.ovStatL}>Questions</div>
             </div>
             <div>
-              <div className={styles.ovStatN}>5</div>
+              <div className={styles.ovStatN}>{DIMENSIONS.length}</div>
               <div className={styles.ovStatL}>Dimensions</div>
             </div>
             <div>
