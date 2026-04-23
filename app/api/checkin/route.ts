@@ -1,29 +1,13 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { eq, and, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { dailyCheckins } from "@/lib/db/schema";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS, CHECKIN_NOTES_MAX_LENGTH } from "@/lib/config/portal";
+import { CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS } from "@/lib/config/portal";
 import { formatDateISO } from "@/lib/utils/format";
-
-const metricSchema = z
-  .number()
-  .int()
-  .min(CHECKIN_SCALE_MIN)
-  .max(CHECKIN_SCALE_MAX);
-
-const checkinSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  sleep: metricSchema,
-  energy: metricSchema,
-  mood: metricSchema,
-  focus: metricSchema,
-  stress: metricSchema,
-  notes: z.string().max(CHECKIN_NOTES_MAX_LENGTH).optional(),
-});
+import { checkinSchema } from "@/lib/domain/checkin";
 
 export async function GET(req: Request) {
   const guard = await requireSession();

@@ -104,6 +104,9 @@ export const BOOKING_NOTES_MAX_LENGTH = 1_000;
 /** Document title max length (shared between JSON and multipart upload routes) */
 export const DOCUMENT_TITLE_MAX_LENGTH = 200;
 
+/** MIME type string max length (e.g. "application/pdf") */
+export const MIME_TYPE_MAX_LENGTH = 100;
+
 /** Document upload max file size in MB (enforced server-side; shown in upload form label) */
 export const DOCUMENT_MAX_FILE_SIZE_MB = 20;
 

@@ -1,4 +1,20 @@
+import { z } from "zod";
 import { formatDateISO } from "@/lib/utils/format";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, CHECKIN_NOTES_MAX_LENGTH } from "@/lib/config/portal";
+
+/** Single metric: integer on the 1–5 scale */
+export const metricSchema = z.number().int().min(CHECKIN_SCALE_MIN).max(CHECKIN_SCALE_MAX);
+
+/** Validates a complete daily check-in submission */
+export const checkinSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  sleep: metricSchema,
+  energy: metricSchema,
+  mood: metricSchema,
+  focus: metricSchema,
+  stress: metricSchema,
+  notes: z.string().max(CHECKIN_NOTES_MAX_LENGTH).optional(),
+});
 
 /**
  * Compute the current consecutive daily check-in streak.

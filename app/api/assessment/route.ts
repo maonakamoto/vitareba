@@ -7,10 +7,11 @@ import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
+import { ASSESSMENT_SCORE_MIN, ASSESSMENT_SCORE_MAX, ASSESSMENT_SCORE_KEY_MAX_LENGTH } from "@/lib/assessment/data";
 
 const saveSchema = z.object({
-  scores: z.record(z.string().max(50), z.number().min(0).max(100)),
-  overallScore: z.number().int().min(0).max(100),
+  scores: z.record(z.string().max(ASSESSMENT_SCORE_KEY_MAX_LENGTH), z.number().min(ASSESSMENT_SCORE_MIN).max(ASSESSMENT_SCORE_MAX)),
+  overallScore: z.number().int().min(ASSESSMENT_SCORE_MIN).max(ASSESSMENT_SCORE_MAX),
 });
 
 export async function POST(req: Request) {
