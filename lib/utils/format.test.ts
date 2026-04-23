@@ -8,6 +8,7 @@ import {
   formatDateTime,
   formatDateMonthDay,
   formatDateISO,
+  displayName,
 } from "./format";
 
 // Fixed reference date: 2 April 2025, 10:05 UTC
@@ -103,6 +104,34 @@ describe("formatDateMonthDay", () => {
 
   it("does not include the year", () => {
     expect(formatDateMonthDay(REF_DATE)).not.toContain("2025");
+  });
+});
+
+// ─── displayName ─────────────────────────────────────────────────────────────
+
+describe("displayName", () => {
+  it("returns name when provided", () => {
+    expect(displayName("Alice Smith", "alice@example.com")).toBe("Alice Smith");
+  });
+
+  it("returns email local part when name is null", () => {
+    expect(displayName(null, "alice@example.com")).toBe("alice");
+  });
+
+  it("returns email local part when name is undefined", () => {
+    expect(displayName(undefined, "alice@example.com")).toBe("alice");
+  });
+
+  it("returns default fallback 'there' when both name and email are null", () => {
+    expect(displayName(null, null)).toBe("there");
+  });
+
+  it("returns custom fallback when both name and email are null", () => {
+    expect(displayName(null, null, "Unknown")).toBe("Unknown");
+  });
+
+  it("returns name even when email is also provided", () => {
+    expect(displayName("Bob", "bob@example.com")).toBe("Bob");
   });
 });
 
