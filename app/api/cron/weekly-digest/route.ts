@@ -11,27 +11,15 @@ import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
+import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
 
-function avgMetrics(checkins: Array<{ sleep: number; energy: number; mood: number; focus: number; stress: number }>) {
+function avgMetrics(checkins: Array<Record<MetricKey, number>>): Record<MetricKey, number> | null {
   if (checkins.length === 0) return null;
-  const sum = checkins.reduce(
-    (acc, c) => ({
-      sleep: acc.sleep + c.sleep,
-      energy: acc.energy + c.energy,
-      mood: acc.mood + c.mood,
-      focus: acc.focus + c.focus,
-      stress: acc.stress + c.stress,
-    }),
-    { sleep: 0, energy: 0, mood: 0, focus: 0, stress: 0 }
-  );
-  const n = checkins.length;
-  return {
-    sleep: sum.sleep / n,
-    energy: sum.energy / n,
-    mood: sum.mood / n,
-    focus: sum.focus / n,
-    stress: sum.stress / n,
-  };
+  const result = {} as Record<MetricKey, number>;
+  for (const { key } of CHECKIN_METRICS) {
+    result[key] = checkins.reduce((acc, c) => acc + c[key], 0) / checkins.length;
+  }
+  return result;
 }
 
 export async function GET(req: Request) {

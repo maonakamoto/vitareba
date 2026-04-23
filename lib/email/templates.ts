@@ -1,6 +1,7 @@
 // ─── Shared layout ────────────────────────────────────────────────────────────
 
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
+import { type MetricKey } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 
 function layout(body: string) {
@@ -315,7 +316,7 @@ export function assessmentBookingEmail({
 
 // ─── Weekly digest ────────────────────────────────────────────────────────────
 
-type WeekAvgs = { sleep: number; energy: number; mood: number; focus: number; stress: number } | null;
+type WeekAvgs = Record<MetricKey, number> | null;
 
 function deltaArrow(curr: number, prev: number): string {
   if (curr > prev + 0.1) return "↑";
