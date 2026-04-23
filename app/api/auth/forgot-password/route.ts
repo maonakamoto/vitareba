@@ -9,7 +9,7 @@ import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { PASSWORD_RESET_TOKEN_EXPIRY_MS, EMAIL_MAX_LENGTH } from "@/lib/config/auth";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS, EMAIL_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
 
 const schema = z.object({ email: z.string().email().max(EMAIL_MAX_LENGTH) });
 // Always return the same response to prevent email enumeration
@@ -39,13 +39,13 @@ export async function POST(req: Request) {
 
   // Invalidate any existing reset token for this email
   try {
-    await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `reset:${email}`));
+    await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `${RESET_TOKEN_IDENTIFIER_PREFIX}${email}`));
 
     const token = randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY_MS);
 
     await db.insert(verificationTokens).values({
-      identifier: `reset:${email}`,
+      identifier: `${RESET_TOKEN_IDENTIFIER_PREFIX}${email}`,
       token,
       expires,
     });

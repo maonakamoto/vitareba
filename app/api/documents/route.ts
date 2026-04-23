@@ -8,6 +8,7 @@ import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
 import { USER_ROLE } from "@/lib/config/auth";
 import { DOCUMENT_TITLE_MAX_LENGTH, MIME_TYPE_MAX_LENGTH } from "@/lib/config/portal";
+import { UUID_RE } from "@/lib/utils/validate";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
@@ -24,7 +25,6 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const patientId = searchParams.get("patientId");
 
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (patientId && !UUID_RE.test(patientId)) {
     return NextResponse.json({ success: false, error: "Invalid patientId" }, { status: 400 });
   }

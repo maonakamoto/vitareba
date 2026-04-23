@@ -27,3 +27,9 @@ export const EMAIL_MAX_LENGTH = 255;
 
 /** How long (ms) a password-reset token remains valid */
 export const PASSWORD_RESET_TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
+
+/** Max length for a password-reset token string (hex-encoded 32 bytes = 64 chars; 512 gives headroom) */
+export const PASSWORD_RESET_TOKEN_MAX_LENGTH = 512;
+
+/** Prefix used as the verificationTokens.identifier for password-reset entries */
+export const RESET_TOKEN_IDENTIFIER_PREFIX = "reset:";

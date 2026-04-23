@@ -6,6 +6,7 @@ import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { documents } from "@/lib/db/schema";
 import { DOCUMENT_TITLE_MAX_LENGTH, DOCUMENT_MAX_FILE_SIZE_MB } from "@/lib/config/portal";
+import { UUID_RE } from "@/lib/utils/validate";
 
 const MAX_BYTES = DOCUMENT_MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -37,7 +38,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "file, title, and patientId required" }, { status: 400 });
   }
 
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (!UUID_RE.test(patientId)) {
     return NextResponse.json({ success: false, error: "Invalid patientId" }, { status: 400 });
   }
