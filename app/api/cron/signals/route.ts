@@ -9,6 +9,7 @@ import { criticalPatientAlertEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { normalizeCheckinMetric } from "@/lib/domain/checkin";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
+import { ASSESSMENT_GOAL_METRIC_KEY } from "@/lib/config/portal";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { requireCron } from "@/lib/auth/guards";
@@ -107,7 +108,7 @@ export async function GET(req: Request) {
 
       let liveValue: number | null = null;
 
-      if (goal.metric === "overallScore" && latestAssessment) {
+      if (goal.metric === ASSESSMENT_GOAL_METRIC_KEY && latestAssessment) {
         liveValue = latestAssessment.overallScore;
       } else if ((CHECKIN_GOAL_METRICS as readonly string[]).includes(goal.metric) && checkins.length > 0) {
         // 7-day average of the metric (scale 1–5 → 0–100)

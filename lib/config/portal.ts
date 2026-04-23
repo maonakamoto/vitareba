@@ -155,3 +155,9 @@ export const MESSAGE_POLL_INTERVAL_MS = 30_000;
 
 /** Maximum badge count before showing "N+" truncation (e.g. 99+) */
 export const BADGE_MAX_COUNT = 99;
+
+/**
+ * Metric key used to link a clinical goal to the Inflection Edge assessment overall score.
+ * SSOT — import this constant wherever goal metric comparisons or labels are needed.
+ */
+export const ASSESSMENT_GOAL_METRIC_KEY = "overallScore" as const;

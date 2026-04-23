@@ -5,14 +5,14 @@ import { eq, asc } from "drizzle-orm";
 import styles from "../portal.module.css";
 import goalStyles from "./goals.module.css";
 import { computeGoalProgress, goalProgressLabel } from "@/lib/domain/goals";
-import { CHECKIN_METRICS } from "@/lib/config/portal";
+import { CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY } from "@/lib/config/portal";
 import { formatDateLong } from "@/lib/utils/format";
 
 /** Map check-in metric keys to human-readable labels for goal display */
 const METRIC_LABELS: Record<string, string> = Object.fromEntries(
   CHECKIN_METRICS.map((m) => [m.key, m.label])
 );
-METRIC_LABELS["overallScore"] = "Assessment overall score";
+METRIC_LABELS[ASSESSMENT_GOAL_METRIC_KEY] = "Assessment overall score";
 
 
 export default async function GoalsPage() {
