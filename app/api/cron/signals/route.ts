@@ -69,9 +69,10 @@ export async function GET(req: Request) {
       const patientName = displayName(patient.name, patient.email);
       const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
 
-      for (const adminEmail of adminEmails) {
-        try {
-          await sendEmail({
+      // Send to all admin emails in parallel — independent recipients
+      const results = await Promise.allSettled(
+        adminEmails.map((adminEmail) =>
+          sendEmail({
             to: adminEmail,
             subject: `⚠ Critical patient: ${patientName}`,
             html: criticalPatientAlertEmail({
@@ -80,12 +81,16 @@ export async function GET(req: Request) {
               reason,
               adminUrl,
             }),
-          });
+          })
+        )
+      );
+      results.forEach((r, i) => {
+        if (r.status === "fulfilled") {
           alerts++;
-        } catch (err) {
-          console.error("[cron/signals] alert send failed for", patient.id, err);
+        } else {
+          console.error("[cron/signals] alert send failed for", patient.id, "to", adminEmails[i], r.reason);
         }
-      }
+      });
     }
 
     // Collect goal current-value updates (batched below)

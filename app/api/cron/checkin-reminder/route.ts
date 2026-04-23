@@ -32,25 +32,26 @@ export async function GET(req: Request) {
     },
   });
 
-  let sent = 0;
-  let skipped = 0;
+  // Filter to patients who should receive a reminder
+  const sendable = patients.filter(
+    (p) =>
+      !p.profile?.digestOptOut &&
+      p.assessmentResults.length > 0 &&
+      p.dailyCheckins.length === 0
+  );
+  const skipped = patients.length - sendable.length;
 
-  for (const patient of patients) {
-    // Skip if opted out of digests
-    if (patient.profile?.digestOptOut) { skipped++; continue; }
-    // Skip pre-intake patients (no assessment yet)
-    if (patient.assessmentResults.length === 0) { skipped++; continue; }
-    // Skip if already checked in today
-    if (patient.dailyCheckins.length > 0) { skipped++; continue; }
+  // Send all reminders in parallel — independent per-patient, no ordering needed
+  await Promise.allSettled(
+    sendable.map((patient) => {
+      const patientName = displayName(patient.name, patient.email);
+      return sendEmail({
+        to: patient.email ?? "",
+        subject: "How are you doing today?",
+        html: checkinReminderEmail({ patientName, portalUrl: PORTAL_URL }),
+      }).catch(console.error);
+    })
+  );
 
-    const patientName = displayName(patient.name, patient.email);
-    await sendEmail({
-      to: patient.email ?? "",
-      subject: "How are you doing today?",
-      html: checkinReminderEmail({ patientName, portalUrl: PORTAL_URL }),
-    }).catch(console.error);
-    sent++;
-  }
-
-  return NextResponse.json({ success: true, sent, skipped });
+  return NextResponse.json({ success: true, sent: sendable.length, skipped });
 }

@@ -10,10 +10,10 @@ import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { USER_ROLE } from "@/lib/config/auth";
-import { BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
+import { BOOKING_PREFERRED_DATE_MAX_LENGTH, BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 
 const createSchema = z.object({
-  preferredDate: z.string().max(50).optional(),
+  preferredDate: z.string().max(BOOKING_PREFERRED_DATE_MAX_LENGTH).optional(),
   notes: z.string().max(BOOKING_NOTES_MAX_LENGTH).optional(),
 });
 
