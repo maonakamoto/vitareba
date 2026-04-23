@@ -8,7 +8,7 @@ import msgStyles from "../messages.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { COMPANY } from "@/lib/config/company";
-import { MESSAGE_POLL_INTERVAL_MS } from "@/lib/config/portal";
+import { MESSAGE_POLL_INTERVAL_MS, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type ThreadDetail } from "@/lib/config/messages";
 
@@ -111,6 +111,7 @@ export default function ThreadPage() {
             className={msgStyles.composeTextarea}
             value={body}
             onChange={(e) => setBody(e.target.value)}
+            maxLength={MESSAGE_BODY_MAX_LENGTH}
             placeholder="Type a message…"
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(e); } }}
           />

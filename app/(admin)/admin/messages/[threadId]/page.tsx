@@ -7,6 +7,7 @@ import styles from "../../../admin.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { type ThreadDetailWithPatient } from "@/lib/config/messages";
+import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 
 export default function AdminThreadPage() {
   const params = useParams();
@@ -100,6 +101,7 @@ export default function AdminThreadPage() {
             className={styles.composeTextarea}
             value={body}
             onChange={(e) => setBody(e.target.value)}
+            maxLength={MESSAGE_BODY_MAX_LENGTH}
             placeholder="Reply to patient…"
             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(e); } }}
           />
