@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         patientEmail: patient?.email ?? "",
         notes: parsed.data.notes,
         preferredDate: parsed.data.preferredDate,
-        adminUrl: `${PORTAL_URL}/admin/patients`,
+        adminUrl: `${PORTAL_URL}/admin/patients/${session.user.id}`,
       }),
     }).catch(console.error);
   }
