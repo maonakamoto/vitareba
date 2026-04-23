@@ -42,7 +42,7 @@ function ResetPasswordForm() {
         return;
       }
 
-      router.push("/login?reset=1");
+      router.push(`${AUTH_ROUTES.login}?reset=1`);
     } catch {
       setError(t("genericError"));
     } finally {
