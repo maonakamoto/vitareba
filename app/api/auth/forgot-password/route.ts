@@ -9,7 +9,7 @@ import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { PASSWORD_RESET_TOKEN_EXPIRY_MS, EMAIL_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS, RESET_RATE_LIMIT_MS, EMAIL_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
 
 const schema = z.object({ email: z.string().email().max(EMAIL_MAX_LENGTH) });
 // Always return the same response to prevent email enumeration
@@ -36,6 +36,22 @@ export async function POST(req: Request) {
 
   // No account or OAuth-only account (no password set) → silently do nothing
   if (!user?.password) return OK;
+
+  // Rate-limit: infer when the existing token was created (created ≈ expires − EXPIRY_MS).
+  // If it was created within RESET_RATE_LIMIT_MS, silently do nothing — prevents email bombing.
+  try {
+    const existing = await db.query.verificationTokens.findFirst({
+      where: eq(verificationTokens.identifier, `${RESET_TOKEN_IDENTIFIER_PREFIX}${email}`),
+      columns: { expires: true },
+    });
+    if (existing) {
+      const createdAt = existing.expires.getTime() - PASSWORD_RESET_TOKEN_EXPIRY_MS;
+      if (Date.now() - createdAt < RESET_RATE_LIMIT_MS) return OK;
+    }
+  } catch (err) {
+    console.error("[api/auth/forgot-password] rate-limit check failed:", err);
+    return OK;
+  }
 
   // Invalidate any existing reset token for this email
   try {

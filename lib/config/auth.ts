@@ -33,3 +33,10 @@ export const PASSWORD_RESET_TOKEN_MAX_LENGTH = 512;
 
 /** Prefix used as the verificationTokens.identifier for password-reset entries */
 export const RESET_TOKEN_IDENTIFIER_PREFIX = "reset:";
+
+/**
+ * Minimum time (ms) between password-reset email sends for the same address.
+ * Inferred from the existing token's `expires` field: created_at ≈ expires − EXPIRY_MS.
+ * Prevents email-bombing without requiring any external rate-limit infrastructure.
+ */
+export const RESET_RATE_LIMIT_MS = 2 * 60 * 1000; // 2 minutes
