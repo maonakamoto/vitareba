@@ -79,6 +79,12 @@
   flex-shrink: 0;
 }
 
+/* Urgent badge variant — patients needing attention (critical or attention signal) */
+.navBadgeUrgent {
+  composes: navBadge;
+  background: var(--warn);
+}
+
 
 .mainWrap {
   display: flex;

@@ -6,11 +6,12 @@ import styles from "./admin.module.css";
 import { UserDropdown } from "@/components/portal/UserDropdown";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { db } from "@/lib/db";
-import { users, bookings } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, bookings, profiles } from "@/lib/db/schema";
+import { eq, inArray } from "drizzle-orm";
 import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
+import { PATIENT_SIGNAL } from "@/lib/config/admin";
 import { COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 
@@ -18,7 +19,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await auth();
   if (!session || session.user.role !== USER_ROLE.admin) redirect(PORTAL_ROUTES.dashboard);
 
-  const [dbUser, unreadMessages, pendingBookings] = await Promise.all([
+  const [dbUser, unreadMessages, pendingBookings, urgentPatients] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true },
@@ -26,6 +27,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     getAdminUnreadThreadCount(),
     db.query.bookings.findMany({
       where: eq(bookings.status, BOOKING_STATUS.pending),
+      columns: { id: true },
+    }).then((rows) => rows.length),
+    // Count of patients whose stored signal is critical or attention — fast single-table read
+    db.query.profiles.findMany({
+      where: inArray(profiles.lastKnownSignal, [PATIENT_SIGNAL.critical, PATIENT_SIGNAL.attention]),
       columns: { id: true },
     }).then((rows) => rows.length),
   ]);
@@ -40,7 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Logo />
         </Link>
         <p className={styles.adminBadge}>Admin</p>
-        <AdminNav unreadMessages={unreadMessages} pendingBookings={pendingBookings} />
+        <AdminNav unreadMessages={unreadMessages} pendingBookings={pendingBookings} urgentPatients={urgentPatients} />
       </aside>
       <div className={styles.mainWrap}>
         <header className={styles.header}>
