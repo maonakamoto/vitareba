@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -13,6 +13,13 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
+  const [hasAssessment, setHasAssessment] = useState(false);
+
+  useEffect(() => {
+    try {
+      setHasAssessment(!!sessionStorage.getItem("pendingAssessment"));
+    } catch {}
+  }, []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,12 +61,15 @@ function RegisterForm() {
 
   return (
     <>
+      {hasAssessment && (
+        <div className={styles.contextBanner}>{t("assessmentBanner")}</div>
+      )}
       <h2 className={styles.title}>
         {t("title")}
         <br />
         <em>{t("titleEm")}</em>
       </h2>
-      <p className={styles.subtitle}>{t("sub")}</p>
+      <p className={styles.subtitle}>{hasAssessment ? t("subAssessment") : t("sub")}</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.field}>

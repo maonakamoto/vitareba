@@ -460,6 +460,8 @@
       "title": "Créer",
       "titleEm": "votre compte",
       "sub": "E-mail et mot de passe — rien de plus",
+      "subAssessment": "Une étape pour sauvegarder vos résultats.",
+      "assessmentBanner": "Vos résultats Inflection Edge sont prêts à être sauvegardés. Créez votre compte et ils vous attendront dans votre portail — avec une ligne directe vers Manuel pour discuter des prochaines étapes.",
       "emailLabel": "E-mail",
       "passwordLabel": "Mot de passe",
       "emailPlaceholder": "vous@exemple.com",

@@ -460,6 +460,8 @@
       "title": "Crea",
       "titleEm": "il suo account",
       "sub": "E-mail e password — niente di più",
+      "subAssessment": "Un passo per salvare i suoi risultati.",
+      "assessmentBanner": "I suoi risultati Inflection Edge sono pronti per essere salvati. Crei il suo account e li troverà nel portale — insieme a una linea diretta con Manuel per discutere i prossimi passi.",
       "emailLabel": "E-mail",
       "passwordLabel": "Password",
       "emailPlaceholder": "lei@esempio.com",

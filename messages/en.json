@@ -460,6 +460,8 @@
       "title": "Create",
       "titleEm": "your account",
       "sub": "Email and password — nothing more",
+      "subAssessment": "One step to save your results.",
+      "assessmentBanner": "Your Inflection Edge results are ready to save. Create your account and they'll be waiting in your portal — along with a direct line to Manuel to discuss next steps.",
       "emailLabel": "Email",
       "passwordLabel": "Password",
       "emailPlaceholder": "you@example.com",

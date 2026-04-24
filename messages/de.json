@@ -460,6 +460,8 @@
       "title": "Konto",
       "titleEm": "erstellen",
       "sub": "E-Mail und Passwort — nichts weiter",
+      "subAssessment": "Ein Schritt, um Ihre Ergebnisse zu speichern.",
+      "assessmentBanner": "Ihre Inflection Edge-Ergebnisse sind bereit zum Speichern. Erstellen Sie Ihr Konto — Ihre Ergebnisse warten dann im Portal auf Sie, zusammen mit einem direkten Draht zu Manuel, um die nächsten Schritte zu besprechen.",
       "emailLabel": "E-Mail",
       "passwordLabel": "Passwort",
       "emailPlaceholder": "sie@beispiel.com",
