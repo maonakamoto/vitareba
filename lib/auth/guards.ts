@@ -23,8 +23,10 @@ export async function requireSession(): Promise<
  * Usage: const cronError = requireCron(req); if (cronError) return cronError;
  */
 export function requireCron(req: Request): NextResponse | null {
+  const secret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  // Reject if secret is not configured or header doesn't match
+  if (!secret || authHeader !== `Bearer ${secret}`) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
   return null;
