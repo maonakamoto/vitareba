@@ -361,6 +361,34 @@ describe("checkinReminderEmail", () => {
     const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com" });
     expect(html).toContain("https://p.example.com/checkin");
   });
+
+  it("no streak: shows generic body, no streak copy", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com", atRiskStreak: 0 });
+    expect(html).toContain("30 seconds");
+    expect(html).not.toContain("streak");
+  });
+
+  it("streak of 1: treated as no streak (threshold is 2)", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com", atRiskStreak: 1 });
+    expect(html).not.toContain("streak");
+  });
+
+  it("streak of 2: shows streak count in copy", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com", atRiskStreak: 2 });
+    expect(html).toContain("2");
+    expect(html).toContain("streak");
+  });
+
+  it("streak of 14: shows exact count prominently", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com", atRiskStreak: 14 });
+    expect(html).toContain("14");
+    expect(html).toContain("streak");
+  });
+
+  it("streak path: still includes opt-out link", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com", atRiskStreak: 7 });
+    expect(html).toContain("#email-preferences");
+  });
 });
 
 describe("weeklyDigestEmail — weekly insight synthesis", () => {

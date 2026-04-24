@@ -3,8 +3,9 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { emailQueue, assessmentResults, bookings, profiles } from "@/lib/db/schema";
-import { eq, lte, and } from "drizzle-orm";
+import { eq, lte, and, inArray } from "drizzle-orm";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { sendEmail } from "@/lib/email/index";
 import {
   assessmentResultsEmail,
@@ -86,9 +87,13 @@ export async function GET(req: Request) {
         html = assessmentMeaningEmail({ patientName, portalUrl });
         subject = "What your Inflection Edge profile means clinically";
       } else if (item.templateKey === EMAIL_TEMPLATE.assessmentBooking) {
-        // Skip if the patient already has a booking (e.g. booked before the +5-day email fires)
+        // Skip if the patient already has an active booking (not cancelled — cancelled bookings
+        // should still receive the nudge so they can rebook)
         const existingBooking = await db.query.bookings.findFirst({
-          where: eq(bookings.userId, item.userId),
+          where: and(
+            eq(bookings.userId, item.userId),
+            inArray(bookings.status, [BOOKING_STATUS.pending, BOOKING_STATUS.confirmed, BOOKING_STATUS.attended])
+          ),
           columns: { id: true },
         });
         if (existingBooking) {
