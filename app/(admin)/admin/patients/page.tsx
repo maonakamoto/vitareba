@@ -13,6 +13,7 @@ import {
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
 } from "@/lib/config/admin";
+import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
 import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
@@ -30,6 +31,7 @@ export default async function PatientsPage() {
     where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: true,
+      programmeAssignment: true,
       assessmentResults: {
         orderBy: [desc(assessmentResults.completedAt)],
         limit: 2,
@@ -96,6 +98,7 @@ export default async function PatientsPage() {
                 <th>{SIGNAL_CHECKIN_WINDOW_DAYS} days</th>
                 <th>Score</th>
                 <th>Profile</th>
+                <th>Programme</th>
                 <th className={styles.thCenter}>Msg</th>
                 <th></th>
               </tr>
@@ -173,6 +176,25 @@ export default async function PatientsPage() {
                     {/* Profile completeness */}
                     <td className={styles.cellNowrapSm}>
                       <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>
+                    </td>
+
+                    {/* Programme assignment */}
+                    <td>
+                      {p.programmeAssignment ? (
+                        <div>
+                          <div className={styles.progName}>
+                            {PROGRAMME_CONFIG[p.programmeAssignment.programme].label}
+                          </div>
+                          <div
+                            className={styles.phasePill}
+                            data-phase={p.programmeAssignment.phase}
+                          >
+                            {PHASE_CONFIG[p.programmeAssignment.phase].label}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className={styles.cellSub}>—</span>
+                      )}
                     </td>
 
                     {/* Unread message indicator */}

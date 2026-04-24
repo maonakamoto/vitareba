@@ -398,6 +398,33 @@
   max-width: 18rem;
 }
 
+/* ─── Programme / phase cell ─────────────────────────────────────────────────── */
+
+.progName {
+  font-size: 0.75rem;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+
+.phasePill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.58rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 1rem;
+  white-space: nowrap;
+  margin-top: 0.2rem;
+}
+
+.phasePill[data-phase="intake"]     { color: var(--muted); background: color-mix(in srgb, var(--muted) 10%, transparent); }
+.phasePill[data-phase="assessment"] { color: var(--teal);  background: color-mix(in srgb, var(--teal)  10%, transparent); }
+.phasePill[data-phase="planning"]   { color: var(--warn);  background: color-mix(in srgb, var(--warn)  10%, transparent); }
+.phasePill[data-phase="active"]     { color: var(--teal);  background: color-mix(in srgb, var(--teal)  15%, transparent); font-weight: 600; }
+.phasePill[data-phase="review"]     { color: var(--warn);  background: color-mix(in srgb, var(--warn)  10%, transparent); }
+.phasePill[data-phase="completed"]  { color: var(--muted); background: color-mix(in srgb, var(--muted)  8%, transparent); }
+
 /* ─── Sparkline ──────────────────────────────────────────────────────────────── */
 
 .sparkline {
