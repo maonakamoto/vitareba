@@ -118,6 +118,22 @@ describe("computePatientSignal", () => {
     expect(result.signal).not.toBe("critical");
   });
 
+  it("does not flag critical when declining check-ins are not on consecutive days", () => {
+    // Days 0, 3, 6 — declining but not consecutive calendar days
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [
+        checkin(0, 2), // most recent — worst
+        checkin(3, 3), // 3-day gap
+        checkin(6, 4), // oldest of the 3 — best
+      ],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "confirmed" as const, createdAt: daysAgo(5) }],
+      now: NOW,
+    });
+    expect(result.signal).not.toBe("critical");
+  });
+
   it("returns 'critical' when assessment score drops by more than threshold", () => {
     const result = computePatientSignal({
       registeredAt: daysAgo(30),

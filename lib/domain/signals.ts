@@ -76,15 +76,20 @@ export function computePatientSignal({
       };
     }
 
-    // Critical: last 3 days all show strictly declining wellness
+    // Critical: last 3 check-ins are on consecutive calendar days and all show strictly declining wellness.
+    // Consecutive-day check prevents false positives when a patient logs infrequently (e.g. days 0, 3, 6).
     const last3 = sorted.slice(0, 3);
     if (last3.length === 3) {
-      const [d0, d1, d2] = last3.map(wellnessAvg); // d0 = most recent
-      if (d0 < d1 && d1 < d2) {
-        return {
-          signal: PATIENT_SIGNAL.critical,
-          reason: `Wellness declining 3 consecutive days (${d2.toFixed(1)} → ${d1.toFixed(1)} → ${d0.toFixed(1)})`,
-        };
+      const [t0, t1, t2] = last3.map((c) => new Date(c.date + "T00:00:00Z").getTime());
+      const areConsecutive = t0 - t1 === DAY_MS && t1 - t2 === DAY_MS;
+      if (areConsecutive) {
+        const [d0, d1, d2] = last3.map(wellnessAvg); // d0 = most recent
+        if (d0 < d1 && d1 < d2) {
+          return {
+            signal: PATIENT_SIGNAL.critical,
+            reason: `Wellness declining 3 consecutive days (${d2.toFixed(1)} → ${d1.toFixed(1)} → ${d0.toFixed(1)})`,
+          };
+        }
       }
     }
   }
