@@ -23,7 +23,7 @@ export async function GET(req: Request) {
   // even for a patient whose actual streak is longer.
   const historyStart = new Date(now);
   historyStart.setDate(historyStart.getDate() - 110);
-  const sixtyDaysAgoISO = formatDateISO(historyStart);
+  const historyStartISO = formatDateISO(historyStart);
 
   let patients;
   try {
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
           limit: 1,
         },
         dailyCheckins: {
-          where: gte(dailyCheckins.date, sixtyDaysAgoISO),
+          where: gte(dailyCheckins.date, historyStartISO),
           orderBy: [desc(dailyCheckins.date)],
         },
       },
