@@ -371,6 +371,14 @@
   background: color-mix(in srgb, var(--muted) 10%, transparent);
 }
 
+.signalReason {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+  line-height: 1.35;
+  max-width: 18rem;
+}
+
 /* ─── Sparkline ──────────────────────────────────────────────────────────────── */
 
 .sparkline {

@@ -46,7 +46,7 @@ export default async function PatientsPage() {
   // Compute signal for each patient, then sort by severity
   const enriched = patients
     .map((p) => {
-      const { signal } = computePatientSignal({
+      const { signal, reason } = computePatientSignal({
         registeredAt: p.createdAt,
         checkins: p.dailyCheckins,
         assessments: p.assessmentResults.map((a) => ({
@@ -56,7 +56,7 @@ export default async function PatientsPage() {
         bookings: p.bookings,
         now,
       });
-      return { ...p, signal };
+      return { ...p, signal, reason };
     })
     .sort((a, b) => SIGNAL_SORT_ORDER[a.signal] - SIGNAL_SORT_ORDER[b.signal]);
 
@@ -108,6 +108,9 @@ export default async function PatientsPage() {
                       <span className={styles.signalBadge} data-signal={p.signal}>
                         {SIGNAL_LABELS[p.signal]}
                       </span>
+                      {(p.signal === "critical" || p.signal === "attention") && (
+                        <div className={styles.signalReason}>{p.reason}</div>
+                      )}
                     </td>
 
                     {/* Patient */}
