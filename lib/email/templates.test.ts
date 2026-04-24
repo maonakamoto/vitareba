@@ -79,6 +79,18 @@ describe("email templates — structure", () => {
       portalUrl: "https://p.example.com",
     }))).toBe(true);
   });
+
+  it("profileCompletionEmail returns html", () => {
+    expect(isHtml(profileCompletionEmail({ patientName: "Anna", portalUrl: "https://p.example.com" }))).toBe(true);
+  });
+
+  it("assessmentCtaEmail returns html", () => {
+    expect(isHtml(assessmentCtaEmail({ patientName: "Anna", portalUrl: "https://p.example.com" }))).toBe(true);
+  });
+
+  it("assessmentMeaningEmail returns html", () => {
+    expect(isHtml(assessmentMeaningEmail({ patientName: "Anna", portalUrl: "https://p.example.com" }))).toBe(true);
+  });
 });
 
 describe("email templates — personalisation", () => {
@@ -226,6 +238,28 @@ describe("email templates — personalisation", () => {
       adminUrl: "https://vitareba.ch/admin/patients/3",
     });
     expect(html).toContain("85%");
+  });
+
+  it("profileCompletionEmail includes patient name and profile link", () => {
+    const html = profileCompletionEmail({ patientName: "Sophie", portalUrl: "https://p.example.com" });
+    expect(html).toContain("Sophie");
+    expect(html).toContain("https://p.example.com/profile");
+  });
+
+  it("assessmentCtaEmail includes patient name and assessment link", () => {
+    const html = assessmentCtaEmail({ patientName: "Luca", portalUrl: "https://p.example.com" });
+    expect(html).toContain("Luca");
+    expect(html).toContain("https://p.example.com/assessment");
+  });
+
+  it("assessmentMeaningEmail includes patient name and all five dimension names", () => {
+    const html = assessmentMeaningEmail({ patientName: "Maria", portalUrl: "https://p.example.com" });
+    expect(html).toContain("Maria");
+    expect(html).toContain("Arousal");
+    expect(html).toContain("Divergent");
+    expect(html).toContain("Hyperfocus");
+    expect(html).toContain("Volatility");
+    expect(html).toContain("Environment");
   });
 });
 
