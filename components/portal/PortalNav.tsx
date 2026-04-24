@@ -131,7 +131,7 @@ type Badges = { messages: number };
 
 // ─── Sidebar nav (desktop) ────────────────────────────────────────────────────
 
-export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
+export function PortalNav({ unreadMessages = 0, hasTodayCheckin = true }: { unreadMessages?: number; hasTodayCheckin?: boolean }) {
   const pathname = usePathname();
   const badges: Badges = { messages: unreadMessages };
 
@@ -142,6 +142,7 @@ export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
           {group.map(({ href, label, Icon, badgeKey }) => {
             const active = isActive(pathname, href);
             const count = badgeKey ? badges[badgeKey] : 0;
+            const showCheckinDot = href === PORTAL_ROUTES.checkin && !hasTodayCheckin && !active;
             return (
               <Link
                 key={href}
@@ -156,6 +157,9 @@ export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
                     {count > BADGE_MAX_COUNT ? `${BADGE_MAX_COUNT}+` : count}
                   </span>
                 )}
+                {showCheckinDot && (
+                  <span className={styles.navCheckinDot} aria-label="Check in today" />
+                )}
               </Link>
             );
           })}
@@ -167,7 +171,7 @@ export function PortalNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
 
 // ─── Mobile bottom tab bar ────────────────────────────────────────────────────
 
-export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
+export function BottomNav({ unreadMessages = 0, hasTodayCheckin = true }: { unreadMessages?: number; hasTodayCheckin?: boolean }) {
   const pathname = usePathname();
   const badges: Badges = { messages: unreadMessages };
 
@@ -176,6 +180,7 @@ export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
       {BOTTOM_ITEMS.map(({ href, label, Icon, badgeKey }) => {
         const active = isActive(pathname, href);
         const count = badgeKey ? badges[badgeKey] : 0;
+        const showCheckinDot = href === PORTAL_ROUTES.checkin && !hasTodayCheckin && !active;
         return (
           <Link
             key={href}
@@ -185,6 +190,9 @@ export function BottomNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
           >
             <span className={styles.bottomNavIcon}>
               <Icon />
+              {showCheckinDot && (
+                <span className={styles.bottomNavCheckinDot} aria-label="Check in today" />
+              )}
               {count > 0 && (
                 <span className={styles.bottomNavBadge} aria-label={`${count} unread`}>
                   {count > BADGE_MAX_COUNT ? `${BADGE_MAX_COUNT}+` : count}

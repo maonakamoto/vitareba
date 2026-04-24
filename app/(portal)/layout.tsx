@@ -7,9 +7,10 @@ import { UserDropdown } from "@/components/portal/UserDropdown";
 import { PortalNav, BottomNav } from "@/components/portal/PortalNav";
 import { NavBreadcrumb } from "@/components/portal/NavBreadcrumb";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { users, dailyCheckins } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
+import { formatDateISO } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { AUTH_ROUTES } from "@/lib/config/routes";
 
@@ -17,13 +18,21 @@ export default async function PortalLayout({ children }: { children: React.React
   const session = await auth();
   if (!session) redirect(AUTH_ROUTES.login);
 
-  const [dbUser, unreadMessages] = await Promise.all([
+  const today = formatDateISO(new Date());
+
+  const [dbUser, unreadMessages, todayCheckin] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true },
     }),
     getUnreadThreadCount(session.user.id),
+    db.query.dailyCheckins.findFirst({
+      where: and(eq(dailyCheckins.userId, session.user.id), eq(dailyCheckins.date, today)),
+      columns: { id: true },
+    }),
   ]);
+
+  const hasTodayCheckin = !!todayCheckin;
 
   const name = dbUser?.name ?? "";
   const email = session.user.email ?? "";
@@ -34,7 +43,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <Link href="/" className={styles.logoLink} aria-label={`${COMPANY.shortName} — home`}>
           <Logo />
         </Link>
-        <PortalNav unreadMessages={unreadMessages} />
+        <PortalNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} />
       </aside>
 
       <div className={styles.mainWrap}>
@@ -45,7 +54,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <main className={styles.main}>{children}</main>
       </div>
 
-      <BottomNav unreadMessages={unreadMessages} />
+      <BottomNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} />
     </div>
   );
 }

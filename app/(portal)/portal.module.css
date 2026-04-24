@@ -101,7 +101,36 @@
   flex: 1;
 }
 
-/* ─── Unread badges ──────────────────────────────────────────────────────── */
+/* ─── Unread badges + check-in reminder dot ─────────────────────────────── */
+
+/* Sidebar: small pulsing dot on check-in nav item when today's entry is missing */
+.navCheckinDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  margin-left: auto;
+  flex-shrink: 0;
+  animation: navDotPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes navDotPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* Bottom nav: small dot positioned over the icon */
+.bottomNavCheckinDot {
+  position: absolute;
+  top: 2px;
+  right: 50%;
+  transform: translateX(8px);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: navDotPulse 2.4s ease-in-out infinite;
+}
 
 .navBadge {
   min-width: 18px;
