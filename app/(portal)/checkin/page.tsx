@@ -212,6 +212,39 @@ export default function CheckinPage() {
           </div>
         )}
 
+        {/* Past check-ins list — shows notes and scores, newest first, skips today */}
+        {(() => {
+          const past = [...history]
+            .filter((c) => c.date !== today)
+            .sort((a, b) => b.date.localeCompare(a.date));
+          if (past.length === 0) return null;
+          return (
+            <div className={styles.card}>
+              <p className={styles.cardTitle}>Recent check-ins</p>
+              <div className={checkinStyles.historyList}>
+                {past.map((c) => (
+                  <div key={c.id || c.date} className={checkinStyles.historyRow}>
+                    <div className={checkinStyles.historyDate}>
+                      {formatDateMonthDay(c.date + "T00:00:00")}
+                    </div>
+                    <div className={checkinStyles.historyScores}>
+                      {CHECKIN_METRICS.map(({ key, shortLabel }) => (
+                        <span key={key} className={checkinStyles.historyScore}>
+                          <span className={checkinStyles.historyScoreLabel}>{shortLabel}</span>
+                          <span className={checkinStyles.historyScoreValue}>{c[key]}</span>
+                        </span>
+                      ))}
+                    </div>
+                    {c.notes && (
+                      <p className={checkinStyles.historyNote}>{c.notes}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {history.length === 0 && !loading && (
           <div className={styles.card}>
             <div className={styles.emptyState}>

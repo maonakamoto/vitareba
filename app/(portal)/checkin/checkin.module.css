@@ -237,6 +237,65 @@
   cursor: default;
 }
 
+/* ── Past check-ins history list ────────────────────────────────────────── */
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.historyRow {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.historyRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.historyDate {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  margin-bottom: 0.35rem;
+}
+
+.historyScores {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.historyScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.historyScoreLabel {
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.historyScoreValue {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink2);
+}
+
+.historyNote {
+  font-size: 0.78rem;
+  color: var(--ink2);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 /* ── Mobile ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {
