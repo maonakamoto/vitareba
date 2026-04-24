@@ -645,6 +645,30 @@ export function goalAchievedAdminEmail({
   `);
 }
 
+// ─── Goal achieved (to patient) ───────────────────────────────────────────────
+
+export function goalAchievedPatientEmail({
+  patientName,
+  goalTitle,
+  portalUrl,
+}: {
+  patientName: string;
+  goalTitle: string;
+  portalUrl: string;
+}) {
+  patientName = escapeHtml(patientName);
+  goalTitle = escapeHtml(goalTitle);
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>You&rsquo;ve reached your clinical goal — <strong style="color:#2a7a8a">${goalTitle}</strong>.</p>
+    <p>This is a real milestone. Your consistent check-ins and assessments made it visible — and now it&rsquo;s recorded as complete.</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.goals}">View your goals →</a></p>
+    <p class="meta">${COMPANY.clinicianName} has also been notified. Well done.</p>
+  `);
+}
+
 // ─── Document shared with patient ─────────────────────────────────────────────
 
 export function newDocumentEmail({

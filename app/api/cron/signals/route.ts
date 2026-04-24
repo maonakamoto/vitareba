@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { users, profiles, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
 import { eq, desc, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
-import { criticalPatientAlertEmail, goalAchievedAdminEmail } from "@/lib/email/templates";
+import { criticalPatientAlertEmail, goalAchievedAdminEmail, goalAchievedPatientEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { normalizeCheckinMetric } from "@/lib/domain/checkin";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
@@ -146,7 +146,17 @@ export async function GET(req: Request) {
               subject: `Goal achieved: ${patientName} — ${goal.title}`,
               html: goalAchievedAdminEmail({ patientName, goalTitle: goal.title, adminUrl }),
             }).catch((err) =>
-              console.error("[cron/signals] goal achievement email failed:", patient.id, err)
+              console.error("[cron/signals] goal achievement admin email failed:", patient.id, err)
+            );
+          }
+          // Notify the patient — positive reinforcement for their check-ins/assessments
+          if (patient.email) {
+            sendEmail({
+              to: patient.email,
+              subject: `Goal achieved: ${goal.title}`,
+              html: goalAchievedPatientEmail({ patientName, goalTitle: goal.title, portalUrl: PORTAL_URL }),
+            }).catch((err) =>
+              console.error("[cron/signals] goal achievement patient email failed:", patient.id, err)
             );
           }
         }
