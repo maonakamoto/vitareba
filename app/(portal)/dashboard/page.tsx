@@ -38,7 +38,7 @@ export default async function DashboardPage() {
   // A 60-day window would show "60-day streak" for longer streaks, which is misleading.
   const historyStart = new Date(now);
   historyStart.setDate(historyStart.getDate() - 110);
-  const sixtyDaysAgoISO = formatDateISO(historyStart);
+  const historyStartISO = formatDateISO(historyStart);
 
   const [
     recentAssessments,
@@ -92,7 +92,7 @@ export default async function DashboardPage() {
     db.query.dailyCheckins.findMany({
       where: and(
         eq(dailyCheckins.userId, session.user.id),
-        gte(dailyCheckins.date, sixtyDaysAgoISO)
+        gte(dailyCheckins.date, historyStartISO)
       ),
       orderBy: [desc(dailyCheckins.date)],
     }),

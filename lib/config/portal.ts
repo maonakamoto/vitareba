@@ -174,3 +174,6 @@ export const CHECKIN_STREAK_MILESTONES = [7, 30, 100] as const;
  * SSOT — import this constant wherever goal metric comparisons or labels are needed.
  */
 export const ASSESSMENT_GOAL_METRIC_KEY = "overallScore" as const;
+
+/** Human-readable label for ASSESSMENT_GOAL_METRIC_KEY — SSOT for goal metric display */
+export const ASSESSMENT_GOAL_METRIC_LABEL = "Assessment overall score" as const;

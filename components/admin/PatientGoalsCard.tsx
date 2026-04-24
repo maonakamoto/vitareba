@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
-import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH, CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY } from "@/lib/config/portal";
+import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH, CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL } from "@/lib/config/portal";
 
 const GOAL_METRIC_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "None — track manually" },
-  { value: ASSESSMENT_GOAL_METRIC_KEY, label: "Assessment overall score" },
+  { value: ASSESSMENT_GOAL_METRIC_KEY, label: ASSESSMENT_GOAL_METRIC_LABEL },
   ...CHECKIN_METRICS.map((m) => ({ value: m.key, label: `Check-in: ${m.label}` })),
 ];
 
