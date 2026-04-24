@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { users, assessmentResults, bookings, dailyCheckins, assessmentLeads } from "@/lib/db/schema";
-import { eq, desc, gte, isNotNull } from "drizzle-orm";
+import { eq, desc, gte, isNotNull, count } from "drizzle-orm";
 import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
@@ -90,12 +90,8 @@ export default async function ReportsPage() {
     }),
     // Inflection Edge conversion funnel
     Promise.all([
-      db.select({ id: assessmentLeads.id }).from(assessmentLeads).then((r) => r.length),
-      db
-        .select({ id: assessmentLeads.id })
-        .from(assessmentLeads)
-        .where(isNotNull(assessmentLeads.convertedUserId))
-        .then((r) => r.length),
+      db.select({ value: count() }).from(assessmentLeads).then((r) => r[0]?.value ?? 0),
+      db.select({ value: count() }).from(assessmentLeads).where(isNotNull(assessmentLeads.convertedUserId)).then((r) => r[0]?.value ?? 0),
     ]),
     // Programme assignments
     db.query.programmeAssignments.findMany(),

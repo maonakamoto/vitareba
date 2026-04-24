@@ -69,9 +69,7 @@ export default async function DashboardPage() {
       ),
       orderBy: [desc(bookings.createdAt)],
     }),
-    db.query.threads
-      .findMany({ where: eq(threads.patientId, session.user.id) })
-      .then((r) => r.length),
+    db.select({ value: count() }).from(threads).where(eq(threads.patientId, session.user.id)).then((r) => r[0]?.value ?? 0),
     getUnreadThreadCount(session.user.id),
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
