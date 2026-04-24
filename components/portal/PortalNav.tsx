@@ -67,6 +67,15 @@ const IcoGoals = () => (
   </svg>
 );
 
+const IcoDocuments = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.5 1.5H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V5.5L9.5 1.5z"/>
+    <polyline points="9.5,1.5 9.5,5.5 13.5,5.5"/>
+    <line x1="5" y1="8.5" x2="11" y2="8.5"/>
+    <line x1="5" y1="11" x2="8.5" y2="11"/>
+  </svg>
+);
+
 const IcoProfile = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="8" cy="5.5" r="3"/>
@@ -94,8 +103,9 @@ const NAV_GROUPS: NavItem[][] = [
     { href: PORTAL_ROUTES.goals,       label: "My Goals",       Icon: IcoGoals },
   ],
   [
-    { href: PORTAL_ROUTES.bookings, label: "Bookings",                      Icon: IcoBookings },
-    { href: PORTAL_ROUTES.messages, label: "Messages", badgeKey: "messages", Icon: IcoMessages },
+    { href: PORTAL_ROUTES.bookings,  label: "Bookings",                      Icon: IcoBookings },
+    { href: PORTAL_ROUTES.messages,  label: "Messages", badgeKey: "messages", Icon: IcoMessages },
+    { href: PORTAL_ROUTES.documents, label: "Documents",                      Icon: IcoDocuments },
   ],
   [
     { href: PORTAL_ROUTES.profile, label: "Profile", Icon: IcoProfile },

@@ -16,6 +16,7 @@ export const PORTAL_ROUTES = {
   goals:       "/goals",
   bookings:    "/bookings",
   messages:    "/messages",
+  documents:   "/documents",
   profile:     "/profile",
 } as const satisfies Record<string, string>;
 
