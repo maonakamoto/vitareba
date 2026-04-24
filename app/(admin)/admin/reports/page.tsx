@@ -37,26 +37,71 @@ export default async function ReportsPage() {
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const thirtyDaysAgoStr = formatDateISO(thirtyDaysAgo);
 
-  // Fetch all patients with signal-relevant data
-  const patients = await db.query.users.findMany({
-    where: eq(users.role, USER_ROLE.patient),
-    with: {
-      assessmentResults: {
-        orderBy: [desc(assessmentResults.completedAt)],
-        limit: 2,
+  // All queries are independent — run in parallel to minimise page latency
+  const [
+    patients,
+    allAssessments,
+    recentCheckins,
+    populationCheckins,
+    [totalLeads, convertedLeads],
+    assignments,
+  ] = await Promise.all([
+    // All patients with signal-relevant data
+    db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      with: {
+        assessmentResults: {
+          orderBy: [desc(assessmentResults.completedAt)],
+          limit: 2,
+        },
+        bookings: {
+          orderBy: [desc(bookings.createdAt)],
+          limit: 1,
+        },
+        dailyCheckins: {
+          orderBy: [desc(dailyCheckins.date)],
+          limit: SIGNAL_CHECKIN_WINDOW_DAYS,
+        },
       },
-      bookings: {
-        orderBy: [desc(bookings.createdAt)],
-        limit: 1,
-      },
-      dailyCheckins: {
-        orderBy: [desc(dailyCheckins.date)],
-        limit: SIGNAL_CHECKIN_WINDOW_DAYS,
-      },
-    },
-  });
+    }),
+    // Assessment stats with patient name join
+    db
+      .select({
+        id: assessmentResults.id,
+        overallScore: assessmentResults.overallScore,
+        completedAt: assessmentResults.completedAt,
+        userId: assessmentResults.userId,
+        userName: users.name,
+        userEmail: users.email,
+      })
+      .from(assessmentResults)
+      .leftJoin(users, eq(assessmentResults.userId, users.id))
+      .orderBy(desc(assessmentResults.completedAt)),
+    // Check-in counts for the current adherence window
+    db.query.dailyCheckins.findMany({
+      where: gte(dailyCheckins.date, weekAgoStr),
+      columns: { userId: true, date: true },
+    }),
+    // Population wellness trend for the last 30 days
+    db.query.dailyCheckins.findMany({
+      where: gte(dailyCheckins.date, thirtyDaysAgoStr),
+      columns: { date: true, sleep: true, energy: true, mood: true, focus: true, stress: true },
+      orderBy: [desc(dailyCheckins.date)],
+    }),
+    // Inflection Edge conversion funnel
+    Promise.all([
+      db.select({ id: assessmentLeads.id }).from(assessmentLeads).then((r) => r.length),
+      db
+        .select({ id: assessmentLeads.id })
+        .from(assessmentLeads)
+        .where(isNotNull(assessmentLeads.convertedUserId))
+        .then((r) => r.length),
+    ]),
+    // Programme assignments
+    db.query.programmeAssignments.findMany(),
+  ]);
 
-  // Signal distribution + per-patient adherence (single pass)
+  // Signal distribution + per-patient adherence (single pass over patients)
   const signalCounts: Record<PatientSignal, number> = {
     critical: 0,
     attention: 0,
@@ -78,47 +123,23 @@ export default async function ReportsPage() {
   // Sort: fewest check-ins first so the patients needing attention are at top
   patientAdherence.sort((a, b) => a.weekCheckins - b.weekCheckins || a.name.localeCompare(b.name));
 
-  // Assessment stats — join users so we can show patient name in the table
-  const allAssessments = await db
-    .select({
-      id: assessmentResults.id,
-      overallScore: assessmentResults.overallScore,
-      completedAt: assessmentResults.completedAt,
-      userId: assessmentResults.userId,
-      userName: users.name,
-      userEmail: users.email,
-    })
-    .from(assessmentResults)
-    .leftJoin(users, eq(assessmentResults.userId, users.id))
-    .orderBy(desc(assessmentResults.completedAt));
+  // Assessment averages and tier distribution
   const avgScore =
     allAssessments.length > 0
       ? Math.round(allAssessments.reduce((s, a) => s + a.overallScore, 0) / allAssessments.length)
       : null;
-
-  // Score distribution by tier
   const tierCounts = VERDICT_TIERS.map((tier) => ({
     name: tier.name,
     count: allAssessments.filter((a) => a.overallScore >= tier.minScore && a.overallScore <= tier.maxScore).length,
     color: tier.color,
   }));
 
-  // Check-in adherence this week
+  // Check-in adherence stats
   const todayStr = formatDateISO(now);
-  const recentCheckins = await db.query.dailyCheckins.findMany({
-    where: gte(dailyCheckins.date, weekAgoStr),
-    columns: { userId: true, date: true },
-  });
   const uniqueActiveUsers = new Set(recentCheckins.map((c) => c.userId)).size;
   const todayCheckinCount = recentCheckins.filter((c) => c.date === todayStr).length;
 
-  // Population wellness trend — 30 days, all metrics, aggregated by date
-  const populationCheckins = await db.query.dailyCheckins.findMany({
-    where: gte(dailyCheckins.date, thirtyDaysAgoStr),
-    columns: { date: true, sleep: true, energy: true, mood: true, focus: true, stress: true },
-    orderBy: [desc(dailyCheckins.date)],
-  });
-  // Group by date and compute per-metric averages
+  // Population wellness trend — group by date and compute per-metric averages
   const byDate = new Map<string, { sums: Record<MetricKey, number>; count: number }>();
   for (const c of populationCheckins) {
     const entry = byDate.get(c.date) ?? { sums: { sleep: 0, energy: 0, mood: 0, focus: 0, stress: 0 }, count: 0 };
@@ -135,20 +156,11 @@ export default async function ReportsPage() {
       ...Object.fromEntries(CHECKIN_METRICS.map(({ key }) => [key, Math.round((sums[key] / count) * 10) / 10])) as Record<MetricKey, number>,
     }));
 
-  // Inflection Edge conversion funnel — anonymous overlay completions vs. registrations
-  const [totalLeads, convertedLeads] = await Promise.all([
-    db.select({ id: assessmentLeads.id }).from(assessmentLeads).then((r) => r.length),
-    db
-      .select({ id: assessmentLeads.id })
-      .from(assessmentLeads)
-      .where(isNotNull(assessmentLeads.convertedUserId))
-      .then((r) => r.length),
-  ]);
+  // Conversion funnel rate
   const conversionRate =
     totalLeads > 0 ? Math.round((convertedLeads / totalLeads) * 100) : null;
 
   // Programme distribution
-  const assignments = await db.query.programmeAssignments.findMany();
   const programmeCounts: Partial<Record<ProgrammeKey, number>> = {};
   const phaseCounts: Partial<Record<PhaseKey, number>> = {};
   for (const a of assignments) {
