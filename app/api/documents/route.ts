@@ -5,8 +5,11 @@ import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { requireSession, requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
-import { documents } from "@/lib/db/schema";
+import { documents, users } from "@/lib/db/schema";
 import { USER_ROLE } from "@/lib/config/auth";
+import { sendEmail } from "@/lib/email";
+import { newDocumentEmail } from "@/lib/email/templates";
+import { PORTAL_URL } from "@/lib/config/company";
 import { DOCUMENT_TITLE_MAX_LENGTH, MIME_TYPE_MAX_LENGTH } from "@/lib/config/portal";
 import { UUID_RE } from "@/lib/utils/validate";
 
@@ -74,6 +77,23 @@ export async function POST(req: Request) {
     console.error("[api/documents] insert failed:", err);
     return NextResponse.json({ success: false, error: "Failed to save document — please try again" }, { status: 500 });
   }
+
+  // Notify patient — fire-and-forget, never block the response
+  db.query.users
+    .findFirst({ where: eq(users.id, parsed.data.userId), columns: { name: true, email: true } })
+    .then((patient) => {
+      if (!patient?.email) return;
+      return sendEmail({
+        to: patient.email,
+        subject: `New document shared: ${parsed.data.title}`,
+        html: newDocumentEmail({
+          patientName: patient.name ?? patient.email,
+          title: parsed.data.title,
+          portalUrl: PORTAL_URL,
+        }),
+      });
+    })
+    .catch((err) => console.error("[api/documents] notification failed:", err));
 
   return NextResponse.json({ success: true, data: doc }, { status: 201 });
 }

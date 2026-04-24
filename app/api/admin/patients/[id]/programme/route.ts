@@ -3,9 +3,13 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
-import { programmeAssignments } from "@/lib/db/schema";
+import { programmeAssignments, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { programmeUpdateSchema } from "@/lib/domain/programmes";
+import { sendEmail } from "@/lib/email";
+import { programmeAssignedEmail } from "@/lib/email/templates";
+import { PORTAL_URL } from "@/lib/config/company";
+import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -70,6 +74,27 @@ export async function PATCH(req: Request, { params }: RouteContext) {
           assignedBy: session.user.id,
         })
         .returning();
+
+      // Notify patient on first assignment — fire-and-forget, never block the response
+      const programme = parsed.data.programme;
+      const phase = parsed.data.phase;
+      db.query.users
+        .findFirst({ where: eq(users.id, id), columns: { name: true, email: true } })
+        .then((patient) => {
+          if (!patient?.email) return;
+          return sendEmail({
+            to: patient.email,
+            subject: `You've been enrolled in ${PROGRAMME_CONFIG[programme].label}`,
+            html: programmeAssignedEmail({
+              patientName: patient.name ?? patient.email,
+              programmeLabel: PROGRAMME_CONFIG[programme].label,
+              phaseLabel: PHASE_CONFIG[phase].label,
+              phaseDescription: PHASE_CONFIG[phase].description,
+              portalUrl: PORTAL_URL,
+            }),
+          });
+        })
+        .catch((err) => console.error("[api/admin/programme] notification failed:", err));
     }
   } catch (err) {
     console.error("[api/admin/programme] upsert failed:", err);

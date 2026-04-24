@@ -619,3 +619,56 @@ export function profileCompletedAdminEmail({
     <p class="meta">This notification fires once when the patient first crosses 70% completion.</p>
   `);
 }
+
+// ─── Document shared with patient ─────────────────────────────────────────────
+
+export function newDocumentEmail({
+  patientName,
+  title,
+  portalUrl,
+}: {
+  patientName: string;
+  title: string;
+  portalUrl: string;
+}) {
+  patientName = escapeHtml(patientName);
+  title = escapeHtml(title);
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>${COMPANY.clinicianName} has shared a new document with you: <strong>${title}</strong></p>
+    <p>Open it directly in your patient portal.</p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.documents}">View documents →</a></p>
+  `);
+}
+
+// ─── Programme assigned (to patient) ──────────────────────────────────────────
+
+export function programmeAssignedEmail({
+  patientName,
+  programmeLabel,
+  phaseLabel,
+  phaseDescription,
+  portalUrl,
+}: {
+  patientName: string;
+  programmeLabel: string;
+  phaseLabel: string;
+  phaseDescription: string;
+  portalUrl: string;
+}) {
+  patientName = escapeHtml(patientName);
+  programmeLabel = escapeHtml(programmeLabel);
+  phaseLabel = escapeHtml(phaseLabel);
+  phaseDescription = escapeHtml(phaseDescription);
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>${COMPANY.clinicianName} has enrolled you in a clinical programme: <strong>${programmeLabel}</strong></p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Current phase:</strong> ${phaseLabel}</p>
+    <p>${phaseDescription}</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.dashboard}">Open your portal →</a></p>
+  `);
+}

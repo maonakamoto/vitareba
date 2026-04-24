@@ -17,6 +17,8 @@ import {
   checkinDipAlertEmail,
   profileCompletedAdminEmail,
   checkinStreakMilestoneEmail,
+  newDocumentEmail,
+  programmeAssignedEmail,
 } from "./templates";
 
 // All templates return valid HTML wrapping the VitaReBa layout
@@ -505,6 +507,64 @@ describe("checkinStreakMilestoneEmail", () => {
   it("includes checkin route link", () => {
     const html = checkinStreakMilestoneEmail({ ...base, streak: 7 });
     expect(html).toContain("https://p.example.com/checkin");
+  });
+});
+
+describe("newDocumentEmail", () => {
+  const base = { patientName: "Anna", title: "Lab Results Q1", portalUrl: "https://p.example.com" };
+
+  it("returns valid html", () => {
+    expect(isHtml(newDocumentEmail(base))).toBe(true);
+  });
+
+  it("includes patient name and document title", () => {
+    const html = newDocumentEmail(base);
+    expect(html).toContain("Anna");
+    expect(html).toContain("Lab Results Q1");
+  });
+
+  it("includes link to documents route", () => {
+    const html = newDocumentEmail(base);
+    expect(html).toContain("https://p.example.com/documents");
+  });
+
+  it("escapes HTML in title", () => {
+    const html = newDocumentEmail({ ...base, title: "<script>xss</script>" });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+});
+
+describe("programmeAssignedEmail", () => {
+  const base = {
+    patientName: "Anna",
+    programmeLabel: "Riding the Wave",
+    phaseLabel: "Active",
+    phaseDescription: "Your programme is underway. Follow your protocol.",
+    portalUrl: "https://p.example.com",
+  };
+
+  it("returns valid html", () => {
+    expect(isHtml(programmeAssignedEmail(base))).toBe(true);
+  });
+
+  it("includes patient name, programme and phase", () => {
+    const html = programmeAssignedEmail(base);
+    expect(html).toContain("Anna");
+    expect(html).toContain("Riding the Wave");
+    expect(html).toContain("Active");
+    expect(html).toContain("Your programme is underway");
+  });
+
+  it("includes link to dashboard", () => {
+    const html = programmeAssignedEmail(base);
+    expect(html).toContain("https://p.example.com/dashboard");
+  });
+
+  it("escapes HTML in patient name", () => {
+    const html = programmeAssignedEmail({ ...base, patientName: "<b>Hacker</b>" });
+    expect(html).not.toContain("<b>");
+    expect(html).toContain("&lt;b&gt;");
   });
 });
 
