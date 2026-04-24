@@ -12,13 +12,42 @@ import {
   SIGNAL_SORT_ORDER,
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
+  type PatientSignal,
 } from "@/lib/config/admin";
 import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
 import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
-import { getAdminUnreadPatientIds } from "@/lib/domain/messages";
+import { getAdminUnreadPatientIds, getAdminUnreadThreadCount } from "@/lib/domain/messages";
 
+
+function StatCard({
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  label: string;
+  value: string | number;
+  sub?: string;
+  accent?: "danger" | "warn";
+}) {
+  const valueClass =
+    accent === "danger"
+      ? styles.statCardValueDanger
+      : accent === "warn"
+      ? styles.statCardValueWarn
+      : sub
+      ? styles.statCardValueWithSub
+      : styles.statCardValueNoSub;
+  return (
+    <div className={`${styles.card} ${styles.statCardPadded}`}>
+      <p className={styles.statCardLabel}>{label}</p>
+      <p className={valueClass}>{value}</p>
+      {sub && <p className={styles.statCardSub}>{sub}</p>}
+    </div>
+  );
+}
 
 export default async function PatientsPage() {
   const session = await auth();
@@ -26,7 +55,7 @@ export default async function PatientsPage() {
 
   const now = new Date();
 
-  const [patients, unreadPatientIds] = await Promise.all([
+  const [patients, unreadPatientIds, unreadThreadCount] = await Promise.all([
     db.query.users.findMany({
     where: eq(users.role, USER_ROLE.patient),
     with: {
@@ -47,6 +76,7 @@ export default async function PatientsPage() {
     },
   }),
     getAdminUnreadPatientIds(),
+    getAdminUnreadThreadCount(),
   ]);
 
   // Compute signal for each patient, then sort by severity then urgency
@@ -70,6 +100,15 @@ export default async function PatientsPage() {
         b.urgency - a.urgency
     );
 
+  // KPI counts — single pass over enriched patients
+  const todayStr = formatDateISO(now);
+  const signalCounts: Record<PatientSignal, number> = { critical: 0, attention: 0, active: 0, new: 0 };
+  let todayCheckinCount = 0;
+  for (const p of enriched) {
+    signalCounts[p.signal]++;
+    if (p.dailyCheckins.some((c) => c.date === todayStr)) todayCheckinCount++;
+  }
+
   // Build today-6..today date array for sparklines
   const sparkDates: string[] = [];
   for (let i = SIGNAL_CHECKIN_WINDOW_DAYS - 1; i >= 0; i--) {
@@ -84,6 +123,34 @@ export default async function PatientsPage() {
         <em>Patients</em>
       </h1>
       <p className={styles.pageSub}>{patients.length} registered patient{patients.length !== 1 ? "s" : ""}</p>
+
+      {patients.length > 0 && (
+        <div className={styles.statsGrid}>
+          <StatCard
+            label="Critical"
+            value={signalCounts.critical}
+            sub={signalCounts.critical > 0 ? "needs immediate attention" : "all clear"}
+            accent={signalCounts.critical > 0 ? "danger" : undefined}
+          />
+          <StatCard
+            label="Attention"
+            value={signalCounts.attention}
+            sub={signalCounts.attention > 0 ? "follow up recommended" : "all clear"}
+            accent={signalCounts.attention > 0 ? "warn" : undefined}
+          />
+          <StatCard
+            label="Checked in today"
+            value={`${todayCheckinCount} / ${patients.length}`}
+            sub={`${Math.round((todayCheckinCount / patients.length) * 100)}% adherence`}
+          />
+          <StatCard
+            label="Unread messages"
+            value={unreadThreadCount}
+            sub={unreadThreadCount > 0 ? "patient replies waiting" : "inbox clear"}
+            accent={unreadThreadCount > 0 ? "warn" : undefined}
+          />
+        </div>
+      )}
 
       <div className={styles.card}>
         {patients.length === 0 ? (

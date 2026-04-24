@@ -502,6 +502,16 @@
   margin-bottom: 0.25rem;
 }
 
+.statCardValueDanger {
+  composes: statCardValueWithSub;
+  color: var(--danger);
+}
+
+.statCardValueWarn {
+  composes: statCardValueWithSub;
+  color: var(--warn);
+}
+
 .statCardSub {
   font-size: 0.72rem;
   color: var(--muted);
