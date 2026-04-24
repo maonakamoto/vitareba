@@ -113,11 +113,11 @@ const NAV_GROUPS: NavItem[][] = [
 ];
 
 const BOTTOM_ITEMS: NavItem[] = [
-  { href: PORTAL_ROUTES.dashboard, label: "Home",     Icon: IcoDashboard },
-  { href: PORTAL_ROUTES.checkin,   label: "Check-in", Icon: IcoCheckin },
-  { href: PORTAL_ROUTES.messages,  label: "Messages", badgeKey: "messages", Icon: IcoMessages },
-  { href: PORTAL_ROUTES.bookings,  label: "Bookings", Icon: IcoBookings },
-  { href: PORTAL_ROUTES.profile,   label: "Profile",  Icon: IcoProfile },
+  { href: PORTAL_ROUTES.dashboard, label: "Home",      Icon: IcoDashboard },
+  { href: PORTAL_ROUTES.checkin,   label: "Check-in",  Icon: IcoCheckin },
+  { href: PORTAL_ROUTES.messages,  label: "Messages",  badgeKey: "messages", Icon: IcoMessages },
+  { href: PORTAL_ROUTES.bookings,  label: "Bookings",  Icon: IcoBookings },
+  { href: PORTAL_ROUTES.documents, label: "Documents", Icon: IcoDocuments },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
