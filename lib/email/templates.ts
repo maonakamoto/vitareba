@@ -462,13 +462,23 @@ export function weeklyDigestEmail({
 export function checkinReminderEmail({
   patientName,
   portalUrl,
+  atRiskStreak = 0,
 }: {
   patientName: string;
   portalUrl: string;
+  atRiskStreak?: number;
 }) {
+  const streakLine = atRiskStreak >= 2
+    ? `<p style="font-size:1rem;font-weight:600;color:#1a1a22">🔥 ${atRiskStreak}-day streak — don't break it now.</p>`
+    : "";
+  const bodyLine = atRiskStreak >= 2
+    ? `<p>You've logged ${atRiskStreak} days in a row. One more entry keeps your streak alive and gives ${COMPANY.clinicianName} a complete picture of your week.</p>`
+    : `<p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>`;
+
   return layout(`
-    <p>How are you doing today, <strong>${patientName}</strong>?</p>
-    <p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>
+    <p>Hi <strong>${patientName}</strong>,</p>
+    ${streakLine}
+    ${bodyLine}
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in →</a></p>
     <div class="divider"></div>
     <p class="meta">You receive this reminder on days when you haven&apos;t logged a check-in yet. To stop, update your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:#2a7a8a">email preferences</a>.</p>
