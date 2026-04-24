@@ -7,12 +7,13 @@ import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
 import { USER_ROLE } from "@/lib/config/auth";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
-import { formatDateShort, formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
+import { formatDateShort, formatDateISO, formatDateMonthDay, displayName } from "@/lib/utils/format";
 import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
+import Link from "next/link";
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
@@ -77,10 +78,19 @@ export default async function ReportsPage() {
   // Sort: fewest check-ins first so the patients needing attention are at top
   patientAdherence.sort((a, b) => a.weekCheckins - b.weekCheckins || a.name.localeCompare(b.name));
 
-  // Assessment stats
-  const allAssessments = await db.query.assessmentResults.findMany({
-    orderBy: [desc(assessmentResults.completedAt)],
-  });
+  // Assessment stats — join users so we can show patient name in the table
+  const allAssessments = await db
+    .select({
+      id: assessmentResults.id,
+      overallScore: assessmentResults.overallScore,
+      completedAt: assessmentResults.completedAt,
+      userId: assessmentResults.userId,
+      userName: users.name,
+      userEmail: users.email,
+    })
+    .from(assessmentResults)
+    .leftJoin(users, eq(assessmentResults.userId, users.id))
+    .orderBy(desc(assessmentResults.completedAt));
   const avgScore =
     allAssessments.length > 0
       ? Math.round(allAssessments.reduce((s, a) => s + a.overallScore, 0) / allAssessments.length)
@@ -309,6 +319,7 @@ export default async function ReportsPage() {
             <table className={styles.table}>
               <thead>
                 <tr>
+                  <th>Patient</th>
                   <th>Score</th>
                   <th>Tier</th>
                   <th>Date</th>
@@ -317,6 +328,11 @@ export default async function ReportsPage() {
               <tbody>
                 {allAssessments.slice(0, 10).map((a) => (
                   <tr key={a.id}>
+                    <td>
+                      <Link href={`${ADMIN_ROUTES.patients}/${a.userId}`} className={styles.adherenceLink}>
+                        {displayName(a.userName, a.userEmail)}
+                      </Link>
+                    </td>
                     <td>
                       <span
                         className={styles.scoreChipLarge}
