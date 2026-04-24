@@ -13,6 +13,8 @@ type Profile = {
   currentSupplements?: string | null;
   sleepHoursAvg?: number | null;
   exerciseFrequency?: string | null;
+  referralSource?: string | null;
+  notes?: string | null;
 };
 
 function getExerciseLabel(value: string | null | undefined): string {
@@ -59,7 +61,7 @@ export function PatientProfileCard({ profile }: { profile: Profile | null | unde
       </table>
 
       <p className={styles.profileSubLabel}>Lifestyle</p>
-      <table className={styles.profileTableLast}>
+      <table className={pr?.notes || pr?.referralSource ? styles.profileTable : styles.profileTableLast}>
         <tbody>
           <tr>
             <td className={styles.profileTdLabel}>Sleep avg</td>
@@ -75,6 +77,18 @@ export function PatientProfileCard({ profile }: { profile: Profile | null | unde
           </tr>
         </tbody>
       </table>
+
+      {(pr?.notes || pr?.referralSource) && (
+        <>
+          <p className={styles.profileSubLabel}>Notes</p>
+          <table className={styles.profileTableLast}>
+            <tbody>
+              {pr?.notes && <ProfileRow label="Patient notes" value={pr.notes} />}
+              {pr?.referralSource && <ProfileRow label="Referred by" value={pr.referralSource} />}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 }
