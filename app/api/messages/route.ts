@@ -5,9 +5,13 @@ import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
-import { threads, threadMessages } from "@/lib/db/schema";
+import { threads, threadMessages, users } from "@/lib/db/schema";
 import { MESSAGE_SUBJECT_MAX_LENGTH, MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
 import { USER_ROLE } from "@/lib/config/auth";
+import { sendEmail } from "@/lib/email";
+import { newMessageEmail } from "@/lib/email/templates";
+import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 
 const createSchema = z.object({
   subject: z.string().min(1).max(MESSAGE_SUBJECT_MAX_LENGTH),
@@ -73,6 +77,42 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("[api/messages] thread creation failed:", err);
     return NextResponse.json({ success: false, error: "Failed to send message — please try again" }, { status: 500 });
+  }
+
+  // Notify the other party (fire-and-forget — mirrors threadId reply notifications)
+  const adminEmails = getAdminEmails();
+  if (session.user.role === USER_ROLE.admin) {
+    // Admin opened thread for patient → notify patient
+    const patient = await db.query.users
+      .findFirst({ where: eq(users.id, patientId), columns: { name: true, email: true } })
+      .catch(() => null);
+    if (patient?.email) {
+      sendEmail({
+        to: patient.email,
+        subject: `New message: ${parsed.data.subject} — ${COMPANY.shortName}`,
+        html: newMessageEmail({
+          recipientName: patient.name ?? "there",
+          senderName: COMPANY.clinicianName,
+          subject: parsed.data.subject,
+          portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.messages}/${thread.id}`,
+        }),
+      }).catch(console.error);
+    }
+  } else if (adminEmails.length > 0) {
+    // Patient opened new thread → notify admin(s)
+    const patient = await db.query.users
+      .findFirst({ where: eq(users.id, session.user.id), columns: { name: true, email: true } })
+      .catch(() => null);
+    sendEmail({
+      to: adminEmails,
+      subject: `New message from ${patient?.name ?? "patient"}: ${parsed.data.subject}`,
+      html: newMessageEmail({
+        recipientName: COMPANY.clinicianName,
+        senderName: patient?.name ?? "Patient",
+        subject: parsed.data.subject,
+        portalUrl: `${PORTAL_URL}${ADMIN_ROUTES.messages}/${thread.id}`,
+      }),
+    }).catch(console.error);
   }
 
   return NextResponse.json({ success: true, data: thread }, { status: 201 });
