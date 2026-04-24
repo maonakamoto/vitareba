@@ -432,6 +432,8 @@ function metricRow(label: string, curr: number | undefined, prev: number | undef
   </tr>`;
 }
 
+type DigestGoal = { title: string; pct: number; current: number; target: number };
+
 export function weeklyDigestEmail({
   patientName,
   thisWeekAvgs,
@@ -439,6 +441,7 @@ export function weeklyDigestEmail({
   latestScore,
   verdictName,
   nextBookingStatus,
+  activeGoals = [],
   portalUrl,
 }: {
   patientName: string;
@@ -447,6 +450,7 @@ export function weeklyDigestEmail({
   latestScore: number | null;
   verdictName: string | null;
   nextBookingStatus: string | null;
+  activeGoals?: DigestGoal[];
   portalUrl: string;
 }) {
   patientName = escapeHtml(patientName);
@@ -484,11 +488,34 @@ export function weeklyDigestEmail({
   const bookingSection = nextBookingStatus ? `
     <p class="meta">Your next consultation is <strong>${nextBookingStatus}</strong>.</p>` : "";
 
+  const goalsSection = activeGoals.length > 0 ? `
+    <div class="divider"></div>
+    <p><strong>Clinical goal progress</strong></p>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:0.5rem">
+      <tbody>
+        ${activeGoals.map((g) => {
+          const escaped = escapeHtml(g.title);
+          const barWidth = Math.min(100, g.pct);
+          const barColor = g.pct >= 100 ? "#2a7a8a" : g.pct >= 60 ? "#2a7a8a" : g.pct >= 30 ? "#b8960a" : "#888a96";
+          return `<tr>
+            <td style="padding:0.4rem 0.5rem 0.4rem 0;font-size:0.85rem;color:#3a3a4a;vertical-align:middle;width:50%">${escaped}</td>
+            <td style="padding:0.4rem 0;vertical-align:middle">
+              <div style="background:#f1ede7;border-radius:3px;height:6px;width:100%">
+                <div style="background:${barColor};border-radius:3px;height:6px;width:${barWidth}%"></div>
+              </div>
+            </td>
+            <td style="padding:0.4rem 0 0.4rem 0.5rem;font-size:0.8rem;color:#888a96;white-space:nowrap;vertical-align:middle">${g.pct}% · ${g.current}→${g.target}</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>` : "";
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Your weekly summary from ${COMPANY.shortName}.</p>
     ${checkinSection}
     ${assessmentSection}
+    ${goalsSection}
     ${bookingSection}
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in</a></p>
     <div class="divider"></div>

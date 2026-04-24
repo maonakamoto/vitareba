@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
-import { eq, gte, and, desc, inArray } from "drizzle-orm";
+import { users, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
+import { eq, gte, and, desc, inArray, isNull } from "drizzle-orm";
+import { computeGoalProgress } from "@/lib/domain/goals";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
@@ -54,6 +55,10 @@ export async function GET(req: Request) {
           where: inArray(bookings.status, [BOOKING_STATUS.pending, BOOKING_STATUS.confirmed]),
           orderBy: [desc(bookings.createdAt)],
           limit: 1,
+        },
+        // Active goals only — completed goals have already been celebrated
+        clinicalGoals: {
+          where: isNull(clinicalGoals.completedAt),
         },
       },
     });
@@ -112,6 +117,17 @@ export async function GET(req: Request) {
       const latestAssessment = patient.assessmentResults[0];
       const latestScore = latestAssessment?.overallScore ?? null;
 
+      // Build goal summaries — only goals with enough data to show progress
+      const goalSummaries = (patient.clinicalGoals ?? [])
+        .filter((g) => g.current != null && g.target != null)
+        .map((g) => ({
+          title: g.title,
+          pct: computeGoalProgress(g.baseline, g.current, g.target),
+          current: g.current as number,
+          target: g.target as number,
+        }))
+        .filter((g) => g.pct !== null) as { title: string; pct: number; current: number; target: number }[];
+
       const html = weeklyDigestEmail({
         patientName: displayName(patient.name, patient.email),
         thisWeekAvgs: avgMetrics(thisWeekCheckins),
@@ -119,6 +135,7 @@ export async function GET(req: Request) {
         latestScore,
         verdictName: latestScore !== null ? getVerdictName(latestScore) : null,
         nextBookingStatus: patient.bookings[0]?.status ?? null,
+        activeGoals: goalSummaries,
         portalUrl: PORTAL_URL,
       });
 

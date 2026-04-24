@@ -337,6 +337,50 @@ describe("weeklyDigestEmail — conditional sections", () => {
     // displayCurr = 6-4 = 2, displayPrev = 6-1 = 5 → 2 < 5-0.1 → "↓"
     expect(html).toContain("↓");
   });
+
+  it("omits goals section when no activeGoals provided", () => {
+    const html = weeklyDigestEmail(base);
+    expect(html).not.toContain("Clinical goal progress");
+  });
+
+  it("shows goals section when activeGoals provided", () => {
+    const html = weeklyDigestEmail({
+      ...base,
+      activeGoals: [{ title: "Improve focus", pct: 65, current: 62, target: 80 }],
+    });
+    expect(html).toContain("Clinical goal progress");
+    expect(html).toContain("Improve focus");
+    expect(html).toContain("65%");
+  });
+
+  it("shows correct current → target values for each goal", () => {
+    const html = weeklyDigestEmail({
+      ...base,
+      activeGoals: [{ title: "Sleep quality", pct: 40, current: 52, target: 75 }],
+    });
+    expect(html).toContain("52→75");
+  });
+
+  it("shows multiple goals in goals section", () => {
+    const html = weeklyDigestEmail({
+      ...base,
+      activeGoals: [
+        { title: "Focus score", pct: 70, current: 65, target: 80 },
+        { title: "Energy level", pct: 30, current: 45, target: 70 },
+      ],
+    });
+    expect(html).toContain("Focus score");
+    expect(html).toContain("Energy level");
+  });
+
+  it("escapes HTML in goal title", () => {
+    const html = weeklyDigestEmail({
+      ...base,
+      activeGoals: [{ title: "<script>xss</script>", pct: 50, current: 50, target: 100 }],
+    });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
 });
 
 describe("checkinReminderEmail", () => {
