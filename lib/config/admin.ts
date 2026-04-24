@@ -11,6 +11,9 @@ export const SCORE_DROP_CRITICAL = 10;
 /** Days after registration where no activity is expected (new patient grace period) */
 export const NEW_PATIENT_GRACE_DAYS = 3;
 
+/** Days after an attended consultation before a follow-up booking is flagged as needed */
+export const ATTENDED_FOLLOW_UP_DAYS = 30;
+
 /** Days of check-in history to fetch for sparkline and signal computation */
 export const SIGNAL_CHECKIN_WINDOW_DAYS = 7;
 

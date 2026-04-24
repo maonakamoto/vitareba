@@ -4,6 +4,7 @@ import {
   NO_CHECKIN_CRITICAL_DAYS,
   SCORE_DROP_CRITICAL,
   NEW_PATIENT_GRACE_DAYS,
+  ATTENDED_FOLLOW_UP_DAYS,
   SPARKLINE_LOW_THRESHOLD,
   SPARKLINE_MID_THRESHOLD,
 } from "@/lib/config/admin";
@@ -29,7 +30,7 @@ export type SignalInput = {
   registeredAt: Date;
   checkins: CheckinRow[];       // last N days, descending by date
   assessments: AssessmentRow[]; // latest 2, descending
-  bookings: { id: string; status: BookingStatus }[];
+  bookings: { id: string; status: BookingStatus; createdAt: Date }[];
   now?: Date;                   // injectable for tests; defaults to new Date()
 };
 
@@ -105,11 +106,31 @@ export function computePatientSignal({
   }
 
   // Attention: has assessment but no active booking (confirmed or attended)
-  const activeBookings = bookings.filter(
+  const hasActiveBooking = bookings.some(
     (b) => b.status === BOOKING_STATUS.confirmed || b.status === BOOKING_STATUS.attended
   );
-  if (activeBookings.length === 0) {
+  if (!hasActiveBooking) {
     return { signal: PATIENT_SIGNAL.attention, reason: "Assessment done — no booking yet" };
+  }
+
+  // Attention: attended consultation but no confirmed follow-up booking after N days
+  const hasConfirmed = bookings.some((b) => b.status === BOOKING_STATUS.confirmed);
+  if (!hasConfirmed) {
+    const attendedBookings = bookings.filter((b) => b.status === BOOKING_STATUS.attended);
+    if (attendedBookings.length > 0) {
+      const mostRecentAttended = [...attendedBookings].sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+      )[0];
+      const daysSince = Math.floor(
+        (now.getTime() - mostRecentAttended.createdAt.getTime()) / DAY_MS
+      );
+      if (daysSince > ATTENDED_FOLLOW_UP_DAYS) {
+        return {
+          signal: PATIENT_SIGNAL.attention,
+          reason: `Consultation attended ${daysSince} days ago — follow-up booking needed`,
+        };
+      }
+    }
   }
 
   return { signal: PATIENT_SIGNAL.active, reason: "All signals normal" };
