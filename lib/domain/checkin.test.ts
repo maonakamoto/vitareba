@@ -136,8 +136,21 @@ describe("streakMessage", () => {
     expect(streakMessage(29)).toContain("29-day streak");
   });
 
-  it("returns elite message for streaks ≥ 30", () => {
+  it("returns elite message for streaks 30–99", () => {
     expect(streakMessage(30)).toContain("elite");
-    expect(streakMessage(100)).toContain("elite");
+    expect(streakMessage(99)).toContain("elite");
+  });
+
+  it("returns dataset message for streaks ≥ 100, including the correct count", () => {
+    expect(streakMessage(100)).toContain("dataset");
+    expect(streakMessage(100)).toContain("100");
+    expect(streakMessage(150)).toContain("dataset");
+    expect(streakMessage(150)).toContain("150");
+  });
+
+  it("30–99 day messages include the actual streak count", () => {
+    expect(streakMessage(65)).toContain("65");
+    expect(streakMessage(65)).toContain("elite");
+    expect(streakMessage(65)).not.toContain("30-day");
   });
 });

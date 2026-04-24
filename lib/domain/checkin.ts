@@ -30,7 +30,8 @@ export function normalizeCheckinMetric(raw: number): number {
  * check-in cadence, not UI copy — they live here alongside computeStreak().
  */
 export function streakMessage(streak: number): string {
-  if (streak >= 30) return "30-day streak — elite consistency. You're in rare company.";
+  if (streak >= 100) return `${streak}-day streak — a dataset, not just a streak. Your programme can be tuned with precision most patients never reach.`;
+  if (streak >= 30) return `${streak}-day streak — elite consistency. You're in rare company.`;
   if (streak >= 14) return `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
   if (streak >= 7) return `${streak}-day streak — a full week. Your nervous system is being mapped.`;
   if (streak >= 3) return `${streak} days in a row. Patterns are already forming.`;
