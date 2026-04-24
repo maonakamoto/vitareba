@@ -193,6 +193,11 @@
   align-items: center;
 }
 
+.messagesRowUnread {
+  border-color: var(--teal);
+  background: #f0fafb;
+}
+
 .messagesBody {
   font-size: 0.85rem;
   color: var(--ink2);

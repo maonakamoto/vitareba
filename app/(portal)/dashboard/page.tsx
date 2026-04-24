@@ -22,6 +22,7 @@ import { GoalsCard } from "./GoalsCard";
 import { CheckinCard } from "./CheckinCard";
 import { AssessmentSection } from "./AssessmentSection";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
+import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { PendingAssessmentSaver } from "./PendingAssessmentSaver";
 
 export default async function DashboardPage() {
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
     recentAssessments,
     latestBooking,
     threadCount,
+    unreadMessageCount,
     dbUser,
     todayCheckin,
     programmeAssignment,
@@ -52,6 +54,7 @@ export default async function DashboardPage() {
     db.query.threads
       .findMany({ where: eq(threads.patientId, session.user.id) })
       .then((r) => r.length),
+    getUnreadThreadCount(session.user.id),
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true },
@@ -107,6 +110,7 @@ export default async function DashboardPage() {
           previousAssessment={recentAssessments[1]}
           latestBooking={latestBooking}
           threadCount={threadCount}
+          unreadMessageCount={unreadMessageCount}
         />
       </div>
     </div>

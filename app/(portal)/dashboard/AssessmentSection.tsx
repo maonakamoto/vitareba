@@ -13,6 +13,7 @@ interface AssessmentSectionProps {
   previousAssessment?: AssessmentRow | null;
   latestBooking: Pick<BookingRow, "status" | "preferredDate"> | null | undefined;
   threadCount: number;
+  unreadMessageCount?: number;
 }
 
 function getLowestDimension(scores: Record<string, number>) {
@@ -26,6 +27,7 @@ export function AssessmentSection({
   previousAssessment,
   latestBooking,
   threadCount,
+  unreadMessageCount = 0,
 }: AssessmentSectionProps) {
   if (!latestAssessment) {
     return (
@@ -163,15 +165,17 @@ export function AssessmentSection({
 
       {/* Messages row */}
       {threadCount > 0 && (
-        <div className={styles.messagesRow}>
+        <div className={`${styles.messagesRow}${unreadMessageCount > 0 ? ` ${styles.messagesRowUnread}` : ""}`}>
           <div>
             <p className={shared.cardTitle}>Messages</p>
             <p className={styles.messagesBody}>
-              {threadCount} active thread{threadCount !== 1 ? "s" : ""} with the {COMPANY.shortName} team
+              {unreadMessageCount > 0
+                ? `${COMPANY.clinicianName} sent you ${unreadMessageCount === 1 ? "a reply" : `${unreadMessageCount} replies`} — open to read`
+                : `${threadCount} active thread${threadCount !== 1 ? "s" : ""} with the ${COMPANY.shortName} team`}
             </p>
           </div>
           <Link href={PORTAL_ROUTES.messages} className={`${styles.cardLink} ${styles.noWrap}`}>
-            Open messages →
+            {unreadMessageCount > 0 ? "Read reply →" : "Open messages →"}
           </Link>
         </div>
       )}
