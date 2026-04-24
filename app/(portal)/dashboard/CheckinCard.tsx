@@ -1,8 +1,9 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { streakMessage } from "@/lib/domain/checkin";
 
-export function CheckinCard({ hasTodayCheckin }: { hasTodayCheckin: boolean }) {
+export function CheckinCard({ hasTodayCheckin, streak }: { hasTodayCheckin: boolean; streak: number }) {
   if (!hasTodayCheckin) {
     return (
       <div className={styles.checkinPrompt}>
@@ -24,7 +25,7 @@ export function CheckinCard({ hasTodayCheckin }: { hasTodayCheckin: boolean }) {
       <span className={styles.checkinDoneCheck}>✓</span>
       <div>
         <p className={styles.checkinDoneLabel}>Check-in done</p>
-        <p className={styles.checkinDoneText}>Today&apos;s data saved — your trend is growing.</p>
+        <p className={styles.checkinDoneText}>{streakMessage(streak)}</p>
       </div>
       <Link href={PORTAL_ROUTES.checkin} className={`${styles.cardLinkMuted} ${styles.noWrap}`}>
         Edit →

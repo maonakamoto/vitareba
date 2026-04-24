@@ -10,12 +10,13 @@ import {
   profiles,
   clinicalGoals,
 } from "@/lib/db/schema";
-import { eq, desc, and, isNull } from "drizzle-orm";
+import { eq, desc, and, isNull, gte } from "drizzle-orm";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
 import { COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
+import { computeStreak } from "@/lib/domain/checkin";
 import { ProgrammeCard } from "./ProgrammeCard";
 import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
 import { GoalsCard } from "./GoalsCard";
@@ -29,7 +30,12 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session) return null;
 
-  const today = formatDateISO(new Date());
+  const now = new Date();
+  const today = formatDateISO(now);
+  // Fetch 60 days of history to support streak computation — enough for any realistic streak
+  const sixtyDaysAgo = new Date(now);
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+  const sixtyDaysAgoISO = formatDateISO(sixtyDaysAgo);
 
   const [
     recentAssessments,
@@ -41,6 +47,7 @@ export default async function DashboardPage() {
     programmeAssignment,
     profile,
     activeGoals,
+    recentCheckinDates,
   ] = await Promise.all([
     db.query.assessmentResults.findMany({
       where: eq(assessmentResults.userId, session.user.id),
@@ -77,11 +84,20 @@ export default async function DashboardPage() {
         isNull(clinicalGoals.completedAt)
       ),
     }),
+    db.query.dailyCheckins.findMany({
+      where: and(
+        eq(dailyCheckins.userId, session.user.id),
+        gte(dailyCheckins.date, sixtyDaysAgoISO)
+      ),
+      columns: { date: true },
+      orderBy: [desc(dailyCheckins.date)],
+    }),
   ]);
 
   const firstName =
     dbUser?.name?.split(" ")[0] ?? session.user.email?.split("@")[0] ?? "there";
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
+  const checkinStreak = computeStreak(recentCheckinDates);
 
   return (
     <div>
@@ -103,7 +119,7 @@ export default async function DashboardPage() {
 
         <ProfileCompletenessBar pct={profilePct} />
 
-        <CheckinCard hasTodayCheckin={!!todayCheckin} />
+        <CheckinCard hasTodayCheckin={!!todayCheckin} streak={checkinStreak} />
 
         <AssessmentSection
           latestAssessment={recentAssessments[0]}
