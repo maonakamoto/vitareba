@@ -50,15 +50,15 @@ export default async function ReportsPage() {
     },
   });
 
-  // Signal distribution
+  // Signal distribution + per-patient adherence (single pass)
   const signalCounts: Record<PatientSignal, number> = {
     critical: 0,
     attention: 0,
     active: 0,
     new: 0,
   };
-  for (const p of patients) {
-    const { signal } = computePatientSignal({
+  const patientAdherence = patients.map((p) => {
+    const { signal, reason } = computePatientSignal({
       registeredAt: p.createdAt,
       checkins: p.dailyCheckins,
       assessments: p.assessmentResults.map((a) => ({ overallScore: a.overallScore, completedAt: a.completedAt })),
@@ -66,7 +66,11 @@ export default async function ReportsPage() {
       now,
     });
     signalCounts[signal]++;
-  }
+    const weekCheckins = p.dailyCheckins.filter((c) => c.date >= weekAgoStr).length;
+    return { id: p.id, name: p.name ?? p.email ?? "Unknown", weekCheckins, signal, reason };
+  });
+  // Sort: fewest check-ins first so the patients needing attention are at top
+  patientAdherence.sort((a, b) => a.weekCheckins - b.weekCheckins || a.name.localeCompare(b.name));
 
   // Assessment stats
   const allAssessments = await db.query.assessmentResults.findMany({
@@ -267,6 +271,60 @@ export default async function ReportsPage() {
         </div>
 
       </div>
+
+      {/* ── Per-patient check-in adherence ───────────────────────────────── */}
+      {patients.length > 0 && (
+        <div className={`${styles.card} ${styles.adherenceSection}`}>
+          <p className={styles.sectionLabel}>Check-in adherence — last {SIGNAL_CHECKIN_WINDOW_DAYS} days</p>
+          <table className={styles.adherenceTable}>
+            <thead>
+              <tr>
+                <th className={styles.adherenceTh}>Patient</th>
+                <th className={styles.adherenceTh}>Signal</th>
+                <th className={`${styles.adherenceTh} ${styles.adherenceThRight}`}>Days</th>
+                <th className={styles.adherenceTh}>Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patientAdherence.map(({ id, name, weekCheckins, signal }) => {
+                const pct = Math.round((weekCheckins / SIGNAL_CHECKIN_WINDOW_DAYS) * 100);
+                const barColor =
+                  weekCheckins === 0
+                    ? "var(--danger)"
+                    : weekCheckins < 4
+                    ? "var(--warn)"
+                    : "var(--teal)";
+                return (
+                  <tr key={id} className={styles.adherenceRow}>
+                    <td className={styles.adherenceName}>
+                      <a href={`/admin/patients/${id}`} className={styles.adherenceLink}>
+                        {name}
+                      </a>
+                    </td>
+                    <td className={styles.adherenceSignalCell}>
+                      <span className={styles.signalBadge} data-signal={signal}>
+                        {SIGNAL_LABELS[signal]}
+                      </span>
+                    </td>
+                    <td className={styles.adherenceCount}>
+                      {weekCheckins}/{SIGNAL_CHECKIN_WINDOW_DAYS}
+                    </td>
+                    <td className={styles.adherenceBarCell}>
+                      <div className={styles.barTrack}>
+                        <div
+                          className={styles.barFill}
+                          style={{ width: `${pct}%`, background: barColor }}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
     </div>
   );
 }

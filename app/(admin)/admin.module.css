@@ -576,6 +576,80 @@
   font-size: 0.85rem;
 }
 
+/* ─── Check-in adherence table (reports page) ────────────────────────────── */
+
+.adherenceSection {
+  margin-top: 1.25rem;
+}
+
+.adherenceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.adherenceTh {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-align: left;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.adherenceThRight {
+  text-align: right;
+}
+
+.adherenceRow {
+  border-bottom: 1px solid var(--border);
+}
+
+.adherenceRow:last-child {
+  border-bottom: none;
+}
+
+.adherenceName {
+  padding: 0.6rem 0;
+  vertical-align: middle;
+  width: 35%;
+}
+
+.adherenceLink {
+  font-size: 0.82rem;
+  color: var(--ink2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.adherenceLink:hover {
+  color: var(--teal);
+}
+
+.adherenceSignalCell {
+  padding: 0.6rem 0.75rem 0.6rem 0;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.adherenceCount {
+  padding: 0.6rem 0.75rem;
+  vertical-align: middle;
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.adherenceBarCell {
+  padding: 0.6rem 0 0.6rem 0.75rem;
+  vertical-align: middle;
+  width: 30%;
+  min-width: 80px;
+}
+
 /* ─── Patient detail page ─────────────────────────────────────────────────── */
 
 .patientHeader {
