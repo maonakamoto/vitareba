@@ -1,8 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/schema";
-import { eq, desc, gte } from "drizzle-orm";
+import { users, assessmentResults, bookings, dailyCheckins, assessmentLeads } from "@/lib/db/schema";
+import { eq, desc, gte, isNotNull } from "drizzle-orm";
 import styles from "../../admin.module.css";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_DAYS, type PatientSignal } from "@/lib/config/admin";
@@ -125,6 +125,18 @@ export default async function ReportsPage() {
       ...Object.fromEntries(CHECKIN_METRICS.map(({ key }) => [key, Math.round((sums[key] / count) * 10) / 10])) as Record<MetricKey, number>,
     }));
 
+  // Inflection Edge conversion funnel — anonymous overlay completions vs. registrations
+  const [totalLeads, convertedLeads] = await Promise.all([
+    db.select({ id: assessmentLeads.id }).from(assessmentLeads).then((r) => r.length),
+    db
+      .select({ id: assessmentLeads.id })
+      .from(assessmentLeads)
+      .where(isNotNull(assessmentLeads.convertedUserId))
+      .then((r) => r.length),
+  ]);
+  const conversionRate =
+    totalLeads > 0 ? Math.round((convertedLeads / totalLeads) * 100) : null;
+
   // Programme distribution
   const assignments = await db.query.programmeAssignments.findMany();
   const programmeCounts: Partial<Record<ProgrammeKey, number>> = {};
@@ -164,6 +176,30 @@ export default async function ReportsPage() {
           sub={`${patients.length - assignments.length} unassigned`}
         />
       </div>
+
+      {/* ── Inflection Edge conversion funnel ────────────────────────────── */}
+      {totalLeads > 0 && (
+        <div className={`${styles.card} ${styles.adherenceSection}`}>
+          <p className={styles.sectionLabel}>Inflection Edge conversion funnel</p>
+          <div className={styles.statsGrid}>
+            <StatCard
+              label="Overlay completions"
+              value={totalLeads}
+              sub="anonymous visitors who finished"
+            />
+            <StatCard
+              label="Converted to patient"
+              value={convertedLeads}
+              sub={conversionRate !== null ? `${conversionRate}% conversion rate` : undefined}
+            />
+            <StatCard
+              label="Registered (total)"
+              value={patients.length}
+              sub="includes direct registrations"
+            />
+          </div>
+        </div>
+      )}
 
       <div className={styles.twoColGrid}>
 

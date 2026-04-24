@@ -305,6 +305,19 @@ export const emailQueue = pgTable("email_queue", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+// ─── Assessment leads (anonymous overlay completions for conversion tracking) ──
+
+export const assessmentLeads = pgTable("assessment_leads", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  overallScore: integer("overall_score").notNull(),
+  // Nullable FK — set when the visitor later registers and saves their results
+  convertedUserId: uuid("converted_user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  convertedAt: timestamp("converted_at", { mode: "date" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
 // ─── Relations ────────────────────────────────────────────────────────────────
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -324,6 +337,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   }),
   clinicalGoals: many(clinicalGoals, { relationName: "patient_goals" }),
   emailQueue: many(emailQueue),
+  assessmentLeads: many(assessmentLeads),
 }));
 
 export const dailyCheckinsRelations = relations(dailyCheckins, ({ one }) => ({
@@ -397,5 +411,12 @@ export const clinicalGoalsRelations = relations(clinicalGoals, ({ one }) => ({
     fields: [clinicalGoals.setByAdminId],
     references: [users.id],
     relationName: "admin_goals",
+  }),
+}));
+
+export const assessmentLeadsRelations = relations(assessmentLeads, ({ one }) => ({
+  convertedUser: one(users, {
+    fields: [assessmentLeads.convertedUserId],
+    references: [users.id],
   }),
 }));

@@ -26,6 +26,18 @@ export function PendingAssessmentSaver() {
         overallScore: number;
       };
 
+      // Mark the anonymous lead as converted (fire-and-forget — non-critical)
+      let leadId: string | null = null;
+      try { leadId = sessionStorage.getItem("pendingLeadId"); } catch {}
+      if (leadId) {
+        fetch("/api/assessment-leads/convert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leadId }),
+        }).catch(() => {});
+        try { sessionStorage.removeItem("pendingLeadId"); } catch {}
+      }
+
       fetch("/api/assessment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

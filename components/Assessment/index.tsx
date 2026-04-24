@@ -78,8 +78,30 @@ export default function Assessment({ onClose, onComplete }: Props) {
   const onCompleteRef = useRef(onComplete);
   useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
   useEffect(() => {
-    if (screen === "results") {
-      onCompleteRef.current?.(dimScores, overallScore);
+    if (screen !== "results") return;
+    // Notify parent (portal assessment page) if a callback is provided
+    onCompleteRef.current?.(dimScores, overallScore);
+    // For the guest overlay (no onComplete = anonymous visitor), record a lead
+    // so Manuel can see how many visitors complete the assessment vs. register.
+    if (!onCompleteRef.current) {
+      fetch("/api/assessment-leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ overallScore }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.data?.id) {
+            try {
+              sessionStorage.setItem("pendingLeadId", data.data.id);
+            } catch {
+              // sessionStorage unavailable — lead still recorded server-side
+            }
+          }
+        })
+        .catch(() => {
+          // Non-critical — don't break the results screen if tracking fails
+        });
     }
   }, [screen, dimScores, overallScore]);
 
