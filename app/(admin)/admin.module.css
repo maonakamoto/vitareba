@@ -207,6 +207,10 @@
     align-items: flex-start;
   }
 
+  .patientSignalBlock {
+    text-align: left;
+  }
+
   /* 2-column form grids → single column */
   .formGrid2 {
     grid-template-columns: 1fr;
@@ -672,6 +676,12 @@
 
 .patientNameMuted {
   color: var(--muted);
+}
+
+.patientSignalBlock {
+  text-align: right;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
 }
 
 .patientGrid {

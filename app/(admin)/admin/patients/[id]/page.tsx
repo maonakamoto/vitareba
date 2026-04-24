@@ -18,6 +18,8 @@ import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
 import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
+import { computePatientSignal } from "@/lib/domain/signals";
+import { SIGNAL_LABELS, SIGNAL_CHECKIN_WINDOW_DAYS } from "@/lib/config/admin";
 
 export default async function PatientDetailPage({
   params,
@@ -53,6 +55,20 @@ export default async function PatientDetailPage({
 
   if (!patient || patient.role !== USER_ROLE.patient) notFound();
 
+  const now = new Date();
+  // dailyCheckins fetched ASC — signal function sorts internally, pass last window's worth
+  const recentCheckins = [...patient.dailyCheckins].slice(-SIGNAL_CHECKIN_WINDOW_DAYS);
+  const { signal, reason } = computePatientSignal({
+    registeredAt: patient.createdAt,
+    checkins: recentCheckins,
+    assessments: patient.assessmentResults.slice(0, 2).map((a) => ({
+      overallScore: a.overallScore,
+      completedAt: a.completedAt,
+    })),
+    bookings: patient.bookings.slice(0, 1),
+    now,
+  });
+
   return (
     <div>
       {/* Header */}
@@ -66,6 +82,12 @@ export default async function PatientDetailPage({
               {patient.name ? <em>{patient.name}</em> : <span className={styles.patientNameMuted}>Unnamed patient</span>}
             </h1>
             <p className={styles.pageSub}>{patient.email} · registered {formatDateLong(patient.createdAt)}</p>
+          </div>
+          <div className={styles.patientSignalBlock}>
+            <span className={styles.signalBadge} data-signal={signal}>
+              {SIGNAL_LABELS[signal]}
+            </span>
+            <p className={styles.signalReason}>{reason}</p>
           </div>
         </div>
       </div>
