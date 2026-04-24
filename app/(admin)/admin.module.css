@@ -611,6 +611,44 @@
   margin-top: 1.25rem;
 }
 
+/* Check-in patient notes (admin patient detail — below trend chart) */
+.checkinNotes {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.checkinNotesLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+.checkinNoteRow {
+  display: flex;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.checkinNoteRow:last-child {
+  border-bottom: none;
+}
+
+.checkinNoteDate {
+  flex-shrink: 0;
+  color: var(--muted);
+  width: 6rem;
+}
+
+.checkinNoteText {
+  color: var(--ink2);
+}
+
 /* Documents list */
 .docList {
   margin-bottom: 1.25rem;

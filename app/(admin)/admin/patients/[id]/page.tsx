@@ -92,6 +92,24 @@ export default async function PatientDetailPage({
               stress: c.stress,
             }))}
           />
+          {/* Patient notes from check-ins — qualitative context for score dips */}
+          {(() => {
+            const withNotes = [...patient.dailyCheckins]
+              .filter((c) => c.notes)
+              .sort((a, b) => b.date.localeCompare(a.date));
+            if (withNotes.length === 0) return null;
+            return (
+              <div className={styles.checkinNotes}>
+                <p className={styles.checkinNotesLabel}>Patient notes</p>
+                {withNotes.map((c) => (
+                  <div key={c.id} className={styles.checkinNoteRow}>
+                    <span className={styles.checkinNoteDate}>{formatDateShort(c.date + "T00:00:00")}</span>
+                    <span className={styles.checkinNoteText}>{c.notes}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
 
