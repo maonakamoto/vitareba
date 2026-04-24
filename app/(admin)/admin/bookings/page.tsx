@@ -8,6 +8,7 @@ import {
   type BookingRowWithUser, type BookingStatus,
 } from "@/lib/config/booking-status";
 import { formatDateShort, formatDateNumeric } from "@/lib/utils/format";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 
 const FILTER_OPTIONS = ["all", ...BOOKING_STATUS_VALUES] as const;
@@ -114,6 +115,9 @@ export default function AdminBookingsPage() {
                         {b.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
                       <div className={styles.cellSub}>{b.user.email}</div>
+                      <a href={`${ADMIN_ROUTES.patients}/${b.user.id}`} className={styles.cellLink}>
+                        View patient →
+                      </a>
                     </td>
                     <td className={styles.cellNowrap}>
                       <div>{BOOKING_TYPE_CONFIG[b.bookingType]?.label ?? b.bookingType}</div>

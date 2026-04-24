@@ -25,6 +25,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }
 
+  // Detect retake before inserting so we know whether to send the full nurture sequence
+  let priorCount = 0;
+  try {
+    const prior = await db.query.assessmentResults.findFirst({
+      where: eq(assessmentResults.userId, session.user.id),
+      columns: { id: true },
+    });
+    priorCount = prior ? 1 : 0;
+  } catch {
+    // Non-fatal: if the check fails, default to first-assessment behaviour (safe)
+  }
+
   let result: typeof assessmentResults.$inferSelect;
   try {
     [result] = await db
@@ -45,6 +57,7 @@ export async function POST(req: Request) {
     overallScore: parsed.data.overallScore,
     scores: parsed.data.scores,
     triggeredAt: result.completedAt,
+    isFirstAssessment: priorCount === 0,
   }).catch((err) => console.error("[email-queue] enqueue failed:", err));
 
   return NextResponse.json({ success: true, data: result }, { status: 201 });
