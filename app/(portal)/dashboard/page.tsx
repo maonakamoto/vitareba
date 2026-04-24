@@ -10,8 +10,9 @@ import {
   profiles,
   clinicalGoals,
 } from "@/lib/db/schema";
-import { eq, desc, and, isNull, gte } from "drizzle-orm";
+import { eq, desc, and, isNull, gte, inArray, count } from "drizzle-orm";
 import { USER_ROLE } from "@/lib/config/auth";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { RECENT_ASSESSMENTS_LIMIT, DASHBOARD_TREND_DAYS } from "@/lib/config/portal";
@@ -51,8 +52,8 @@ export default async function DashboardPage() {
     profile,
     activeGoals,
     recentCheckins,
-    todayAllCheckins,
-    allPatients,
+    communityToday,
+    communityTotal,
   ] = await Promise.all([
     db.query.assessmentResults.findMany({
       where: eq(assessmentResults.userId, session.user.id),
@@ -60,7 +61,12 @@ export default async function DashboardPage() {
       limit: RECENT_ASSESSMENTS_LIMIT,
     }),
     db.query.bookings.findFirst({
-      where: eq(bookings.userId, session.user.id),
+      // Only show pending/confirmed — attended/cancelled are past and must not
+      // appear as "your consultation" in the dashboard card.
+      where: and(
+        eq(bookings.userId, session.user.id),
+        inArray(bookings.status, [BOOKING_STATUS.pending, BOOKING_STATUS.confirmed])
+      ),
       orderBy: [desc(bookings.createdAt)],
     }),
     db.query.threads
@@ -97,14 +103,8 @@ export default async function DashboardPage() {
       orderBy: [desc(dailyCheckins.date)],
     }),
     // Community check-in counts for social proof in the check-in prompt
-    db.query.dailyCheckins.findMany({
-      where: eq(dailyCheckins.date, today),
-      columns: { userId: true },
-    }),
-    db.query.users.findMany({
-      where: eq(users.role, USER_ROLE.patient),
-      columns: { id: true },
-    }),
+    db.select({ value: count() }).from(dailyCheckins).where(eq(dailyCheckins.date, today)).then((r) => r[0]?.value ?? 0),
+    db.select({ value: count() }).from(users).where(eq(users.role, USER_ROLE.patient)).then((r) => r[0]?.value ?? 0),
   ]);
 
   const firstName =
@@ -142,8 +142,8 @@ export default async function DashboardPage() {
           hasTodayCheckin={!!todayCheckin}
           streak={checkinStreak}
           atRiskStreak={atRiskStreak}
-          communityToday={todayAllCheckins.length}
-          communityTotal={allPatients.length}
+          communityToday={communityToday}
+          communityTotal={communityTotal}
           todayScores={todayCheckin ? {
             sleep: todayCheckin.sleep,
             energy: todayCheckin.energy,

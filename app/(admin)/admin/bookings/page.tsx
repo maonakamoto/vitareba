@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import styles from "../../admin.module.css";
 import {
   BOOKING_STATUS, BOOKING_STATUS_CONFIG, BOOKING_STATUS_VALUES,
@@ -115,9 +116,9 @@ export default function AdminBookingsPage() {
                         {b.user.name ?? <span className={styles.cellMuted}>No name</span>}
                       </div>
                       <div className={styles.cellSub}>{b.user.email}</div>
-                      <a href={`${ADMIN_ROUTES.patients}/${b.user.id}`} className={styles.cellLink}>
+                      <Link href={`${ADMIN_ROUTES.patients}/${b.user.id}`} className={styles.cellLink}>
                         View patient →
-                      </a>
+                      </Link>
                     </td>
                     <td className={styles.cellNowrap}>
                       <div>{BOOKING_TYPE_CONFIG[b.bookingType]?.label ?? b.bookingType}</div>
