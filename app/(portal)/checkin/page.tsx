@@ -246,13 +246,6 @@ export default function CheckinPage() {
           );
         })()}
 
-        {history.length === 0 && !loading && (
-          <div className={styles.card}>
-            <div className={styles.emptyState}>
-              Complete your first check-in to start tracking your trend.
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import { UserDropdown } from "@/components/portal/UserDropdown";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { db } from "@/lib/db";
 import { users, bookings, profiles } from "@/lib/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, count } from "drizzle-orm";
 import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
@@ -25,15 +25,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       columns: { name: true },
     }),
     getAdminUnreadThreadCount(),
-    db.query.bookings.findMany({
-      where: eq(bookings.status, BOOKING_STATUS.pending),
-      columns: { id: true },
-    }).then((rows) => rows.length),
-    // Count of patients whose stored signal is critical or attention — fast single-table read
-    db.query.profiles.findMany({
-      where: inArray(profiles.lastKnownSignal, [PATIENT_SIGNAL.critical, PATIENT_SIGNAL.attention]),
-      columns: { id: true },
-    }).then((rows) => rows.length),
+    db.select({ value: count() }).from(bookings).where(eq(bookings.status, BOOKING_STATUS.pending)).then((r) => r[0]?.value ?? 0),
+    // Count patients whose stored signal is critical or attention — fast single-table read
+    db.select({ value: count() }).from(profiles).where(inArray(profiles.lastKnownSignal, [PATIENT_SIGNAL.critical, PATIENT_SIGNAL.attention])).then((r) => r[0]?.value ?? 0),
   ]);
 
   const name = dbUser?.name ?? "";
