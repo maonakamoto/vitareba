@@ -387,9 +387,9 @@ export default async function ReportsPage() {
                 return (
                   <tr key={id} className={styles.adherenceRow}>
                     <td className={styles.adherenceName}>
-                      <a href={`/admin/patients/${id}`} className={styles.adherenceLink}>
+                      <Link href={`${ADMIN_ROUTES.patients}/${id}`} className={styles.adherenceLink}>
                         {name}
-                      </a>
+                      </Link>
                     </td>
                     <td className={styles.adherenceSignalCell}>
                       <span className={styles.signalBadge} data-signal={signal}>

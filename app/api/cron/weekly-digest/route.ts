@@ -12,6 +12,7 @@ import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 
 function avgMetrics(checkins: Array<Record<MetricKey, number>>): Record<MetricKey, number> | null {
   if (checkins.length === 0) return null;
@@ -47,7 +48,10 @@ export async function GET(req: Request) {
           orderBy: [desc(assessmentResults.completedAt)],
           limit: 1,
         },
+        // Only fetch pending/confirmed bookings — attended/cancelled are past and
+        // must not appear as "your next consultation" in the weekly digest.
         bookings: {
+          where: inArray(bookings.status, [BOOKING_STATUS.pending, BOOKING_STATUS.confirmed]),
           orderBy: [desc(bookings.createdAt)],
           limit: 1,
         },
