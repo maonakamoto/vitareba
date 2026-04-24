@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { bookingCreateSchema } from "./bookings";
+import { bookingCreateSchema, adminBookingCreateSchema } from "./bookings";
 import { BOOKING_PREFERRED_DATE_MAX_LENGTH, BOOKING_NOTES_MAX_LENGTH } from "@/lib/config/portal";
 
 describe("bookingCreateSchema", () => {
@@ -81,5 +81,53 @@ describe("bookingCreateSchema", () => {
       const result = bookingCreateSchema.safeParse({ bookingType: "machine", machineType });
       expect(result.success).toBe(true);
     }
+  });
+});
+
+describe("adminBookingCreateSchema", () => {
+  const validPatientId = "550e8400-e29b-41d4-a716-446655440000";
+
+  it("requires a valid UUID patientId", () => {
+    const result = adminBookingCreateSchema.safeParse({ patientId: validPatientId });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a non-UUID patientId", () => {
+    const result = adminBookingCreateSchema.safeParse({ patientId: "not-a-uuid" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a missing patientId", () => {
+    const result = adminBookingCreateSchema.safeParse({});
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an optional status of confirmed", () => {
+    const result = adminBookingCreateSchema.safeParse({
+      patientId: validPatientId,
+      status: "confirmed",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.status).toBe("confirmed");
+  });
+
+  it("accepts no status (defaults to undefined)", () => {
+    const result = adminBookingCreateSchema.safeParse({ patientId: validPatientId });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.status).toBeUndefined();
+  });
+
+  it("rejects an invalid status value", () => {
+    const result = adminBookingCreateSchema.safeParse({
+      patientId: validPatientId,
+      status: "approved",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("inherits bookingType default from base schema", () => {
+    const result = adminBookingCreateSchema.safeParse({ patientId: validPatientId });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.bookingType).toBe("consultation");
   });
 });
