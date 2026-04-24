@@ -53,9 +53,6 @@ export const CHECKIN_DIP_ALERT_THRESHOLD = 2.5;
 /** Number of consecutive days at or below the threshold before Manuel is alerted */
 export const CHECKIN_DIP_ALERT_DAYS = 3;
 
-/** Days of check-in history to include in weekly digest computations */
-export const ACTIVE_CHECKIN_DAYS = 30;
-
 /** Wellness sparkline level thresholds (avg of 5 metrics, 1–5 scale) */
 export const SPARKLINE_LOW_THRESHOLD = 2.5;
 export const SPARKLINE_MID_THRESHOLD = 3.5;
