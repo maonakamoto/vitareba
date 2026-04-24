@@ -463,6 +463,27 @@
   text-decoration: underline;
 }
 
+/* ─── Wellbeing trend mini card ──────────────────────────────────────────── */
+
+.trendCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.trendCardLink {
+  font-size: 0.72rem;
+  color: var(--teal);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.trendCardLink:hover {
+  text-decoration: underline;
+}
+
 /* ─── Mobile ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {

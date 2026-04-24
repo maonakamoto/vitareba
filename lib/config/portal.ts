@@ -28,6 +28,9 @@ export type MetricKey = (typeof CHECKIN_METRICS)[number]["key"];
 /** How many days of check-in history to display in the trend chart */
 export const CHECKIN_HISTORY_DAYS = 30;
 
+/** How many days of check-in data to show in the dashboard mini trend widget */
+export const DASHBOARD_TREND_DAYS = 14;
+
 /** Exercise frequency valid values — SSOT tuple used for Zod validation and type derivation */
 export const EXERCISE_FREQUENCY_VALUES = [
   "none",

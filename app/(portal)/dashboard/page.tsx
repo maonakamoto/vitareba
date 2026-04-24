@@ -14,7 +14,7 @@ import { eq, desc, and, isNull, gte } from "drizzle-orm";
 import { USER_ROLE } from "@/lib/config/auth";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
-import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
+import { RECENT_ASSESSMENTS_LIMIT, DASHBOARD_TREND_DAYS } from "@/lib/config/portal";
 import { COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { computeStreak } from "@/lib/domain/checkin";
@@ -26,6 +26,7 @@ import { AssessmentSection } from "./AssessmentSection";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { PendingAssessmentSaver } from "./PendingAssessmentSaver";
+import { CheckinMiniTrend } from "./CheckinMiniTrend";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
     programmeAssignment,
     profile,
     activeGoals,
-    recentCheckinDates,
+    recentCheckins,
     todayAllCheckins,
     allPatients,
   ] = await Promise.all([
@@ -92,7 +93,6 @@ export default async function DashboardPage() {
         eq(dailyCheckins.userId, session.user.id),
         gte(dailyCheckins.date, sixtyDaysAgoISO)
       ),
-      columns: { date: true },
       orderBy: [desc(dailyCheckins.date)],
     }),
     // Community check-in counts for social proof in the check-in prompt
@@ -109,11 +109,13 @@ export default async function DashboardPage() {
   const firstName =
     dbUser?.name?.split(" ")[0] ?? session.user.email?.split("@")[0] ?? "there";
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
-  const checkinStreak = computeStreak(recentCheckinDates);
+  const checkinStreak = computeStreak(recentCheckins);
   // Streak at risk: consecutive days ending yesterday — shown in the prompt when today isn't logged yet
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
-  const atRiskStreak = computeStreak(recentCheckinDates, yesterday);
+  const atRiskStreak = computeStreak(recentCheckins, yesterday);
+  // Last DASHBOARD_TREND_DAYS entries (DESC from DB → slice then reverse for chart)
+  const trendCheckins = recentCheckins.slice(0, DASHBOARD_TREND_DAYS);
 
   return (
     <div>
@@ -142,6 +144,8 @@ export default async function DashboardPage() {
           communityToday={todayAllCheckins.length}
           communityTotal={allPatients.length}
         />
+
+        <CheckinMiniTrend checkins={trendCheckins} />
 
         <AssessmentSection
           latestAssessment={recentAssessments[0]}
