@@ -16,6 +16,7 @@ import {
 import { formatDateISO, relativeDate } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
+import { getAdminUnreadPatientIds } from "@/lib/domain/messages";
 
 
 export default async function PatientsPage() {
@@ -24,7 +25,8 @@ export default async function PatientsPage() {
 
   const now = new Date();
 
-  const patients = await db.query.users.findMany({
+  const [patients, unreadPatientIds] = await Promise.all([
+    db.query.users.findMany({
     where: eq(users.role, USER_ROLE.patient),
     with: {
       profile: true,
@@ -41,7 +43,9 @@ export default async function PatientsPage() {
         limit: SIGNAL_CHECKIN_WINDOW_DAYS,
       },
     },
-  });
+  }),
+    getAdminUnreadPatientIds(),
+  ]);
 
   // Compute signal for each patient, then sort by severity then urgency
   const enriched = patients
@@ -92,6 +96,7 @@ export default async function PatientsPage() {
                 <th>{SIGNAL_CHECKIN_WINDOW_DAYS} days</th>
                 <th>Score</th>
                 <th>Profile</th>
+                <th className={styles.thCenter}>Msg</th>
                 <th></th>
               </tr>
             </thead>
@@ -105,6 +110,7 @@ export default async function PatientsPage() {
                 const checkinMap = new Map(p.dailyCheckins.map((c) => [c.date, c]));
                 const pct = computeProfileCompleteness(p.profile as Record<string, unknown> | null);
 
+                const hasUnread = unreadPatientIds.has(p.id);
                 return (
                   <tr key={p.id}>
                     {/* Signal */}
@@ -167,6 +173,13 @@ export default async function PatientsPage() {
                     {/* Profile completeness */}
                     <td className={styles.cellNowrapSm}>
                       <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>
+                    </td>
+
+                    {/* Unread message indicator */}
+                    <td className={styles.tdCenter}>
+                      {hasUnread && (
+                        <span className={styles.unreadDot} title="Unread message from patient" />
+                      )}
                     </td>
 
                     {/* View */}

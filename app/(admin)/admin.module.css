@@ -343,6 +343,15 @@
   flex-shrink: 0;
 }
 
+.tdCenter {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.thCenter {
+  text-align: center;
+}
+
 .unreadSubject {
   font-weight: 500;
   color: var(--ink);

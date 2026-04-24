@@ -71,3 +71,24 @@ export async function getAdminUnreadThreadIds(): Promise<Set<string>> {
 
   return new Set(unread.map((m) => m.threadId));
 }
+
+/**
+ * Return the set of patient IDs that have sent at least one unread message.
+ * Used by the admin patients list to show a per-row message indicator without
+ * a separate round-trip per patient.
+ */
+export async function getAdminUnreadPatientIds(): Promise<Set<string>> {
+  const unread = await db
+    .selectDistinct({ patientId: threads.patientId })
+    .from(threadMessages)
+    .innerJoin(threads, eq(threadMessages.threadId, threads.id))
+    .where(
+      and(
+        // Message was sent by the patient (not the admin replying)
+        eq(threadMessages.senderId, threads.patientId),
+        isNull(threadMessages.readAt)
+      )
+    );
+
+  return new Set(unread.map((r) => r.patientId));
+}
