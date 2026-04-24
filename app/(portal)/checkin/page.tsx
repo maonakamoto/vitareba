@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "../portal.module.css";
 import checkinStyles from "./checkin.module.css";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
-import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRICS, CHECKIN_NOTES_MAX_LENGTH, type MetricKey } from "@/lib/config/portal";
+import { CHECKIN_SCALE_MIN, CHECKIN_SCALE_MAX, SAVED_FEEDBACK_MS, CHECKIN_METRICS, CHECKIN_NOTES_MAX_LENGTH, CHECKIN_DISPLAY_DAYS, type MetricKey } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
@@ -212,11 +212,12 @@ export default function CheckinPage() {
           </div>
         )}
 
-        {/* Past check-ins list — shows notes and scores, newest first, skips today */}
+        {/* Past check-ins list — shows notes and scores, newest first, skips today, capped at CHECKIN_DISPLAY_DAYS */}
         {(() => {
-          const past = [...history]
+          const allPast = [...history]
             .filter((c) => c.date !== today)
             .sort((a, b) => b.date.localeCompare(a.date));
+          const past = allPast.slice(0, CHECKIN_DISPLAY_DAYS);
           if (past.length === 0) return null;
           return (
             <div className={styles.card}>

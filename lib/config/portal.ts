@@ -25,8 +25,12 @@ export const CHECKIN_METRICS = [
 
 export type MetricKey = (typeof CHECKIN_METRICS)[number]["key"];
 
-/** How many days of check-in history to display in the trend chart */
-export const CHECKIN_HISTORY_DAYS = 30;
+/** How many days of check-in history to fetch on the check-in page.
+ *  Must be large enough to compute streaks accurately beyond the 100-day milestone. */
+export const CHECKIN_HISTORY_DAYS = 110;
+
+/** How many days of check-in history to display in the history list */
+export const CHECKIN_DISPLAY_DAYS = 30;
 
 /** How many days of check-in data to show in the dashboard mini trend widget */
 export const DASHBOARD_TREND_DAYS = 14;
@@ -76,7 +80,7 @@ export const PROFILE_COMPLETION_THRESHOLD = 0.7;
 export const PROFILE_COMPLETION_LOWER_THRESHOLD = 0.3;
 
 /** Maximum number of days of check-in history that can be requested via the API */
-export const CHECKIN_FETCH_MAX_DAYS = 90;
+export const CHECKIN_FETCH_MAX_DAYS = 120;
 
 /** Profile short-text field max lengths (Zod schema + form inputs) */
 export const PROFILE_NAME_MAX_LENGTH = 200;
