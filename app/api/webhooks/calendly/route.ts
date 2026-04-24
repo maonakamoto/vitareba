@@ -29,10 +29,15 @@ function verifySignature(rawBody: string, header: string | null): boolean {
     .update(`${timestamp}.${rawBody}`)
     .digest("hex");
 
-  return crypto.timingSafeEqual(
-    Buffer.from(expected, "hex"),
-    Buffer.from(signature, "hex")
-  );
+  // timingSafeEqual requires equal-length buffers — catch if signature is malformed
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(expected, "hex"),
+      Buffer.from(signature, "hex")
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function POST(req: Request) {
