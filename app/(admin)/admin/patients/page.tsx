@@ -43,10 +43,10 @@ export default async function PatientsPage() {
     },
   });
 
-  // Compute signal for each patient, then sort by severity
+  // Compute signal for each patient, then sort by severity then urgency
   const enriched = patients
     .map((p) => {
-      const { signal, reason } = computePatientSignal({
+      const { signal, reason, urgency } = computePatientSignal({
         registeredAt: p.createdAt,
         checkins: p.dailyCheckins,
         assessments: p.assessmentResults.map((a) => ({
@@ -56,9 +56,13 @@ export default async function PatientsPage() {
         bookings: p.bookings,
         now,
       });
-      return { ...p, signal, reason };
+      return { ...p, signal, reason, urgency };
     })
-    .sort((a, b) => SIGNAL_SORT_ORDER[a.signal] - SIGNAL_SORT_ORDER[b.signal]);
+    .sort(
+      (a, b) =>
+        SIGNAL_SORT_ORDER[a.signal] - SIGNAL_SORT_ORDER[b.signal] ||
+        b.urgency - a.urgency
+    );
 
   // Build today-6..today date array for sparklines
   const sparkDates: string[] = [];

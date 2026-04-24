@@ -37,6 +37,8 @@ export type SignalInput = {
 export type SignalResult = {
   signal: PatientSignal;
   reason: string;
+  /** Secondary sort key within a tier: higher = more urgent. */
+  urgency: number;
 };
 
 /** Wellness score per check-in day: 1–5 where 5 is best. Stress is inverted. */
@@ -57,7 +59,7 @@ export function computePatientSignal({
 
   // New: registered recently, no activity expected yet
   if (daysSinceRegistration < NEW_PATIENT_GRACE_DAYS) {
-    return { signal: PATIENT_SIGNAL.new, reason: "Registered recently — grace period active" };
+    return { signal: PATIENT_SIGNAL.new, reason: "Registered recently — grace period active", urgency: 0 };
   }
 
   // Check-in based signals
@@ -73,6 +75,7 @@ export function computePatientSignal({
       return {
         signal: PATIENT_SIGNAL.critical,
         reason: `No check-in for ${daysSinceLast} days (last: ${sorted[0].date})`,
+        urgency: daysSinceLast, // longer silence = more urgent
       };
     }
 
@@ -88,6 +91,7 @@ export function computePatientSignal({
           return {
             signal: PATIENT_SIGNAL.critical,
             reason: `Wellness declining 3 consecutive days (${d2.toFixed(1)} → ${d1.toFixed(1)} → ${d0.toFixed(1)})`,
+            urgency: 50, // fixed: less urgent than long silence, more than score drop
           };
         }
       }
@@ -101,13 +105,14 @@ export function computePatientSignal({
       return {
         signal: PATIENT_SIGNAL.critical,
         reason: `Assessment score dropped ${Math.abs(drop)} points (${assessments[1].overallScore} → ${assessments[0].overallScore})`,
+        urgency: Math.abs(drop), // larger drop = more urgent
       };
     }
   }
 
   // Attention: registered but never taken assessment
   if (assessments.length === 0) {
-    return { signal: PATIENT_SIGNAL.attention, reason: "No assessment taken yet" };
+    return { signal: PATIENT_SIGNAL.attention, reason: "No assessment taken yet", urgency: daysSinceRegistration };
   }
 
   // Attention: has assessment but no active booking (confirmed or attended)
@@ -115,7 +120,7 @@ export function computePatientSignal({
     (b) => b.status === BOOKING_STATUS.confirmed || b.status === BOOKING_STATUS.attended
   );
   if (!hasActiveBooking) {
-    return { signal: PATIENT_SIGNAL.attention, reason: "Assessment done — no booking yet" };
+    return { signal: PATIENT_SIGNAL.attention, reason: "Assessment done — no booking yet", urgency: 10 };
   }
 
   // Attention: attended consultation but no confirmed follow-up booking after N days
@@ -133,12 +138,13 @@ export function computePatientSignal({
         return {
           signal: PATIENT_SIGNAL.attention,
           reason: `Consultation attended ${daysSince} days ago — follow-up booking needed`,
+          urgency: daysSince, // longer since consultation = more urgent
         };
       }
     }
   }
 
-  return { signal: PATIENT_SIGNAL.active, reason: "All signals normal" };
+  return { signal: PATIENT_SIGNAL.active, reason: "All signals normal", urgency: 0 };
 }
 
 /**

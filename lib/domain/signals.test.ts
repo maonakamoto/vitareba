@@ -73,6 +73,7 @@ describe("computePatientSignal", () => {
       now: NOW,
     });
     expect(result.signal).toBe("new");
+    expect(result.urgency).toBe(0);
   });
 
   it("returns 'critical' when no check-in for >= threshold days", () => {
@@ -85,6 +86,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("critical");
     expect(result.reason).toMatch(/No check-in/);
+    expect(result.urgency).toBe(NO_CHECKIN_CRITICAL_DAYS); // urgency = days since last check-in
   });
 
   it("returns 'critical' when wellness declines 3 consecutive days", () => {
@@ -101,6 +103,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("critical");
     expect(result.reason).toMatch(/declining/);
+    expect(result.urgency).toBe(50);
   });
 
   it("does not flag critical when wellness is flat (not strictly declining)", () => {
@@ -135,6 +138,7 @@ describe("computePatientSignal", () => {
   });
 
   it("returns 'critical' when assessment score drops by more than threshold", () => {
+    const drop = Math.abs(LOW_ASSESSMENT.overallScore - GOOD_ASSESSMENT.overallScore);
     const result = computePatientSignal({
       registeredAt: daysAgo(30),
       checkins: [checkin(0, 3)],
@@ -147,6 +151,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("critical");
     expect(result.reason).toMatch(/Assessment score dropped/);
+    expect(result.urgency).toBe(drop); // urgency = magnitude of score drop
   });
 
   it("returns 'attention' when no assessment taken (past grace period)", () => {
@@ -159,6 +164,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/No assessment/);
+    expect(result.urgency).toBe(30); // urgency = days since registration
   });
 
   it("returns 'attention' when assessment done but no booking", () => {
@@ -171,6 +177,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/no booking/);
+    expect(result.urgency).toBe(10);
   });
 
   it("returns 'active' when all conditions normal", () => {
@@ -182,6 +189,7 @@ describe("computePatientSignal", () => {
       now: NOW,
     });
     expect(result.signal).toBe("active");
+    expect(result.urgency).toBe(0);
   });
 
   it("returns 'active' when booking is attended (attended counts as active)", () => {
@@ -205,6 +213,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/no booking/);
+    expect(result.urgency).toBe(10);
   });
 
   it("returns 'attention' when only booking is pending (pending does not count)", () => {
@@ -217,6 +226,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/no booking/);
+    expect(result.urgency).toBe(10);
   });
 
   it("does not flag critical when last check-in was exactly NO_CHECKIN_CRITICAL_DAYS - 1 days ago (boundary)", () => {
@@ -256,6 +266,7 @@ describe("computePatientSignal", () => {
       now: NOW,
     });
     expect(result.signal).toBe("active");
+    expect(result.urgency).toBe(0);
   });
 
   it("does not flag critical for fewer than 3 consecutive declining days (2 is not enough)", () => {
@@ -283,6 +294,7 @@ describe("computePatientSignal", () => {
     });
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/follow-up booking needed/);
+    expect(result.urgency).toBe(31); // urgency = days since attended booking
   });
 
   it("returns 'active' when attended booking is within ATTENDED_FOLLOW_UP_DAYS (boundary — exactly 30 days does not trigger)", () => {
