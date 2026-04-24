@@ -11,6 +11,7 @@ import {
   clinicalGoals,
 } from "@/lib/db/schema";
 import { eq, desc, and, isNull, gte } from "drizzle-orm";
+import { USER_ROLE } from "@/lib/config/auth";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
 import { RECENT_ASSESSMENTS_LIMIT } from "@/lib/config/portal";
@@ -48,6 +49,8 @@ export default async function DashboardPage() {
     profile,
     activeGoals,
     recentCheckinDates,
+    todayAllCheckins,
+    allPatients,
   ] = await Promise.all([
     db.query.assessmentResults.findMany({
       where: eq(assessmentResults.userId, session.user.id),
@@ -92,6 +95,15 @@ export default async function DashboardPage() {
       columns: { date: true },
       orderBy: [desc(dailyCheckins.date)],
     }),
+    // Community check-in counts for social proof in the check-in prompt
+    db.query.dailyCheckins.findMany({
+      where: eq(dailyCheckins.date, today),
+      columns: { userId: true },
+    }),
+    db.query.users.findMany({
+      where: eq(users.role, USER_ROLE.patient),
+      columns: { id: true },
+    }),
   ]);
 
   const firstName =
@@ -123,7 +135,13 @@ export default async function DashboardPage() {
 
         <ProfileCompletenessBar pct={profilePct} />
 
-        <CheckinCard hasTodayCheckin={!!todayCheckin} streak={checkinStreak} atRiskStreak={atRiskStreak} />
+        <CheckinCard
+          hasTodayCheckin={!!todayCheckin}
+          streak={checkinStreak}
+          atRiskStreak={atRiskStreak}
+          communityToday={todayAllCheckins.length}
+          communityTotal={allPatients.length}
+        />
 
         <AssessmentSection
           latestAssessment={recentAssessments[0]}

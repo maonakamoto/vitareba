@@ -228,6 +228,12 @@
   font-weight: 500;
 }
 
+.communityCount {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
 .checkinPromptLabel {
   font-size: 0.72rem;
   letter-spacing: 0.12em;

@@ -7,11 +7,18 @@ export function CheckinCard({
   hasTodayCheckin,
   streak,
   atRiskStreak,
+  communityToday,
+  communityTotal,
 }: {
   hasTodayCheckin: boolean;
   streak: number;
   atRiskStreak: number;
+  communityToday: number;
+  communityTotal: number;
 }) {
+  // Only show community count if there are enough patients to make it meaningful
+  const showCommunity = communityTotal >= 2;
+
   if (!hasTodayCheckin) {
     return (
       <div className={styles.checkinPrompt}>
@@ -24,6 +31,11 @@ export function CheckinCard({
           ) : (
             <p className={styles.checkinPromptText}>
               30 seconds to log sleep, energy, mood, focus, and stress — this data feeds directly into your programme.
+            </p>
+          )}
+          {showCommunity && (
+            <p className={styles.communityCount}>
+              {communityToday} of {communityTotal} patients checked in today
             </p>
           )}
         </div>
