@@ -34,10 +34,11 @@ export default async function DashboardPage() {
 
   const now = new Date();
   const today = formatDateISO(now);
-  // Fetch 60 days of history to support streak computation — enough for any realistic streak
-  const sixtyDaysAgo = new Date(now);
-  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-  const sixtyDaysAgoISO = formatDateISO(sixtyDaysAgo);
+  // Fetch 110 days so streak display is accurate beyond the 100-day milestone.
+  // A 60-day window would show "60-day streak" for longer streaks, which is misleading.
+  const historyStart = new Date(now);
+  historyStart.setDate(historyStart.getDate() - 110);
+  const sixtyDaysAgoISO = formatDateISO(historyStart);
 
   const [
     recentAssessments,

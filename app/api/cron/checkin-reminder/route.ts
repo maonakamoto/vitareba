@@ -18,10 +18,12 @@ export async function GET(req: Request) {
 
   const now = new Date();
   const today = formatDateISO(now);
-  // Fetch enough history to compute any meaningful streak
-  const sixtyDaysAgo = new Date(now);
-  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-  const sixtyDaysAgoISO = formatDateISO(sixtyDaysAgo);
+  // Fetch 110 days so streak computation is accurate beyond the 100-day milestone.
+  // A 60-day window would cap the reported streak at 60, showing "60-day streak"
+  // even for a patient whose actual streak is longer.
+  const historyStart = new Date(now);
+  historyStart.setDate(historyStart.getDate() - 110);
+  const sixtyDaysAgoISO = formatDateISO(historyStart);
 
   let patients;
   try {

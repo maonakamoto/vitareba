@@ -109,13 +109,17 @@ export async function POST(req: Request) {
 
 async function detectAndSendStreakMilestone(userId: string): Promise<void> {
   const now = new Date();
-  const sixtyDaysAgo = new Date(now);
-  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+  // Fetch enough history to detect any milestone streak.
+  // Max milestone is 100 days — we need 101+ days of data so computeStreak
+  // can actually return 100 (a 60-day window would cap it at 60).
+  const maxMilestone = Math.max(...CHECKIN_STREAK_MILESTONES);
+  const cutoff = new Date(now);
+  cutoff.setDate(cutoff.getDate() - (maxMilestone + 1));
 
   const recentCheckins = await db.query.dailyCheckins.findMany({
     where: and(
       eq(dailyCheckins.userId, userId),
-      gte(dailyCheckins.date, formatDateISO(sixtyDaysAgo))
+      gte(dailyCheckins.date, formatDateISO(cutoff))
     ),
     orderBy: [desc(dailyCheckins.date)],
   });
