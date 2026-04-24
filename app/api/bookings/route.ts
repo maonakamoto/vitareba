@@ -7,10 +7,13 @@ import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
-import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { PORTAL_URL, COMPANY, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
-import { bookingCreateSchema } from "@/lib/domain/bookings";
+import { bookingCreateSchema, adminBookingCreateSchema } from "@/lib/domain/bookings";
+import { bookingConfirmedEmail } from "@/lib/email/templates";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 
 export async function GET() {
@@ -43,6 +46,48 @@ export async function POST(req: Request) {
   const { session } = guard;
 
   const body = await req.json();
+
+  // ── Admin-initiated booking (for a specific patient) ───────────────────────
+  if (session.user.role === USER_ROLE.admin) {
+    const parsed = adminBookingCreateSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
+    }
+    const { patientId, status, ...fields } = parsed.data;
+
+    let booking: typeof bookings.$inferSelect;
+    try {
+      [booking] = await db
+        .insert(bookings)
+        .values({ userId: patientId, status: status ?? BOOKING_STATUS.confirmed, ...fields })
+        .returning();
+    } catch (err) {
+      console.error("[api/bookings] admin insert failed:", err);
+      return NextResponse.json({ success: false, error: "Failed to create booking — please try again" }, { status: 500 });
+    }
+
+    // Notify patient (fire-and-forget)
+    const patient = await db.query.users
+      .findFirst({ where: eq(users.id, patientId), columns: { name: true, email: true } })
+      .catch(() => null);
+    if (patient?.email) {
+      const bookingTypeLabel = BOOKING_TYPE_CONFIG[fields.bookingType ?? "consultation"].label;
+      const machineLabel = fields.machineType ? MACHINE_TYPE_CONFIG[fields.machineType].label : null;
+      const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
+      sendEmail({
+        to: patient.email,
+        subject: `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`,
+        html: bookingConfirmedEmail({
+          patientName: patient.name ?? "there",
+          portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}`,
+        }),
+      }).catch(console.error);
+    }
+
+    return NextResponse.json({ success: true, data: booking }, { status: 201 });
+  }
+
+  // ── Patient booking request ────────────────────────────────────────────────
   const parsed = bookingCreateSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });

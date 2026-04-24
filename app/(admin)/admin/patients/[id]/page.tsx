@@ -13,6 +13,7 @@ import { AssessmentTrendChart } from "@/components/portal/AssessmentTrendChart";
 import { PatientProfileCard } from "@/components/admin/PatientProfileCard";
 import { PatientAssessmentCard } from "@/components/admin/PatientAssessmentCard";
 import { PatientBookingsCard } from "@/components/admin/PatientBookingsCard";
+import { AdminBookingForm } from "@/components/admin/AdminBookingForm";
 import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
 import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
@@ -98,6 +99,12 @@ export default async function PatientDetailPage({
         <PatientAssessmentCard assessmentResults={patient.assessmentResults} />
         <PatientBookingsCard bookings={patient.bookings} />
         <PatientMessagesCard threads={patient.threads} patientId={patient.id} />
+      </div>
+
+      {/* Log a manual booking (phone, walk-in, or any consultation not captured by Calendly) */}
+      <div className={styles.cardWithTopMargin}>
+        <p className={styles.cardLabel}>Log booking</p>
+        <AdminBookingForm patientId={patient.id} />
       </div>
 
       {/* Check-in trend */}
