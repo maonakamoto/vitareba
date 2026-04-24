@@ -223,6 +223,11 @@
   line-height: 1.6;
 }
 
+.checkinStreakRisk {
+  color: var(--warn);
+  font-weight: 500;
+}
+
 .checkinPromptLabel {
   font-size: 0.72rem;
   letter-spacing: 0.12em;

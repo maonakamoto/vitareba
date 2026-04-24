@@ -98,6 +98,10 @@ export default async function DashboardPage() {
     dbUser?.name?.split(" ")[0] ?? session.user.email?.split("@")[0] ?? "there";
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
   const checkinStreak = computeStreak(recentCheckinDates);
+  // Streak at risk: consecutive days ending yesterday — shown in the prompt when today isn't logged yet
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const atRiskStreak = computeStreak(recentCheckinDates, yesterday);
 
   return (
     <div>
@@ -119,7 +123,7 @@ export default async function DashboardPage() {
 
         <ProfileCompletenessBar pct={profilePct} />
 
-        <CheckinCard hasTodayCheckin={!!todayCheckin} streak={checkinStreak} />
+        <CheckinCard hasTodayCheckin={!!todayCheckin} streak={checkinStreak} atRiskStreak={atRiskStreak} />
 
         <AssessmentSection
           latestAssessment={recentAssessments[0]}
