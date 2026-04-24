@@ -324,6 +324,57 @@ export function assessmentBookingEmail({
 
 type WeekAvgs = Record<MetricKey, number> | null;
 
+/** Minimum delta (on 1–5 scale) to count as a meaningful change */
+const INSIGHT_DELTA_THRESHOLD = 0.3;
+
+type MetricInsight = { label: string; delta: number };
+
+/**
+ * Generates a one-sentence clinical synthesis of the week's data.
+ * Returns null when there is no previous week to compare against.
+ * Stress is inverted: higher raw stress = worse outcome.
+ */
+function weeklyInsight(
+  curr: Record<MetricKey, number>,
+  prev: Record<MetricKey, number> | null
+): string | null {
+  if (!prev) return `First week of data on record — ${COMPANY.clinicianName} now has a baseline to track against.`;
+
+  const metrics: MetricInsight[] = [
+    { label: "sleep",  delta: curr.sleep  - prev.sleep },
+    { label: "energy", delta: curr.energy - prev.energy },
+    { label: "mood",   delta: curr.mood   - prev.mood },
+    { label: "focus",  delta: curr.focus  - prev.focus },
+    { label: "stress", delta: -(curr.stress - prev.stress) }, // inverted: lower stress = better
+  ];
+
+  const improved = metrics
+    .filter((m) => m.delta >= INSIGHT_DELTA_THRESHOLD)
+    .sort((a, b) => b.delta - a.delta);
+  const declined = metrics
+    .filter((m) => m.delta <= -INSIGHT_DELTA_THRESHOLD)
+    .sort((a, b) => a.delta - b.delta);
+
+  const fmt = (list: MetricInsight[], max = 3) =>
+    list
+      .slice(0, max)
+      .map((m) => m.label)
+      .join(", ")
+      .replace(/, ([^,]*)$/, " and $1"); // Oxford-comma-less "X, Y and Z"
+
+  if (improved.length === 0 && declined.length === 0) {
+    return "Steady week — your patterns held consistent.";
+  }
+  if (improved.length > 0 && declined.length === 0) {
+    return `Strong week — ${fmt(improved)} improved.`;
+  }
+  if (declined.length > 0 && improved.length === 0) {
+    return `${fmt(declined)} dipped this week — consistent check-ins help ${COMPANY.clinicianName} catch these early.`;
+  }
+  // Mixed: name the biggest mover in each direction
+  return `${improved[0].label} improved while ${declined[0].label} dipped.`;
+}
+
 function deltaArrow(curr: number, prev: number): string {
   if (curr > prev + 0.1) return "↑";
   if (curr < prev - 0.1) return "↓";
@@ -362,8 +413,10 @@ export function weeklyDigestEmail({
   portalUrl: string;
 }) {
   const hasCheckins = thisWeekAvgs !== null;
+  const insight = hasCheckins ? weeklyInsight(thisWeekAvgs!, prevWeekAvgs) : null;
 
   const checkinSection = hasCheckins ? `
+    ${insight ? `<p style="font-size:0.9rem;color:#1a1a22;font-style:italic;margin-bottom:1rem">${insight}</p>` : ""}
     <p><strong>This week's check-in averages</strong></p>
     <table style="width:100%;border-collapse:collapse;margin-bottom:0.5rem">
       <thead>
@@ -394,7 +447,7 @@ export function weeklyDigestEmail({
 
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Here is your weekly summary from ${COMPANY.shortName}.</p>
+    <p>Your weekly summary from ${COMPANY.shortName}.</p>
     ${checkinSection}
     ${assessmentSection}
     ${bookingSection}

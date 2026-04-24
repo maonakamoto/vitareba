@@ -299,3 +299,78 @@ describe("weeklyDigestEmail — conditional sections", () => {
     expect(html).toContain("↓");
   });
 });
+
+describe("weeklyDigestEmail — weekly insight synthesis", () => {
+  const base = {
+    patientName: "Anna",
+    latestScore: null,
+    verdictName: null,
+    nextBookingStatus: null,
+    portalUrl: "https://p.example.com",
+  };
+
+  const flat = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 };
+
+  it("shows no insight when thisWeekAvgs is null (no check-ins)", () => {
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: null, prevWeekAvgs: null });
+    // The insight paragraph should not appear — no data, no synthesis
+    expect(html).not.toContain("Steady week");
+    expect(html).not.toContain("Strong week");
+    expect(html).not.toContain("First week");
+  });
+
+  it("shows first-week message when prevWeekAvgs is null but thisWeekAvgs exists", () => {
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: flat, prevWeekAvgs: null });
+    expect(html).toContain("First week");
+  });
+
+  it("shows steady message when all metrics change < threshold", () => {
+    // All deltas = 0.1, below the 0.3 threshold
+    const curr = { sleep: 3.1, energy: 3.1, mood: 3.1, focus: 3.1, stress: 3.1 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: flat });
+    expect(html).toContain("Steady week");
+  });
+
+  it("shows 'Strong week' when metrics improve with no declines", () => {
+    // sleep +1.0, energy +1.0, stress -1.0 (improvement) — all above threshold
+    const curr = { sleep: 4, energy: 4, mood: 3, focus: 3, stress: 2 };
+    const prev = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
+    expect(html).toContain("Strong week");
+  });
+
+  it("shows decline message when metrics drop with no improvements", () => {
+    // sleep -1.0, energy -1.0 — both below threshold
+    const curr = { sleep: 2, energy: 2, mood: 3, focus: 3, stress: 3 };
+    const prev = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
+    expect(html).toContain("dipped this week");
+  });
+
+  it("shows mixed insight naming the biggest mover in each direction", () => {
+    // focus +1.0 (big improvement), sleep -1.0 (big decline)
+    const curr = { sleep: 2, energy: 3, mood: 3, focus: 4, stress: 3 };
+    const prev = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
+    expect(html).toContain("focus improved");
+    expect(html).toContain("sleep dipped");
+  });
+
+  it("stress improvement (lower raw stress) counts as positive in insight", () => {
+    // stress 4 → 2: delta for insight = -(2-4) = +2, above threshold → improved
+    const curr = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 2 };
+    const prev = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 4 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
+    expect(html).toContain("Strong week");
+    expect(html).toContain("stress improved");
+  });
+
+  it("stress worsening (higher raw stress) counts as decline in insight", () => {
+    // stress 2 → 4: delta for insight = -(4-2) = -2, below -threshold → declined
+    const curr = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 4 };
+    const prev = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 2 };
+    const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
+    expect(html).toContain("stress");
+    expect(html).toContain("dipped");
+  });
+});
