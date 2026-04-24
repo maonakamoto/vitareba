@@ -249,7 +249,7 @@
   border-radius: 0.875rem;
   padding: 1.75rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
 }
 
@@ -274,9 +274,55 @@
   margin-bottom: 0.2rem;
 }
 
+.checkinDoneBody {
+  flex: 1;
+  min-width: 0;
+}
+
 .checkinDoneText {
   font-size: 0.82rem;
   color: var(--muted);
+}
+
+/* Metric score chips — shown below streak when patient already checked in */
+.checkinScoreRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.checkinScoreChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+}
+
+.checkinScoreLabel {
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.checkinScoreValue {
+  color: var(--ink2);
+  font-weight: 500;
+}
+
+/* Patient's optional note — truncated to one line on dashboard */
+.checkinNotePreview {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 36ch;
 }
 
 /* ─── No-assessment CTA ──────────────────────────────────────────────────── */

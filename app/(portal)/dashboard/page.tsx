@@ -143,6 +143,14 @@ export default async function DashboardPage() {
           atRiskStreak={atRiskStreak}
           communityToday={todayAllCheckins.length}
           communityTotal={allPatients.length}
+          todayScores={todayCheckin ? {
+            sleep: todayCheckin.sleep,
+            energy: todayCheckin.energy,
+            mood: todayCheckin.mood,
+            focus: todayCheckin.focus,
+            stress: todayCheckin.stress,
+          } : undefined}
+          todayNote={todayCheckin?.notes ?? undefined}
         />
 
         <CheckinMiniTrend checkins={trendCheckins} />
