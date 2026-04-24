@@ -273,7 +273,7 @@ export function ProfileForm() {
         </div>
 
         {/* ── Email preferences ─────────────────────────────────────── */}
-        <div className={styles.card} id="digest-optout">
+        <div className={styles.card} id="email-preferences">
           <p className={styles.cardTitle}>Email preferences</p>
           <label className={profileStyles.checkboxRow}>
             <input

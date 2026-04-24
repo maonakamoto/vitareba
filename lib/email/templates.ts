@@ -453,7 +453,7 @@ export function weeklyDigestEmail({
     ${bookingSection}
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in</a></p>
     <div class="divider"></div>
-    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:#2a7a8a">profile settings</a>.</p>
   `);
 }
 
@@ -471,7 +471,7 @@ export function checkinReminderEmail({
     <p>Logging your daily check-in takes 30 seconds and helps ${COMPANY.clinicianName} track your progress across sleep, energy, mood, focus, and stress.</p>
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in →</a></p>
     <div class="divider"></div>
-    <p class="meta">You receive this reminder on weekdays while enrolled in a ${COMPANY.shortName} programme. To stop, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#digest-optout" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">You receive this reminder on days when you haven&apos;t logged a check-in yet. To stop, update your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:#2a7a8a">email preferences</a>.</p>
   `);
 }
 
