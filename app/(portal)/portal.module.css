@@ -332,6 +332,29 @@
   margin: 0 0 0.5rem;
 }
 
+/* CTA button/link shown in empty states — works for both <a> and <button> */
+.emptyAction {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.emptyAction:hover,
+.emptyAction:focus-visible {
+  background: var(--teal);
+  outline: none;
+}
+
 /* ─── Page header row (title + action button) ────────────────────────────── */
 
 .pageHeader {

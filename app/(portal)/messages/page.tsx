@@ -131,7 +131,7 @@ export default function MessagesPage() {
             <p>This is your direct line to {COMPANY.clinicianName} and the {COMPANY.shortName} team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
             <button
               type="button"
-              className={msgStyles.emptyBtn}
+              className={styles.emptyAction}
               onClick={() => setShowForm(true)}
             >
               Send a message →

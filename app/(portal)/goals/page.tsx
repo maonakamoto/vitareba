@@ -53,7 +53,7 @@ export default async function GoalsPage() {
             Your clinician will add clinical goals after your first consultation. They&apos;ll
             appear here with progress tracking linked to your check-ins and assessments.
           </p>
-          <Link href={PORTAL_ROUTES.bookings} className={goalStyles.emptyCta}>
+          <Link href={PORTAL_ROUTES.bookings} className={styles.emptyAction}>
             Book a consultation →
           </Link>
         </div>

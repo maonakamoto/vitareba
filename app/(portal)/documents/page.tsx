@@ -51,7 +51,7 @@ export default async function DocumentsPage() {
             <p className={docStyles.emptyBody}>
               {COMPANY.clinicianName} will share lab results, assessment reports, and programme materials here as your work together progresses.
             </p>
-            <Link href={PORTAL_ROUTES.bookings} className={docStyles.emptyCta}>
+            <Link href={PORTAL_ROUTES.bookings} className={styles.emptyAction}>
               Book a consultation →
             </Link>
           </div>
