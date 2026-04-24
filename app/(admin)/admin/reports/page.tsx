@@ -10,7 +10,9 @@ import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
-import { formatDateShort, formatDateISO } from "@/lib/utils/format";
+import { formatDateShort, formatDateISO, formatDateMonthDay } from "@/lib/utils/format";
+import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
@@ -30,6 +32,9 @@ export default async function ReportsPage() {
   const weekAgo = new Date(now);
   weekAgo.setDate(weekAgo.getDate() - SIGNAL_CHECKIN_WINDOW_DAYS);
   const weekAgoStr = formatDateISO(weekAgo);
+  const thirtyDaysAgo = new Date(now);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const thirtyDaysAgoStr = formatDateISO(thirtyDaysAgo);
 
   // Fetch all patients with signal-relevant data
   const patients = await db.query.users.findMany({
@@ -96,6 +101,29 @@ export default async function ReportsPage() {
   });
   const uniqueActiveUsers = new Set(recentCheckins.map((c) => c.userId)).size;
   const todayCheckinCount = recentCheckins.filter((c) => c.date === todayStr).length;
+
+  // Population wellness trend — 30 days, all metrics, aggregated by date
+  const populationCheckins = await db.query.dailyCheckins.findMany({
+    where: gte(dailyCheckins.date, thirtyDaysAgoStr),
+    columns: { date: true, sleep: true, energy: true, mood: true, focus: true, stress: true },
+    orderBy: [desc(dailyCheckins.date)],
+  });
+  // Group by date and compute per-metric averages
+  const byDate = new Map<string, { sums: Record<MetricKey, number>; count: number }>();
+  for (const c of populationCheckins) {
+    const entry = byDate.get(c.date) ?? { sums: { sleep: 0, energy: 0, mood: 0, focus: 0, stress: 0 }, count: 0 };
+    for (const { key } of CHECKIN_METRICS) {
+      entry.sums[key] += c[key];
+    }
+    entry.count++;
+    byDate.set(c.date, entry);
+  }
+  const populationTrend = [...byDate.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, { sums, count }]) => ({
+      date: formatDateMonthDay(date + "T00:00:00"),
+      ...Object.fromEntries(CHECKIN_METRICS.map(({ key }) => [key, Math.round((sums[key] / count) * 10) / 10])) as Record<MetricKey, number>,
+    }));
 
   // Programme distribution
   const assignments = await db.query.programmeAssignments.findMany();
@@ -273,6 +301,14 @@ export default async function ReportsPage() {
         </div>
 
       </div>
+
+      {/* ── Population wellness trend ────────────────────────────────────── */}
+      {populationTrend.length > 1 && (
+        <div className={`${styles.card} ${styles.adherenceSection}`}>
+          <p className={styles.sectionLabel}>Population wellness trend — last 30 days (avg across all patients)</p>
+          <CheckinTrendChart data={populationTrend} />
+        </div>
+      )}
 
       {/* ── Per-patient check-in adherence ───────────────────────────────── */}
       {patients.length > 0 && (
