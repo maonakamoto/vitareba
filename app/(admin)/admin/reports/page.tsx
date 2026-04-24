@@ -89,11 +89,13 @@ export default async function ReportsPage() {
   }));
 
   // Check-in adherence this week
+  const todayStr = formatDateISO(now);
   const recentCheckins = await db.query.dailyCheckins.findMany({
     where: gte(dailyCheckins.date, weekAgoStr),
-    columns: { userId: true },
+    columns: { userId: true, date: true },
   });
   const uniqueActiveUsers = new Set(recentCheckins.map((c) => c.userId)).size;
+  const todayCheckinCount = recentCheckins.filter((c) => c.date === todayStr).length;
 
   // Programme distribution
   const assignments = await db.query.programmeAssignments.findMany();
@@ -119,9 +121,9 @@ export default async function ReportsPage() {
       <div className={styles.statsGrid}>
         <StatCard label="Total patients" value={patients.length} />
         <StatCard
-          label="Check-ins this week"
-          value={recentCheckins.length}
-          sub={`${uniqueActiveUsers} of ${patients.length} patients active`}
+          label="Checked in today"
+          value={`${todayCheckinCount} / ${patients.length}`}
+          sub={`${recentCheckins.length} total this week · ${uniqueActiveUsers} patients active`}
         />
         <StatCard
           label="Assessments taken"
