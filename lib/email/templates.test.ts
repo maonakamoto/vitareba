@@ -300,6 +300,35 @@ describe("weeklyDigestEmail — conditional sections", () => {
   });
 });
 
+describe("checkinReminderEmail", () => {
+  const base = { patientName: "Anna", portalUrl: "https://p.example.com" };
+
+  it("returns valid html", () => {
+    expect(isHtml(checkinReminderEmail(base))).toBe(true);
+  });
+
+  it("includes patient name", () => {
+    const html = checkinReminderEmail({ patientName: "Tobias", portalUrl: "https://p.example.com" });
+    expect(html).toContain("Tobias");
+  });
+
+  it("opt-out link includes #email-preferences anchor", () => {
+    const html = checkinReminderEmail(base);
+    expect(html).toContain("#email-preferences");
+  });
+
+  it("copy says haven't logged a check-in yet (accurate condition)", () => {
+    const html = checkinReminderEmail(base);
+    expect(html).toContain("haven");
+    expect(html).toContain("logged a check-in yet");
+  });
+
+  it("includes link to checkin route", () => {
+    const html = checkinReminderEmail({ patientName: "Anna", portalUrl: "https://p.example.com" });
+    expect(html).toContain("https://p.example.com/checkin");
+  });
+});
+
 describe("weeklyDigestEmail — weekly insight synthesis", () => {
   const base = {
     patientName: "Anna",
