@@ -112,7 +112,9 @@ export default function CheckinPage() {
     ...Object.fromEntries(CHECKIN_METRICS.map(({ key }) => [key, c[key]])) as Record<MetricKey, number>,
   }));
 
-  const allFilled = CHECKIN_METRICS.every(({ key }) => form[key] > 0);
+  const filledCount = CHECKIN_METRICS.filter(({ key }) => form[key] > 0).length;
+  const allFilled = filledCount === CHECKIN_METRICS.length;
+  const inProgress = filledCount > 0 && !allFilled;
   const streak = computeStreak(history);
 
   if (loading) return <div className={styles.emptyState}>Loading…</div>;
@@ -157,7 +159,7 @@ export default function CheckinPage() {
 
           <div className={checkinStyles.metrics}>
             {CHECKIN_METRICS.map(({ key, label, lowLabel, highLabel }) => (
-              <div key={key} className={checkinStyles.metricRow}>
+              <div key={key} className={`${checkinStyles.metricRow}${inProgress && form[key] === 0 ? ` ${checkinStyles.metricRowEmpty}` : ""}`}>
                 <div className={checkinStyles.metricLabel}>{label}</div>
                 <div className={checkinStyles.scaleWrap}>
                   <span className={checkinStyles.scaleEdge}>{lowLabel}</span>
@@ -202,6 +204,11 @@ export default function CheckinPage() {
           >
             {saving ? "Saving…" : saved ? "Saved ✓" : alreadyCheckedIn ? "Update check-in" : "Save check-in"}
           </button>
+          {!allFilled && !saving && (
+            <p className={checkinStyles.submitHint}>
+              {filledCount} / {CHECKIN_METRICS.length} metrics filled — select a value for each one above
+            </p>
+          )}
         </form>
 
         {/* History chart */}

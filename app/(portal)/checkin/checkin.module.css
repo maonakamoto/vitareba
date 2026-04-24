@@ -237,6 +237,21 @@
   cursor: default;
 }
 
+.submitHint {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+/* Highlight unfilled rows once the patient has started — only when in-progress */
+.metricRowEmpty .metricLabel::after {
+  content: " ·";
+  color: var(--warn);
+  font-weight: 700;
+}
+
 /* ── Past check-ins history list ────────────────────────────────────────── */
 
 .historyList {
