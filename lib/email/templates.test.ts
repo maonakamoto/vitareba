@@ -507,3 +507,94 @@ describe("checkinStreakMilestoneEmail", () => {
     expect(html).toContain("https://p.example.com/checkin");
   });
 });
+
+describe("email templates — HTML escaping", () => {
+  it("newMessageEmail escapes < > & in subject", () => {
+    const html = newMessageEmail({
+      recipientName: "Anna",
+      senderName: "Manuel",
+      subject: "<script>alert('xss')</script>",
+      portalUrl: "https://p.example.com",
+    });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+
+  it("newMessageEmail escapes < > in senderName", () => {
+    const html = newMessageEmail({
+      recipientName: "Anna",
+      senderName: "<b>Hacker</b>",
+      subject: "Hello",
+      portalUrl: "https://p.example.com",
+    });
+    expect(html).not.toContain("<b>");
+    expect(html).toContain("&lt;b&gt;");
+  });
+
+  it("newMessageEmail escapes < > in recipientName", () => {
+    const html = newMessageEmail({
+      recipientName: "<img src=x onerror=alert(1)>",
+      senderName: "Manuel",
+      subject: "Hello",
+      portalUrl: "https://p.example.com",
+    });
+    expect(html).not.toContain("<img");
+    expect(html).toContain("&lt;img");
+  });
+
+  it("bookingRequestAdminEmail escapes < > & in patientName", () => {
+    const html = bookingRequestAdminEmail({
+      patientName: "A & B <Test>",
+      patientEmail: "test@example.com",
+      bookingTypeLabel: "Consultation",
+      adminUrl: "https://vitareba.ch/admin",
+    });
+    expect(html).not.toContain("A & B <Test>");
+    expect(html).toContain("A &amp; B &lt;Test&gt;");
+  });
+
+  it("bookingRequestAdminEmail escapes HTML in notes", () => {
+    const html = bookingRequestAdminEmail({
+      patientName: "Anna",
+      patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
+      notes: "<script>steal(document.cookie)</script>",
+      adminUrl: "https://vitareba.ch/admin",
+    });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+
+  it("criticalPatientAlertEmail escapes < > in patientName and patientEmail", () => {
+    const html = criticalPatientAlertEmail({
+      patientName: "<Evil>",
+      patientEmail: "evil<script>@example.com",
+      reason: "No check-in for 5 days",
+      adminUrl: "https://vitareba.ch/admin",
+    });
+    expect(html).not.toContain("<Evil>");
+    expect(html).toContain("&lt;Evil&gt;");
+    expect(html).not.toContain("<script>");
+  });
+
+  it("checkinDipAlertEmail escapes < > in patientName", () => {
+    const html = checkinDipAlertEmail({
+      patientName: "<b>Patient</b>",
+      patientEmail: "p@example.com",
+      avgScore: 2.1,
+      days: 3,
+      adminUrl: "https://vitareba.ch/admin",
+    });
+    expect(html).not.toContain("<b>");
+    expect(html).toContain("&lt;b&gt;");
+  });
+
+  it("welcomePatientEmail escapes < > in patientName", () => {
+    const html = welcomePatientEmail({
+      patientName: "<script>x</script>",
+      portalUrl: "https://p.example.com",
+    });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
+});

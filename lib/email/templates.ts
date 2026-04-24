@@ -5,6 +5,16 @@ import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type MetricKey } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 
+/** Escapes HTML special characters to prevent injection in email templates. */
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 function layout(body: string) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -55,13 +65,17 @@ export function bookingRequestAdminEmail({
   preferredDate?: string | null;
   adminUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+  patientEmail = escapeHtml(patientEmail);
+  const escapedNotes = notes ? escapeHtml(notes) : null;
+
   return layout(`
     <p>A new booking request has been submitted.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
     <p class="meta"><strong>Type:</strong> ${bookingTypeLabel}${machineTypeLabel ? ` — ${machineTypeLabel}` : ""}</p>
     ${preferredDate ? `<p class="meta"><strong>Preferred date:</strong> ${preferredDate}</p>` : ""}
-    ${notes ? `<p class="meta"><strong>Notes:</strong> ${notes}</p>` : ""}
+    ${escapedNotes ? `<p class="meta"><strong>Notes:</strong> ${escapedNotes}</p>` : ""}
     <div class="divider"></div>
     <p><a class="btn" href="${adminUrl}">Review in Admin Portal</a></p>
   `);
@@ -76,6 +90,8 @@ export function bookingConfirmedEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Your consultation request has been <strong>confirmed</strong>. We will be in touch shortly with the details.</p>
@@ -93,6 +109,8 @@ export function bookingCancelledEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Your consultation request has been cancelled. If you have any questions, please reply to this email or send us a message through the portal.</p>
@@ -129,6 +147,10 @@ export function newMessageEmail({
   subject: string;
   portalUrl: string;
 }) {
+  recipientName = escapeHtml(recipientName);
+  senderName = escapeHtml(senderName);
+  subject = escapeHtml(subject);
+
   return layout(`
     <p>Hi ${recipientName},</p>
     <p>You have a new message from <strong>${senderName}</strong> regarding: <em>${subject}</em></p>
@@ -145,6 +167,8 @@ export function welcomePatientEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Welcome to ${COMPANY.shortName}. Your patient portal is ready.</p>
@@ -169,6 +193,8 @@ export function profileCompletionEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>One quick thing before your first consultation: your profile.</p>
@@ -188,6 +214,8 @@ export function assessmentCtaEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>The Inflection Edge is the foundation of everything ${COMPANY.clinicianName} does with you.</p>
@@ -211,6 +239,9 @@ export function criticalPatientAlertEmail({
   reason: string;
   adminUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+  patientEmail = escapeHtml(patientEmail);
+
   return layout(`
     <p>A patient has been flagged as <strong style="color:#e05a5a">Critical</strong>.</p>
     <div class="divider"></div>
@@ -239,6 +270,8 @@ export function assessmentResultsEmail({
   dimensions: Array<{ icon: string; name: string; score: number; interpretation: string }>;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   const dimRows = dimensions
     .map(
       (d) => `
@@ -280,6 +313,8 @@ export function assessmentMeaningEmail({
   patientName: string;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>You took the Inflection Edge two days ago. This email explains what the five dimensions actually measure — and why they matter clinically.</p>
@@ -310,6 +345,8 @@ export function assessmentBookingEmail({
   overallScore: number;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>${COMPANY.clinicianName} has had time to review your Inflection Edge profile (overall score: <strong>${overallScore}/100</strong>).</p>
@@ -412,6 +449,8 @@ export function weeklyDigestEmail({
   nextBookingStatus: string | null;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+
   const hasCheckins = thisWeekAvgs !== null;
   const insight = hasCheckins ? weeklyInsight(thisWeekAvgs!, prevWeekAvgs) : null;
 
@@ -468,6 +507,8 @@ export function checkinReminderEmail({
   portalUrl: string;
   atRiskStreak?: number;
 }) {
+  patientName = escapeHtml(patientName);
+
   const streakLine = atRiskStreak >= 2
     ? `<p style="font-size:1rem;font-weight:600;color:#1a1a22">🔥 ${atRiskStreak}-day streak — don't break it now.</p>`
     : "";
@@ -500,6 +541,9 @@ export function checkinDipAlertEmail({
   days: number;
   adminUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+  patientEmail = escapeHtml(patientEmail);
+
   return layout(`
     <p>A patient has had consistently low wellbeing scores for the past <strong>${days} days</strong>.</p>
     <div class="divider"></div>
@@ -522,6 +566,7 @@ export function checkinStreakMilestoneEmail({
   streak: number;
   portalUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
   const clinician = COMPANY.clinicianName;
 
   let heading: string;
@@ -561,6 +606,9 @@ export function profileCompletedAdminEmail({
   completionPct: number;
   adminUrl: string;
 }) {
+  patientName = escapeHtml(patientName);
+  patientEmail = escapeHtml(patientEmail);
+
   return layout(`
     <p>A patient has completed their intake profile — <strong style="color:#2a7a8a">ready for review</strong>.</p>
     <div class="divider"></div>
