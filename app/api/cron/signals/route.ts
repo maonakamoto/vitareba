@@ -12,6 +12,7 @@ import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type 
 import { ASSESSMENT_GOAL_METRIC_KEY } from "@/lib/config/portal";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 import { requireCron } from "@/lib/auth/guards";
 import { displayName } from "@/lib/utils/format";
 
@@ -74,7 +75,7 @@ export async function GET(req: Request) {
     // Alert only on first transition into critical
     if (signal === PATIENT_SIGNAL.critical && previousSignal !== PATIENT_SIGNAL.critical) {
       const patientName = displayName(patient.name, patient.email);
-      const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
+      const adminUrl = `${PORTAL_URL}${ADMIN_ROUTES.patients}/${patient.id}`;
 
       // Send to all admin emails in parallel — independent recipients
       const results = await Promise.allSettled(

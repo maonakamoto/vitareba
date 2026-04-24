@@ -13,6 +13,7 @@ import {
 } from "@/lib/config/admin";
 import { DAY_MS, formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 import { requireCron } from "@/lib/auth/guards";
 
 export async function GET(req: Request) {
@@ -81,7 +82,7 @@ export async function GET(req: Request) {
     }
 
     const patientName = displayName(patient.name, patient.email, "Unknown");
-    const adminUrl = `${PORTAL_URL}/admin/patients/${patient.id}`;
+    const adminUrl = `${PORTAL_URL}${ADMIN_ROUTES.patients}/${patient.id}`;
 
     alertTasks.push({
       patientId: patient.id,

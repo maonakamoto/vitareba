@@ -10,6 +10,7 @@ import { computeProfileCompleteness, profileUpdateSchema } from "@/lib/domain/pr
 import { profileCompletedAdminEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export async function GET() {
   const guard = await requireSession();
@@ -80,7 +81,7 @@ export async function PATCH(req: Request) {
           patientName: patient.name ?? patient.email ?? "",
           patientEmail: patient.email ?? "",
           completionPct: newPct,
-          adminUrl: `${PORTAL_URL}/admin/patients/${session.user.id}`,
+          adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
         }),
       }).catch(console.error);
     }

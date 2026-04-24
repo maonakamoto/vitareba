@@ -8,6 +8,7 @@ import { threads, threadMessages, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { newMessageEmail } from "@/lib/email/templates";
 import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { replySchema } from "@/lib/domain/messages";
 
@@ -115,7 +116,7 @@ export async function POST(
           recipientName: patient.name ?? "there",
           senderName: sender?.name ?? COMPANY.shortName,
           subject: thread.subject,
-          portalUrl: `${PORTAL_URL}/messages/${threadId}`,
+          portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.messages}/${threadId}`,
         }),
       }).catch(console.error);
     }
@@ -132,7 +133,7 @@ export async function POST(
         recipientName: COMPANY.clinicianName,
         senderName: patient?.name ?? "Patient",
         subject: thread.subject,
-        portalUrl: `${PORTAL_URL}/admin/messages/${threadId}`,
+        portalUrl: `${PORTAL_URL}${ADMIN_ROUTES.messages}/${threadId}`,
       }),
     }).catch(console.error);
   }

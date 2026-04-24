@@ -8,6 +8,7 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
+import { ADMIN_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { bookingCreateSchema } from "@/lib/domain/bookings";
 import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
@@ -79,7 +80,7 @@ export async function POST(req: Request) {
         machineTypeLabel,
         notes: parsed.data.notes,
         preferredDate: parsed.data.preferredDate,
-        adminUrl: `${PORTAL_URL}/admin/patients/${session.user.id}`,
+        adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
       }),
     }).catch(console.error);
   }

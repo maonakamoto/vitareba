@@ -9,6 +9,7 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS, BOOKING_STATUS_VALUES, BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
@@ -52,8 +53,8 @@ export async function PATCH(
       const machineLabel = updated.machineType ? MACHINE_TYPE_CONFIG[updated.machineType]?.label : null;
       const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
       const html = parsed.data.status === BOOKING_STATUS.confirmed
-        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` })
-        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}/bookings` });
+        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` })
+        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` });
       sendEmail({
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
