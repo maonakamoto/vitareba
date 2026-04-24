@@ -202,6 +202,60 @@ describe("computePatientSignal", () => {
     expect(result.signal).toBe("attention");
     expect(result.reason).toMatch(/no booking/);
   });
+
+  it("does not flag critical when last check-in was exactly NO_CHECKIN_CRITICAL_DAYS - 1 days ago (boundary)", () => {
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [checkin(NO_CHECKIN_CRITICAL_DAYS - 1, 3)],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
+      now: NOW,
+    });
+    expect(result.signal).not.toBe("critical");
+  });
+
+  it("does not flag critical for assessment drop exactly equal to threshold (must exceed, not equal)", () => {
+    const exactlyAtThreshold = {
+      overallScore: GOOD_ASSESSMENT.overallScore - SCORE_DROP_CRITICAL,
+      completedAt: daysAgo(1),
+    };
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [checkin(0, 3)],
+      assessments: [exactlyAtThreshold, GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
+      now: NOW,
+    });
+    expect(result.signal).not.toBe("critical");
+  });
+
+  it("returns 'active' for patient with no check-ins who has assessment and confirmed booking", () => {
+    // Patients who haven't started check-ins yet but have completed onboarding
+    // are not flagged critical — they're expected to start their tracking routine
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
+      now: NOW,
+    });
+    expect(result.signal).toBe("active");
+  });
+
+  it("does not flag critical for fewer than 3 consecutive declining days (2 is not enough)", () => {
+    const result = computePatientSignal({
+      registeredAt: daysAgo(30),
+      checkins: [
+        checkin(0, 2), // most recent — lower
+        checkin(1, 4), // previous — higher
+        // only 2 data points, not 3
+      ],
+      assessments: [GOOD_ASSESSMENT],
+      bookings: [{ id: "b1", status: "confirmed" as const }],
+      now: NOW,
+    });
+    expect(result.signal).not.toBe("critical");
+  });
 });
 
 // ─── sparkLevel ───────────────────────────────────────────────────────────────
