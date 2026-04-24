@@ -511,6 +511,43 @@ export function checkinDipAlertEmail({
   `);
 }
 
+// ─── Check-in streak milestone (to patient) ──────────────────────────────────
+
+export function checkinStreakMilestoneEmail({
+  patientName,
+  streak,
+  portalUrl,
+}: {
+  patientName: string;
+  streak: number;
+  portalUrl: string;
+}) {
+  const clinician = COMPANY.clinicianName;
+
+  let heading: string;
+  let body: string;
+  if (streak >= 100) {
+    heading = "100-day streak";
+    body = "One hundred consecutive days of data. That is not a streak — that is a dataset. Your protocol can now be tuned with a precision most patients never reach.";
+  } else if (streak >= 30) {
+    heading = "30-day streak";
+    body = `A full month of daily check-ins. The trend lines are real now — ${clinician} can see patterns that a handful of sessions would never reveal.`;
+  } else {
+    heading = "7-day streak";
+    body = "One full week logged. Seven data points in a row is where the signal starts to separate from the noise. Keep going.";
+  }
+
+  return layout(`
+    <p>Hi ${patientName},</p>
+    <p>🔥 <strong>${heading}</strong> — you just hit a milestone.</p>
+    <p>${body}</p>
+    <div class="divider"></div>
+    <p>Every check-in you complete adds resolution to your clinical picture. The data you log today is the baseline ${clinician} uses to measure whether your programme is working.</p>
+    <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in</a></p>
+    <p class="meta">You're receiving this because you hit a check-in streak milestone. Keep the streak alive.</p>
+  `);
+}
+
 // ─── Profile completion alert (to Manuel) ────────────────────────────────────
 
 export function profileCompletedAdminEmail({

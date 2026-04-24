@@ -16,6 +16,7 @@ import {
   checkinReminderEmail,
   checkinDipAlertEmail,
   profileCompletedAdminEmail,
+  checkinStreakMilestoneEmail,
 } from "./templates";
 
 // All templates return valid HTML wrapping the VitaReBa layout
@@ -463,5 +464,46 @@ describe("weeklyDigestEmail — weekly insight synthesis", () => {
     const html = weeklyDigestEmail({ ...base, thisWeekAvgs: curr, prevWeekAvgs: prev });
     expect(html).toContain("stress");
     expect(html).toContain("dipped");
+  });
+});
+
+describe("checkinStreakMilestoneEmail", () => {
+  const base = { patientName: "Anna", portalUrl: "https://p.example.com" };
+
+  it("returns valid html", () => {
+    expect(isHtml(checkinStreakMilestoneEmail({ ...base, streak: 7 }))).toBe(true);
+  });
+
+  it("includes patient name", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 7 });
+    expect(html).toContain("Anna");
+  });
+
+  it("streak 7: shows 7-day heading and one-week copy", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 7 });
+    expect(html).toContain("7-day streak");
+    expect(html).toContain("One full week");
+  });
+
+  it("streak 30: shows 30-day heading and month copy", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 30 });
+    expect(html).toContain("30-day streak");
+    expect(html).toContain("full month");
+  });
+
+  it("streak 100: shows 100-day heading and dataset copy", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 100 });
+    expect(html).toContain("100-day streak");
+    expect(html).toContain("dataset");
+  });
+
+  it("streak 150: falls into 100+ branch (shows dataset copy)", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 150 });
+    expect(html).toContain("dataset");
+  });
+
+  it("includes checkin route link", () => {
+    const html = checkinStreakMilestoneEmail({ ...base, streak: 7 });
+    expect(html).toContain("https://p.example.com/checkin");
   });
 });

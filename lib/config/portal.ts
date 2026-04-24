@@ -160,6 +160,12 @@ export const MESSAGE_POLL_INTERVAL_MS = 30_000;
 export const BADGE_MAX_COUNT = 99;
 
 /**
+ * Check-in streak milestones that trigger a congratulatory email.
+ * Fire on the exact day the streak is reached (insert only, not update).
+ */
+export const CHECKIN_STREAK_MILESTONES = [7, 30, 100] as const;
+
+/**
  * Metric key used to link a clinical goal to the Inflection Edge assessment overall score.
  * SSOT — import this constant wherever goal metric comparisons or labels are needed.
  */

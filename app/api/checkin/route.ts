@@ -1,13 +1,16 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, gte } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
-import { dailyCheckins } from "@/lib/db/schema";
-import { CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS } from "@/lib/config/portal";
-import { formatDateISO } from "@/lib/utils/format";
-import { checkinSchema } from "@/lib/domain/checkin";
+import { dailyCheckins, users } from "@/lib/db/schema";
+import { CHECKIN_HISTORY_DAYS, CHECKIN_FETCH_MAX_DAYS, CHECKIN_STREAK_MILESTONES } from "@/lib/config/portal";
+import { formatDateISO, displayName } from "@/lib/utils/format";
+import { checkinSchema, computeStreak } from "@/lib/domain/checkin";
+import { sendEmail } from "@/lib/email/index";
+import { checkinStreakMilestoneEmail } from "@/lib/email/templates";
+import { PORTAL_URL } from "@/lib/config/company";
 
 export async function GET(req: Request) {
   const guard = await requireSession();
@@ -88,6 +91,11 @@ export async function POST(req: Request) {
         date,
         ...metrics,
       });
+
+      // Fire-and-forget streak milestone email — don't block the response
+      detectAndSendStreakMilestone(session.user.id).catch((err) =>
+        console.error("[api/checkin] streak milestone check failed:", err)
+      );
     }
   } catch (err) {
     console.error("[api/checkin] save failed:", err);
@@ -95,4 +103,39 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ success: true });
+}
+
+// ─── Streak milestone helper ──────────────────────────────────────────────────
+
+async function detectAndSendStreakMilestone(userId: string): Promise<void> {
+  const now = new Date();
+  const sixtyDaysAgo = new Date(now);
+  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+  const recentCheckins = await db.query.dailyCheckins.findMany({
+    where: and(
+      eq(dailyCheckins.userId, userId),
+      gte(dailyCheckins.date, formatDateISO(sixtyDaysAgo))
+    ),
+    orderBy: [desc(dailyCheckins.date)],
+  });
+
+  const streak = computeStreak(recentCheckins);
+  if (!(CHECKIN_STREAK_MILESTONES as readonly number[]).includes(streak)) return;
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, userId),
+    columns: { name: true, email: true },
+  });
+  if (!user?.email) return;
+
+  await sendEmail({
+    to: user.email,
+    subject: `🔥 ${streak}-day streak — you're building something real`,
+    html: checkinStreakMilestoneEmail({
+      patientName: displayName(user.name, user.email),
+      streak,
+      portalUrl: PORTAL_URL,
+    }),
+  });
 }
