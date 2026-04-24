@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { users, profiles, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
 import { eq, desc, isNull } from "drizzle-orm";
 import { sendEmail } from "@/lib/email/index";
-import { criticalPatientAlertEmail } from "@/lib/email/templates";
+import { criticalPatientAlertEmail, goalAchievedAdminEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { normalizeCheckinMetric } from "@/lib/domain/checkin";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
@@ -56,6 +56,7 @@ export async function GET(req: Request) {
   }
 
   let alerts = 0;
+  let goalsCompleted = 0;
   const dbWrites: Promise<unknown>[] = [];
 
   for (const patient of patients) {
@@ -120,11 +121,35 @@ export async function GET(req: Request) {
       }
 
       if (liveValue !== null && liveValue !== goal.current) {
+        // Detect first-time goal achievement: live value reached or exceeded the target
+        const isNewlyAchieved =
+          goal.target !== null && liveValue >= goal.target && goal.completedAt === null;
+
         dbWrites.push(
           db.update(clinicalGoals)
-            .set({ current: liveValue, updatedAt: new Date() })
+            .set({
+              current: liveValue,
+              ...(isNewlyAchieved ? { completedAt: now } : {}),
+              updatedAt: now,
+            })
             .where(eq(clinicalGoals.id, goal.id))
         );
+
+        if (isNewlyAchieved) {
+          goalsCompleted++;
+          const patientName = displayName(patient.name, patient.email);
+          const adminUrl = `${PORTAL_URL}${ADMIN_ROUTES.patients}/${patient.id}`;
+          // Notify all admin emails (fire-and-forget per recipient)
+          for (const adminEmail of adminEmails) {
+            sendEmail({
+              to: adminEmail,
+              subject: `Goal achieved: ${patientName} — ${goal.title}`,
+              html: goalAchievedAdminEmail({ patientName, goalTitle: goal.title, adminUrl }),
+            }).catch((err) =>
+              console.error("[cron/signals] goal achievement email failed:", patient.id, err)
+            );
+          }
+        }
       }
     }
 
@@ -141,5 +166,5 @@ export async function GET(req: Request) {
   // Flush all goal and signal updates in parallel
   await Promise.all(dbWrites);
 
-  return NextResponse.json({ success: true, alerts, checked: patients.length });
+  return NextResponse.json({ success: true, alerts, goalsCompleted, checked: patients.length });
 }

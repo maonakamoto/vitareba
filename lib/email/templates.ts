@@ -620,6 +620,31 @@ export function profileCompletedAdminEmail({
   `);
 }
 
+// ─── Goal achieved (to admin) ─────────────────────────────────────────────────
+
+export function goalAchievedAdminEmail({
+  patientName,
+  goalTitle,
+  adminUrl,
+}: {
+  patientName: string;
+  goalTitle: string;
+  adminUrl: string;
+}) {
+  patientName = escapeHtml(patientName);
+  goalTitle = escapeHtml(goalTitle);
+
+  return layout(`
+    <p>A patient has reached their clinical goal — <strong style="color:#2a7a8a">achieved</strong>.</p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Patient:</strong> ${patientName}</p>
+    <p class="meta"><strong>Goal:</strong> ${goalTitle}</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${adminUrl}">View patient →</a></p>
+    <p class="meta">The goal has been automatically marked complete. Consider acknowledging this with the patient.</p>
+  `);
+}
+
 // ─── Document shared with patient ─────────────────────────────────────────────
 
 export function newDocumentEmail({

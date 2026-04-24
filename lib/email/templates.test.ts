@@ -19,6 +19,7 @@ import {
   checkinStreakMilestoneEmail,
   newDocumentEmail,
   programmeAssignedEmail,
+  goalAchievedAdminEmail,
 } from "./templates";
 
 // All templates return valid HTML wrapping the VitaReBa layout
@@ -565,6 +566,35 @@ describe("programmeAssignedEmail", () => {
     const html = programmeAssignedEmail({ ...base, patientName: "<b>Hacker</b>" });
     expect(html).not.toContain("<b>");
     expect(html).toContain("&lt;b&gt;");
+  });
+});
+
+describe("goalAchievedAdminEmail", () => {
+  const base = {
+    patientName: "Anna Müller",
+    goalTitle: "Improve focus score to 70",
+    adminUrl: "https://vitareba.ch/admin/patients/1",
+  };
+
+  it("returns valid html", () => {
+    expect(isHtml(goalAchievedAdminEmail(base))).toBe(true);
+  });
+
+  it("includes patient name and goal title", () => {
+    const html = goalAchievedAdminEmail(base);
+    expect(html).toContain("Anna Müller");
+    expect(html).toContain("Improve focus score to 70");
+  });
+
+  it("includes link to admin patient page", () => {
+    const html = goalAchievedAdminEmail(base);
+    expect(html).toContain("https://vitareba.ch/admin/patients/1");
+  });
+
+  it("escapes HTML in goal title", () => {
+    const html = goalAchievedAdminEmail({ ...base, goalTitle: "<script>xss</script>" });
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
   });
 });
 
