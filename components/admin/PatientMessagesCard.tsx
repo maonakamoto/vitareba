@@ -6,7 +6,7 @@ import { ADMIN_ROUTES } from "@/lib/config/routes";
 type Thread = {
   id: string;
   subject: string;
-  messages: { body: string }[];
+  messages: { body: string; senderId: string; readAt: Date | string | null }[];
 };
 
 export function PatientMessagesCard({ threads, patientId }: { threads: Thread[]; patientId: string }) {
@@ -17,17 +17,25 @@ export function PatientMessagesCard({ threads, patientId }: { threads: Thread[];
         <div className={styles.emptyState}>No messages.</div>
       ) : (
         <div className={styles.msgThreadList}>
-          {threads.map((t) => (
-            <Link key={t.id} href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.msgThreadRow}>
-              <div>
-                <div className={styles.msgThreadSubject}>{t.subject}</div>
-                {t.messages[0] && (
-                  <div className={styles.msgThreadPreview}>{t.messages[0].body}</div>
-                )}
-              </div>
-              <span className={styles.msgThreadViewLink}>View →</span>
-            </Link>
-          ))}
+          {threads.map((t) => {
+            const lastMsg = t.messages[0];
+            // Unread = patient sent the last message and admin hasn't read it yet
+            const isUnread = !!lastMsg && lastMsg.senderId === patientId && lastMsg.readAt === null;
+            return (
+              <Link key={t.id} href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.msgThreadRow}>
+                <div>
+                  <div className={styles.msgThreadSubjectRow}>
+                    {isUnread && <span className={styles.unreadDot} title="Unread message from patient" />}
+                    <span className={`${styles.msgThreadSubject}${isUnread ? ` ${styles.unreadSubject}` : ""}`}>{t.subject}</span>
+                  </div>
+                  {lastMsg && (
+                    <div className={styles.msgThreadPreview}>{lastMsg.body}</div>
+                  )}
+                </div>
+                <span className={styles.msgThreadViewLink}>View →</span>
+              </Link>
+            );
+          })}
         </div>
       )}
       <InlineMessageCompose patientId={patientId} />
