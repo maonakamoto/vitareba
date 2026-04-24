@@ -129,6 +129,13 @@ export default function MessagesPage() {
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>No messages yet</p>
             <p>This is your direct line to {COMPANY.clinicianName} and the {COMPANY.shortName} team. Use it for questions between sessions, updates on how you&apos;re responding to your programme, or anything you&apos;d want your clinician to know.</p>
+            <button
+              type="button"
+              className={msgStyles.emptyBtn}
+              onClick={() => setShowForm(true)}
+            >
+              Send a message →
+            </button>
           </div>
         </div>
       ) : (

@@ -6,6 +6,8 @@ import styles from "../portal.module.css";
 import docStyles from "./documents.module.css";
 import { formatDateLong } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
+import Link from "next/link";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 
 function mimeLabel(mimeType: string | null): string | null {
   if (!mimeType) return null;
@@ -49,6 +51,9 @@ export default async function DocumentsPage() {
             <p className={docStyles.emptyBody}>
               {COMPANY.clinicianName} will share lab results, assessment reports, and programme materials here as your work together progresses.
             </p>
+            <Link href={PORTAL_ROUTES.bookings} className={docStyles.emptyCta}>
+              Book a consultation →
+            </Link>
           </div>
         </div>
       ) : (

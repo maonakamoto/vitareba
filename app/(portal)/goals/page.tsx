@@ -2,8 +2,10 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { clinicalGoals } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
+import Link from "next/link";
 import styles from "../portal.module.css";
 import goalStyles from "./goals.module.css";
+import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { computeGoalProgress, goalProgressLabel } from "@/lib/domain/goals";
 import { CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL } from "@/lib/config/portal";
 import { formatDateLong } from "@/lib/utils/format";
@@ -51,6 +53,9 @@ export default async function GoalsPage() {
             Your clinician will add clinical goals after your first consultation. They&apos;ll
             appear here with progress tracking linked to your check-ins and assessments.
           </p>
+          <Link href={PORTAL_ROUTES.bookings} className={goalStyles.emptyCta}>
+            Book a consultation →
+          </Link>
         </div>
       ) : (
         <>
