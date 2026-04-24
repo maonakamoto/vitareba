@@ -9,12 +9,12 @@ import { ADMIN_ROUTES } from "@/lib/config/routes";
 type NavItem = {
   href: string;
   label: string;
-  badgeKey?: "messages";
+  badgeKey?: "messages" | "bookings";
 };
 
 const NAV_ITEMS: NavItem[] = [
   { href: ADMIN_ROUTES.patients,  label: "Patients" },
-  { href: ADMIN_ROUTES.bookings,  label: "Bookings" },
+  { href: ADMIN_ROUTES.bookings,  label: "Bookings", badgeKey: "bookings" },
   { href: ADMIN_ROUTES.messages,  label: "Messages", badgeKey: "messages" },
   { href: ADMIN_ROUTES.documents, label: "Documents" },
   { href: ADMIN_ROUTES.reports,   label: "Reports" },
@@ -24,14 +24,23 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export function AdminNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
+export function AdminNav({
+  unreadMessages = 0,
+  pendingBookings = 0,
+}: {
+  unreadMessages?: number;
+  pendingBookings?: number;
+}) {
   const pathname = usePathname();
 
   return (
     <nav className={styles.nav}>
       {NAV_ITEMS.map(({ href, label, badgeKey }) => {
         const active = isActive(pathname, href);
-        const count = badgeKey === "messages" ? unreadMessages : 0;
+        const count =
+          badgeKey === "messages" ? unreadMessages :
+          badgeKey === "bookings" ? pendingBookings :
+          0;
         return (
           <Link
             key={href}
@@ -41,7 +50,7 @@ export function AdminNav({ unreadMessages = 0 }: { unreadMessages?: number }) {
           >
             {label}
             {count > 0 && (
-              <span className={styles.navBadge} aria-label={`${count} unread`}>
+              <span className={styles.navBadge} aria-label={`${count} pending`}>
                 {count > BADGE_MAX_COUNT ? `${BADGE_MAX_COUNT}+` : count}
               </span>
             )}

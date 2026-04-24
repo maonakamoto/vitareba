@@ -6,10 +6,11 @@ import styles from "./admin.module.css";
 import { UserDropdown } from "@/components/portal/UserDropdown";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { users, bookings } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { getAdminUnreadThreadCount } from "@/lib/domain/messages";
 import { USER_ROLE } from "@/lib/config/auth";
+import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 
@@ -17,12 +18,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await auth();
   if (!session || session.user.role !== USER_ROLE.admin) redirect(PORTAL_ROUTES.dashboard);
 
-  const [dbUser, unreadMessages] = await Promise.all([
+  const [dbUser, unreadMessages, pendingBookings] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true },
     }),
     getAdminUnreadThreadCount(),
+    db.query.bookings.findMany({
+      where: eq(bookings.status, BOOKING_STATUS.pending),
+      columns: { id: true },
+    }).then((rows) => rows.length),
   ]);
 
   const name = dbUser?.name ?? "";
@@ -35,7 +40,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Logo />
         </Link>
         <p className={styles.adminBadge}>Admin</p>
-        <AdminNav unreadMessages={unreadMessages} />
+        <AdminNav unreadMessages={unreadMessages} pendingBookings={pendingBookings} />
       </aside>
       <div className={styles.mainWrap}>
         <header className={styles.header}>
