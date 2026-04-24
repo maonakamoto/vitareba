@@ -36,6 +36,7 @@ type ProfileData = {
   referralSource: string;
   notes: string;
   digestOptOut: boolean;
+  reminderOptOut: boolean;
 };
 
 const EMPTY_FORM: ProfileData = {
@@ -54,6 +55,7 @@ const EMPTY_FORM: ProfileData = {
   referralSource: "",
   notes: "",
   digestOptOut: false,
+  reminderOptOut: false,
 };
 
 export function ProfileForm() {
@@ -90,6 +92,7 @@ export function ProfileForm() {
           referralSource: profile.data?.referralSource ?? "",
           notes: profile.data?.notes ?? "",
           digestOptOut: profile.data?.digestOptOut ?? false,
+          reminderOptOut: profile.data?.reminderOptOut ?? false,
         });
       } catch {
         setLoadError(true);
@@ -113,6 +116,7 @@ export function ProfileForm() {
           sleepHoursAvg: form.sleepHoursAvg === "" ? null : Number(form.sleepHoursAvg),
           exerciseFrequency: form.exerciseFrequency === "" ? null : form.exerciseFrequency,
           digestOptOut: form.digestOptOut,
+          reminderOptOut: form.reminderOptOut,
         }),
       });
       const data = await res.json();
@@ -282,6 +286,18 @@ export function ProfileForm() {
           </label>
           <p className={profileStyles.checkboxHint}>
             Weekly summaries include your check-in averages, latest score, and booking status. Uncheck to receive them.
+          </p>
+          <label className={profileStyles.checkboxRow}>
+            <input
+              type="checkbox"
+              className={profileStyles.checkboxInput}
+              checked={form.reminderOptOut}
+              onChange={(e) => setForm((prev) => ({ ...prev, reminderOptOut: e.target.checked }))}
+            />
+            Opt out of daily check-in reminder emails
+          </label>
+          <p className={profileStyles.checkboxHint}>
+            Reminders are sent on days you haven&apos;t logged a check-in yet. Uncheck to receive them.
           </p>
         </div>
 

@@ -30,7 +30,7 @@ export async function GET(req: Request) {
     patients = await db.query.users.findMany({
       where: eq(users.role, USER_ROLE.patient),
       with: {
-        profile: { columns: { digestOptOut: true, dipAlertSentAt: true } },
+        profile: { columns: { dipAlertSentAt: true } },
         dailyCheckins: {
           where: gte(dailyCheckins.date, cutoffDate),
           orderBy: [desc(dailyCheckins.date)],

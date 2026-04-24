@@ -22,7 +22,7 @@ export async function GET(req: Request) {
     patients = await db.query.users.findMany({
       where: eq(users.role, USER_ROLE.patient),
       with: {
-        profile: { columns: { digestOptOut: true } },
+        profile: { columns: { reminderOptOut: true } },
         assessmentResults: {
           orderBy: [desc(assessmentResults.completedAt)],
           limit: 1,
@@ -43,7 +43,7 @@ export async function GET(req: Request) {
   const sendable = patients.filter(
     (p) =>
       p.email &&
-      !p.profile?.digestOptOut &&
+      !p.profile?.reminderOptOut &&
       p.assessmentResults.length > 0 &&
       p.dailyCheckins.length === 0
   );

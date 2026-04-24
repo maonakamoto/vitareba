@@ -139,6 +139,7 @@ export const profiles = pgTable("profiles", {
   referralSource: text("referral_source"),
   notes: text("notes"),
   digestOptOut: boolean("digest_opt_out").notNull().default(false),
+  reminderOptOut: boolean("reminder_opt_out").notNull().default(false),
   // Signal tracking (updated by cron/signals, used to detect critical transitions)
   lastKnownSignal: varchar("last_known_signal", { length: 20 }),
   criticalAlertSentAt: timestamp("critical_alert_sent_at", { mode: "date" }),
