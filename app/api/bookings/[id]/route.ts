@@ -30,7 +30,7 @@ export async function PATCH(
     return NextResponse.json({ success: false, error: "Invalid status" }, { status: 400 });
   }
 
-  let updated: typeof bookings.$inferSelect;
+  let updated: typeof bookings.$inferSelect | undefined;
   try {
     [updated] = await db
       .update(bookings)
@@ -40,6 +40,13 @@ export async function PATCH(
   } catch (err) {
     console.error("[api/bookings/id] update failed:", err);
     return NextResponse.json({ success: false, error: "Failed to update booking — please try again" }, { status: 500 });
+  }
+
+  // Drizzle .returning() yields [] when the WHERE matched nothing.
+  // Without this guard the email-notification block below would crash on
+  // `updated.userId` and surface as a 500 instead of an honest 404.
+  if (!updated) {
+    return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
   }
 
   // Notify patient of status change (fire-and-forget)
