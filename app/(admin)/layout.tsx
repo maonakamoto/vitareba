@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +15,11 @@ import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { PATIENT_SIGNAL } from "@/lib/config/admin";
 import { COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
+
+// Private admin area — defense-in-depth alongside robots.txt disallow.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();

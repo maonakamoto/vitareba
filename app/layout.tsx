@@ -28,15 +28,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: TITLE,
   description: DESCRIPTION,
-  keywords: [
-    "ADHD",
-    "Metabolic Psychiatry",
-    "Longevity",
-    "Zürich",
-    "Psychedelic Therapy",
-    "Burnout",
-    "High Performance",
-  ],
   alternates: {
     canonical: SITE_URL,
   },

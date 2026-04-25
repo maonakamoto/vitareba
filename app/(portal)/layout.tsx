@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +14,11 @@ import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { formatDateISO } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
 import { AUTH_ROUTES } from "@/lib/config/routes";
+
+// Private patient area — defense-in-depth alongside robots.txt disallow.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
