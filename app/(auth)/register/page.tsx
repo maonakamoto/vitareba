@@ -7,11 +7,13 @@ import Link from "next/link";
 import styles from "../auth.module.css";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 import { PORTAL_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
+import { sanitizeReturnTo } from "@/lib/domain/auth";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
+  // Sanitize: must be a same-origin relative path. Prevents open-redirect to ?returnTo=https://evil.com.
+  const returnTo = sanitizeReturnTo(searchParams.get("returnTo"), PORTAL_ROUTES.dashboard);
   const [hasAssessment, setHasAssessment] = useState(false);
 
   useEffect(() => {

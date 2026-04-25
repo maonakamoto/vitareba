@@ -7,12 +7,14 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
 import { AUTH_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
+import { sanitizeReturnTo } from "@/lib/domain/auth";
 
 function LoginForm() {
   const t = useTranslations("auth.login");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") ?? PORTAL_ROUTES.dashboard;
+  // Sanitize: must be a same-origin relative path. Prevents open-redirect to ?returnTo=https://evil.com.
+  const returnTo = sanitizeReturnTo(searchParams.get("returnTo"), PORTAL_ROUTES.dashboard);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

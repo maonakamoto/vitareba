@@ -39,6 +39,26 @@ export function verifyPassword(password: string, hash: string): Promise<boolean>
   return bcrypt.compare(password, hash);
 }
 
+// ─── Open-redirect prevention ─────────────────────────────────────────────────
+
+/**
+ * Sanitize a `returnTo` query parameter from the login/register flow so it
+ * can never redirect a logged-in user to an attacker-controlled URL.
+ *
+ * Accepts only same-origin paths: must start with a single `/` and must NOT
+ * start with `//` (protocol-relative) or `/\` (Windows-style). Anything else
+ * (full URLs, missing leading slash, empty/null) collapses to the fallback.
+ */
+export function sanitizeReturnTo(
+  input: string | null | undefined,
+  fallback: string
+): string {
+  if (typeof input !== "string" || input.length === 0) return fallback;
+  if (input[0] !== "/") return fallback;
+  if (input.startsWith("//") || input.startsWith("/\\")) return fallback;
+  return input;
+}
+
 // ─── Brute-force protection ───────────────────────────────────────────────────
 
 /** True when the user is currently locked out from logging in. */

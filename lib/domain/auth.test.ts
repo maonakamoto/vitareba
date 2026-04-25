@@ -7,6 +7,7 @@ import {
   verifyPassword,
   isUserLocked,
   nextLoginAttemptState,
+  sanitizeReturnTo,
 } from "./auth";
 
 // bcrypt cost 12 is intentionally slow (production security); use 4 in tests
@@ -263,6 +264,80 @@ describe("nextLoginAttemptState", () => {
       }
       state = nextLoginAttemptState(state, false, NOW);
       expect(state.lockedUntil).not.toBeNull();
+    });
+  });
+});
+
+// ─── sanitizeReturnTo ─────────────────────────────────────────────────────────
+// Open-redirect defence: login/register pages send the user to ?returnTo after
+// auth. Without sanitisation, ?returnTo=https://evil.com would phish the user.
+
+describe("sanitizeReturnTo", () => {
+  const FALLBACK = "/dashboard";
+
+  describe("rejects (returns fallback)", () => {
+    it("absolute http URL", () => {
+      expect(sanitizeReturnTo("http://evil.com/x", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("absolute https URL", () => {
+      expect(sanitizeReturnTo("https://evil.com/x", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("protocol-relative URL (//evil.com)", () => {
+      expect(sanitizeReturnTo("//evil.com/x", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("Windows-style backslash redirect (/\\evil.com)", () => {
+      expect(sanitizeReturnTo("/\\evil.com", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("javascript: scheme", () => {
+      expect(sanitizeReturnTo("javascript:alert(1)", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("data: scheme", () => {
+      expect(sanitizeReturnTo("data:text/html,<script>alert(1)</script>", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("relative path without leading slash", () => {
+      expect(sanitizeReturnTo("dashboard", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("empty string", () => {
+      expect(sanitizeReturnTo("", FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("null", () => {
+      expect(sanitizeReturnTo(null, FALLBACK)).toBe(FALLBACK);
+    });
+
+    it("undefined", () => {
+      expect(sanitizeReturnTo(undefined, FALLBACK)).toBe(FALLBACK);
+    });
+  });
+
+  describe("accepts (returns input)", () => {
+    it("simple same-origin path", () => {
+      expect(sanitizeReturnTo("/dashboard", FALLBACK)).toBe("/dashboard");
+    });
+
+    it("nested path", () => {
+      expect(sanitizeReturnTo("/messages/abc-123", FALLBACK)).toBe("/messages/abc-123");
+    });
+
+    it("path with query string", () => {
+      expect(sanitizeReturnTo("/admin/patients?signal=critical", FALLBACK)).toBe(
+        "/admin/patients?signal=critical"
+      );
+    });
+
+    it("path with hash fragment", () => {
+      expect(sanitizeReturnTo("/checkin#today", FALLBACK)).toBe("/checkin#today");
+    });
+
+    it("locale-prefixed path", () => {
+      expect(sanitizeReturnTo("/de/login", FALLBACK)).toBe("/de/login");
     });
   });
 });
