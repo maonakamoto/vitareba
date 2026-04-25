@@ -1,112 +1,17 @@
 import { ImageResponse } from "next/og";
-import { COLOR_INK, COLOR_OFF, COLOR_TEAL } from "@/lib/config/theme";
+import { COMPANY } from "@/lib/config/company";
+import { ogImageElement, OG_SIZE } from "@/lib/og/element";
 
+// Default English fallback OG image (used by non-locale routes).
+// Locale-prefixed pages get their own image from app/[locale]/opengraph-image.tsx.
 export const runtime = "edge";
-export const alt = "VitaReBa · Metabolic Psychiatry & Systemic Longevity · Zürich";
-export const size = { width: 1200, height: 630 };
+export const alt = `${COMPANY.shortName} · Metabolic Psychiatry & Systemic Longevity · ${COMPANY.address.city}`;
+export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default function OgImage() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          background: COLOR_INK,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: "80px",
-          fontFamily: "sans-serif",
-        }}
-      >
-        {/* Teal accent line */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "4px",
-            background: COLOR_TEAL,
-          }}
-        />
-
-        {/* Eyebrow */}
-        <div
-          style={{
-            fontSize: 16,
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color: "rgba(42,122,138,0.8)",
-            marginBottom: 24,
-            display: "flex",
-          }}
-        >
-          Zürich · Switzerland
-        </div>
-
-        {/* Logo */}
-        <div
-          style={{
-            fontSize: 64,
-            fontWeight: 300,
-            color: COLOR_OFF,
-            lineHeight: 1.1,
-            marginBottom: 24,
-            display: "flex",
-          }}
-        >
-          Vita
-          <span style={{ color: COLOR_TEAL }}>Re</span>
-          Ba
-        </div>
-
-        {/* Tagline */}
-        <div
-          style={{
-            fontSize: 28,
-            fontWeight: 300,
-            color: "rgba(255,255,255,0.55)",
-            lineHeight: 1.4,
-            maxWidth: 700,
-            display: "flex",
-          }}
-        >
-          Metabolic Psychiatry & Systemic Longevity
-        </div>
-
-        {/* Pills */}
-        <div
-          style={{
-            display: "flex",
-            gap: 12,
-            marginTop: 40,
-          }}
-        >
-          {["ADHD", "Longevity", "Psychedelic Therapy", "High Performance"].map(
-            (pill) => (
-              <div
-                key={pill}
-                style={{
-                  fontSize: 13,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  padding: "8px 16px",
-                  background: "rgba(42,122,138,0.12)",
-                  color: COLOR_TEAL,
-                  borderRadius: 20,
-                  display: "flex",
-                }}
-              >
-                {pill}
-              </div>
-            )
-          )}
-        </div>
-      </div>
-    ),
+    ogImageElement({ tagline: "Metabolic Psychiatry & Systemic Longevity" }),
     { ...size }
   );
 }
