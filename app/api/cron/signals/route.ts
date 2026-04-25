@@ -8,8 +8,9 @@ import { sendEmail } from "@/lib/email/index";
 import { criticalPatientAlertEmail, goalAchievedAdminEmail, goalAchievedPatientEmail } from "@/lib/email/templates";
 import { computePatientSignal } from "@/lib/domain/signals";
 import { normalizeCheckinMetric } from "@/lib/domain/checkin";
+import { computeGoalProgress } from "@/lib/domain/goals";
 import { PATIENT_SIGNAL, CHECKIN_GOAL_METRICS, SIGNAL_CHECKIN_WINDOW_DAYS, type CheckinGoalMetric } from "@/lib/config/admin";
-import { ASSESSMENT_GOAL_METRIC_KEY } from "@/lib/config/portal";
+import { ASSESSMENT_GOAL_METRIC_KEY, GOAL_PROGRESS_COMPLETE_PCT } from "@/lib/config/portal";
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES } from "@/lib/config/routes";
@@ -121,9 +122,12 @@ export async function GET(req: Request) {
       }
 
       if (liveValue !== null && liveValue !== goal.current) {
-        // Detect first-time goal achievement: live value reached or exceeded the target
+        // Detect first-time goal achievement using computeGoalProgress so descending
+        // goals (e.g. "reduce stress" with target < baseline) are evaluated correctly.
+        // A naive `liveValue >= target` would falsely fire at baseline for descending goals.
+        const progress = computeGoalProgress(goal.baseline, liveValue, goal.target);
         const isNewlyAchieved =
-          goal.target !== null && liveValue >= goal.target && goal.completedAt === null;
+          progress !== null && progress >= GOAL_PROGRESS_COMPLETE_PCT && goal.completedAt === null;
 
         dbWrites.push(
           db.update(clinicalGoals)

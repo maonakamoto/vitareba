@@ -212,6 +212,32 @@ describe("computeGoalProgress", () => {
   it("handles zero-based goals with no explicit baseline", () => {
     expect(computeGoalProgress(0, 40, 100)).toBe(40);
   });
+
+  // ─── Descending goals (target < baseline) — e.g. "reduce stress 70 → 30" ────
+  // Important: cron/signals uses computeGoalProgress to detect achievement;
+  // any regression here would fire false "Goal achieved" emails.
+
+  describe("descending goals (target < baseline)", () => {
+    it("returns 0% at the (high) baseline", () => {
+      expect(computeGoalProgress(70, 70, 30)).toBe(0);
+    });
+
+    it("returns 50% at the midpoint", () => {
+      expect(computeGoalProgress(70, 50, 30)).toBe(50);
+    });
+
+    it("returns 100% when current reaches the (low) target", () => {
+      expect(computeGoalProgress(70, 30, 30)).toBe(100);
+    });
+
+    it("clamps to 100% when current overshoots below the target", () => {
+      expect(computeGoalProgress(70, 20, 30)).toBe(100);
+    });
+
+    it("clamps to 0% when current is above the baseline (worsened)", () => {
+      expect(computeGoalProgress(70, 80, 30)).toBe(0);
+    });
+  });
 });
 
 // ─── goalProgressLabel ────────────────────────────────────────────────────────
