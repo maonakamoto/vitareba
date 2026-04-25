@@ -7,7 +7,16 @@ export const metricSchema = z.number().int().min(CHECKIN_SCALE_MIN).max(CHECKIN_
 
 /** Validates a complete daily check-in submission */
 export const checkinSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  // Must be a real YYYY-MM-DD that is not in the future. A future date would
+  // silently break computeStreak() (which scans for "today" then breaks on the
+  // first non-match), wiping the patient's real streak; the UI only ever sends
+  // today, so rejecting future dates server-side costs nothing UX-wise.
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .refine((d) => d <= new Date().toISOString().slice(0, 10), {
+      message: "Check-in date cannot be in the future",
+    }),
   sleep: metricSchema,
   energy: metricSchema,
   mood: metricSchema,
@@ -54,8 +63,13 @@ export function computeStreak(
 ): number {
   if (checkins.length === 0) return 0;
 
-  const sorted = [...checkins].sort((a, b) => b.date.localeCompare(a.date));
   const today = formatDateISO(now);
+  // Drop any future-dated records before sorting — defensive against legacy
+  // rows that bypassed the (newer) schema-level future-date guard. Without
+  // this, a single future record would short-circuit the loop and report 0.
+  const sorted = [...checkins]
+    .filter((c) => c.date <= today)
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   let streak = 0;
   let expected = today;

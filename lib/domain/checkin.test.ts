@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { computeStreak, streakMessage, normalizeCheckinMetric } from "./checkin";
+import { computeStreak, streakMessage, normalizeCheckinMetric, checkinSchema } from "./checkin";
 
 // Fixed reference "today": 2025-04-10
 const TODAY = new Date("2025-04-10T12:00:00");
@@ -74,6 +74,64 @@ describe("computeStreak", () => {
   it("returns 30 for a 30-day streak", () => {
     const checkins = Array.from({ length: 30 }, (_, i) => ({ date: d(-i) }));
     expect(computeStreak(checkins, TODAY)).toBe(30);
+  });
+
+  // Defensive: a stray future-dated row (e.g. legacy DB row from before the
+  // schema-level guard) must NOT short-circuit the loop and wipe the streak.
+  describe("future-dated records", () => {
+    it("ignores a future record sitting above today's check-in", () => {
+      const checkins = [{ date: d(7) }, { date: d(0) }, { date: d(-1) }];
+      expect(computeStreak(checkins, TODAY)).toBe(2);
+    });
+
+    it("returns 0 when only a future record exists (no real history)", () => {
+      expect(computeStreak([{ date: d(5) }], TODAY)).toBe(0);
+    });
+
+    it("counts streak normally when several future records are mixed in", () => {
+      const checkins = [
+        { date: d(10) },
+        { date: d(3) },
+        { date: d(0) },
+        { date: d(-1) },
+        { date: d(-2) },
+      ];
+      expect(computeStreak(checkins, TODAY)).toBe(3);
+    });
+  });
+});
+
+// ─── checkinSchema future-date guard ──────────────────────────────────────────
+
+describe("checkinSchema (future-date guard)", () => {
+  const validMetrics = { sleep: 3, energy: 3, mood: 3, focus: 3, stress: 3 };
+  const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+  const farFuture = "2099-12-31";
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  it("accepts today", () => {
+    expect(checkinSchema.safeParse({ date: today, ...validMetrics }).success).toBe(true);
+  });
+
+  it("accepts a past date (backfill)", () => {
+    expect(checkinSchema.safeParse({ date: yesterday, ...validMetrics }).success).toBe(true);
+  });
+
+  it("rejects tomorrow", () => {
+    expect(checkinSchema.safeParse({ date: tomorrow, ...validMetrics }).success).toBe(false);
+  });
+
+  it("rejects a far-future date", () => {
+    expect(checkinSchema.safeParse({ date: farFuture, ...validMetrics }).success).toBe(false);
+  });
+
+  it("rejects malformed date", () => {
+    expect(checkinSchema.safeParse({ date: "not-a-date", ...validMetrics }).success).toBe(false);
   });
 });
 
