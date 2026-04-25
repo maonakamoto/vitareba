@@ -1,9 +1,18 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 import Logo from "@/components/Logo";
 import styles from "./auth.module.css";
 import { COMPANY } from "@/lib/config/company";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+};
+
+export default async function AuthLayout({ children, params }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+
   return (
     <div className={styles.page}>
       <div className={styles.card}>
@@ -13,7 +22,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {children}
       </div>
       <p className={styles.pageFooter}>
-        Metabolic Psychiatry &amp; Systemic Longevity · Zürich
+        {t("tagline")} · {COMPANY.address.city}
       </p>
     </div>
   );
