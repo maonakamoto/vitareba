@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { goalCreateSchema, goalUpdateSchema, computeGoalProgress, goalProgressLabel } from "./goals";
+import { goalCreateSchema, goalUpdateSchema, computeGoalProgress, goalProgressLabel, goalBarGeometry } from "./goals";
 
 // ─── goalCreateSchema ──────────────────────────────────────────────────────────
 
@@ -269,5 +269,86 @@ describe("goalProgressLabel", () => {
 
   it("returns getting-started message at 0%", () => {
     expect(goalProgressLabel(0)).toBe("0% — just getting started");
+  });
+});
+
+// ─── goalBarGeometry ──────────────────────────────────────────────────────────
+// Drives the admin patient-detail progress bar — bug-prone for descending goals.
+
+describe("goalBarGeometry", () => {
+  it("returns null when both current and target are absent", () => {
+    expect(goalBarGeometry(50, null, null)).toBeNull();
+  });
+
+  describe("ascending goals (target > baseline)", () => {
+    it("fills baseline → current rightward when current is between baseline and target", () => {
+      const g = goalBarGeometry(30, 50, 75)!;
+      expect(g.fillLeft).toBe(30);
+      expect(g.fillWidth).toBe(20);
+      expect(g.targetPct).toBe(75);
+    });
+
+    it("caps the fill at target when current overshoots", () => {
+      const g = goalBarGeometry(30, 95, 75)!;
+      expect(g.fillLeft).toBe(30);
+      expect(g.fillWidth).toBe(45); // 75 − 30, not 95 − 30
+    });
+
+    it("renders zero fill when current equals baseline", () => {
+      const g = goalBarGeometry(30, 30, 75)!;
+      expect(g.fillWidth).toBe(0);
+    });
+
+    it("renders zero fill when current is below baseline (regression)", () => {
+      const g = goalBarGeometry(30, 10, 75)!;
+      expect(g.fillWidth).toBe(0);
+    });
+  });
+
+  describe("descending goals (target < baseline)", () => {
+    it("fills current → baseline leftward when current is between target and baseline", () => {
+      const g = goalBarGeometry(70, 50, 30)!;
+      expect(g.fillLeft).toBe(50);
+      expect(g.fillWidth).toBe(20);
+      expect(g.targetPct).toBe(30);
+    });
+
+    it("caps the fill at target when current overshoots below it", () => {
+      const g = goalBarGeometry(70, 10, 30)!;
+      expect(g.fillLeft).toBe(30);
+      expect(g.fillWidth).toBe(40); // 70 − 30, not 70 − 10
+    });
+
+    it("renders zero fill when current equals baseline (no progress)", () => {
+      const g = goalBarGeometry(70, 70, 30)!;
+      expect(g.fillWidth).toBe(0);
+    });
+
+    it("renders zero fill when current has worsened above baseline", () => {
+      const g = goalBarGeometry(70, 80, 30)!;
+      expect(g.fillWidth).toBe(0);
+    });
+  });
+
+  describe("incomplete goal definitions", () => {
+    it("with no target, spans baseline ↔ current symmetrically (rightward)", () => {
+      const g = goalBarGeometry(30, 50, null)!;
+      expect(g.fillLeft).toBe(30);
+      expect(g.fillWidth).toBe(20);
+      expect(g.targetPct).toBeNull();
+    });
+
+    it("with no target, spans baseline ↔ current symmetrically (leftward)", () => {
+      const g = goalBarGeometry(70, 50, null)!;
+      expect(g.fillLeft).toBe(50);
+      expect(g.fillWidth).toBe(20);
+    });
+
+    it("treats null baseline as 0", () => {
+      const g = goalBarGeometry(null, 40, 80)!;
+      expect(g.fillLeft).toBe(0);
+      expect(g.fillWidth).toBe(40);
+      expect(g.targetPct).toBe(80);
+    });
   });
 });

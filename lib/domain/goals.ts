@@ -31,6 +31,52 @@ export function computeGoalProgress(
 }
 
 /**
+ * Compute the geometry of an admin progress bar that visualises raw
+ * baseline / current / target values on an absolute 0–max scale (not %-of-goal).
+ *
+ * Returns the fill's `left` and `width` as percentages plus the target-marker
+ * position. Handles both ascending (target > baseline) and descending
+ * (target < baseline, e.g. "reduce stress") goals — without this, descending
+ * goals would render with zero fill width because (current − baseline) is
+ * negative when current < baseline.
+ *
+ * Returns null when there is nothing to draw (no current AND no target).
+ */
+export function goalBarGeometry(
+  baseline: number | null,
+  current: number | null,
+  target: number | null
+): { fillLeft: number; fillWidth: number; targetPct: number | null } | null {
+  if (current == null && target == null) return null;
+  const max = Math.max(target ?? 0, current ?? 0, baseline ?? 0, 100);
+  const baselinePct = baseline != null ? (baseline / max) * 100 : 0;
+  const currentPct = current != null ? (current / max) * 100 : null;
+  const targetPct = target != null ? (target / max) * 100 : null;
+
+  let fillLeft = baselinePct;
+  let fillWidth = 0;
+  if (currentPct != null && targetPct != null) {
+    if (targetPct >= baselinePct) {
+      // Ascending: fill rightward from baseline, capped at target.
+      const right = Math.min(currentPct, targetPct);
+      fillLeft = baselinePct;
+      fillWidth = Math.max(0, right - baselinePct);
+    } else {
+      // Descending: fill leftward from baseline, capped at target.
+      const left = Math.max(currentPct, targetPct);
+      fillLeft = left;
+      fillWidth = Math.max(0, baselinePct - left);
+    }
+  } else if (currentPct != null) {
+    // No target yet — span baseline ↔ current in either direction.
+    fillLeft = Math.min(baselinePct, currentPct);
+    fillWidth = Math.abs(currentPct - baselinePct);
+  }
+
+  return { fillLeft, fillWidth, targetPct };
+}
+
+/**
  * Return a human-readable progress label for a goal percentage.
  * Single source of truth — used by GoalsCard and GoalsPage.
  */

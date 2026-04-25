@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import styles from "@/app/(admin)/admin.module.css";
 import { type GoalRow, GOAL_TITLE_MAX_LENGTH, GOAL_NOTES_MAX_LENGTH, CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL } from "@/lib/config/portal";
+import { goalBarGeometry } from "@/lib/domain/goals";
 
 const GOAL_METRIC_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "None — track manually" },
@@ -11,22 +12,14 @@ const GOAL_METRIC_OPTIONS: { value: string; label: string }[] = [
 ];
 
 function GoalProgressBar({ baseline, current, target }: { baseline: number | null; current: number | null; target: number | null }) {
-  if (current == null && target == null) return null;
-  const max = Math.max(target ?? 0, current ?? 0, baseline ?? 0, 100);
-  const baselinePct = baseline != null ? (baseline / max) * 100 : null;
-  const currentPct = current != null ? (current / max) * 100 : null;
-  const targetPct = target != null ? (target / max) * 100 : null;
+  const geom = goalBarGeometry(baseline, current, target);
+  if (!geom) return null;
+  const { fillLeft, fillWidth, targetPct } = geom;
 
   return (
     <div className={styles.goalBar}>
-      {currentPct != null && (
-        <div
-          className={styles.goalBarFill}
-          style={{
-            left: `${baselinePct ?? 0}%`,
-            width: `${Math.max(0, currentPct - (baselinePct ?? 0))}%`,
-          }}
-        />
+      {fillWidth > 0 && (
+        <div className={styles.goalBarFill} style={{ left: `${fillLeft}%`, width: `${fillWidth}%` }} />
       )}
       {targetPct != null && (
         <div className={styles.goalBarTarget} style={{ left: `${targetPct}%` }} />
