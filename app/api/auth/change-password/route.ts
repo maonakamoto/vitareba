@@ -56,7 +56,13 @@ export async function POST(req: Request) {
 
   const hashed = await hashPassword(newPassword);
   try {
-    await db.update(users).set({ password: hashed }).where(eq(users.id, session.user.id));
+    // Also clear the brute-force lockout state — successfully changing a
+    // password proves the user knows it, so any prior failed-attempt streak
+    // shouldn't follow them into the next sign-in.
+    await db
+      .update(users)
+      .set({ password: hashed, failedLoginAttempts: 0, lockedUntil: null })
+      .where(eq(users.id, session.user.id));
   } catch (err) {
     console.error("[api/auth/change-password] update failed:", err);
     return NextResponse.json({ success: false, error: "Failed to update password — please try again" }, { status: 500 });

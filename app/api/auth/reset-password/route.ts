@@ -43,7 +43,13 @@ export async function POST(req: Request) {
 
   const hashed = await hashPassword(password);
   try {
-    await db.update(users).set({ password: hashed }).where(eq(users.email, email));
+    // Also clear the brute-force lockout state — a user who was locked out and
+    // recovered via the reset-password flow must not be told the new password
+    // works only after the 15-min lockout window expires.
+    await db
+      .update(users)
+      .set({ password: hashed, failedLoginAttempts: 0, lockedUntil: null })
+      .where(eq(users.email, email));
     await db.delete(verificationTokens).where(eq(verificationTokens.identifier, `${RESET_TOKEN_IDENTIFIER_PREFIX}${email}`));
   } catch (err) {
     console.error("[api/auth/reset-password] update failed:", err);
