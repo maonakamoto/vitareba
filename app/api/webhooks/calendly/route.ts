@@ -1,51 +1,27 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { db } from "@/lib/db";
 import { users, bookings } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { formatDateISO } from "@/lib/utils/format";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { USER_ROLE } from "@/lib/config/auth";
-
-// Calendly webhook signature verification
-// Header: Calendly-Webhook-Signature → "t=<unix_ts>,v1=<hmac_sha256_hex>"
-// HMAC is over "<timestamp>.<raw_body>" using CALENDLY_WEBHOOK_SIGNING_KEY
-function verifySignature(rawBody: string, header: string | null): boolean {
-  const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY;
-  if (!signingKey) return false; // skip verification if key not set (dev only)
-  if (!header) return false;
-
-  const parts = Object.fromEntries(
-    header.split(",").map((p) => p.split("=") as [string, string])
-  );
-  const timestamp = parts["t"];
-  const signature = parts["v1"];
-  if (!timestamp || !signature) return false;
-
-  const expected = crypto
-    .createHmac("sha256", signingKey)
-    .update(`${timestamp}.${rawBody}`)
-    .digest("hex");
-
-  // timingSafeEqual requires equal-length buffers — catch if signature is malformed
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(expected, "hex"),
-      Buffer.from(signature, "hex")
-    );
-  } catch {
-    return false;
-  }
-}
+import { verifyCalendlySignature } from "@/lib/webhooks/calendly-signature";
 
 export async function POST(req: Request) {
   const rawBody = await req.text();
 
-  const sigHeader = req.headers.get("calendly-webhook-signature");
-  if (process.env.CALENDLY_WEBHOOK_SIGNING_KEY && !verifySignature(rawBody, sigHeader)) {
-    return NextResponse.json({ success: false, error: "Invalid signature" }, { status: 401 });
+  const signingKey = process.env.CALENDLY_WEBHOOK_SIGNING_KEY;
+  if (signingKey) {
+    const ok = verifyCalendlySignature({
+      rawBody,
+      header: req.headers.get("calendly-webhook-signature"),
+      signingKey,
+    });
+    if (!ok) {
+      return NextResponse.json({ success: false, error: "Invalid signature" }, { status: 401 });
+    }
   }
 
   let payload: Record<string, unknown>;
