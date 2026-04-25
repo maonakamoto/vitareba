@@ -3,7 +3,7 @@ import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import { USER_ROLE } from "@/lib/config/auth";
-import { PORTAL_ROUTES, ADMIN_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
+import { PORTAL_ROUTES, ADMIN_ROUTES, AUTH_ROUTES, LOCALE_HEADER } from "@/lib/config/routes";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -20,10 +20,23 @@ const PORTAL_PREFIXES = [
 // Derived from AUTH_ROUTES so adding a new auth page only requires updating lib/config/routes.ts
 const LOCALE_AUTH_SUFFIXES = Object.values(AUTH_ROUTES);
 
+/** Extract a routing locale from the URL pathname; falls back to the default locale. */
+function detectLocale(pathname: string): string {
+  const seg = pathname.split("/")[1];
+  return (routing.locales as readonly string[]).includes(seg) ? seg : routing.defaultLocale;
+}
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
   const dest = session?.user.role === USER_ROLE.admin ? ADMIN_ROUTES.patients : PORTAL_ROUTES.dashboard;
+
+  // Inject URL-derived locale as a request header so the root layout can set
+  // <html lang> from the actual URL (not from a cookie that crawlers don't carry).
+  const locale = detectLocale(pathname);
+  req.headers.set(LOCALE_HEADER, locale);
+  const passThrough = () =>
+    NextResponse.next({ request: { headers: req.headers } });
 
   // ── Portal / admin ─────────────────────────────────────────────────────
   if (PORTAL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
@@ -35,7 +48,7 @@ export default auth((req) => {
     if (pathname.startsWith(ADMIN_ROUTES.root) && session.user.role !== USER_ROLE.admin) {
       return NextResponse.redirect(new URL(PORTAL_ROUTES.dashboard, req.url));
     }
-    return NextResponse.next();
+    return passThrough();
   }
 
   // ── Locale-prefixed portal paths: redirect to canonical ───────────────
@@ -64,7 +77,20 @@ export default auth((req) => {
     return NextResponse.redirect(new URL(dest, req.url));
   }
 
-  return intlMiddleware(req);
+  // Delegate to next-intl, then ensure our LOCALE_HEADER reaches downstream
+  // rendering by re-emitting the response with the modified request headers.
+  // (intl's NextResponse.next/rewrite doesn't include our request.headers init.)
+  const intlResp = intlMiddleware(req);
+  const rewriteUrl = intlResp.headers.get("x-middleware-rewrite");
+  const redirectUrl = intlResp.headers.get("location");
+  if (redirectUrl) return intlResp; // redirects don't render the layout
+  const wrapped = rewriteUrl
+    ? NextResponse.rewrite(rewriteUrl, { request: { headers: req.headers } })
+    : NextResponse.next({ request: { headers: req.headers } });
+  intlResp.headers.forEach((v, k) => {
+    if (k !== "x-middleware-rewrite" && k !== "location") wrapped.headers.set(k, v);
+  });
+  return wrapped;
 });
 
 export const config = {

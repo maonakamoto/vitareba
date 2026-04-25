@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { COMPANY, SITE_URL } from "@/lib/config/company";
 import { SessionProvider } from "@/components/portal/SessionProvider";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
+import { LOCALE_HEADER } from "@/lib/config/routes";
+import { routing } from "@/i18n/routing";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -62,8 +64,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const locale = cookieStore.get("NEXT_LOCALE")?.value ?? "de";
+  // Locale is injected by proxy.ts middleware from the URL pathname so crawlers
+  // see the correct <html lang> on every request, regardless of cookies.
+  const headersList = await headers();
+  const headerLocale = headersList.get(LOCALE_HEADER);
+  const locale = (routing.locales as readonly string[]).includes(headerLocale ?? "")
+    ? headerLocale!
+    : routing.defaultLocale;
 
   const jsonLd = {
     "@context": "https://schema.org",

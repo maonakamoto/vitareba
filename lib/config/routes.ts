@@ -28,3 +28,10 @@ export const ADMIN_ROUTES = {
   documents: "/admin/documents",
   reports:   "/admin/reports",
 } as const satisfies Record<string, string>;
+
+/**
+ * Request header set by proxy.ts middleware containing the URL-derived locale.
+ * Read by app/layout.tsx so <html lang> reflects the actual URL — not a cookie
+ * (which crawlers don't carry, breaking SEO for non-default locales).
+ */
+export const LOCALE_HEADER = "x-vita-locale";
