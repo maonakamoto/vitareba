@@ -3,6 +3,11 @@
     "tagline": "Psichiatria Metabolica & Longevità Sistemica",
     "description": "Clinica zurighese di psichiatria metabolica e longevità sistemica. Diagnostica ADHD, trattamento biologico e ottimizzazione personalizzata per alte prestazioni."
   },
+  "notFound": {
+    "title": "Pagina non trovata",
+    "body": "La pagina che cerca non esiste o è stata spostata.",
+    "cta": "Torna alla home"
+  },
   "nav": {
     "programmes": "Programmi",
     "approach": "Approccio",

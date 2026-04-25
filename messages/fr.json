@@ -3,6 +3,11 @@
     "tagline": "Psychiatrie Métabolique & Longévité Systémique",
     "description": "Clinique zurichoise de psychiatrie métabolique et longévité systémique. Diagnostic ADHD, traitement biologique et optimisation personnalisée pour les hauts performeurs."
   },
+  "notFound": {
+    "title": "Page introuvable",
+    "body": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "cta": "Retour à l'accueil"
+  },
   "nav": {
     "programmes": "Programmes",
     "approach": "Approche",

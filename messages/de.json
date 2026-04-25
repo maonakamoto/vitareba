@@ -3,6 +3,11 @@
     "tagline": "Metabolische Psychiatrie & Systemische Longevity",
     "description": "Klinik in Zürich für metabolische Psychiatrie und systemische Longevity. ADHD-Diagnostik, biologieorientierte Behandlung und personalisierte Optimierung für Hochleister."
   },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "body": "Die gesuchte Seite existiert nicht oder wurde verschoben.",
+    "cta": "Zurück zur Startseite"
+  },
   "nav": {
     "programmes": "Programme",
     "approach": "Ansatz",

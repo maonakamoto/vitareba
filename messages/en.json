@@ -3,6 +3,11 @@
     "tagline": "Metabolic Psychiatry & Systemic Longevity",
     "description": "Zürich clinic for metabolic psychiatry and systemic longevity. ADHD diagnostics, biology-led treatment and personalised optimisation for high performers."
   },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you were looking for doesn't exist or has been moved.",
+    "cta": "Back to home"
+  },
   "nav": {
     "programmes": "Programmes",
     "approach": "Approach",
