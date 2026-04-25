@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google";
 import { eq } from "drizzle-orm";
 import { getInstance } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { loginSchema, resolveRole, verifyPassword } from "@/lib/domain/auth";
+import { isUserLocked, loginSchema, nextLoginAttemptState, resolveRole, verifyPassword } from "@/lib/domain/auth";
 import { USER_ROLE, type UserRole } from "@/lib/config/auth";
 import { AUTH_ROUTES } from "@/lib/config/routes";
 
@@ -37,7 +37,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
 
           if (!user?.password) return null;
 
+          // Brute-force protection: deny silently while locked, even if password is correct.
+          if (isUserLocked(user)) return null;
+
           const valid = await verifyPassword(parsed.data.password, user.password);
+
+          // Persist next attempt state (counter increment, lockout trigger, or reset on success).
+          const nextState = nextLoginAttemptState(user, valid);
+          await db.update(users).set(nextState).where(eq(users.id, user.id));
+
           if (!valid) return null;
 
           return {

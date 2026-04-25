@@ -1,12 +1,26 @@
 /// <reference types="vitest/globals" />
-import { loginSchema, registerSchema, resolveRole, hashPassword, verifyPassword } from "./auth";
+import {
+  loginSchema,
+  registerSchema,
+  resolveRole,
+  hashPassword,
+  verifyPassword,
+  isUserLocked,
+  nextLoginAttemptState,
+} from "./auth";
 
 // bcrypt cost 12 is intentionally slow (production security); use 4 in tests
 vi.mock("@/lib/config/auth", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/config/auth")>();
   return { ...actual, BCRYPT_SALT_ROUNDS: 4 };
 });
-import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, EMAIL_MAX_LENGTH } from "@/lib/config/auth";
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  EMAIL_MAX_LENGTH,
+  LOGIN_LOCKOUT_THRESHOLD,
+  LOGIN_LOCKOUT_DURATION_MS,
+} from "@/lib/config/auth";
 
 // ─── loginSchema ──────────────────────────────────────────────────────────────
 
@@ -158,5 +172,97 @@ describe("verifyPassword", () => {
   it("returns false for a wrong password", async () => {
     const hash = await hashPassword("correct-horse");
     expect(await verifyPassword("wrong-password", hash)).toBe(false);
+  });
+});
+
+// ─── isUserLocked ─────────────────────────────────────────────────────────────
+
+describe("isUserLocked", () => {
+  const NOW = new Date("2026-04-25T12:00:00.000Z");
+
+  it("returns false when lockedUntil is null", () => {
+    expect(isUserLocked({ lockedUntil: null }, NOW)).toBe(false);
+  });
+
+  it("returns true when lockedUntil is in the future", () => {
+    const future = new Date(NOW.getTime() + 5 * 60 * 1000);
+    expect(isUserLocked({ lockedUntil: future }, NOW)).toBe(true);
+  });
+
+  it("returns false when lockedUntil is in the past (lockout expired)", () => {
+    const past = new Date(NOW.getTime() - 1000);
+    expect(isUserLocked({ lockedUntil: past }, NOW)).toBe(false);
+  });
+
+  it("returns false when lockedUntil equals now (boundary: not strictly in the future)", () => {
+    expect(isUserLocked({ lockedUntil: NOW }, NOW)).toBe(false);
+  });
+});
+
+// ─── nextLoginAttemptState ────────────────────────────────────────────────────
+
+describe("nextLoginAttemptState", () => {
+  const NOW = new Date("2026-04-25T12:00:00.000Z");
+
+  describe("on success", () => {
+    it("resets counter and clears lockout regardless of prior failedLoginAttempts", () => {
+      expect(nextLoginAttemptState({ failedLoginAttempts: 0 }, true, NOW)).toEqual({
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      });
+      expect(nextLoginAttemptState({ failedLoginAttempts: 3 }, true, NOW)).toEqual({
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      });
+    });
+  });
+
+  describe("on failure below threshold", () => {
+    it("increments counter and leaves lockedUntil null", () => {
+      expect(nextLoginAttemptState({ failedLoginAttempts: 0 }, false, NOW)).toEqual({
+        failedLoginAttempts: 1,
+        lockedUntil: null,
+      });
+      expect(nextLoginAttemptState({ failedLoginAttempts: 2 }, false, NOW)).toEqual({
+        failedLoginAttempts: 3,
+        lockedUntil: null,
+      });
+    });
+
+    it("counter just below threshold increments without locking", () => {
+      const result = nextLoginAttemptState(
+        { failedLoginAttempts: LOGIN_LOCKOUT_THRESHOLD - 2 },
+        false,
+        NOW
+      );
+      expect(result.failedLoginAttempts).toBe(LOGIN_LOCKOUT_THRESHOLD - 1);
+      expect(result.lockedUntil).toBeNull();
+    });
+  });
+
+  describe("on failure that hits the threshold", () => {
+    it("resets counter to 0 and sets lockedUntil = now + LOGIN_LOCKOUT_DURATION_MS", () => {
+      const result = nextLoginAttemptState(
+        { failedLoginAttempts: LOGIN_LOCKOUT_THRESHOLD - 1 },
+        false,
+        NOW
+      );
+      expect(result.failedLoginAttempts).toBe(0);
+      expect(result.lockedUntil).not.toBeNull();
+      expect(result.lockedUntil!.getTime()).toBe(NOW.getTime() + LOGIN_LOCKOUT_DURATION_MS);
+    });
+
+    it("triggers lockout on the Nth failure (where N = LOGIN_LOCKOUT_THRESHOLD)", () => {
+      let state: { failedLoginAttempts: number; lockedUntil: Date | null } = {
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      };
+      for (let i = 0; i < LOGIN_LOCKOUT_THRESHOLD - 1; i++) {
+        state = nextLoginAttemptState(state, false, NOW);
+        expect(state.lockedUntil).toBeNull();
+      }
+      state = nextLoginAttemptState(state, false, NOW);
+      expect(state.lockedUntil).not.toBeNull();
+    });
   });
 });

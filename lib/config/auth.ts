@@ -40,3 +40,15 @@ export const RESET_TOKEN_IDENTIFIER_PREFIX = "reset:";
  * Prevents email-bombing without requiring any external rate-limit infrastructure.
  */
 export const RESET_RATE_LIMIT_MS = 2 * 60 * 1000; // 2 minutes
+
+/**
+ * Number of consecutive failed login attempts before the account is locked.
+ * Counter resets to 0 on successful login or when a lockout is triggered.
+ */
+export const LOGIN_LOCKOUT_THRESHOLD = 5;
+
+/**
+ * How long (ms) an account stays locked after hitting LOGIN_LOCKOUT_THRESHOLD
+ * consecutive failed attempts. During this window, even the correct password is denied.
+ */
+export const LOGIN_LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes

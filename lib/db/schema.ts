@@ -70,6 +70,11 @@ export const users = pgTable("users", {
   image: text("image"),
   password: text("password"),
   role: roleEnum("role").notNull().default("patient"),
+  // Brute-force protection: count of consecutive failed login attempts.
+  // Resets to 0 on successful login or when a lockout is triggered.
+  failedLoginAttempts: integer("failed_login_attempts").notNull().default(0),
+  // While set in the future, all login attempts are denied even with the correct password.
+  lockedUntil: timestamp("locked_until", { mode: "date" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
