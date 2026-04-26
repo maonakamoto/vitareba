@@ -4,9 +4,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { assessmentLeads } from "@/lib/db/schema";
+import { ASSESSMENT_SCORE_MIN, ASSESSMENT_SCORE_MAX } from "@/lib/assessment/data";
 
 const createSchema = z.object({
-  overallScore: z.number().int().min(0).max(100),
+  overallScore: z.number().int().min(ASSESSMENT_SCORE_MIN).max(ASSESSMENT_SCORE_MAX),
 });
 
 // Public endpoint — no auth required. Records anonymous overlay completions

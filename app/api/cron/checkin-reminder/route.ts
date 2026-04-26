@@ -11,6 +11,7 @@ import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 import { computeStreak } from "@/lib/domain/checkin";
+import { CHECKIN_HISTORY_DAYS } from "@/lib/config/portal";
 
 export async function GET(req: Request) {
   const cronError = requireCron(req);
@@ -18,11 +19,11 @@ export async function GET(req: Request) {
 
   const now = new Date();
   const today = formatDateISO(now);
-  // Fetch 110 days so streak computation is accurate beyond the 100-day milestone.
-  // A 60-day window would cap the reported streak at 60, showing "60-day streak"
-  // even for a patient whose actual streak is longer.
+  // Fetch CHECKIN_HISTORY_DAYS so streak computation is accurate beyond the
+  // 100-day milestone. A shorter window would cap the reported streak at the
+  // window length, showing the wrong streak for long-tenured patients.
   const historyStart = new Date(now);
-  historyStart.setDate(historyStart.getDate() - 110);
+  historyStart.setDate(historyStart.getDate() - CHECKIN_HISTORY_DAYS);
   const historyStartISO = formatDateISO(historyStart);
 
   let patients;
