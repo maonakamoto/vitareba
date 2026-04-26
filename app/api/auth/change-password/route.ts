@@ -7,7 +7,7 @@ import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from "@/lib/config/auth";
-import { hashPassword, verifyPassword } from "@/lib/domain/auth";
+import { hashPassword, verifyPassword, isUserLocked, nextLoginAttemptState } from "@/lib/domain/auth";
 
 const schema = z.object({
   currentPassword: z.string().min(1).max(PASSWORD_MAX_LENGTH),
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   try {
     user = await db.query.users.findFirst({
       where: eq(users.id, session.user.id),
-      columns: { password: true },
+      columns: { password: true, failedLoginAttempts: true, lockedUntil: true },
     });
   } catch (err) {
     console.error("[api/auth/change-password] user lookup failed:", err);
@@ -46,8 +46,23 @@ export async function POST(req: Request) {
     );
   }
 
+  // Apply the same brute-force lockout that gates /login. Without this, an
+  // attacker with session access (XSS, stolen cookie) could enumerate the
+  // current password against this endpoint forever and use it for credential
+  // stuffing on other sites — even though they already have session access.
+  if (isUserLocked(user)) {
+    return NextResponse.json(
+      { success: false, error: "Too many attempts — please try again later" },
+      { status: 429 }
+    );
+  }
+
   const valid = await verifyPassword(currentPassword, user.password);
+
   if (!valid) {
+    // Record the failed attempt; trigger lockout after threshold
+    const nextState = nextLoginAttemptState(user, false);
+    await db.update(users).set(nextState).where(eq(users.id, session.user.id));
     return NextResponse.json(
       { success: false, error: "Current password is incorrect" },
       { status: 401 }
