@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import {
   DIMENSIONS,
   getVerdict,
@@ -7,6 +10,7 @@ import {
 } from "@/lib/assessment/data";
 import { COMPANY } from "@/lib/config/company";
 import { AUTH_ROUTES } from "@/lib/config/routes";
+import { routing } from "@/i18n/routing";
 import styles from "./Assessment.module.css";
 
 interface ResultsScreenProps {
@@ -21,6 +25,16 @@ export default function ResultsScreen({
   onRestart,
 }: ResultsScreenProps) {
   const verdict = getVerdict(overall);
+  // Preserve the visitor's marketing-site locale through to /register so a
+  // German visitor on /de/ taking the overlay doesn't suddenly land on
+  // English /register. In portal context (no /[locale] prefix) we fall
+  // through to the canonical AUTH_ROUTES.register.
+  const pathname = usePathname();
+  const seg = pathname.split("/")[1];
+  const isLocalePrefixed = (routing.locales as readonly string[]).includes(seg);
+  const registerHref = isLocalePrefixed
+    ? `/${seg}${AUTH_ROUTES.register}`
+    : AUTH_ROUTES.register;
 
   return (
     <div className={`${styles.ovScreen} ${styles.active}`}>
@@ -92,7 +106,7 @@ export default function ResultsScreen({
         </div>
         <div className={styles.rCtaBtns}>
           <a
-            href={AUTH_ROUTES.register}
+            href={registerHref}
             className={styles.rBtnP}
             onClick={() => {
               try {
