@@ -37,12 +37,25 @@ export async function POST(req: Request) {
 
   const hashed = await hashPassword(password);
 
-  let newUser: { id: string };
+  let newUser: { id: string } | undefined;
   try {
-    [newUser] = await db
+    // onConflictDoNothing closes the check-then-insert race: two concurrent
+    // POSTs with the same new email both pass the up-front findFirst, then
+    // .returning() yields [] for whichever lost the unique-constraint race
+    // — we surface that as the same 409 the up-front check returns, instead
+    // of a misleading 500 from a raw constraint-violation throw.
+    const inserted = await db
       .insert(users)
       .values({ email, password: hashed })
+      .onConflictDoNothing({ target: users.email })
       .returning({ id: users.id });
+    if (inserted.length === 0) {
+      return NextResponse.json(
+        { success: false, error: { email: ["Email already registered"] } },
+        { status: 409 }
+      );
+    }
+    newUser = inserted[0];
     // Create empty profile row so profile-dependent features work immediately
     await db.insert(profiles).values({ userId: newUser.id });
   } catch (err) {
