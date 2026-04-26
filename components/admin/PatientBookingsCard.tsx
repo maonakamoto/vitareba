@@ -26,7 +26,7 @@ export function PatientBookingsCard({ bookings }: { bookings: Omit<BookingRow, "
                   {b.notes && <div className={styles.bookingNotes}>{b.notes}</div>}
                 </div>
                 <span className={styles.badge} style={{ color: s.color, background: s.bg }}>
-                  {b.status}
+                  {s.label}
                 </span>
               </div>
             );

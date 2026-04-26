@@ -13,7 +13,7 @@ import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { requireCron } from "@/lib/auth/guards";
 import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
-import { BOOKING_STATUS } from "@/lib/config/booking-status";
+import { BOOKING_STATUS, BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
 
 function avgMetrics(checkins: Array<Record<MetricKey, number>>): Record<MetricKey, number> | null {
   if (checkins.length === 0) return null;
@@ -134,7 +134,9 @@ export async function GET(req: Request) {
         prevWeekAvgs: avgMetrics(prevWeekCheckins),
         latestScore,
         verdictName: latestScore !== null ? getVerdictName(latestScore) : null,
-        nextBookingStatus: patient.bookings[0]?.status ?? null,
+        nextBookingStatus: patient.bookings[0]
+          ? BOOKING_STATUS_CONFIG[patient.bookings[0].status].label
+          : null,
         activeGoals: goalSummaries,
         portalUrl: PORTAL_URL,
       });

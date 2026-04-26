@@ -26,13 +26,27 @@ describe("BOOKING_STATUS config integrity", () => {
     }
   });
 
-  it("every BOOKING_STATUS_CONFIG entry has color and bg fields", () => {
+  it("every BOOKING_STATUS_CONFIG entry has label, color and bg fields", () => {
     for (const status of BOOKING_STATUS_VALUES) {
       const cfg = BOOKING_STATUS_CONFIG[status as BookingStatus];
+      expect(cfg).toHaveProperty("label");
       expect(cfg).toHaveProperty("color");
       expect(cfg).toHaveProperty("bg");
+      expect(typeof cfg.label).toBe("string");
+      expect(cfg.label.length).toBeGreaterThan(0);
       expect(typeof cfg.color).toBe("string");
       expect(typeof cfg.bg).toBe("string");
+    }
+  });
+
+  it("labels are human-readable (capitalised, not the raw enum)", () => {
+    // Regression: badges and the weekly-digest email used to render the raw
+    // enum value ("pending" / "confirmed"). Make sure no entry slips back
+    // to the lowercase enum form by mistake.
+    for (const status of BOOKING_STATUS_VALUES) {
+      const cfg = BOOKING_STATUS_CONFIG[status as BookingStatus];
+      expect(cfg.label).not.toBe(status);
+      expect(cfg.label[0]).toBe(cfg.label[0].toUpperCase());
     }
   });
 

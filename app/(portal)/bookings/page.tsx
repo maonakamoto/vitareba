@@ -262,7 +262,7 @@ export default function BookingsPage() {
                     className={bookingStyles.bookingBadge}
                     style={{ color: s.color, background: s.bg }}
                   >
-                    {b.status}
+                    {s.label}
                   </span>
                 </div>
               </div>
