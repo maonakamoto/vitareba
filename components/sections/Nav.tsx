@@ -117,9 +117,9 @@ export default function Nav() {
           </NextLink>
         ) : (
           <>
-            <NextLink href={AUTH_ROUTES.login} className={styles.navSignIn}>
+            <Link href={AUTH_ROUTES.login} className={styles.navSignIn}>
               {t("signIn")}
-            </NextLink>
+            </Link>
             <a href="?assessment=open" className={styles.navBtn}>
               {t("cta")}
             </a>

@@ -2,9 +2,10 @@
 
 import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Link } from "@/lib/i18n/navigation";
+// Locale-aware router & Link so /de/login → /de/register (not /register)
+import { Link, useRouter } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
 import { AUTH_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { sanitizeReturnTo } from "@/lib/domain/auth";
