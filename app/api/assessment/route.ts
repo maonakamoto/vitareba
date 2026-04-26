@@ -1,18 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
-import { ASSESSMENT_SCORE_MIN, ASSESSMENT_SCORE_MAX, ASSESSMENT_SCORE_KEY_MAX_LENGTH } from "@/lib/assessment/data";
-
-const saveSchema = z.object({
-  scores: z.record(z.string().max(ASSESSMENT_SCORE_KEY_MAX_LENGTH), z.number().min(ASSESSMENT_SCORE_MIN).max(ASSESSMENT_SCORE_MAX)),
-  overallScore: z.number().int().min(ASSESSMENT_SCORE_MIN).max(ASSESSMENT_SCORE_MAX),
-});
+import { assessmentSaveSchema } from "@/lib/domain/assessment";
 
 export async function POST(req: Request) {
   const guard = await requireSession();
@@ -20,7 +14,7 @@ export async function POST(req: Request) {
   const { session } = guard;
 
   const body = await req.json();
-  const parsed = saveSchema.safeParse(body);
+  const parsed = assessmentSaveSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ success: false, error: "Invalid data" }, { status: 400 });
   }

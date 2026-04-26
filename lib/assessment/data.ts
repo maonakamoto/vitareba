@@ -2,9 +2,6 @@
 export const ASSESSMENT_SCORE_MIN = 0;
 export const ASSESSMENT_SCORE_MAX = 100;
 
-/** Max length for a dimension ID key in the scores JSON record (e.g. "arousal"). */
-export const ASSESSMENT_SCORE_KEY_MAX_LENGTH = 50;
-
 export const DIMENSIONS = [
   { id: "arousal", name: "Arousal & Activation", icon: "⚡" },
   { id: "divergent", name: "Divergent Output", icon: "💥" },
