@@ -3,14 +3,14 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { and, eq, gt } from "drizzle-orm";
-import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, EMAIL_MAX_LENGTH, PASSWORD_RESET_TOKEN_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
+import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, PASSWORD_RESET_TOKEN_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
 import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
-import { hashPassword } from "@/lib/domain/auth";
+import { hashPassword, emailField } from "@/lib/domain/auth";
 
 const schema = z.object({
   token: z.string().min(1).max(PASSWORD_RESET_TOKEN_MAX_LENGTH),
-  email: z.string().email().max(EMAIL_MAX_LENGTH),
+  email: emailField(),
   password: z.string().min(PASSWORD_MIN_LENGTH).max(PASSWORD_MAX_LENGTH),
 });
 

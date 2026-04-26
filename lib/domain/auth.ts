@@ -12,13 +12,27 @@ import {
   LOGIN_LOCKOUT_DURATION_MS,
 } from "@/lib/config/auth";
 
+/**
+ * Reusable email field — validates RFC-style format and length, then normalises
+ * to lowercase so "Alice@x.com" and "alice@x.com" can never coexist as
+ * separate accounts and case-mismatched logins/lookups don't fail silently.
+ * Use this in every schema that accepts an email from the client.
+ */
+export function emailField(opts: { invalidMessage?: string } = {}) {
+  return z
+    .string()
+    .email(opts.invalidMessage ?? "Invalid email")
+    .max(EMAIL_MAX_LENGTH)
+    .transform((s) => s.toLowerCase());
+}
+
 export const loginSchema = z.object({
-  email: z.string().email().max(EMAIL_MAX_LENGTH),
+  email: emailField(),
   password: z.string().min(1).max(PASSWORD_MAX_LENGTH),
 });
 
 export const registerSchema = z.object({
-  email: z.string().email("Invalid email address").max(EMAIL_MAX_LENGTH),
+  email: emailField({ invalidMessage: "Invalid email address" }),
   password: z.string()
     .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`)
     .max(PASSWORD_MAX_LENGTH),

@@ -38,10 +38,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Malformed payload" }, { status: 400 });
   }
 
-  // Extract invitee email and scheduled time
-  const inviteeEmail =
+  // Extract invitee email and scheduled time. Lowercase before lookup so a
+  // patient registered as "alice@x.com" still matches a Calendly booking
+  // submitted as "Alice@x.com" (users.email rows are stored lowercase by the
+  // emailField() Zod transform on registration).
+  const rawEmail =
     (data.email as string | undefined) ??
     ((data.invitee as Record<string, unknown> | undefined)?.email as string | undefined);
+  const inviteeEmail = rawEmail?.toLowerCase();
 
   const scheduledEvent = data.scheduled_event as Record<string, unknown> | undefined;
   const startTime = scheduledEvent?.start_time as string | undefined;

@@ -8,7 +8,9 @@ import {
   isUserLocked,
   nextLoginAttemptState,
   sanitizeReturnTo,
+  emailField,
 } from "./auth";
+import { z } from "zod";
 
 // bcrypt cost 12 is intentionally slow (production security); use 4 in tests
 vi.mock("@/lib/config/auth", async (importOriginal) => {
@@ -339,5 +341,73 @@ describe("sanitizeReturnTo", () => {
     it("locale-prefixed path", () => {
       expect(sanitizeReturnTo("/de/login", FALLBACK)).toBe("/de/login");
     });
+  });
+});
+
+// ─── emailField (case-normalisation) ──────────────────────────────────────────
+// Real bug fixed here: emails were stored & looked up case-sensitively, so
+// "Alice@x.com" and "alice@x.com" could become two separate accounts and
+// case-mismatched logins/lookups failed silently.
+
+describe("emailField", () => {
+  const schema = z.object({ email: emailField() });
+
+  it("accepts a valid lowercase email and passes it through", () => {
+    const result = schema.safeParse({ email: "alice@example.com" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.email).toBe("alice@example.com");
+  });
+
+  it("normalises an uppercase local part to lowercase", () => {
+    const result = schema.safeParse({ email: "ALICE@example.com" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.email).toBe("alice@example.com");
+  });
+
+  it("normalises a mixed-case domain to lowercase", () => {
+    const result = schema.safeParse({ email: "alice@EXAMPLE.COM" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.email).toBe("alice@example.com");
+  });
+
+  it("normalises both parts and yields one canonical value", () => {
+    const aliceCaps = schema.safeParse({ email: "Alice.Smith@Example.Com" });
+    const aliceLower = schema.safeParse({ email: "alice.smith@example.com" });
+    expect(aliceCaps.success && aliceLower.success).toBe(true);
+    if (aliceCaps.success && aliceLower.success) {
+      expect(aliceCaps.data.email).toBe(aliceLower.data.email);
+    }
+  });
+
+  it("rejects malformed emails before transform runs", () => {
+    expect(schema.safeParse({ email: "not-an-email" }).success).toBe(false);
+  });
+
+  it("supports a custom invalid-message", () => {
+    const customSchema = z.object({ email: emailField({ invalidMessage: "Boom" }) });
+    const result = customSchema.safeParse({ email: "x" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe("Boom");
+    }
+  });
+});
+
+describe("loginSchema (uses emailField)", () => {
+  it("normalises email to lowercase", () => {
+    const result = loginSchema.safeParse({ email: "Alice@Example.com", password: "abc" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.email).toBe("alice@example.com");
+  });
+});
+
+describe("registerSchema (uses emailField)", () => {
+  it("normalises email to lowercase", () => {
+    const result = registerSchema.safeParse({
+      email: "Alice@Example.com",
+      password: "12345678",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.email).toBe("alice@example.com");
   });
 });

@@ -9,9 +9,10 @@ import { users, verificationTokens } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { PASSWORD_RESET_TOKEN_EXPIRY_MS, RESET_RATE_LIMIT_MS, EMAIL_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
+import { PASSWORD_RESET_TOKEN_EXPIRY_MS, RESET_RATE_LIMIT_MS, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
+import { emailField } from "@/lib/domain/auth";
 
-const schema = z.object({ email: z.string().email().max(EMAIL_MAX_LENGTH) });
+const schema = z.object({ email: emailField() });
 // Always return the same response to prevent email enumeration
 const OK = NextResponse.json({ success: true });
 
