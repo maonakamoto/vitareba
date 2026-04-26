@@ -95,12 +95,16 @@ export async function GET(req: Request) {
         )
       );
       results.forEach((r, i) => {
-        if (r.status === "fulfilled") {
-          alerts++;
-        } else {
+        if (r.status === "rejected") {
           console.error("[cron/signals] alert send failed for", patient.id, "to", adminEmails[i], r.reason);
         }
       });
+      // Count alerts per patient-transition, NOT per admin recipient — otherwise
+      // 1 patient going critical with 3 admins reports as alerts: 3, which
+      // makes the cron's observability number meaningless.
+      if (results.some((r) => r.status === "fulfilled")) {
+        alerts++;
+      }
     }
 
     // Collect goal current-value updates (batched below)
