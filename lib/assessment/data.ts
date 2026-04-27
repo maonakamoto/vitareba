@@ -263,6 +263,8 @@ export interface VerdictTier {
   name: string;
   color: string;
   text: string;
+  /** Key used to look up translated name/text in the assessment i18n namespace. */
+  i18nKey: string;
 }
 
 export const scoreColor = (score: number): string => {
@@ -278,6 +280,7 @@ export const VERDICT_TIERS: VerdictTier[] = [
     name: "Deep Friction",
     color: "var(--danger)",
     text: "Your ADHD profile is producing significant friction across multiple dimensions. The biological and structural interventions are clear — and so is the magnitude of what becomes available when they're addressed.",
+    i18nKey: "deepFriction",
   },
   {
     minScore: 36,
@@ -285,6 +288,7 @@ export const VERDICT_TIERS: VerdictTier[] = [
     name: "Managed Tension",
     color: "var(--warn)",
     text: "You have developed coping strategies, but the underlying tension between your neurotype and your environment is still producing real costs. The work is moving from coping to designing.",
+    i18nKey: "managedTension",
   },
   {
     minScore: 56,
@@ -292,6 +296,7 @@ export const VERDICT_TIERS: VerdictTier[] = [
     name: "Asymmetric Performance",
     color: "var(--teal)",
     text: "You have significant strengths and specific vulnerabilities. This is the profile most responsive to targeted intervention — because the foundation is already strong.",
+    i18nKey: "asymmetricPerformance",
   },
   {
     minScore: 76,
@@ -299,6 +304,7 @@ export const VERDICT_TIERS: VerdictTier[] = [
     name: "Optimised Neurotype",
     color: "var(--teal)",
     text: "Your ADHD profile is largely working for you. The refinement available at this level is precision optimisation — fine-tuning the edges to extract the full potential of your neurotype.",
+    i18nKey: "optimisedNeurotype",
   },
 ];
 
@@ -319,6 +325,15 @@ export function getInterpretation(dimId: string, score: number): string {
   const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
   if (!tiers) return "";
   return tiers.find((t) => score <= t.maxScore)?.text ?? tiers[tiers.length - 1].text;
+}
+
+/** Returns the i18n tier key ("low" | "mid" | "high") for a dimension score. */
+export function getInterpretationKey(dimId: string, score: number): "low" | "mid" | "high" {
+  const tiers = INTERPRETATIONS[dimId as keyof typeof INTERPRETATIONS];
+  if (!tiers) return "high";
+  const keys = ["low", "mid", "high"] as const;
+  const idx = tiers.findIndex((t) => score <= t.maxScore);
+  return keys[idx === -1 ? tiers.length - 1 : idx] ?? "high";
 }
 
 /**

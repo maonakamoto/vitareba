@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useMessages } from "next-intl";
 import {
   DIMENSIONS,
   QUESTIONS,
@@ -18,12 +19,38 @@ interface Props {
 
 type Screen = "intro" | "question" | "results";
 
+type AssessmentI18n = {
+  instrument: string;
+  subtitle: string;
+  intro: string;
+  statsQuestions: string;
+  statsDimensions: string;
+  statsDuration: string;
+  statsDurationLabel: string;
+  beginButton: string;
+  disclaimer: string;
+  progressLabel: string;
+  progressOf: string;
+  scaleMin: string;
+  scaleMax: string;
+  back: string;
+  next: string;
+  seeResults: string;
+  ariaClose: string;
+  ariaRate: string;
+  dimensions: Record<string, string>;
+  questions: string[];
+};
+
 const emptyAnswers = () => Array<number | null>(QUESTIONS.length).fill(null);
 
 export default function Assessment({ onClose, onComplete }: Props) {
   const [screen, setScreen] = useState<Screen>("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(emptyAnswers());
+
+  const msgs = useMessages() as unknown as { assessment: AssessmentI18n };
+  const i18n = msgs.assessment;
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -136,6 +163,10 @@ export default function Assessment({ onClose, onComplete }: Props) {
     [currentQ, answered, goNext]
   );
 
+  const introText = i18n.intro
+    .replace("{count}", String(QUESTIONS.length))
+    .replace("{dims}", String(DIMENSIONS.length));
+
   return (
     <div
       className={styles.overlay}
@@ -160,7 +191,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
         type="button"
         className={styles.ovClose}
         onClick={onClose}
-        aria-label="Close assessment"
+        aria-label={i18n.ariaClose}
       >
         ×
       </button>
@@ -169,47 +200,41 @@ export default function Assessment({ onClose, onComplete }: Props) {
       {screen === "intro" && (
         <div className={`${styles.ovScreen} ${styles.active}`}>
           <div className={styles.ovEyebrow}>
-            {COMPANY.shortName} · ADHD Performance Instrument
+            {COMPANY.shortName} · {i18n.instrument}
           </div>
           <div className={styles.ovH1} id="assessment-title">
             Inflection
             <br />
             <em>Edge</em>
           </div>
-          <div className={styles.ovH2}>Your neurotype. Mapped precisely.</div>
-          <p className={styles.ovSub}>
-            {QUESTIONS.length} questions · {DIMENSIONS.length} dimensions · One precision performance blueprint
-            mapping when your ADHD brain operates at its ceiling — and what is
-            currently preventing it.
-          </p>
+          <div className={styles.ovH2}>{i18n.subtitle}</div>
+          <p className={styles.ovSub}>{introText}</p>
           <div className={styles.ovStats}>
             <div>
               <div className={styles.ovStatN}>{QUESTIONS.length}</div>
-              <div className={styles.ovStatL}>Questions</div>
+              <div className={styles.ovStatL}>{i18n.statsQuestions}</div>
             </div>
             <div>
               <div className={styles.ovStatN}>{DIMENSIONS.length}</div>
-              <div className={styles.ovStatL}>Dimensions</div>
+              <div className={styles.ovStatL}>{i18n.statsDimensions}</div>
             </div>
             <div>
-              <div className={styles.ovStatN}>8 min</div>
-              <div className={styles.ovStatL}>Duration</div>
+              <div className={styles.ovStatN}>{i18n.statsDuration}</div>
+              <div className={styles.ovStatL}>{i18n.statsDurationLabel}</div>
             </div>
           </div>
           <div className={styles.ovDims}>
             {DIMENSIONS.map((d) => (
               <div key={d.id} className={styles.ovDim}>
                 <div className={styles.ovDimIcon}>{d.icon}</div>
-                <div className={styles.ovDimName}>{d.name}</div>
+                <div className={styles.ovDimName}>{i18n.dimensions[d.id] ?? d.id}</div>
               </div>
             ))}
           </div>
           <button type="button" className={styles.ovStartBtn} onClick={start}>
-            Begin Assessment
+            {i18n.beginButton}
           </button>
-          <p className={styles.ovDisc}>
-            Grounded in peer-reviewed research. Not a clinical diagnostic tool.
-          </p>
+          <p className={styles.ovDisc}>{i18n.disclaimer}</p>
         </div>
       )}
 
@@ -217,14 +242,14 @@ export default function Assessment({ onClose, onComplete }: Props) {
       {screen === "question" && q && dim && (
         <div className={`${styles.ovScreen} ${styles.active}`}>
           <div className={styles.qDimLabel}>
-            {dim.icon} {dim.name}
+            {dim.icon} {i18n.dimensions[dim.id] ?? dim.id}
           </div>
           <div
             className={styles.qProg}
             aria-live="polite"
             aria-atomic="true"
           >
-            {currentQ + 1} / {QUESTIONS.length} · Dimension {dimIndex + 1} of{" "}
+            {currentQ + 1} / {QUESTIONS.length} · {i18n.progressLabel} {dimIndex + 1} {i18n.progressOf}{" "}
             {DIMENSIONS.length}
           </div>
           <div className={styles.qTrack}>
@@ -233,7 +258,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className={styles.qText}>{q.text}</div>
+          <div className={styles.qText}>{i18n.questions[currentQ] ?? q.text}</div>
           <div className={styles.qBtns} onKeyDown={handleAnswerKey}>
             {[1, 2, 3, 4, 5].map((v) => (
               <button
@@ -241,7 +266,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
                 type="button"
                 className={`${styles.qBtn}${answered === v ? ` ${styles.selected}` : ""}`}
                 onClick={() => selectAnswer(v)}
-                aria-label={`Rate ${v} out of 5`}
+                aria-label={i18n.ariaRate.replace("{n}", String(v))}
                 aria-pressed={answered === v}
               >
                 {v}
@@ -249,8 +274,8 @@ export default function Assessment({ onClose, onComplete }: Props) {
             ))}
           </div>
           <div className={styles.qScale}>
-            <span>Strongly disagree</span>
-            <span>Strongly agree</span>
+            <span>{i18n.scaleMin}</span>
+            <span>{i18n.scaleMax}</span>
           </div>
           <div className={styles.qNav}>
             <button
@@ -259,7 +284,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
               onClick={goPrev}
               disabled={currentQ === 0}
             >
-              ← Back
+              {i18n.back}
             </button>
             <button
               type="button"
@@ -267,7 +292,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
               onClick={goNext}
               disabled={answered === null}
             >
-              {currentQ === QUESTIONS.length - 1 ? "See Results →" : "Next →"}
+              {currentQ === QUESTIONS.length - 1 ? i18n.seeResults : i18n.next}
             </button>
           </div>
         </div>
