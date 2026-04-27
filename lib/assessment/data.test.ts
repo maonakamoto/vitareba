@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { scoreColor, getVerdict, getVerdictName, getInterpretation, VERDICT_TIERS, DIMENSIONS, QUESTIONS, computeScores } from "./data";
+import { scoreColor, getVerdict, getVerdictName, getInterpretation, getInterpretationKey, VERDICT_TIERS, DIMENSIONS, QUESTIONS, computeScores } from "./data";
 
 // ─── scoreColor ───────────────────────────────────────────────────────────────
 
@@ -111,6 +111,67 @@ describe("getInterpretation", () => {
 
   it("returns empty string for unknown dimension id", () => {
     expect(getInterpretation("nonexistent", 50)).toBe("");
+  });
+});
+
+// ─── getInterpretationKey ─────────────────────────────────────────────────────
+
+describe("getInterpretationKey", () => {
+  it("returns 'low' for scores at or below the first threshold (45)", () => {
+    for (const dim of DIMENSIONS) {
+      expect(getInterpretationKey(dim.id, 0)).toBe("low");
+      expect(getInterpretationKey(dim.id, 45)).toBe("low");
+    }
+  });
+
+  it("returns 'mid' for scores between 46 and 70 (inclusive)", () => {
+    for (const dim of DIMENSIONS) {
+      expect(getInterpretationKey(dim.id, 46)).toBe("mid");
+      expect(getInterpretationKey(dim.id, 70)).toBe("mid");
+    }
+  });
+
+  it("returns 'high' for scores from 71 to 100", () => {
+    for (const dim of DIMENSIONS) {
+      expect(getInterpretationKey(dim.id, 71)).toBe("high");
+      expect(getInterpretationKey(dim.id, 100)).toBe("high");
+    }
+  });
+
+  it("falls back to 'high' for unknown dimension id", () => {
+    expect(getInterpretationKey("nonexistent", 50)).toBe("high");
+  });
+
+  it("returns one of the three valid keys for every dimension at every integer score", () => {
+    const valid = new Set(["low", "mid", "high"]);
+    for (const dim of DIMENSIONS) {
+      for (let s = 0; s <= 100; s++) {
+        expect(valid.has(getInterpretationKey(dim.id, s))).toBe(true);
+      }
+    }
+  });
+});
+
+// ─── VERDICT_TIERS i18nKey ────────────────────────────────────────────────────
+
+describe("VERDICT_TIERS i18nKey", () => {
+  it("every tier has a non-empty i18nKey", () => {
+    for (const tier of VERDICT_TIERS) {
+      expect(typeof tier.i18nKey).toBe("string");
+      expect(tier.i18nKey.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("all i18nKeys are unique", () => {
+    const keys = VERDICT_TIERS.map((t) => t.i18nKey);
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it("i18nKeys match expected values for each score tier", () => {
+    expect(getVerdict(20).i18nKey).toBe("deepFriction");
+    expect(getVerdict(45).i18nKey).toBe("managedTension");
+    expect(getVerdict(65).i18nKey).toBe("asymmetricPerformance");
+    expect(getVerdict(90).i18nKey).toBe("optimisedNeurotype");
   });
 });
 
