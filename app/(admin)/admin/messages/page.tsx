@@ -60,7 +60,7 @@ export default async function AdminMessagesPage() {
                 return (
                   <tr key={t.id} className={styles.clickableRow}>
                     <td className={styles.tdDot}>
-                      {isUnread && <span className={styles.unreadDot} title="Unread message from patient" />}
+                      {isUnread && <span className={styles.unreadDot} role="img" aria-label="Unread message from patient" />}
                     </td>
                     <td>
                       <div className={`${styles.cellName}${isUnread ? ` ${styles.unreadSubject}` : ""}`}>

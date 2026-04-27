@@ -25,7 +25,7 @@ export function PatientMessagesCard({ threads, patientId }: { threads: Thread[];
               <Link key={t.id} href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.msgThreadRow}>
                 <div>
                   <div className={styles.msgThreadSubjectRow}>
-                    {isUnread && <span className={styles.unreadDot} title="Unread message from patient" />}
+                    {isUnread && <span className={styles.unreadDot} role="img" aria-label="Unread message from patient" />}
                     <span className={`${styles.msgThreadSubject}${isUnread ? ` ${styles.unreadSubject}` : ""}`}>{t.subject}</span>
                   </div>
                   {lastMsg && (

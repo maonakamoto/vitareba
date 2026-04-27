@@ -148,7 +148,7 @@ export default function MessagesPage() {
                 <div className={styles.card}>
                   <div className={msgStyles.threadRow}>
                     <div className={msgStyles.threadSubjectRow}>
-                      {isUnread && <span className={msgStyles.unreadDot} />}
+                      {isUnread && <span className={msgStyles.unreadDot} role="img" aria-label="Unread" />}
                       <p className={`${msgStyles.threadSubject}${isUnread ? ` ${msgStyles.threadSubjectUnread}` : ""}`}>
                         {t.subject}
                       </p>

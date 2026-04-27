@@ -267,7 +267,7 @@ export default async function PatientsPage() {
                     {/* Unread message indicator */}
                     <td className={styles.tdCenter}>
                       {hasUnread && (
-                        <span className={styles.unreadDot} title="Unread message from patient" />
+                        <span className={styles.unreadDot} role="img" aria-label="Unread message from patient" />
                       )}
                     </td>
 
