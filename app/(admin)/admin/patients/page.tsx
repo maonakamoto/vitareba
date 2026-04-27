@@ -182,7 +182,7 @@ export default async function PatientsPage() {
 
                 const hasUnread = unreadPatientIds.has(p.id);
                 return (
-                  <tr key={p.id}>
+                  <tr key={p.id} className={styles.clickableRow}>
                     {/* Signal */}
                     <td>
                       <span className={styles.signalBadge} data-signal={p.signal}>
@@ -273,7 +273,7 @@ export default async function PatientsPage() {
 
                     {/* View */}
                     <td>
-                      <Link href={`${ADMIN_ROUTES.patients}/${p.id}`} className={styles.cellLink}>
+                      <Link href={`${ADMIN_ROUTES.patients}/${p.id}`} className={`${styles.cellLink} ${styles.stretchedLink}`}>
                         View →
                       </Link>
                     </td>

@@ -1038,6 +1038,21 @@
   outline: none;
 }
 
+/* Stretched-link pattern — expands click area to cover the nearest
+   position:relative ancestor (the <tr>). All <td> content appears above
+   via its natural stacking context; no z-index juggling needed. */
+.clickableRow {
+  position: relative;
+  cursor: pointer;
+}
+
+.stretchedLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .cancelBtn {
   flex: 1;
   padding: 0.75rem;

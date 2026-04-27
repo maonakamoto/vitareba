@@ -58,7 +58,7 @@ export default async function AdminMessagesPage() {
               {allThreads.map((t) => {
                 const isUnread = unreadIds.has(t.id);
                 return (
-                  <tr key={t.id}>
+                  <tr key={t.id} className={styles.clickableRow}>
                     <td className={styles.tdDot}>
                       {isUnread && <span className={styles.unreadDot} title="Unread message from patient" />}
                     </td>
@@ -82,7 +82,7 @@ export default async function AdminMessagesPage() {
                       {formatDateShort(t.lastMessageAt)}
                     </td>
                     <td>
-                      <Link href={`${ADMIN_ROUTES.messages}/${t.id}`} className={styles.cellLink}>
+                      <Link href={`${ADMIN_ROUTES.messages}/${t.id}`} className={`${styles.cellLink} ${styles.stretchedLink}`}>
                         {isUnread ? "Reply →" : "Open →"}
                       </Link>
                     </td>
