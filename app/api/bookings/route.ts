@@ -79,6 +79,7 @@ export async function POST(req: Request) {
         subject: `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`,
         html: bookingConfirmedEmail({
           patientName: patient.name ?? "there",
+          sessionLabel,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}`,
         }),
       }).catch(console.error);

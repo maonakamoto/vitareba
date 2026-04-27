@@ -85,16 +85,19 @@ export function bookingRequestAdminEmail({
 
 export function bookingConfirmedEmail({
   patientName,
+  sessionLabel,
   portalUrl,
 }: {
   patientName: string;
+  sessionLabel: string;
   portalUrl: string;
 }) {
   patientName = escapeHtml(patientName);
+  sessionLabel = escapeHtml(sessionLabel);
 
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Your consultation request has been <strong>confirmed</strong>. We will be in touch shortly with the details.</p>
+    <p>Your <strong>${sessionLabel}</strong> request has been <strong>confirmed</strong>. We will be in touch shortly with the details.</p>
     <p>In the meantime, you can view all your bookings in your patient portal.</p>
     <p><a class="btn" href="${portalUrl}">View your bookings</a></p>
   `);
@@ -104,16 +107,19 @@ export function bookingConfirmedEmail({
 
 export function bookingCancelledEmail({
   patientName,
+  sessionLabel,
   portalUrl,
 }: {
   patientName: string;
+  sessionLabel: string;
   portalUrl: string;
 }) {
   patientName = escapeHtml(patientName);
+  sessionLabel = escapeHtml(sessionLabel);
 
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>Your consultation request has been cancelled. If you have any questions, please reply to this email or send us a message through the portal.</p>
+    <p>Your <strong>${sessionLabel}</strong> request has been cancelled. If you have any questions, please reply to this email or send us a message through the portal.</p>
     <p><a class="btn" href="${portalUrl}">Open patient portal</a></p>
   `);
 }

@@ -42,11 +42,11 @@ describe("email templates — structure", () => {
   });
 
   it("bookingConfirmedEmail returns html", () => {
-    expect(isHtml(bookingConfirmedEmail({ patientName: "Anna", portalUrl: "https://p.example.com" }))).toBe(true);
+    expect(isHtml(bookingConfirmedEmail({ patientName: "Anna", sessionLabel: "Consultation", portalUrl: "https://p.example.com" }))).toBe(true);
   });
 
   it("bookingCancelledEmail returns html", () => {
-    expect(isHtml(bookingCancelledEmail({ patientName: "Anna", portalUrl: "https://p.example.com" }))).toBe(true);
+    expect(isHtml(bookingCancelledEmail({ patientName: "Anna", sessionLabel: "Consultation", portalUrl: "https://p.example.com" }))).toBe(true);
   });
 
   it("passwordResetEmail returns html", () => {
@@ -137,14 +137,16 @@ describe("email templates — personalisation", () => {
     expect(html).toContain(adminUrl);
   });
 
-  it("bookingConfirmedEmail includes patient name", () => {
-    const html = bookingConfirmedEmail({ patientName: "Jakob", portalUrl: "https://p.example.com" });
+  it("bookingConfirmedEmail includes patient name and session label", () => {
+    const html = bookingConfirmedEmail({ patientName: "Jakob", sessionLabel: "Consultation", portalUrl: "https://p.example.com" });
     expect(html).toContain("Jakob");
+    expect(html).toContain("Consultation");
   });
 
-  it("bookingCancelledEmail includes patient name", () => {
-    const html = bookingCancelledEmail({ patientName: "Lisa", portalUrl: "https://p.example.com" });
+  it("bookingCancelledEmail includes patient name and session label", () => {
+    const html = bookingCancelledEmail({ patientName: "Lisa", sessionLabel: "PEMF session", portalUrl: "https://p.example.com" });
     expect(html).toContain("Lisa");
+    expect(html).toContain("PEMF session");
   });
 
   it("passwordResetEmail includes the reset URL", () => {

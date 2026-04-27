@@ -60,8 +60,8 @@ export async function PATCH(
       const machineLabel = updated.machineType ? MACHINE_TYPE_CONFIG[updated.machineType]?.label : null;
       const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
       const html = parsed.data.status === BOOKING_STATUS.confirmed
-        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` })
-        : bookingCancelledEmail({ patientName: patient.name ?? "there", portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` });
+        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` })
+        : bookingCancelledEmail({ patientName: patient.name ?? "there", sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` });
       sendEmail({
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
