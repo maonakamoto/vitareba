@@ -10,11 +10,11 @@ import { computeGoalProgress, goalProgressLabel } from "@/lib/domain/goals";
 import { CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL } from "@/lib/config/portal";
 import { formatDateLong } from "@/lib/utils/format";
 
-/** Map check-in metric keys to human-readable labels for goal display */
-const METRIC_LABELS: Record<string, string> = Object.fromEntries(
-  CHECKIN_METRICS.map((m) => [m.key, m.label])
-);
-METRIC_LABELS[ASSESSMENT_GOAL_METRIC_KEY] = ASSESSMENT_GOAL_METRIC_LABEL;
+/** Map check-in metric keys + assessment metric to human-readable labels for goal display */
+const METRIC_LABELS: Record<string, string> = {
+  ...Object.fromEntries(CHECKIN_METRICS.map((m) => [m.key, m.label])),
+  [ASSESSMENT_GOAL_METRIC_KEY]: ASSESSMENT_GOAL_METRIC_LABEL,
+};
 
 
 export default async function GoalsPage() {
