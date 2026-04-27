@@ -477,6 +477,7 @@ export function weeklyDigestEmail({
   nextBookingStatus,
   activeGoals = [],
   portalUrl,
+  streak = 0,
 }: {
   patientName: string;
   thisWeekAvgs: WeekAvgs;
@@ -486,6 +487,7 @@ export function weeklyDigestEmail({
   nextBookingStatus: string | null;
   activeGoals?: DigestGoal[];
   portalUrl: string;
+  streak?: number;
 }) {
   patientName = escapeHtml(patientName);
 
@@ -544,9 +546,19 @@ export function weeklyDigestEmail({
       </tbody>
     </table>` : "";
 
+  const streakSection = streak >= 3 ? (() => {
+    let msg: string;
+    if (streak >= 30) msg = `${streak}-day streak — elite consistency. Your programme can be tuned with precision most patients never reach.`;
+    else if (streak >= 14) msg = `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
+    else if (streak >= 7) msg = `${streak}-day streak — a full week mapped.`;
+    else msg = `${streak} days in a row.`;
+    return `<p style="font-size:0.9rem;color:#2a7a8a;font-weight:500;margin-bottom:0.5rem">🔥 ${escapeHtml(msg)}</p>`;
+  })() : "";
+
   return layout(`
     <p>Hi ${patientName},</p>
     <p>Your weekly summary from ${COMPANY.shortName}.</p>
+    ${streakSection}
     ${checkinSection}
     ${assessmentSection}
     ${goalsSection}

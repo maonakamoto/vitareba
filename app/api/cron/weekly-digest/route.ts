@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { users, assessmentResults, bookings, dailyCheckins, clinicalGoals } from "@/lib/db/schema";
 import { eq, gte, and, desc, inArray, isNull } from "drizzle-orm";
 import { computeGoalProgress } from "@/lib/domain/goals";
+import { computeStreak } from "@/lib/domain/checkin";
 import { sendEmail } from "@/lib/email/index";
 import { weeklyDigestEmail } from "@/lib/email/templates";
 import { getVerdictName } from "@/lib/assessment/data";
@@ -34,9 +35,13 @@ export async function GET(req: Request) {
   thisWeekStart.setDate(thisWeekStart.getDate() - 7);
   const prevWeekStart = new Date(now);
   prevWeekStart.setDate(prevWeekStart.getDate() - 14);
+  // 90-day window covers streak computation accurately for the vast majority of patients
+  const streakWindowStart = new Date(now);
+  streakWindowStart.setDate(streakWindowStart.getDate() - 90);
 
   const thisWeekISO = formatDateISO(thisWeekStart);
   const prevWeekISO = formatDateISO(prevWeekStart);
+  const streakWindowISO = formatDateISO(streakWindowStart);
 
   // Fetch all patients with their profile, latest assessment, and latest booking
   let patients;
@@ -78,7 +83,7 @@ export async function GET(req: Request) {
         .where(
           and(
             inArray(dailyCheckins.userId, patientIds),
-            gte(dailyCheckins.date, prevWeekISO)
+            gte(dailyCheckins.date, streakWindowISO)
           )
         );
     } catch (err) {
@@ -128,6 +133,8 @@ export async function GET(req: Request) {
         }))
         .filter((g) => g.pct !== null) as { title: string; pct: number; current: number; target: number }[];
 
+      const streak = computeStreak(recentCheckins, now);
+
       const html = weeklyDigestEmail({
         patientName: displayName(patient.name, patient.email),
         thisWeekAvgs: avgMetrics(thisWeekCheckins),
@@ -139,6 +146,7 @@ export async function GET(req: Request) {
           : null,
         activeGoals: goalSummaries,
         portalUrl: PORTAL_URL,
+        streak,
       });
 
       return sendEmail({
