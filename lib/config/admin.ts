@@ -5,7 +5,7 @@ import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
 /** Days since last check-in before patient is marked critical (has prior check-in history) */
 export const NO_CHECKIN_CRITICAL_DAYS = 5;
 
-/** Point drop in assessment overall score that triggers critical signal */
+/** Assessment score must drop by MORE THAN this many points to trigger critical signal (strict >, not >=) */
 export const SCORE_DROP_CRITICAL = 10;
 
 /** Days after registration where no activity is expected (new patient grace period) */

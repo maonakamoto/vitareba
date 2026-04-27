@@ -45,6 +45,7 @@ export function streakMessage(streak: number): string {
   if (streak >= 7) return `${streak}-day streak — a full week. Your nervous system is being mapped.`;
   if (streak >= 3) return `${streak} days in a row. Patterns are already forming.`;
   if (streak === 2) return "2 days running. Keep it going.";
+  if (streak === 1) return "Day 1 done. Come back tomorrow and you're on a streak.";
   return "First data point saved. Come back tomorrow to start your streak.";
 }
 

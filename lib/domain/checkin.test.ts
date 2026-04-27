@@ -167,11 +167,11 @@ describe("normalizeCheckinMetric", () => {
 // ─── streakMessage ────────────────────────────────────────────────────────────
 
 describe("streakMessage", () => {
-  it("returns first-day message for streak of 1", () => {
-    expect(streakMessage(1)).toContain("First data point");
+  it("returns day-1 affirmation for streak of 1", () => {
+    expect(streakMessage(1)).toContain("Day 1 done");
   });
 
-  it("returns first-day message for streak of 0", () => {
+  it("returns fallback message for streak of 0", () => {
     expect(streakMessage(0)).toContain("First data point");
   });
 
