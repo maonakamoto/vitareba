@@ -97,6 +97,7 @@ export function AdminProfileEditForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          name: form.name.trim() || undefined,
           sleepHoursAvg: form.sleepHoursAvg === "" ? null : Number(form.sleepHoursAvg),
           exerciseFrequency: form.exerciseFrequency === "" ? null : form.exerciseFrequency,
         }),
