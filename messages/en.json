@@ -478,7 +478,8 @@
       "submit": "Create account",
       "submitting": "Creating account…",
       "hasAccount": "Already have an account?",
-      "signInLink": "Sign in"
+      "signInLink": "Sign in",
+      "genericError": "Something went wrong. Please try again."
     },
     "forgotPassword": {
       "title": "Reset password",

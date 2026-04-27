@@ -478,7 +478,8 @@
       "submit": "Créer un compte",
       "submitting": "Création du compte…",
       "hasAccount": "Déjà un compte ?",
-      "signInLink": "Se connecter"
+      "signInLink": "Se connecter",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
     },
     "forgotPassword": {
       "title": "Réinitialiser le mot de passe",

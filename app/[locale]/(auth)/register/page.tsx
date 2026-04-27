@@ -57,7 +57,7 @@ function RegisterForm() {
       router.push(returnTo);
       router.refresh();
     } catch {
-      setErrors({ email: ["Something went wrong. Please try again."] });
+      setErrors({ email: [t("genericError")] });
       setLoading(false);
     }
   }

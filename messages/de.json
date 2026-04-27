@@ -478,7 +478,8 @@
       "submit": "Konto erstellen",
       "submitting": "Konto wird erstellt…",
       "hasAccount": "Bereits ein Konto?",
-      "signInLink": "Anmelden"
+      "signInLink": "Anmelden",
+      "genericError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
     },
     "forgotPassword": {
       "title": "Passwort zurücksetzen",

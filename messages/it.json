@@ -478,7 +478,8 @@
       "submit": "Crea account",
       "submitting": "Creazione account in corso…",
       "hasAccount": "Ha già un account?",
-      "signInLink": "Accedi"
+      "signInLink": "Accedi",
+      "genericError": "Qualcosa è andato storto. La preghiamo di riprovare."
     },
     "forgotPassword": {
       "title": "Reimposta password",
