@@ -16,6 +16,7 @@ import { PatientBookingsCard } from "@/components/admin/PatientBookingsCard";
 import { AdminBookingForm } from "@/components/admin/AdminBookingForm";
 import { PatientMessagesCard } from "@/components/admin/PatientMessagesCard";
 import { PatientGoalsCard } from "@/components/admin/PatientGoalsCard";
+import { AdminProfileEditForm } from "@/components/admin/AdminProfileEditForm";
 import { formatDateShort, formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
@@ -99,6 +100,15 @@ export default async function PatientDetailPage({
         <PatientAssessmentCard assessmentResults={patient.assessmentResults} />
         <PatientBookingsCard bookings={patient.bookings} />
         <PatientMessagesCard threads={patient.threads} patientId={patient.id} />
+      </div>
+
+      {/* Edit profile — admin can update all patient profile fields */}
+      <div className={styles.cardWithTopMargin}>
+        <p className={styles.cardLabel}>Edit profile</p>
+        <AdminProfileEditForm
+          patientId={patient.id}
+          initial={{ name: patient.name, ...patient.profile }}
+        />
       </div>
 
       {/* Log a manual booking (phone, walk-in, or any consultation not captured by Calendly) */}
