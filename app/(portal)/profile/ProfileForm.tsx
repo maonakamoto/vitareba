@@ -224,7 +224,7 @@ export function ProfileForm() {
   return (
     <>
       {/* ── Profile hero ──────────────────────────────────────────────── */}
-      {apiData && <ProfileHero apiData={{ ...apiData, occupation: form.occupation, city: form.city }} />}
+      {apiData && <ProfileHero apiData={{ ...apiData, name: form.name || apiData.name, occupation: form.occupation, city: form.city }} />}
 
       {/* ── Completeness indicator ────────────────────────────────────── */}
       <div className={profileStyles.completenessCard}>
