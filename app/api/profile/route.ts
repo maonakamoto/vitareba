@@ -17,17 +17,31 @@ export async function GET() {
   if (guard.error) return guard.error;
   const { session } = guard;
 
-  let profile;
+  let profile: typeof profiles.$inferSelect | undefined;
+  let userRow: { name: string | null; email: string; image: string | null; createdAt: Date } | undefined;
   try {
-    profile = await db.query.profiles.findFirst({
-      where: eq(profiles.userId, session.user.id),
-    });
+    [profile, userRow] = await Promise.all([
+      db.query.profiles.findFirst({ where: eq(profiles.userId, session.user.id) }),
+      db.query.users.findFirst({
+        where: eq(users.id, session.user.id),
+        columns: { name: true, email: true, image: true, createdAt: true },
+      }),
+    ]);
   } catch (err) {
     console.error("[api/profile] GET failed:", err);
     return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, data: profile ?? null });
+  return NextResponse.json({
+    success: true,
+    data: {
+      ...(profile ?? {}),
+      name: userRow?.name ?? null,
+      email: userRow?.email ?? null,
+      image: userRow?.image ?? null,
+      memberSince: userRow?.createdAt ?? null,
+    },
+  });
 }
 
 export async function PATCH(req: Request) {

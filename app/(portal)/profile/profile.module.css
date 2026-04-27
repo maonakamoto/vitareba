@@ -1,3 +1,94 @@
+/* ─── Profile hero card ───────────────────────────────────────────────────── */
+
+.heroCard {
+  background: var(--ink);
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.avatarWrap {
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid rgba(255,255,255,0.12);
+}
+
+.avatarInitials {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-cormorant), serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #fff;
+  letter-spacing: 0.03em;
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+.heroInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.heroName {
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.7rem;
+  font-weight: 300;
+  font-style: italic;
+  color: #fff;
+  margin: 0 0 0.15rem;
+  line-height: 1.15;
+}
+
+.heroNamePlaceholder {
+  composes: heroName;
+  color: rgba(255,255,255,0.3);
+}
+
+.heroEmail {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 0.5rem;
+}
+
+.heroMeta {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.65);
+  margin: 0 0 0.35rem;
+}
+
+.heroSince {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 767px) {
+  .heroCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+}
+
 .layout {
   max-width: 640px;
   display: flex;

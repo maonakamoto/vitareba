@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "../portal.module.css";
 import profileStyles from "./profile.module.css";
 import authStyles from "../../(auth)/auth.module.css";
@@ -19,6 +19,31 @@ import {
 import type { ExerciseFrequency } from "@/lib/config/portal";
 import { computeProfileCompleteness } from "@/lib/domain/profile";
 import { COMPANY } from "@/lib/config/company";
+import { formatDateLong } from "@/lib/utils/format";
+
+type ProfileApiData = {
+  // User fields (from users table — always fresh, never stale JWT)
+  name: string | null;
+  email: string | null;
+  image: string | null;
+  memberSince: string | null;
+  // Profile fields (from profiles table)
+  phone?: string | null;
+  dateOfBirth?: string | null;
+  city?: string | null;
+  occupation?: string | null;
+  mainConcern?: string | null;
+  goals?: string | null;
+  diagnosisHistory?: string | null;
+  currentMedications?: string | null;
+  currentSupplements?: string | null;
+  sleepHoursAvg?: number | null;
+  exerciseFrequency?: string | null;
+  referralSource?: string | null;
+  notes?: string | null;
+  digestOptOut?: boolean;
+  reminderOptOut?: boolean;
+};
 
 type ProfileData = {
   name: string;
@@ -58,7 +83,60 @@ const EMPTY_FORM: ProfileData = {
   reminderOptOut: false,
 };
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  if (parts.length === 1 && parts[0].length > 0) return parts[0].slice(0, 2).toUpperCase();
+  return "?";
+}
+
+function ProfileHero({
+  apiData,
+}: {
+  apiData: ProfileApiData;
+}) {
+  const name = apiData.name;
+  const email = apiData.email;
+  const image = apiData.image;
+  const occupation = apiData.occupation;
+  const city = apiData.city;
+  const memberSince = apiData.memberSince;
+
+  const initials = name ? getInitials(name) : (email ? email[0].toUpperCase() : "?");
+  const meta = [occupation, city].filter(Boolean).join(" · ");
+
+  return (
+    <div className={profileStyles.heroCard}>
+      <div className={profileStyles.avatarWrap}>
+        {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={image} alt={name ?? "Avatar"} className={profileStyles.avatarImg} />
+        ) : (
+          <div className={profileStyles.avatarInitials}>
+            {initials}
+          </div>
+        )}
+      </div>
+      <div className={profileStyles.heroInfo}>
+        {name ? (
+          <p className={profileStyles.heroName}>{name}</p>
+        ) : (
+          <p className={profileStyles.heroNamePlaceholder}>Add your name below</p>
+        )}
+        {email && <p className={profileStyles.heroEmail}>{email}</p>}
+        {meta && <p className={profileStyles.heroMeta}>{meta}</p>}
+        {memberSince && (
+          <p className={profileStyles.heroSince}>
+            Member since {formatDateLong(memberSince)}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ProfileForm() {
+  const [apiData, setApiData] = useState<ProfileApiData | null>(null);
   const [form, setForm] = useState<ProfileData>(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -66,42 +144,39 @@ export function ProfileForm() {
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [profileRes, sessionRes] = await Promise.all([
-          fetch("/api/profile"),
-          fetch("/api/auth/session"),
-        ]);
-        if (!profileRes.ok || !sessionRes.ok) { setLoadError(true); setLoading(false); return; }
-        const profile = await profileRes.json();
-        const session = await sessionRes.json();
-        setForm({
-          name: session?.user?.name ?? "",
-          phone: profile.data?.phone ?? "",
-          dateOfBirth: profile.data?.dateOfBirth ?? "",
-          city: profile.data?.city ?? "",
-          occupation: profile.data?.occupation ?? "",
-          mainConcern: profile.data?.mainConcern ?? "",
-          goals: profile.data?.goals ?? "",
-          diagnosisHistory: profile.data?.diagnosisHistory ?? "",
-          currentMedications: profile.data?.currentMedications ?? "",
-          currentSupplements: profile.data?.currentSupplements ?? "",
-          sleepHoursAvg: profile.data?.sleepHoursAvg ?? "",
-          exerciseFrequency: profile.data?.exerciseFrequency ?? "",
-          referralSource: profile.data?.referralSource ?? "",
-          notes: profile.data?.notes ?? "",
-          digestOptOut: profile.data?.digestOptOut ?? false,
-          reminderOptOut: profile.data?.reminderOptOut ?? false,
-        });
-      } catch {
-        setLoadError(true);
-      } finally {
-        setLoading(false);
-      }
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/profile");
+      if (!res.ok) { setLoadError(true); setLoading(false); return; }
+      const json = await res.json();
+      const data: ProfileApiData = json.data ?? {};
+      setApiData(data);
+      setForm({
+        name: data.name ?? "",
+        phone: data.phone ?? "",
+        dateOfBirth: data.dateOfBirth ?? "",
+        city: data.city ?? "",
+        occupation: data.occupation ?? "",
+        mainConcern: data.mainConcern ?? "",
+        goals: data.goals ?? "",
+        diagnosisHistory: data.diagnosisHistory ?? "",
+        currentMedications: data.currentMedications ?? "",
+        currentSupplements: data.currentSupplements ?? "",
+        sleepHoursAvg: data.sleepHoursAvg ?? "",
+        exerciseFrequency: (data.exerciseFrequency as ExerciseFrequency | null) ?? "",
+        referralSource: data.referralSource ?? "",
+        notes: data.notes ?? "",
+        digestOptOut: data.digestOptOut ?? false,
+        reminderOptOut: data.reminderOptOut ?? false,
+      });
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
     }
-    load();
   }, []);
+
+  useEffect(() => { load(); }, [load]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -113,10 +188,10 @@ export function ProfileForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...form,
+          // Don't send empty name — Zod requires min(1) and we shouldn't clear an existing name accidentally
+          name: form.name.trim() || undefined,
           sleepHoursAvg: form.sleepHoursAvg === "" ? null : Number(form.sleepHoursAvg),
           exerciseFrequency: form.exerciseFrequency === "" ? null : form.exerciseFrequency,
-          digestOptOut: form.digestOptOut,
-          reminderOptOut: form.reminderOptOut,
         }),
       });
       const data = await res.json();
@@ -126,6 +201,8 @@ export function ProfileForm() {
       }
       setSaved(true);
       setTimeout(() => setSaved(false), SAVED_FEEDBACK_MS);
+      // Reload from DB so the hero card reflects the updated name/city immediately
+      load();
     } catch {
       setSaveError("Failed to save changes. Please try again.");
     } finally {
@@ -146,7 +223,10 @@ export function ProfileForm() {
 
   return (
     <>
-      {/* Completeness indicator */}
+      {/* ── Profile hero ──────────────────────────────────────────────── */}
+      {apiData && <ProfileHero apiData={{ ...apiData, occupation: form.occupation, city: form.city }} />}
+
+      {/* ── Completeness indicator ────────────────────────────────────── */}
       <div className={profileStyles.completenessCard}>
         <div className={profileStyles.completenessHeader}>
           <span className={profileStyles.completenessLabel}>Profile completeness</span>
