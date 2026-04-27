@@ -4,6 +4,10 @@ import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type MetricKey } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
+import {
+  COLOR_INK, COLOR_INK2, COLOR_MUTED, COLOR_TEAL, COLOR_GOLD,
+  COLOR_OFF, COLOR_LIGHT, COLOR_BORDER, COLOR_WARN, COLOR_DANGER, COLOR_WHITE,
+} from "@/lib/config/theme";
 
 /** Escapes HTML special characters to prevent injection in email templates. */
 function escapeHtml(str: string): string {
@@ -18,9 +22,9 @@ function escapeHtml(str: string): string {
 /** Returns a hex color for a 1–5 check-in metric. inverted=true for stress (high = bad). */
 function metricColor(val: number, inverted = false): string {
   const bad = inverted ? val >= 4 : val <= 2;
-  if (bad) return "#e05a5a";
-  if (val === 3) return "#d4820a";
-  return "#2a7a8a";
+  if (bad) return COLOR_DANGER;
+  if (val === 3) return COLOR_WARN;
+  return COLOR_TEAL;
 }
 
 function layout(body: string) {
@@ -30,25 +34,25 @@ function layout(body: string) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
-  body { margin: 0; padding: 0; background: #f8f7f4; font-family: 'DM Sans', Arial, sans-serif; color: #1a1a22; }
-  .wrap { max-width: 560px; margin: 40px auto; background: #fff; border-radius: 8px; border: 1px solid #e5e0d8; overflow: hidden; }
-  .header { background: #1a1a22; padding: 28px 32px; }
-  .header h1 { margin: 0; font-size: 18px; font-weight: 400; letter-spacing: 0.12em; color: #fff; text-transform: uppercase; }
-  .header span { color: #2a7a8a; }
+  body { margin: 0; padding: 0; background: ${COLOR_OFF}; font-family: 'DM Sans', Arial, sans-serif; color: ${COLOR_INK}; }
+  .wrap { max-width: 560px; margin: 40px auto; background: ${COLOR_WHITE}; border-radius: 8px; border: 1px solid ${COLOR_BORDER}; overflow: hidden; }
+  .header { background: ${COLOR_INK}; padding: 28px 32px; }
+  .header h1 { margin: 0; font-size: 18px; font-weight: 400; letter-spacing: 0.12em; color: ${COLOR_WHITE}; text-transform: uppercase; }
+  .header span { color: ${COLOR_TEAL}; }
   .body { padding: 32px; }
-  .body p { margin: 0 0 16px; line-height: 1.6; font-size: 15px; color: #3a3a4a; }
+  .body p { margin: 0 0 16px; line-height: 1.6; font-size: 15px; color: ${COLOR_INK2}; }
   .body p:last-child { margin-bottom: 0; }
-  .btn { display: inline-block; margin: 8px 0; padding: 12px 24px; background: #2a7a8a; color: #fff !important; text-decoration: none; border-radius: 4px; font-size: 14px; letter-spacing: 0.08em; }
-  .divider { height: 1px; background: #e5e0d8; margin: 24px 0; }
-  .meta { font-size: 13px; color: #888a96; }
-  .footer { padding: 20px 32px; border-top: 1px solid #e5e0d8; font-size: 12px; color: #888a96; }
+  .btn { display: inline-block; margin: 8px 0; padding: 12px 24px; background: ${COLOR_TEAL}; color: ${COLOR_WHITE} !important; text-decoration: none; border-radius: 4px; font-size: 14px; letter-spacing: 0.08em; }
+  .divider { height: 1px; background: ${COLOR_BORDER}; margin: 24px 0; }
+  .meta { font-size: 13px; color: ${COLOR_MUTED}; }
+  .footer { padding: 20px 32px; border-top: 1px solid ${COLOR_BORDER}; font-size: 12px; color: ${COLOR_MUTED}; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="header"><h1>Vita<span>Re</span>Ba</h1></div>
   <div class="body">${body}</div>
-  <div class="footer">${COMPANY.name} · ${COMPANY.address.city} · <a href="${PORTAL_URL}" style="color:#2a7a8a">${PORTAL_URL.replace(/^https?:\/\//, "")}</a></div>
+  <div class="footer">${COMPANY.name} · ${COMPANY.address.city} · <a href="${PORTAL_URL}" style="color:${COLOR_TEAL}">${PORTAL_URL.replace(/^https?:\/\//, "")}</a></div>
 </div>
 </body>
 </html>`;
@@ -293,18 +297,18 @@ export function criticalPatientAlertEmail({
     <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:0.5rem">
       <thead>
         <tr>
-          <th style="text-align:left;color:#888a96;padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Energy</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Mood</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Focus</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
+          <th style="text-align:left;color:${COLOR_MUTED};padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Energy</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Mood</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Focus</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
         </tr>
       </thead>
       <tbody>
         ${recentCheckins.map((c) => `
           <tr>
-            <td style="color:#3a3a4a;padding:0.2rem 0.4rem 0.2rem 0">${c.date}</td>
+            <td style="color:${COLOR_INK2};padding:0.2rem 0.4rem 0.2rem 0">${c.date}</td>
             <td style="text-align:center;color:${metricColor(c.sleep)};font-weight:500;padding:0.2rem">${c.sleep}</td>
             <td style="text-align:center;color:${metricColor(c.energy)};font-weight:500;padding:0.2rem">${c.energy}</td>
             <td style="text-align:center;color:${metricColor(c.mood)};font-weight:500;padding:0.2rem">${c.mood}</td>
@@ -322,7 +326,7 @@ export function criticalPatientAlertEmail({
     : "";
 
   return layout(`
-    <p>A patient has been flagged as <strong style="color:#e05a5a">Critical</strong>.</p>
+    <p>A patient has been flagged as <strong style="color:${COLOR_DANGER}">Critical</strong>.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
     <p class="meta"><strong>Reason:</strong> ${escapeHtml(reason)}</p>
@@ -357,11 +361,11 @@ export function assessmentResultsEmail({
     .map(
       (d) => `
     <tr>
-      <td style="padding:0.6rem 0;border-bottom:1px solid #e5e0d8;vertical-align:top;width:28px;font-size:1.1rem">${d.icon}</td>
-      <td style="padding:0.6rem 0.5rem;border-bottom:1px solid #e5e0d8;vertical-align:top;font-size:0.78rem;color:#888a96;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;width:40px">${d.score}</td>
-      <td style="padding:0.6rem 0;border-bottom:1px solid #e5e0d8;vertical-align:top;">
-        <div style="font-size:0.8rem;font-weight:500;color:#1a1a22;margin-bottom:0.25rem">${d.name}</div>
-        <div style="font-size:0.76rem;color:#3a3a4a;line-height:1.6">${d.interpretation}</div>
+      <td style="padding:0.6rem 0;border-bottom:1px solid ${COLOR_BORDER};vertical-align:top;width:28px;font-size:1.1rem">${d.icon}</td>
+      <td style="padding:0.6rem 0.5rem;border-bottom:1px solid ${COLOR_BORDER};vertical-align:top;font-size:0.78rem;color:${COLOR_MUTED};font-weight:600;text-transform:uppercase;letter-spacing:0.05em;width:40px">${d.score}</td>
+      <td style="padding:0.6rem 0;border-bottom:1px solid ${COLOR_BORDER};vertical-align:top;">
+        <div style="font-size:0.8rem;font-weight:500;color:${COLOR_INK};margin-bottom:0.25rem">${d.name}</div>
+        <div style="font-size:0.76rem;color:${COLOR_INK2};line-height:1.6">${d.interpretation}</div>
       </td>
     </tr>`
     )
@@ -371,10 +375,10 @@ export function assessmentResultsEmail({
     <p>Hi ${patientName},</p>
     <p>Your Inflection Edge results are in. Here is what your profile looks like:</p>
     <div style="text-align:center;padding:1.5rem 0">
-      <div style="font-size:3.5rem;font-weight:300;color:#2a7a8a;line-height:1">${overallScore}</div>
-      <div style="font-size:0.85rem;font-weight:500;color:#1a1a22;margin-top:0.25rem">${verdictName}</div>
+      <div style="font-size:3.5rem;font-weight:300;color:${COLOR_TEAL};line-height:1">${overallScore}</div>
+      <div style="font-size:0.85rem;font-weight:500;color:${COLOR_INK};margin-top:0.25rem">${verdictName}</div>
     </div>
-    <p style="font-size:0.82rem;color:#3a3a4a;line-height:1.65">${verdictText}</p>
+    <p style="font-size:0.82rem;color:${COLOR_INK2};line-height:1.65">${verdictText}</p>
     <div class="divider"></div>
     <table style="width:100%;border-collapse:collapse">
       <tbody>${dimRows}</tbody>
@@ -504,12 +508,12 @@ function metricRow(label: string, curr: number | undefined, prev: number | undef
   const displayCurr = invert ? 6 - curr : curr;
   const displayPrev = invert ? 6 - prev : prev;
   const arrow = deltaArrow(displayCurr, displayPrev);
-  const color = arrow === "↑" ? "#2a7a8a" : arrow === "↓" ? "#e05a5a" : "#888a96";
+  const color = arrow === "↑" ? COLOR_TEAL : arrow === "↓" ? COLOR_DANGER : COLOR_MUTED;
   return `<tr>
-    <td style="padding:0.35rem 0;font-size:0.8rem;color:#888a96;width:120px">${label}</td>
-    <td style="padding:0.35rem 0;font-size:0.8rem;color:#1a1a22">${displayCurr.toFixed(1)}</td>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:${COLOR_MUTED};width:120px">${label}</td>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:${COLOR_INK}">${displayCurr.toFixed(1)}</td>
     <td style="padding:0.35rem 0;font-size:0.9rem;color:${color};font-weight:600">${arrow}</td>
-    <td style="padding:0.35rem 0;font-size:0.8rem;color:#888a96">${displayPrev.toFixed(1)}</td>
+    <td style="padding:0.35rem 0;font-size:0.8rem;color:${COLOR_MUTED}">${displayPrev.toFixed(1)}</td>
   </tr>`;
 }
 
@@ -542,15 +546,15 @@ export function weeklyDigestEmail({
   const insight = hasCheckins ? weeklyInsight(thisWeekAvgs!, prevWeekAvgs) : null;
 
   const checkinSection = hasCheckins ? `
-    ${insight ? `<p style="font-size:0.9rem;color:#1a1a22;font-style:italic;margin-bottom:1rem">${insight}</p>` : ""}
+    ${insight ? `<p style="font-size:0.9rem;color:${COLOR_INK};font-style:italic;margin-bottom:1rem">${insight}</p>` : ""}
     <p><strong>This week's check-in averages</strong></p>
     <table style="width:100%;border-collapse:collapse;margin-bottom:0.5rem">
       <thead>
         <tr>
-          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Metric</th>
-          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">This week</th>
-          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Δ</th>
-          <th style="text-align:left;font-size:0.7rem;color:#888a96;padding:0.2rem 0">Last week</th>
+          <th style="text-align:left;font-size:0.7rem;color:${COLOR_MUTED};padding:0.2rem 0">Metric</th>
+          <th style="text-align:left;font-size:0.7rem;color:${COLOR_MUTED};padding:0.2rem 0">This week</th>
+          <th style="text-align:left;font-size:0.7rem;color:${COLOR_MUTED};padding:0.2rem 0">Δ</th>
+          <th style="text-align:left;font-size:0.7rem;color:${COLOR_MUTED};padding:0.2rem 0">Last week</th>
         </tr>
       </thead>
       <tbody>
@@ -579,15 +583,15 @@ export function weeklyDigestEmail({
         ${activeGoals.map((g) => {
           const escaped = escapeHtml(g.title);
           const barWidth = Math.min(100, g.pct);
-          const barColor = g.pct >= 100 ? "#2a7a8a" : g.pct >= 60 ? "#2a7a8a" : g.pct >= 30 ? "#b8960a" : "#888a96";
+          const barColor = g.pct >= 60 ? COLOR_TEAL : g.pct >= 30 ? COLOR_GOLD : COLOR_MUTED;
           return `<tr>
-            <td style="padding:0.4rem 0.5rem 0.4rem 0;font-size:0.85rem;color:#3a3a4a;vertical-align:middle;width:50%">${escaped}</td>
+            <td style="padding:0.4rem 0.5rem 0.4rem 0;font-size:0.85rem;color:${COLOR_INK2};vertical-align:middle;width:50%">${escaped}</td>
             <td style="padding:0.4rem 0;vertical-align:middle">
-              <div style="background:#f1ede7;border-radius:3px;height:6px;width:100%">
+              <div style="background:${COLOR_LIGHT};border-radius:3px;height:6px;width:100%">
                 <div style="background:${barColor};border-radius:3px;height:6px;width:${barWidth}%"></div>
               </div>
             </td>
-            <td style="padding:0.4rem 0 0.4rem 0.5rem;font-size:0.8rem;color:#888a96;white-space:nowrap;vertical-align:middle">${g.pct}% · ${g.current}→${g.target}</td>
+            <td style="padding:0.4rem 0 0.4rem 0.5rem;font-size:0.8rem;color:${COLOR_MUTED};white-space:nowrap;vertical-align:middle">${g.pct}% · ${g.current}→${g.target}</td>
           </tr>`;
         }).join("")}
       </tbody>
@@ -599,7 +603,7 @@ export function weeklyDigestEmail({
     else if (streak >= 14) msg = `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
     else if (streak >= 7) msg = `${streak}-day streak — a full week mapped.`;
     else msg = `${streak} days in a row.`;
-    return `<p style="font-size:0.9rem;color:#2a7a8a;font-weight:500;margin-bottom:0.5rem">🔥 ${escapeHtml(msg)}</p>`;
+    return `<p style="font-size:0.9rem;color:${COLOR_TEAL};font-weight:500;margin-bottom:0.5rem">🔥 ${escapeHtml(msg)}</p>`;
   })() : "";
 
   return layout(`
@@ -612,7 +616,7 @@ export function weeklyDigestEmail({
     ${bookingSection}
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in</a></p>
     <div class="divider"></div>
-    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:#2a7a8a">profile settings</a>.</p>
+    <p class="meta">To stop receiving weekly summaries, visit your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:${COLOR_TEAL}">profile settings</a>.</p>
   `);
 }
 
@@ -630,7 +634,7 @@ export function checkinReminderEmail({
   patientName = escapeHtml(patientName);
 
   const streakLine = atRiskStreak >= 2
-    ? `<p style="font-size:1rem;font-weight:600;color:#1a1a22">🔥 ${atRiskStreak}-day streak — don't break it now.</p>`
+    ? `<p style="font-size:1rem;font-weight:600;color:${COLOR_INK}">🔥 ${atRiskStreak}-day streak — don't break it now.</p>`
     : "";
   const bodyLine = atRiskStreak >= 2
     ? `<p>You've logged ${atRiskStreak} days in a row. One more entry keeps your streak alive and gives ${COMPANY.clinicianName} a complete picture of your week.</p>`
@@ -642,7 +646,7 @@ export function checkinReminderEmail({
     ${bodyLine}
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.checkin}">Log today's check-in →</a></p>
     <div class="divider"></div>
-    <p class="meta">You receive this reminder on days when you haven&apos;t logged a check-in yet. To stop, update your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:#2a7a8a">email preferences</a>.</p>
+    <p class="meta">You receive this reminder on days when you haven&apos;t logged a check-in yet. To stop, update your <a href="${portalUrl}${PORTAL_ROUTES.profile}#email-preferences" style="color:${COLOR_TEAL}">email preferences</a>.</p>
   `);
 }
 
@@ -670,25 +674,25 @@ export function checkinDipAlertEmail({
     <table style="width:100%;border-collapse:collapse;margin-top:0.5rem;font-size:0.8rem">
       <thead>
         <tr>
-          <th style="text-align:left;color:#888a96;padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Energy</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Mood</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Focus</th>
-          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
+          <th style="text-align:left;color:${COLOR_MUTED};padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Energy</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Mood</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Focus</th>
+          <th style="text-align:center;color:${COLOR_MUTED};padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
         </tr>
       </thead>
       <tbody>
         ${dipDays.map((d) => `
           <tr>
-            <td style="color:#3a3a4a;padding:0.2rem 0.4rem 0.2rem 0">${d.date}</td>
+            <td style="color:${COLOR_INK2};padding:0.2rem 0.4rem 0.2rem 0">${d.date}</td>
             <td style="text-align:center;color:${metricColor(d.sleep)};font-weight:500;padding:0.2rem">${d.sleep}</td>
             <td style="text-align:center;color:${metricColor(d.energy)};font-weight:500;padding:0.2rem">${d.energy}</td>
             <td style="text-align:center;color:${metricColor(d.mood)};font-weight:500;padding:0.2rem">${d.mood}</td>
             <td style="text-align:center;color:${metricColor(d.focus)};font-weight:500;padding:0.2rem">${d.focus}</td>
             <td style="text-align:center;color:${metricColor(d.stress, true)};font-weight:500;padding:0.2rem">${d.stress}</td>
           </tr>
-          ${d.note ? `<tr><td colspan="6" style="color:#888a96;font-style:italic;padding:0.1rem 0 0.3rem 0;font-size:0.75rem">"${escapeHtml(d.note)}"</td></tr>` : ""}
+          ${d.note ? `<tr><td colspan="6" style="color:${COLOR_MUTED};font-style:italic;padding:0.1rem 0 0.3rem 0;font-size:0.75rem">"${escapeHtml(d.note)}"</td></tr>` : ""}
         `).join("")}
       </tbody>
     </table>` : "";
@@ -760,7 +764,7 @@ export function profileCompletedAdminEmail({
   patientEmail = escapeHtml(patientEmail);
 
   return layout(`
-    <p>A patient has completed their intake profile — <strong style="color:#2a7a8a">ready for review</strong>.</p>
+    <p>A patient has completed their intake profile — <strong style="color:${COLOR_TEAL}">ready for review</strong>.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
     <p class="meta"><strong>Profile completeness:</strong> ${completionPct}%</p>
@@ -785,7 +789,7 @@ export function goalAchievedAdminEmail({
   goalTitle = escapeHtml(goalTitle);
 
   return layout(`
-    <p>A patient has reached their clinical goal — <strong style="color:#2a7a8a">achieved</strong>.</p>
+    <p>A patient has reached their clinical goal — <strong style="color:${COLOR_TEAL}">achieved</strong>.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName}</p>
     <p class="meta"><strong>Goal:</strong> ${goalTitle}</p>
@@ -811,7 +815,7 @@ export function goalAchievedPatientEmail({
 
   return layout(`
     <p>Hi ${patientName},</p>
-    <p>You&rsquo;ve reached your clinical goal — <strong style="color:#2a7a8a">${goalTitle}</strong>.</p>
+    <p>You&rsquo;ve reached your clinical goal — <strong style="color:${COLOR_TEAL}">${goalTitle}</strong>.</p>
     <p>This is a real milestone. Your consistent check-ins and assessments made it visible — and now it&rsquo;s recorded as complete.</p>
     <div class="divider"></div>
     <p><a class="btn" href="${portalUrl}${PORTAL_ROUTES.goals}">View your goals →</a></p>
