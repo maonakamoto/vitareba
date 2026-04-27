@@ -22,6 +22,11 @@ export async function POST(req: Request) {
     if (!ok) {
       return NextResponse.json({ success: false, error: "Invalid signature" }, { status: 401 });
     }
+  } else if (process.env.NODE_ENV === "production") {
+    // Signing key absent in production means a misconfigured deployment — reject
+    // rather than silently accept unauthenticated payloads.
+    console.error("[webhooks/calendly] CALENDLY_WEBHOOK_SIGNING_KEY not set — rejecting request");
+    return NextResponse.json({ success: false, error: "Webhook not configured" }, { status: 500 });
   }
 
   let payload: Record<string, unknown>;
