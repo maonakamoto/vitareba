@@ -6,6 +6,10 @@ export const RECENT_ASSESSMENTS_LIMIT = 2;
 /** How long (ms) to show a "Saved ✓" success indicator before resetting */
 export const SAVED_FEEDBACK_MS = 3_000;
 
+/** Async-save button label SSOT — used in every portal form submit button */
+export const SAVING_LABEL = "Saving…" as const;
+export const SAVED_LABEL = "Saved ✓" as const;
+
 /** Daily check-in scale: 1 = worst, 5 = best (except stress: 1 = none, 5 = high) */
 export const CHECKIN_SCALE_MIN = 1;
 export const CHECKIN_SCALE_MAX = 5;

@@ -6,6 +6,8 @@ import profileStyles from "./profile.module.css";
 import authStyles from "../../(auth)/auth.module.css";
 import {
   SAVED_FEEDBACK_MS,
+  SAVING_LABEL,
+  SAVED_LABEL,
   EXERCISE_FREQUENCY_OPTIONS,
   SLEEP_HOURS_MIN,
   SLEEP_HOURS_MAX,
@@ -383,7 +385,7 @@ export function ProfileForm() {
 
         {saveError && <p className={styles.formError}>{saveError}</p>}
         <button type="submit" className={authStyles.submit} disabled={saving}>
-          {saving ? "Saving…" : saved ? "Saved ✓" : "Save changes"}
+          {saving ? SAVING_LABEL : saved ? SAVED_LABEL : "Save changes"}
         </button>
       </form>
     </>

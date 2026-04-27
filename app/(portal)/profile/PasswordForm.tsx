@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "../portal.module.css";
 import profileStyles from "./profile.module.css";
 import authStyles from "../../(auth)/auth.module.css";
-import { SAVED_FEEDBACK_MS } from "@/lib/config/portal";
+import { SAVED_FEEDBACK_MS, SAVING_LABEL, SAVED_LABEL } from "@/lib/config/portal";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 
 export function PasswordForm() {
@@ -71,7 +71,7 @@ export function PasswordForm() {
           className={`${authStyles.submit} ${profileStyles.pwSubmitBtn}`}
           disabled={pwSaving || !pwForm.currentPassword || !pwForm.newPassword}
         >
-          {pwSaving ? "Saving…" : pwSaved ? "Saved ✓" : "Update password"}
+          {pwSaving ? SAVING_LABEL : pwSaved ? SAVED_LABEL : "Update password"}
         </button>
       </form>
     </div>
