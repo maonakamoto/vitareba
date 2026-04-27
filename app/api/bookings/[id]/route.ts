@@ -66,7 +66,7 @@ export async function PATCH(
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
           ? `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`
-          : `Your ${sessionLabel.toLowerCase()} request — ${COMPANY.shortName}`,
+          : `Your ${sessionLabel.toLowerCase()} request has been cancelled — ${COMPANY.shortName}`,
         html,
       }).catch(console.error);
     }
