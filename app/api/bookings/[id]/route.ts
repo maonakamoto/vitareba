@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { requireAdmin } from "@/lib/auth/guards";
+import { requireAdmin, requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
@@ -73,4 +73,35 @@ export async function PATCH(
   }
 
   return NextResponse.json({ success: true, data: updated });
+}
+
+// Patient self-cancellation — only own pending bookings
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const guard = await requireSession();
+  if (guard.error) return guard.error;
+
+  const { id } = await params;
+
+  const booking = await db.query.bookings.findFirst({ where: eq(bookings.id, id) });
+  if (!booking) {
+    return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
+  }
+  if (booking.userId !== guard.session.user.id) {
+    return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+  }
+  if (booking.status !== BOOKING_STATUS.pending) {
+    return NextResponse.json({ success: false, error: "Only pending bookings can be cancelled" }, { status: 400 });
+  }
+
+  try {
+    await db.update(bookings).set({ status: BOOKING_STATUS.cancelled }).where(eq(bookings.id, id));
+  } catch (err) {
+    console.error("[api/bookings/id] patient cancel failed:", err);
+    return NextResponse.json({ success: false, error: "Failed to cancel booking — please try again" }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
 }

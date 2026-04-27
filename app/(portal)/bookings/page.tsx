@@ -31,6 +31,7 @@ export default function BookingsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoadError(false);
@@ -87,6 +88,16 @@ export default function BookingsPage() {
       setSubmitError("Failed to submit booking. Please try again.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleCancel(bookingId: string) {
+    setCancellingId(bookingId);
+    try {
+      await fetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
+      load();
+    } finally {
+      setCancellingId(null);
     }
   }
 
@@ -258,12 +269,24 @@ export default function BookingsPage() {
                       Requested {formatDateNumeric(b.createdAt)}
                     </p>
                   </div>
-                  <span
-                    className={bookingStyles.bookingBadge}
-                    style={{ color: s.color, background: s.bg }}
-                  >
-                    {s.label}
-                  </span>
+                  <div className={bookingStyles.bookingActions}>
+                    <span
+                      className={bookingStyles.bookingBadge}
+                      style={{ color: s.color, background: s.bg }}
+                    >
+                      {s.label}
+                    </span>
+                    {b.status === "pending" && (
+                      <button
+                        type="button"
+                        className={bookingStyles.cancelBookingBtn}
+                        onClick={() => handleCancel(b.id)}
+                        disabled={cancellingId === b.id}
+                      >
+                        {cancellingId === b.id ? "Cancelling…" : "Cancel"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
