@@ -118,6 +118,34 @@ export function bookingCancelledEmail({
   `);
 }
 
+// ─── Booking: patient self-cancellation to admin ──────────────────────────────
+
+export function bookingCancelledAdminEmail({
+  patientName,
+  patientEmail,
+  bookingTypeLabel,
+  machineTypeLabel,
+  adminUrl,
+}: {
+  patientName: string;
+  patientEmail: string;
+  bookingTypeLabel: string;
+  machineTypeLabel?: string | null;
+  adminUrl: string;
+}) {
+  patientName = escapeHtml(patientName);
+  patientEmail = escapeHtml(patientEmail);
+
+  return layout(`
+    <p>A patient has cancelled their pending booking request.</p>
+    <div class="divider"></div>
+    <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
+    <p class="meta"><strong>Type:</strong> ${bookingTypeLabel}${machineTypeLabel ? ` — ${machineTypeLabel}` : ""}</p>
+    <div class="divider"></div>
+    <p><a class="btn" href="${adminUrl}">View patient →</a></p>
+  `);
+}
+
 // ─── Password reset ────────────────────────────────────────────────────────────
 
 export function passwordResetEmail({

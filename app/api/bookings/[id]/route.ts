@@ -7,9 +7,9 @@ import { requireAdmin, requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
-import { bookingConfirmedEmail, bookingCancelledEmail } from "@/lib/email/templates";
-import { PORTAL_URL, COMPANY } from "@/lib/config/company";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { bookingConfirmedEmail, bookingCancelledEmail, bookingCancelledAdminEmail } from "@/lib/email/templates";
+import { PORTAL_URL, COMPANY, getAdminEmails } from "@/lib/config/company";
+import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS, BOOKING_STATUS_VALUES, BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 
 const patchSchema = z.object({
@@ -101,6 +101,28 @@ export async function DELETE(
   } catch (err) {
     console.error("[api/bookings/id] patient cancel failed:", err);
     return NextResponse.json({ success: false, error: "Failed to cancel booking — please try again" }, { status: 500 });
+  }
+
+  // Notify admin of patient self-cancellation (fire-and-forget)
+  const adminEmails = getAdminEmails();
+  if (adminEmails.length > 0) {
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, booking.userId),
+      columns: { name: true, email: true },
+    }).catch(() => null);
+    const bookingTypeLabel = BOOKING_TYPE_CONFIG[booking.bookingType]?.label ?? booking.bookingType;
+    const machineTypeLabel = booking.machineType ? MACHINE_TYPE_CONFIG[booking.machineType]?.label : null;
+    sendEmail({
+      to: adminEmails,
+      subject: `Booking cancelled by patient — ${patient?.name ?? patient?.email ?? "Unknown"}`,
+      html: bookingCancelledAdminEmail({
+        patientName: patient?.name ?? "Unknown",
+        patientEmail: patient?.email ?? "",
+        bookingTypeLabel,
+        machineTypeLabel,
+        adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${booking.userId}`,
+      }),
+    }).catch(console.error);
   }
 
   return NextResponse.json({ success: true });
