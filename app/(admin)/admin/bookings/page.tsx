@@ -143,7 +143,7 @@ export default function AdminBookingsPage() {
                     </td>
                     <td>
                       <span className={styles.badge} style={{ color: s.color, background: s.bg }}>
-                        {b.status}
+                        {s.label}
                       </span>
                     </td>
                     <td>

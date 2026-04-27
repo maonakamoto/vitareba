@@ -138,7 +138,7 @@ export function AssessmentSection({
                     className={styles.bookingStatusBadge}
                     style={{ color: s.color, background: s.bg }}
                   >
-                    {latestBooking.status}
+                    {s.label}
                   </span>
                 );
               })()}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { COLOR_INK, COLOR_MUTED, COLOR_OFF, COLOR_TEAL, COLOR_WHITE } from "@/lib/config/theme";
+import styles from "./global-error.module.css";
 
 export default function GlobalError({
   error,
@@ -16,19 +16,13 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body style={{ fontFamily: "DM Sans, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", margin: 0, background: COLOR_OFF }}>
-        <div style={{ textAlign: "center", maxWidth: 480, padding: "2rem" }}>
-          <p style={{ fontSize: "1.25rem", fontWeight: 500, color: COLOR_INK, marginBottom: "0.75rem" }}>
-            Something went wrong
-          </p>
-          <p style={{ color: COLOR_MUTED, marginBottom: "1.5rem" }}>
+      <body className={styles.body}>
+        <div className={styles.container}>
+          <p className={styles.title}>Something went wrong</p>
+          <p className={styles.message}>
             The application hit an unexpected error. Please try again.
           </p>
-          <button
-            type="button"
-            onClick={reset}
-            style={{ background: COLOR_TEAL, color: COLOR_WHITE, border: "none", borderRadius: 6, padding: "0.625rem 1.5rem", cursor: "pointer", fontSize: "0.9rem" }}
-          >
+          <button type="button" onClick={reset} className={styles.button}>
             Try again
           </button>
         </div>
