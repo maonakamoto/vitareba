@@ -22,7 +22,7 @@
 }
 
 .message {
-  color: var(--muted, #888a96);
+  color: var(--muted, #71727c);
   margin-bottom: 1.5rem;
 }
 

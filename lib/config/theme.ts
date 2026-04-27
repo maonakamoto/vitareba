@@ -11,8 +11,8 @@ export const COLOR_INK = "#1a1a22";
 /** --ink2: secondary dark text */
 export const COLOR_INK2 = "#3a3a4a";
 
-/** --muted: nav links, captions, metadata */
-export const COLOR_MUTED = "#888a96";
+/** --muted: nav links, captions, metadata (darkened from #888a96 for WCAG AA on white) */
+export const COLOR_MUTED = "#71727c";
 
 /** --faint: decorative lines, faint text */
 export const COLOR_FAINT = "#c4c0b8";
