@@ -72,7 +72,19 @@ export function DocumentAddForm({ patientId }: { patientId: string }) {
             className={styles.docFileInput}
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xlsx,.csv"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => {
+              const selected = e.target.files?.[0] ?? null;
+              if (selected && selected.size > DOCUMENT_MAX_FILE_SIZE_MB * 1024 * 1024) {
+                setProgress("error");
+                setErrorMsg(`File exceeds the ${DOCUMENT_MAX_FILE_SIZE_MB} MB limit.`);
+                e.target.value = "";
+                setFile(null);
+              } else {
+                setProgress("idle");
+                setErrorMsg("");
+                setFile(selected);
+              }
+            }}
             required
           />
         </div>
