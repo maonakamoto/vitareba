@@ -9,6 +9,7 @@ import {
   type DimensionId,
 } from "@/lib/assessment/data";
 import { COMPANY } from "@/lib/config/company";
+import { STORAGE_KEYS, safeSessionSet } from "@/lib/utils/storage";
 import ResultsScreen from "./ResultsScreen";
 import styles from "./Assessment.module.css";
 
@@ -119,11 +120,7 @@ export default function Assessment({ onClose, onComplete }: Props) {
         .then((res) => res.json())
         .then((data) => {
           if (data?.data?.id) {
-            try {
-              sessionStorage.setItem("pendingLeadId", data.data.id);
-            } catch {
-              // sessionStorage unavailable — lead still recorded server-side
-            }
+            safeSessionSet(STORAGE_KEYS.pendingLeadId, data.data.id);
           }
         })
         .catch(() => {

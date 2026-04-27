@@ -9,6 +9,7 @@ import { Link, useRouter } from "@/lib/i18n/navigation";
 import styles from "../auth.module.css";
 import { AUTH_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { sanitizeReturnTo } from "@/lib/domain/auth";
+import { STORAGE_KEYS, safeSessionGet } from "@/lib/utils/storage";
 
 function RegisterForm() {
   const t = useTranslations("auth.register");
@@ -19,9 +20,7 @@ function RegisterForm() {
   const [hasAssessment, setHasAssessment] = useState(false);
 
   useEffect(() => {
-    try {
-      setHasAssessment(!!sessionStorage.getItem("pendingAssessment"));
-    } catch {}
+    setHasAssessment(!!safeSessionGet(STORAGE_KEYS.pendingAssessment));
   }, []);
 
   const [email, setEmail] = useState("");

@@ -7,17 +7,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
+import { STORAGE_KEYS, safeSessionGet, safeSessionRemove } from "@/lib/utils/storage";
 
 export function PendingAssessmentSaver() {
   const router = useRouter();
 
   useEffect(() => {
-    let pending: string | null = null;
-    try {
-      pending = sessionStorage.getItem("pendingAssessment");
-    } catch {
-      return;
-    }
+    const pending = safeSessionGet(STORAGE_KEYS.pendingAssessment);
     if (!pending) return;
 
     try {
@@ -27,15 +23,14 @@ export function PendingAssessmentSaver() {
       };
 
       // Mark the anonymous lead as converted (fire-and-forget — non-critical)
-      let leadId: string | null = null;
-      try { leadId = sessionStorage.getItem("pendingLeadId"); } catch {}
+      const leadId = safeSessionGet(STORAGE_KEYS.pendingLeadId);
       if (leadId) {
         fetch("/api/assessment-leads/convert", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leadId }),
         }).catch(() => {});
-        try { sessionStorage.removeItem("pendingLeadId"); } catch {}
+        safeSessionRemove(STORAGE_KEYS.pendingLeadId);
       }
 
       fetch("/api/assessment", {
@@ -50,7 +45,7 @@ export function PendingAssessmentSaver() {
           // instead of silently losing their guest-overlay scores to a
           // transient backend hiccup.
           if (res.ok || (res.status >= 400 && res.status < 500)) {
-            try { sessionStorage.removeItem("pendingAssessment"); } catch {}
+            safeSessionRemove(STORAGE_KEYS.pendingAssessment);
           }
           if (res.ok) {
             // Navigate to assessments page so user sees their saved results
@@ -61,7 +56,7 @@ export function PendingAssessmentSaver() {
           // Network error — keep the pending data so it can retry on next load.
         });
     } catch {
-      try { sessionStorage.removeItem("pendingAssessment"); } catch {}
+      safeSessionRemove(STORAGE_KEYS.pendingAssessment);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

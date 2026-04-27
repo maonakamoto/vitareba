@@ -161,7 +161,7 @@ export function passwordResetEmail({
 }) {
   return layout(`
     <p>You requested a password reset for your ${COMPANY.shortName} account.</p>
-    <p>Click the button below to set a new password. This link expires in <strong>${PASSWORD_RESET_TOKEN_EXPIRY_MS / 3_600_000} hour</strong>.</p>
+    <p>Click the button below to set a new password. This link expires in <strong>${PASSWORD_RESET_TOKEN_EXPIRY_MS / 3_600_000} ${PASSWORD_RESET_TOKEN_EXPIRY_MS / 3_600_000 === 1 ? "hour" : "hours"}</strong>.</p>
     <p><a class="btn" href="${resetUrl}">Reset password</a></p>
     <div class="divider"></div>
     <p class="meta">If you did not request this, you can safely ignore this email.</p>

@@ -12,6 +12,7 @@ import {
 import { COMPANY } from "@/lib/config/company";
 import { AUTH_ROUTES } from "@/lib/config/routes";
 import { routing } from "@/i18n/routing";
+import { STORAGE_KEYS, safeSessionSet } from "@/lib/utils/storage";
 import styles from "./Assessment.module.css";
 
 interface ResultsScreenProps {
@@ -131,14 +132,10 @@ export default function ResultsScreen({
             href={registerHref}
             className={styles.rBtnP}
             onClick={() => {
-              try {
-                sessionStorage.setItem(
-                  "pendingAssessment",
-                  JSON.stringify({ scores, overallScore: overall })
-                );
-              } catch {
-                // sessionStorage unavailable — proceed without saving
-              }
+              safeSessionSet(
+                STORAGE_KEYS.pendingAssessment,
+                JSON.stringify({ scores, overallScore: overall })
+              );
             }}
           >
             {i18n.results.saveResults}

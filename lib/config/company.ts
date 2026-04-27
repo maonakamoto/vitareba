@@ -2,6 +2,7 @@ export const COMPANY = {
   name: "VitaReBa GmbH",
   shortName: "VitaReBa",
   clinicianName: "Manuel",
+  partnerBrand: "Surf Your Life",
   email: "manuel@surfyourlife.org",
   address: {
     street: "Zollikerstrasse 183",

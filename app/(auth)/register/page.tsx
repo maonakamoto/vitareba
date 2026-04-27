@@ -8,6 +8,7 @@ import styles from "../auth.module.css";
 import { PASSWORD_MIN_LENGTH } from "@/lib/config/auth";
 import { PORTAL_ROUTES, AUTH_ROUTES } from "@/lib/config/routes";
 import { sanitizeReturnTo } from "@/lib/domain/auth";
+import { STORAGE_KEYS, safeSessionGet } from "@/lib/utils/storage";
 
 function RegisterForm() {
   const router = useRouter();
@@ -17,9 +18,7 @@ function RegisterForm() {
   const [hasAssessment, setHasAssessment] = useState(false);
 
   useEffect(() => {
-    try {
-      setHasAssessment(!!sessionStorage.getItem("pendingAssessment"));
-    } catch {}
+    setHasAssessment(!!safeSessionGet(STORAGE_KEYS.pendingAssessment));
   }, []);
 
   const [email, setEmail] = useState("");

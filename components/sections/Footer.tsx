@@ -8,7 +8,7 @@ export default async function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <Logo variant="light" tagline="Surf Your Life" small />
+      <Logo variant="light" tagline={COMPANY.partnerBrand} small />
       <div className={styles.legal}>
         © {COMPANY.foundingYear} {COMPANY.name} · {t("legal")}
       </div>
