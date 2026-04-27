@@ -1,5 +1,67 @@
 /// <reference types="vitest/globals" />
-import { computeProfileCompleteness, profileCompletenessColor } from "./profile";
+import { computeProfileCompleteness, profileCompletenessColor, profileUpdateSchema } from "./profile";
+
+// ─── profileUpdateSchema ──────────────────────────────────────────────────────
+
+describe("profileUpdateSchema", () => {
+  it("accepts an empty object (all fields optional)", () => {
+    expect(profileUpdateSchema.safeParse({}).success).toBe(true);
+  });
+
+  it("accepts a valid name string", () => {
+    expect(profileUpdateSchema.safeParse({ name: "Manuel Schabus" }).success).toBe(true);
+  });
+
+  it("rejects name: '' — min(1) means clients must omit the key instead of sending empty string", () => {
+    // This is the root cause of the profile-save bug: Zod rejects "" even though
+    // the field is .optional(). Clients must send name: undefined (i.e. omit the key)
+    // when the user hasn't set a name.
+    const result = profileUpdateSchema.safeParse({ name: "" });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts name: undefined (omitted key)", () => {
+    expect(profileUpdateSchema.safeParse({ name: undefined }).success).toBe(true);
+  });
+
+  it("accepts empty string for non-min(1) text fields like city", () => {
+    expect(profileUpdateSchema.safeParse({ city: "" }).success).toBe(true);
+  });
+
+  it("accepts sleepHoursAvg: null (nullable)", () => {
+    expect(profileUpdateSchema.safeParse({ sleepHoursAvg: null }).success).toBe(true);
+  });
+
+  it("accepts exerciseFrequency: null (nullable)", () => {
+    expect(profileUpdateSchema.safeParse({ exerciseFrequency: null }).success).toBe(true);
+  });
+
+  it("rejects an invalid exerciseFrequency value", () => {
+    expect(profileUpdateSchema.safeParse({ exerciseFrequency: "daily_morning" }).success).toBe(false);
+  });
+
+  it("accepts a full valid payload", () => {
+    const result = profileUpdateSchema.safeParse({
+      name: "Manuel Schabus",
+      phone: "+41 79 000 00 00",
+      dateOfBirth: "1985-05-20",
+      city: "Zürich",
+      occupation: "Clinician",
+      mainConcern: "Focus",
+      goals: "Optimise performance",
+      diagnosisHistory: "ADHD",
+      currentMedications: "None",
+      currentSupplements: "Magnesium",
+      sleepHoursAvg: 7,
+      exerciseFrequency: "moderate",
+      referralSource: "Referral",
+      notes: "Some notes",
+      digestOptOut: false,
+      reminderOptOut: true,
+    });
+    expect(result.success).toBe(true);
+  });
+});
 
 // ─── computeProfileCompleteness ───────────────────────────────────────────────
 
