@@ -23,6 +23,7 @@ export default function AdminThreadPage() {
   const load = useCallback(async () => {
     try {
       const res = await fetch(`/api/messages/${threadId}`);
+      if (!res.ok) { setLoadError(true); return; }
       const data = await res.json();
       setThread(data.data);
     } catch {

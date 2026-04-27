@@ -26,6 +26,7 @@ export default function AdminBookingsPage() {
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/bookings");
+      if (!res.ok) { setLoadError(true); return; }
       const data = await res.json();
       setBookings(data.data ?? []);
     } catch {

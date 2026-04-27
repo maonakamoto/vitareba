@@ -33,12 +33,14 @@ export default function AdminDocumentsPage() {
 
   const loadDocuments = useCallback(async () => {
     const res = await fetch("/api/documents");
+    if (!res.ok) throw new Error("Failed to load documents");
     const data = await res.json();
     setDocuments(data.data ?? []);
   }, []);
 
   const loadPatients = useCallback(async () => {
     const res = await fetch("/api/admin/patients");
+    if (!res.ok) throw new Error("Failed to load patients");
     const data = await res.json();
     setPatients(data.data ?? []);
   }, []);
