@@ -607,21 +607,59 @@ export function checkinDipAlertEmail({
   avgScore,
   days,
   adminUrl,
+  dipDays = [],
 }: {
   patientName: string;
   patientEmail: string;
   avgScore: number;
   days: number;
   adminUrl: string;
+  dipDays?: { date: string; sleep: number; energy: number; mood: number; focus: number; stress: number; note?: string }[];
 }) {
   patientName = escapeHtml(patientName);
   patientEmail = escapeHtml(patientEmail);
+
+  // Returns a hex color for a 1–5 metric value; inverted=true for stress (high = bad)
+  const metricColor = (val: number, inverted = false): string => {
+    const bad = inverted ? val >= 4 : val <= 2;
+    if (bad) return "#e05a5a";
+    if (val === 3) return "#d4820a";
+    return "#2a7a8a";
+  };
+
+  const dipTable = dipDays.length > 0 ? `
+    <table style="width:100%;border-collapse:collapse;margin-top:0.5rem;font-size:0.8rem">
+      <thead>
+        <tr>
+          <th style="text-align:left;color:#888a96;padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Energy</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Mood</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Focus</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${dipDays.map((d) => `
+          <tr>
+            <td style="color:#3a3a4a;padding:0.2rem 0.4rem 0.2rem 0">${d.date}</td>
+            <td style="text-align:center;color:${metricColor(d.sleep)};font-weight:500;padding:0.2rem">${d.sleep}</td>
+            <td style="text-align:center;color:${metricColor(d.energy)};font-weight:500;padding:0.2rem">${d.energy}</td>
+            <td style="text-align:center;color:${metricColor(d.mood)};font-weight:500;padding:0.2rem">${d.mood}</td>
+            <td style="text-align:center;color:${metricColor(d.focus)};font-weight:500;padding:0.2rem">${d.focus}</td>
+            <td style="text-align:center;color:${metricColor(d.stress, true)};font-weight:500;padding:0.2rem">${d.stress}</td>
+          </tr>
+          ${d.note ? `<tr><td colspan="6" style="color:#888a96;font-style:italic;padding:0.1rem 0 0.3rem 0;font-size:0.75rem">"${escapeHtml(d.note)}"</td></tr>` : ""}
+        `).join("")}
+      </tbody>
+    </table>` : "";
 
   return layout(`
     <p>A patient has had consistently low wellbeing scores for the past <strong>${days} days</strong>.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
-    <p class="meta"><strong>Average score (mood + energy + sleep):</strong> ${avgScore.toFixed(1)} / 5 over ${days} days</p>
+    <p class="meta"><strong>Average (mood + energy + sleep):</strong> ${avgScore.toFixed(1)} / 5</p>
+    ${dipTable}
     <div class="divider"></div>
     <p><a class="btn" href="${adminUrl}">View patient →</a></p>
     <p class="meta">This alert fires once per dip episode and resets when the patient returns above the threshold.</p>

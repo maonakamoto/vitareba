@@ -93,6 +93,15 @@ export async function GET(req: Request) {
         avgScore: overallAvg,
         days: CHECKIN_DIP_ALERT_DAYS,
         adminUrl,
+        dipDays: recent.map((c) => ({
+          date: c.date,
+          sleep: c.sleep,
+          energy: c.energy,
+          mood: c.mood,
+          focus: c.focus,
+          stress: c.stress,
+          note: c.notes ?? undefined,
+        })),
       }),
     });
   }
