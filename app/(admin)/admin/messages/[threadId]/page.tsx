@@ -7,7 +7,7 @@ import styles from "../../../admin.module.css";
 import { formatDateTime } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
 import { type ThreadDetailWithPatient } from "@/lib/config/messages";
-import { MESSAGE_BODY_MAX_LENGTH } from "@/lib/config/portal";
+import { MESSAGE_BODY_MAX_LENGTH, MESSAGE_POLL_INTERVAL_MS } from "@/lib/config/portal";
 import { ADMIN_ROUTES } from "@/lib/config/routes";
 
 export default function AdminThreadPage() {
@@ -32,6 +32,15 @@ export default function AdminThreadPage() {
   }, [threadId]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Poll for new messages while the tab is focused — matches portal thread behaviour
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!document.hidden) load();
+    }, MESSAGE_POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [load]);
+
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [thread?.messages.length]);
 
   async function handleSend(e: React.FormEvent) {
