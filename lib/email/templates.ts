@@ -15,6 +15,14 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#x27;");
 }
 
+/** Returns a hex color for a 1–5 check-in metric. inverted=true for stress (high = bad). */
+function metricColor(val: number, inverted = false): string {
+  const bad = inverted ? val >= 4 : val <= 2;
+  if (bad) return "#e05a5a";
+  if (val === 3) return "#d4820a";
+  return "#2a7a8a";
+}
+
 function layout(body: string) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -279,13 +287,6 @@ export function criticalPatientAlertEmail({
 }) {
   patientName = escapeHtml(patientName);
   patientEmail = escapeHtml(patientEmail);
-
-  const metricColor = (val: number, inverted = false): string => {
-    const bad = inverted ? val >= 4 : val <= 2;
-    if (bad) return "#e05a5a";
-    if (val === 3) return "#d4820a";
-    return "#2a7a8a";
-  };
 
   const checkinsTable = recentCheckins.length > 0 ? `
     <p class="meta" style="margin-bottom:0.25rem"><strong>Recent check-ins</strong></p>
@@ -664,14 +665,6 @@ export function checkinDipAlertEmail({
 }) {
   patientName = escapeHtml(patientName);
   patientEmail = escapeHtml(patientEmail);
-
-  // Returns a hex color for a 1–5 metric value; inverted=true for stress (high = bad)
-  const metricColor = (val: number, inverted = false): string => {
-    const bad = inverted ? val >= 4 : val <= 2;
-    if (bad) return "#e05a5a";
-    if (val === 3) return "#d4820a";
-    return "#2a7a8a";
-  };
 
   const dipTable = dipDays.length > 0 ? `
     <table style="width:100%;border-collapse:collapse;margin-top:0.5rem;font-size:0.8rem">
