@@ -15,7 +15,7 @@ import { USER_ROLE } from "@/lib/config/auth";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
-import { RECENT_ASSESSMENTS_LIMIT, DASHBOARD_TREND_DAYS } from "@/lib/config/portal";
+import { RECENT_ASSESSMENTS_LIMIT, DASHBOARD_TREND_DAYS, CHECKIN_HISTORY_DAYS } from "@/lib/config/portal";
 import { COMPANY } from "@/lib/config/company";
 import { formatDateISO } from "@/lib/utils/format";
 import { computeStreak } from "@/lib/domain/checkin";
@@ -35,10 +35,8 @@ export default async function DashboardPage() {
 
   const now = new Date();
   const today = formatDateISO(now);
-  // Fetch 110 days so streak display is accurate beyond the 100-day milestone.
-  // A 60-day window would show "60-day streak" for longer streaks, which is misleading.
   const historyStart = new Date(now);
-  historyStart.setDate(historyStart.getDate() - 110);
+  historyStart.setDate(historyStart.getDate() - CHECKIN_HISTORY_DAYS);
   const historyStartISO = formatDateISO(historyStart);
 
   const [
