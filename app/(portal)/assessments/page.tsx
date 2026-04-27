@@ -50,6 +50,11 @@ export default async function AssessmentsPage({
           <AssessmentTrendChartWrapper data={chartData} />
         </div>
       )}
+      {results.length === 1 && (
+        <p className={assessStyles.trendHint}>
+          Complete a second assessment to unlock your score trend chart.
+        </p>
+      )}
 
       {justSaved && (
         <div className={assessStyles.savedBanner}>

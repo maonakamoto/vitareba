@@ -70,6 +70,14 @@
   max-width: 320px;
 }
 
+/* ── Single-assessment trend hint ───────────────────────────────────────── */
+
+.trendHint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
 /* ── Inline teal link (empty state) ─────────────────────────────────────── */
 
 .emptyLink {

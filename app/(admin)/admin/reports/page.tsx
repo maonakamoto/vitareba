@@ -181,7 +181,7 @@ export default async function ReportsPage() {
         <StatCard
           label="Checked in today"
           value={`${todayCheckinCount} / ${patients.length}`}
-          sub={`${recentCheckins.length} total this week · ${uniqueActiveUsers} patients active`}
+          sub={`${recentCheckins.length} total this week · ${uniqueActiveUsers} patient${uniqueActiveUsers !== 1 ? "s" : ""} active`}
         />
         <StatCard
           label="Assessments taken"
