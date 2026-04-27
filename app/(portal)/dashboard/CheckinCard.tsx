@@ -3,6 +3,7 @@ import styles from "./dashboard.module.css";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { streakMessage } from "@/lib/domain/checkin";
 import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { COMPANY } from "@/lib/config/company";
 
 type TodayScores = Record<MetricKey, number>;
 
@@ -37,7 +38,7 @@ export function CheckinCard({
             </p>
           ) : (
             <p className={styles.checkinPromptText}>
-              30 seconds to log sleep, energy, mood, focus, and stress — this data feeds directly into your programme.
+              {COMPANY.clinicianName} reviews your trend before every consultation — 30 seconds is all it takes.
             </p>
           )}
           {showCommunity && (
