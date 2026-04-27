@@ -80,6 +80,22 @@ export async function GET(req: Request) {
       const adminUrl = `${PORTAL_URL}${ADMIN_ROUTES.patients}/${patient.id}`;
 
       // Send to all admin emails in parallel — independent recipients
+      const recentCheckins = patient.dailyCheckins.slice(0, 3).map((c) => ({
+        date: c.date,
+        sleep: c.sleep,
+        energy: c.energy,
+        mood: c.mood,
+        focus: c.focus,
+        stress: c.stress,
+      }));
+
+      const assessmentHistory = patient.assessmentResults.map((a) => ({
+        score: a.overallScore,
+        completedAt: a.completedAt instanceof Date
+          ? a.completedAt.toISOString().slice(0, 10)
+          : String(a.completedAt).slice(0, 10),
+      }));
+
       const results = await Promise.allSettled(
         adminEmails.map((adminEmail) =>
           sendEmail({
@@ -90,6 +106,8 @@ export async function GET(req: Request) {
               patientEmail: patient.email,
               reason,
               adminUrl,
+              recentCheckins,
+              assessmentHistory,
             }),
           })
         )

@@ -267,20 +267,66 @@ export function criticalPatientAlertEmail({
   patientEmail,
   reason,
   adminUrl,
+  recentCheckins = [],
+  assessmentHistory = [],
 }: {
   patientName: string;
   patientEmail: string;
   reason: string;
   adminUrl: string;
+  recentCheckins?: { date: string; sleep: number; energy: number; mood: number; focus: number; stress: number }[];
+  assessmentHistory?: { score: number; completedAt: string }[];
 }) {
   patientName = escapeHtml(patientName);
   patientEmail = escapeHtml(patientEmail);
+
+  const metricColor = (val: number, inverted = false): string => {
+    const bad = inverted ? val >= 4 : val <= 2;
+    if (bad) return "#e05a5a";
+    if (val === 3) return "#d4820a";
+    return "#2a7a8a";
+  };
+
+  const checkinsTable = recentCheckins.length > 0 ? `
+    <p class="meta" style="margin-bottom:0.25rem"><strong>Recent check-ins</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:0.5rem">
+      <thead>
+        <tr>
+          <th style="text-align:left;color:#888a96;padding:0.15rem 0.4rem 0.15rem 0;font-weight:400">Date</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Sleep</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Energy</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Mood</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Focus</th>
+          <th style="text-align:center;color:#888a96;padding:0.15rem 0.2rem;font-weight:400">Stress↑</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${recentCheckins.map((c) => `
+          <tr>
+            <td style="color:#3a3a4a;padding:0.2rem 0.4rem 0.2rem 0">${c.date}</td>
+            <td style="text-align:center;color:${metricColor(c.sleep)};font-weight:500;padding:0.2rem">${c.sleep}</td>
+            <td style="text-align:center;color:${metricColor(c.energy)};font-weight:500;padding:0.2rem">${c.energy}</td>
+            <td style="text-align:center;color:${metricColor(c.mood)};font-weight:500;padding:0.2rem">${c.mood}</td>
+            <td style="text-align:center;color:${metricColor(c.focus)};font-weight:500;padding:0.2rem">${c.focus}</td>
+            <td style="text-align:center;color:${metricColor(c.stress, true)};font-weight:500;padding:0.2rem">${c.stress}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>` : "";
+
+  const assessmentLine = assessmentHistory.length >= 2
+    ? `<p class="meta"><strong>Assessment:</strong> ${assessmentHistory[1].score} → ${assessmentHistory[0].score} / 100 (${assessmentHistory[0].completedAt})</p>`
+    : assessmentHistory.length === 1
+    ? `<p class="meta"><strong>Latest assessment:</strong> ${assessmentHistory[0].score} / 100 (${assessmentHistory[0].completedAt})</p>`
+    : "";
 
   return layout(`
     <p>A patient has been flagged as <strong style="color:#e05a5a">Critical</strong>.</p>
     <div class="divider"></div>
     <p class="meta"><strong>Patient:</strong> ${patientName} (${patientEmail})</p>
-    <p class="meta"><strong>Reason:</strong> ${reason}</p>
+    <p class="meta"><strong>Reason:</strong> ${escapeHtml(reason)}</p>
+    ${assessmentLine}
+    ${checkinsTable}
     <div class="divider"></div>
     <p><a class="btn" href="${adminUrl}">View patient →</a></p>
     <p class="meta">This alert fires once per critical episode. It will not repeat until the patient returns to active or attention and becomes critical again.</p>
