@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   bookingRequestAdminEmail,
+  bookingCancelledAdminEmail,
   bookingConfirmedEmail,
   bookingCancelledEmail,
   passwordResetEmail,
@@ -39,6 +40,15 @@ describe("email templates — structure", () => {
       adminUrl: "https://vitareba.ch/admin/patients/1",
     });
     expect(isHtml(html)).toBe(true);
+  });
+
+  it("bookingCancelledAdminEmail returns html", () => {
+    expect(isHtml(bookingCancelledAdminEmail({
+      patientName: "Anna Müller",
+      patientEmail: "anna@example.com",
+      bookingTypeLabel: "Consultation",
+      adminUrl: "https://vitareba.ch/admin/patients/1",
+    }))).toBe(true);
   });
 
   it("bookingConfirmedEmail returns html", () => {
@@ -134,6 +144,31 @@ describe("email templates — personalisation", () => {
   it("bookingRequestAdminEmail includes adminUrl as link href", () => {
     const adminUrl = "https://vitareba.ch/admin/patients/42";
     const html = bookingRequestAdminEmail({ patientName: "Anna", patientEmail: "anna@example.com", bookingTypeLabel: "Consultation", adminUrl });
+    expect(html).toContain(adminUrl);
+  });
+
+  it("bookingCancelledAdminEmail includes patient name, email, and booking type", () => {
+    const html = bookingCancelledAdminEmail({
+      patientName: "Anna Müller",
+      patientEmail: "anna@example.com",
+      bookingTypeLabel: "Technology Session",
+      machineTypeLabel: "PEMF",
+      adminUrl: "https://vitareba.ch/admin/patients/1",
+    });
+    expect(html).toContain("Anna Müller");
+    expect(html).toContain("anna@example.com");
+    expect(html).toContain("Technology Session");
+    expect(html).toContain("PEMF");
+  });
+
+  it("bookingCancelledAdminEmail includes adminUrl link", () => {
+    const adminUrl = "https://vitareba.ch/admin/patients/42";
+    const html = bookingCancelledAdminEmail({
+      patientName: "Test",
+      patientEmail: "t@example.com",
+      bookingTypeLabel: "Consultation",
+      adminUrl,
+    });
     expect(html).toContain(adminUrl);
   });
 
@@ -755,6 +790,17 @@ describe("email templates — HTML escaping", () => {
       patientEmail: "p@example.com",
       avgScore: 2.1,
       days: 3,
+      adminUrl: "https://vitareba.ch/admin",
+    });
+    expect(html).not.toContain("<b>");
+    expect(html).toContain("&lt;b&gt;");
+  });
+
+  it("bookingCancelledAdminEmail escapes < > in patientName", () => {
+    const html = bookingCancelledAdminEmail({
+      patientName: "<b>Hacker</b>",
+      patientEmail: "h@example.com",
+      bookingTypeLabel: "Consultation",
       adminUrl: "https://vitareba.ch/admin",
     });
     expect(html).not.toContain("<b>");
