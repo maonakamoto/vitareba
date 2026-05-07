@@ -2,7 +2,7 @@
 
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
-import { type MetricKey } from "@/lib/config/portal";
+import { type MetricKey, CHECKIN_STREAK_MILESTONES } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
 import { streakMessage } from "@/lib/domain/checkin";
 import {
@@ -719,16 +719,17 @@ export function checkinStreakMilestoneEmail({
   patientName = escapeHtml(patientName);
   const clinician = COMPANY.clinicianName;
 
+  const [STREAK_7, STREAK_30, STREAK_100] = CHECKIN_STREAK_MILESTONES;
   let heading: string;
   let body: string;
-  if (streak >= 100) {
-    heading = "100-day streak";
+  if (streak >= STREAK_100) {
+    heading = `${STREAK_100}-day streak`;
     body = "One hundred consecutive days of data. That is not a streak — that is a dataset. Your protocol can now be tuned with a precision most patients never reach.";
-  } else if (streak >= 30) {
-    heading = "30-day streak";
+  } else if (streak >= STREAK_30) {
+    heading = `${STREAK_30}-day streak`;
     body = `A full month of daily check-ins. The trend lines are real now — ${clinician} can see patterns that a handful of sessions would never reveal.`;
   } else {
-    heading = "7-day streak";
+    heading = `${STREAK_7}-day streak`;
     body = "One full week logged. Seven data points in a row is where the signal starts to separate from the noise. Keep going.";
   }
 

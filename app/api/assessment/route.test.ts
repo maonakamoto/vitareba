@@ -132,7 +132,8 @@ describe("POST /api/assessment", () => {
 
   it("returns 400 when a dimension key is missing from scores", async () => {
     mockRequireSession.mockResolvedValue(SESSION);
-    const { arousal: _omit, ...missingDimension } = VALID_SCORES;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { arousal, ...missingDimension } = VALID_SCORES;
     const res = await POST(new Request("https://example.com/api/assessment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

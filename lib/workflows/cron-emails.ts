@@ -16,6 +16,7 @@ import { DIMENSIONS, getVerdict, getInterpretation } from "@/lib/assessment/data
 import { COMPANY, PORTAL_URL } from "@/lib/config/company";
 import { EMAIL_TEMPLATE } from "@/lib/config/email-sequences";
 import { EMAIL_QUEUE_STATUS } from "@/lib/config/email-queue";
+import { GOAL_PROGRESS_COMPLETE_PCT } from "@/lib/config/portal";
 import { displayName } from "@/lib/utils/format";
 
 export type CronEmailsResult =
@@ -106,7 +107,7 @@ export async function runCronEmails(now: Date = new Date()): Promise<CronEmailsR
         const existingProfile = await db.query.profiles.findFirst({
           where: eq(profiles.userId, item.userId),
         });
-        if (computeProfileCompleteness(existingProfile as Record<string, unknown> | null) >= 100) {
+        if (computeProfileCompleteness(existingProfile as Record<string, unknown> | null) >= GOAL_PROGRESS_COMPLETE_PCT) {
           await db
             .update(emailQueue)
             .set({ status: EMAIL_QUEUE_STATUS.sent, sentAt: now })

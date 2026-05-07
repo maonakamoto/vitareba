@@ -9,7 +9,7 @@ import { getVerdictName } from "@/lib/assessment/data";
 import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { formatDateISO, displayName } from "@/lib/utils/format";
 import { USER_ROLE } from "@/lib/config/auth";
-import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { CHECKIN_METRICS, DAYS_PER_WEEK, WEEKLY_DIGEST_STREAK_WINDOW_DAYS, type MetricKey } from "@/lib/config/portal";
 import { BOOKING_STATUS, BOOKING_STATUS_CONFIG } from "@/lib/config/booking-status";
 
 type WeekAvgs = Record<MetricKey, number> | null;
@@ -29,11 +29,11 @@ export type CronWeeklyDigestResult =
 
 export async function runCronWeeklyDigest(now: Date = new Date()): Promise<CronWeeklyDigestResult> {
   const thisWeekStart = new Date(now);
-  thisWeekStart.setDate(thisWeekStart.getDate() - 7);
+  thisWeekStart.setDate(thisWeekStart.getDate() - DAYS_PER_WEEK);
   const prevWeekStart = new Date(now);
-  prevWeekStart.setDate(prevWeekStart.getDate() - 14);
+  prevWeekStart.setDate(prevWeekStart.getDate() - DAYS_PER_WEEK * 2);
   const streakWindowStart = new Date(now);
-  streakWindowStart.setDate(streakWindowStart.getDate() - 90);
+  streakWindowStart.setDate(streakWindowStart.getDate() - WEEKLY_DIGEST_STREAK_WINDOW_DAYS);
 
   const thisWeekISO = formatDateISO(thisWeekStart);
   const prevWeekISO = formatDateISO(prevWeekStart);

@@ -173,6 +173,12 @@ export const BADGE_MAX_COUNT = 99;
  */
 export const CHECKIN_STREAK_MILESTONES = [7, 30, 100] as const;
 
+/** Days in one calendar week — base unit for the weekly digest date windows */
+export const DAYS_PER_WEEK = 7;
+
+/** How many days of check-in history to fetch for streak computation in the weekly digest */
+export const WEEKLY_DIGEST_STREAK_WINDOW_DAYS = 90;
+
 /**
  * Metric key used to link a clinical goal to the Inflection Edge assessment overall score.
  * SSOT — import this constant wherever goal metric comparisons or labels are needed.
