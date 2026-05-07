@@ -89,7 +89,7 @@ type NavItem = {
   href: string;
   label: string;
   Icon: React.ComponentType;
-  badgeKey?: "messages";
+  badgeKey?: "messages" | "goals";
 };
 
 const NAV_GROUPS: NavItem[][] = [
@@ -100,7 +100,7 @@ const NAV_GROUPS: NavItem[][] = [
     { href: PORTAL_ROUTES.checkin,     label: "Daily Check-in", Icon: IcoCheckin },
     { href: PORTAL_ROUTES.assessment,  label: "Assessment",     Icon: IcoAssessment },
     { href: PORTAL_ROUTES.assessments, label: "My Results",     Icon: IcoResults },
-    { href: PORTAL_ROUTES.goals,       label: "My Goals",       Icon: IcoGoals },
+    { href: PORTAL_ROUTES.goals,       label: "My Goals",       Icon: IcoGoals, badgeKey: "goals" },
   ],
   [
     { href: PORTAL_ROUTES.bookings,  label: "Bookings",                      Icon: IcoBookings },
@@ -127,13 +127,15 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-type Badges = { messages: number };
+type Badges = { messages: number; goals: number };
 
 // ─── Sidebar nav (desktop) ────────────────────────────────────────────────────
 
-export function PortalNav({ unreadMessages = 0, hasTodayCheckin = true }: { unreadMessages?: number; hasTodayCheckin?: boolean }) {
+export function PortalNav({ unreadMessages = 0, hasTodayCheckin = true, newGoals = 0 }: { unreadMessages?: number; hasTodayCheckin?: boolean; newGoals?: number }) {
   const pathname = usePathname();
-  const badges: Badges = { messages: unreadMessages };
+  // Suppress goals badge when the patient is already viewing the goals page
+  const goalsOnPage = pathname === PORTAL_ROUTES.goals;
+  const badges: Badges = { messages: unreadMessages, goals: goalsOnPage ? 0 : newGoals };
 
   return (
     <nav className={styles.nav} aria-label="Portal navigation">
@@ -171,9 +173,10 @@ export function PortalNav({ unreadMessages = 0, hasTodayCheckin = true }: { unre
 
 // ─── Mobile bottom tab bar ────────────────────────────────────────────────────
 
-export function BottomNav({ unreadMessages = 0, hasTodayCheckin = true }: { unreadMessages?: number; hasTodayCheckin?: boolean }) {
+export function BottomNav({ unreadMessages = 0, hasTodayCheckin = true, newGoals = 0 }: { unreadMessages?: number; hasTodayCheckin?: boolean; newGoals?: number }) {
   const pathname = usePathname();
-  const badges: Badges = { messages: unreadMessages };
+  const goalsOnPage = pathname === PORTAL_ROUTES.goals;
+  const badges: Badges = { messages: unreadMessages, goals: goalsOnPage ? 0 : newGoals };
 
   return (
     <nav className={styles.bottomNav} aria-label="Mobile navigation">

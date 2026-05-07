@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { clinicalGoals } from "@/lib/db/schema";
+import { clinicalGoals, profiles } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../portal.module.css";
@@ -21,12 +21,20 @@ export default async function GoalsPage() {
   const session = await auth();
   if (!session) return null;
 
+  const now = new Date();
   let goals: Awaited<ReturnType<typeof db.query.clinicalGoals.findMany>>;
   try {
-    goals = await db.query.clinicalGoals.findMany({
-      where: eq(clinicalGoals.patientId, session.user.id),
-      orderBy: [asc(clinicalGoals.createdAt)],
-    });
+    // Mark goals as seen in parallel with fetching them — clears the nav badge
+    [goals] = await Promise.all([
+      db.query.clinicalGoals.findMany({
+        where: eq(clinicalGoals.patientId, session.user.id),
+        orderBy: [asc(clinicalGoals.createdAt)],
+      }),
+      db.insert(profiles)
+        .values({ userId: session.user.id, goalsSeenAt: now })
+        .onConflictDoUpdate({ target: profiles.userId, set: { goalsSeenAt: now } })
+        .catch(() => {/* non-critical — badge simply stays until next visit */}),
+    ]);
   } catch {
     return (
       <div>

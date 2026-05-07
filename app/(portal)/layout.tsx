@@ -8,8 +8,8 @@ import { UserDropdown } from "@/components/portal/UserDropdown";
 import { PortalNav, BottomNav } from "@/components/portal/PortalNav";
 import { NavBreadcrumb } from "@/components/portal/NavBreadcrumb";
 import { db } from "@/lib/db";
-import { users, dailyCheckins } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { users, dailyCheckins, clinicalGoals, profiles } from "@/lib/db/schema";
+import { eq, and, isNull } from "drizzle-orm";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { formatDateISO } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
@@ -26,7 +26,7 @@ export default async function PortalLayout({ children }: { children: React.React
 
   const today = formatDateISO(new Date());
 
-  const [dbUser, unreadMessages, todayCheckin] = await Promise.all([
+  const [dbUser, unreadMessages, todayCheckin, patientProfile, activeGoalDates] = await Promise.all([
     db.query.users.findFirst({
       where: eq(users.id, session.user.id),
       columns: { name: true },
@@ -36,7 +36,20 @@ export default async function PortalLayout({ children }: { children: React.React
       where: and(eq(dailyCheckins.userId, session.user.id), eq(dailyCheckins.date, today)),
       columns: { id: true },
     }),
+    db.query.profiles.findFirst({
+      where: eq(profiles.userId, session.user.id),
+      columns: { goalsSeenAt: true },
+    }),
+    db.query.clinicalGoals.findMany({
+      where: and(eq(clinicalGoals.patientId, session.user.id), isNull(clinicalGoals.completedAt)),
+      columns: { createdAt: true },
+    }),
   ]);
+
+  const goalsSeenAt = patientProfile?.goalsSeenAt ?? null;
+  const newGoalsCount = activeGoalDates.filter(
+    (g) => !goalsSeenAt || g.createdAt > goalsSeenAt
+  ).length;
 
   const hasTodayCheckin = !!todayCheckin;
 
@@ -49,7 +62,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <Link href="/" className={styles.logoLink} aria-label={`${COMPANY.shortName} — home`}>
           <Logo />
         </Link>
-        <PortalNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} />
+        <PortalNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} newGoals={newGoalsCount} />
       </aside>
 
       <div className={styles.mainWrap}>
@@ -60,7 +73,7 @@ export default async function PortalLayout({ children }: { children: React.React
         <main className={styles.main}>{children}</main>
       </div>
 
-      <BottomNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} />
+      <BottomNav unreadMessages={unreadMessages} hasTodayCheckin={hasTodayCheckin} newGoals={newGoalsCount} />
     </div>
   );
 }
