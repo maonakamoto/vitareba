@@ -6,14 +6,13 @@ import { requireSession } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
-import { bookingRequestAdminEmail } from "@/lib/email/templates";
+import { bookingRequestAdminEmail, bookingConfirmedEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { bookingCreateSchema, adminBookingCreateSchema } from "@/lib/domain/bookings";
-import { bookingConfirmedEmail } from "@/lib/email/templates";
-import { BOOKING_STATUS } from "@/lib/config/booking-status";
-import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
+
+import { BOOKING_STATUS, BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 import { runAfterResponse } from "@/lib/utils/post-response";
 import { serviceUnavailable } from "@/lib/utils/api-response";
 import { displayName } from "@/lib/utils/format";
