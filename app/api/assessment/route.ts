@@ -8,6 +8,7 @@ import { eq, desc } from "drizzle-orm";
 import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
 import { assessmentSaveSchema } from "@/lib/domain/assessment";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 
 export async function POST(req: Request) {
   const guard = await requireSession();
@@ -74,7 +75,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[api/assessment] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: results });

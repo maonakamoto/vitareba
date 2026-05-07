@@ -12,6 +12,7 @@ import { newDocumentEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { eq } from "drizzle-orm";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { displayName } from "@/lib/utils/format";
 
 const MAX_BYTES = DOCUMENT_MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
       to: patient.email,
       subject: `New document shared: ${trimmedTitle}`,
       html: newDocumentEmail({
-        patientName: patient.name ?? patient.email,
+        patientName: displayName(patient.name, patient.email),
         title: trimmedTitle,
         portalUrl: PORTAL_URL,
       }),

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { assessmentLeads } from "@/lib/db/schema";
 import { ASSESSMENT_SCORE_MIN, ASSESSMENT_SCORE_MAX } from "@/lib/assessment/data";
 
@@ -33,10 +34,7 @@ export async function POST(req: Request) {
       .returning();
   } catch (err) {
     console.error("[api/assessment-leads] insert failed:", err);
-    return NextResponse.json(
-      { success: false, error: "Service unavailable — please try again" },
-      { status: 500 }
-    );
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: { id: lead.id } }, { status: 201 });

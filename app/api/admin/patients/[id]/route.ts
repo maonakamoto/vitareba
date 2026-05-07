@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { eq, desc } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth/guards";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { db } from "@/lib/db";
 import { users, assessmentResults, bookings, documents, threads, threadMessages } from "@/lib/db/schema";
 
@@ -37,7 +38,7 @@ export async function GET(
     });
   } catch (err) {
     console.error("[api/admin/patients/id] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   if (!patient) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { and, eq, gt } from "drizzle-orm";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, PASSWORD_RESET_TOKEN_MAX_LENGTH, RESET_TOKEN_IDENTIFIER_PREFIX } from "@/lib/config/auth";
 import { db } from "@/lib/db";
 import { users, verificationTokens } from "@/lib/db/schema";
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[api/auth/reset-password] token lookup failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   if (!record) {

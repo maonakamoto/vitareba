@@ -12,6 +12,8 @@ import { sendEmail } from "@/lib/email";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES } from "@/lib/config/routes";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 export async function GET() {
   const guard = await requireSession();
@@ -30,7 +32,7 @@ export async function GET() {
     ]);
   } catch (err) {
     console.error("[api/profile] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({
@@ -93,9 +95,9 @@ export async function PATCH(req: Request) {
         if (!patient) return;
         await sendEmail({
           to: adminEmails,
-          subject: `Profile ready: ${patient.name ?? patient.email}`,
+          subject: `Profile ready: ${displayName(patient.name, patient.email)}`,
           html: profileCompletedAdminEmail({
-            patientName: patient.name ?? patient.email ?? "",
+            patientName: displayName(patient.name, patient.email, ""),
             patientEmail: patient.email ?? "",
             completionPct: newPct,
             adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,

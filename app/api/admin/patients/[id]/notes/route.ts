@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/guards";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { PATIENT_NOTE_MAX_LENGTH } from "@/lib/config/portal";
 import { db } from "@/lib/db";
 import { patientNotes, users } from "@/lib/db/schema";
@@ -25,7 +26,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
     });
   } catch (err) {
     console.error("[api/admin/notes] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: notes });

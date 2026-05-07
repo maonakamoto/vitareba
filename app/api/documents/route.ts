@@ -13,6 +13,8 @@ import { PORTAL_URL } from "@/lib/config/company";
 import { DOCUMENT_TITLE_MAX_LENGTH, MIME_TYPE_MAX_LENGTH } from "@/lib/config/portal";
 import { UUID_RE } from "@/lib/utils/validate";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
@@ -53,7 +55,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: true, data: results });
   } catch (err) {
     console.error("[api/documents] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 }
 
@@ -91,7 +93,7 @@ export async function POST(req: Request) {
       to: patient.email,
       subject: `New document shared: ${parsed.data.title}`,
       html: newDocumentEmail({
-        patientName: patient.name ?? patient.email,
+        patientName: displayName(patient.name, patient.email),
         title: parsed.data.title,
         portalUrl: PORTAL_URL,
       }),

@@ -12,6 +12,8 @@ import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { replySchema } from "@/lib/domain/messages";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 export async function GET(
   _req: Request,
@@ -36,7 +38,7 @@ export async function GET(
     });
   } catch (err) {
     console.error("[api/messages/threadId] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   if (!thread) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
@@ -74,7 +76,7 @@ export async function POST(
     thread = await db.query.threads.findFirst({ where: eq(threads.id, threadId) });
   } catch (err) {
     console.error("[api/messages/threadId] POST thread lookup failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
   if (!thread) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
   if (session.user.role !== USER_ROLE.admin && thread.patientId !== session.user.id) {
@@ -116,7 +118,7 @@ export async function POST(
         to: patient.email,
         subject: `New message: ${thread.subject} — ${COMPANY.shortName}`,
         html: newMessageEmail({
-          recipientName: patient.name ?? "there",
+          recipientName: displayName(patient.name, patient.email),
           senderName: sender?.name ?? COMPANY.shortName,
           subject: thread.subject,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.messages}/${threadId}`,

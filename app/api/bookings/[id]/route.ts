@@ -12,6 +12,7 @@ import { PORTAL_URL, COMPANY, getAdminEmails } from "@/lib/config/company";
 import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS, BOOKING_STATUS_VALUES, BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { displayName } from "@/lib/utils/format";
 
 const patchSchema = z.object({
   status: z.enum(BOOKING_STATUS_VALUES),
@@ -61,8 +62,8 @@ export async function PATCH(
       const machineLabel = updated.machineType ? MACHINE_TYPE_CONFIG[updated.machineType]?.label : null;
       const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
       const html = parsed.data.status === BOOKING_STATUS.confirmed
-        ? bookingConfirmedEmail({ patientName: patient.name ?? "there", sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` })
-        : bookingCancelledEmail({ patientName: patient.name ?? "there", sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` });
+        ? bookingConfirmedEmail({ patientName: displayName(patient.name, patient.email), sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` })
+        : bookingCancelledEmail({ patientName: displayName(patient.name, patient.email), sessionLabel, portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}` });
       await sendEmail({
         to: patient.email,
         subject: parsed.data.status === BOOKING_STATUS.confirmed
@@ -115,9 +116,9 @@ export async function DELETE(
       });
       await sendEmail({
         to: adminEmails,
-        subject: `Booking cancelled by patient — ${patient?.name ?? patient?.email ?? "Unknown"}`,
+        subject: `Booking cancelled by patient — ${displayName(patient?.name, patient?.email, "Unknown")}`,
         html: bookingCancelledAdminEmail({
-          patientName: patient?.name ?? "Unknown",
+          patientName: displayName(patient?.name, patient?.email, "Unknown"),
           patientEmail: patient?.email ?? "",
           bookingTypeLabel,
           machineTypeLabel,

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/guards";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { db } from "@/lib/db";
 import { clinicalGoals } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -23,7 +24,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
     });
   } catch (err) {
     console.error("[api/admin/goals] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: goals });

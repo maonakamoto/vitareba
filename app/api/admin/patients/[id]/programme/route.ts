@@ -11,6 +11,8 @@ import { programmeAssignedEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -27,7 +29,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
     });
   } catch (err) {
     console.error("[api/admin/programme] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: assignment ?? null });
@@ -88,7 +90,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
           to: patient.email,
           subject: `You've been enrolled in ${PROGRAMME_CONFIG[programme].label}`,
           html: programmeAssignedEmail({
-            patientName: patient.name ?? patient.email,
+            patientName: displayName(patient.name, patient.email),
             programmeLabel: PROGRAMME_CONFIG[programme].label,
             phaseLabel: PHASE_CONFIG[phase].label,
             phaseDescription: PHASE_CONFIG[phase].description,

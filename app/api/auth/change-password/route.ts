@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/guards";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH } from "@/lib/config/auth";
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[api/auth/change-password] user lookup failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   // No password set means OAuth-only account — can't change what doesn't exist

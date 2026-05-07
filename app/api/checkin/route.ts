@@ -12,6 +12,7 @@ import { sendEmail } from "@/lib/email/index";
 import { checkinStreakMilestoneEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
 
 export async function GET(req: Request) {
   const guard = await requireSession();
@@ -39,7 +40,7 @@ export async function GET(req: Request) {
     });
   } catch (err) {
     console.error("[api/checkin] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   // Today's check-in

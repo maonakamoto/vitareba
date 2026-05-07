@@ -8,14 +8,15 @@ import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
 import { bookingRequestAdminEmail } from "@/lib/email/templates";
 import { PORTAL_URL, COMPANY, getAdminEmails } from "@/lib/config/company";
-import { ADMIN_ROUTES } from "@/lib/config/routes";
+import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { bookingCreateSchema, adminBookingCreateSchema } from "@/lib/domain/bookings";
 import { bookingConfirmedEmail } from "@/lib/email/templates";
-import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 export async function GET() {
   const guard = await requireSession();
@@ -35,7 +36,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[api/bookings] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: results });
@@ -80,7 +81,7 @@ export async function POST(req: Request) {
         to: patient.email,
         subject: `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`,
         html: bookingConfirmedEmail({
-          patientName: patient.name ?? "there",
+          patientName: displayName(patient.name, patient.email),
           sessionLabel,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}`,
         }),
@@ -120,9 +121,9 @@ export async function POST(req: Request) {
       });
       await sendEmail({
         to: adminEmails,
-        subject: `New ${bookingTypeLabel.toLowerCase()} request — ${patient?.name ?? session.user.email}`,
+        subject: `New ${bookingTypeLabel.toLowerCase()} request — ${displayName(patient?.name, patient?.email ?? session.user.email)}`,
         html: bookingRequestAdminEmail({
-          patientName: patient?.name ?? "Unknown",
+          patientName: displayName(patient?.name, patient?.email, "Unknown"),
           patientEmail: patient?.email ?? "",
           bookingTypeLabel,
           machineTypeLabel,

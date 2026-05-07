@@ -13,6 +13,8 @@ import { newMessageEmail } from "@/lib/email/templates";
 import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { runAfterResponse } from "@/lib/utils/post-response";
+import { serviceUnavailable } from "@/lib/utils/api-response";
+import { displayName } from "@/lib/utils/format";
 
 const createSchema = z.object({
   subject: z.string().min(1).max(MESSAGE_SUBJECT_MAX_LENGTH),
@@ -42,7 +44,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("[api/messages] GET failed:", err);
-    return NextResponse.json({ success: false, error: "Service unavailable — please try again" }, { status: 500 });
+    return serviceUnavailable();
   }
 
   return NextResponse.json({ success: true, data: results });
@@ -94,7 +96,7 @@ export async function POST(req: Request) {
         to: patient.email,
         subject: `New message: ${parsed.data.subject} — ${COMPANY.shortName}`,
         html: newMessageEmail({
-          recipientName: patient.name ?? "there",
+          recipientName: displayName(patient.name, patient.email),
           senderName: COMPANY.clinicianName,
           subject: parsed.data.subject,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.messages}/${thread.id}`,
