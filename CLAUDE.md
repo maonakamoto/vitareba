@@ -315,6 +315,15 @@ pnpm db:studio    # Drizzle Studio for DB inspection
 
 **Before every push:** `pnpm build` must pass locally. Never rely on Vercel to catch TypeScript errors.
 
+## Codex CLI Baseline
+
+This repo should assume **OpenAI Codex `rust-v0.128.0` or newer** (released **April 30, 2026**).
+
+- Upgrade Codex with `codex update`.
+- Do not rely on `--full-auto`. As of `0.128.0`, that flag is deprecated; use explicit permission profiles and trust flows instead.
+- Prefer explicit sandbox/approval settings over legacy shorthand when documenting or automating agent runs for this repo.
+- If you use the TUI, `0.128.0` adds persisted `/goal` workflows plus `/statusline` and `/title` editing; treat those as optional operator features, not app behavior.
+
 ## Deploy Workflow (agentic — do this every push)
 
 After every `git push`, monitor to completion before reporting done:

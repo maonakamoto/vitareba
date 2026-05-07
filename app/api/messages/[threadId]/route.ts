@@ -11,6 +11,7 @@ import { COMPANY, PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { replySchema } from "@/lib/domain/messages";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function GET(
   _req: Request,
@@ -43,17 +44,18 @@ export async function GET(
     return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
   }
 
-  // Mark messages from the other party as read (fire-and-forget — don't block the response)
-  db.update(threadMessages)
-    .set({ readAt: new Date() })
-    .where(
-      and(
-        eq(threadMessages.threadId, threadId),
-        ne(threadMessages.senderId, session.user.id),
-        isNull(threadMessages.readAt)
-      )
-    )
-    .catch((err) => console.error("[api/messages/threadId] mark-read failed:", err));
+  // Mark messages as read after returning the thread payload.
+  runAfterResponse(async () => {
+    await db.update(threadMessages)
+      .set({ readAt: new Date() })
+      .where(
+        and(
+          eq(threadMessages.threadId, threadId),
+          ne(threadMessages.senderId, session.user.id),
+          isNull(threadMessages.readAt)
+        )
+      );
+  }, "[api/messages/threadId] mark-read failed:");
 
   return NextResponse.json({ success: true, data: thread });
 }
@@ -99,17 +101,18 @@ export async function POST(
     return NextResponse.json({ success: false, error: "Failed to send message — please try again" }, { status: 500 });
   }
 
-  // Notify the other party (fire-and-forget)
+  // Schedule notification work after the response so it is not dropped when the
+  // request lifecycle ends.
   const adminEmails = getAdminEmails();
 
   if (session.user.role === USER_ROLE.admin) {
-    // Admin sent → notify patient
-    const [patient, sender] = await Promise.all([
-      db.query.users.findFirst({ where: eq(users.id, thread.patientId), columns: { name: true, email: true } }).catch(() => null),
-      db.query.users.findFirst({ where: eq(users.id, session.user.id), columns: { name: true } }).catch(() => null),
-    ]);
-    if (patient?.email) {
-      sendEmail({
+    runAfterResponse(async () => {
+      const [patient, sender] = await Promise.all([
+        db.query.users.findFirst({ where: eq(users.id, thread.patientId), columns: { name: true, email: true } }),
+        db.query.users.findFirst({ where: eq(users.id, session.user.id), columns: { name: true } }),
+      ]);
+      if (!patient?.email) return;
+      await sendEmail({
         to: patient.email,
         subject: `New message: ${thread.subject} — ${COMPANY.shortName}`,
         html: newMessageEmail({
@@ -118,24 +121,25 @@ export async function POST(
           subject: thread.subject,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.messages}/${threadId}`,
         }),
-      }).catch(console.error);
-    }
+      });
+    }, "[api/messages/threadId] patient notification failed:");
   } else if (adminEmails.length > 0) {
-    // Patient sent → notify admin(s)
-    const patient = await db.query.users.findFirst({
-      where: eq(users.id, session.user.id),
-      columns: { name: true, email: true },
-    }).catch(() => null);
-    sendEmail({
-      to: adminEmails,
-      subject: `New message from ${patient?.name ?? "patient"}: ${thread.subject}`,
-      html: newMessageEmail({
-        recipientName: COMPANY.clinicianName,
-        senderName: patient?.name ?? "Patient",
-        subject: thread.subject,
-        portalUrl: `${PORTAL_URL}${ADMIN_ROUTES.messages}/${threadId}`,
-      }),
-    }).catch(console.error);
+    runAfterResponse(async () => {
+      const patient = await db.query.users.findFirst({
+        where: eq(users.id, session.user.id),
+        columns: { name: true, email: true },
+      });
+      await sendEmail({
+        to: adminEmails,
+        subject: `New message from ${patient?.name ?? "patient"}: ${thread.subject}`,
+        html: newMessageEmail({
+          recipientName: COMPANY.clinicianName,
+          senderName: patient?.name ?? "Patient",
+          subject: thread.subject,
+          portalUrl: `${PORTAL_URL}${ADMIN_ROUTES.messages}/${threadId}`,
+        }),
+      });
+    }, "[api/messages/threadId] admin notification failed:");
   }
 
   return NextResponse.json({ success: true, data: message }, { status: 201 });

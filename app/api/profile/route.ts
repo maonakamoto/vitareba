@@ -11,6 +11,7 @@ import { profileCompletedAdminEmail } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email";
 import { PORTAL_URL, getAdminEmails } from "@/lib/config/company";
 import { ADMIN_ROUTES } from "@/lib/config/routes";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function GET() {
   const guard = await requireSession();
@@ -83,21 +84,24 @@ export async function PATCH(req: Request) {
 
   if (oldPct < threshold && newPct >= threshold) {
     const adminEmails = getAdminEmails();
-    const patient = await db.query.users.findFirst({
-      where: eq(users.id, session.user.id),
-      columns: { name: true, email: true },
-    });
-    if (adminEmails.length > 0 && patient) {
-      sendEmail({
-        to: adminEmails,
-        subject: `Profile ready: ${patient.name ?? patient.email}`,
-        html: profileCompletedAdminEmail({
-          patientName: patient.name ?? patient.email ?? "",
-          patientEmail: patient.email ?? "",
-          completionPct: newPct,
-          adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
-        }),
-      }).catch(console.error);
+    if (adminEmails.length > 0) {
+      runAfterResponse(async () => {
+        const patient = await db.query.users.findFirst({
+          where: eq(users.id, session.user.id),
+          columns: { name: true, email: true },
+        });
+        if (!patient) return;
+        await sendEmail({
+          to: adminEmails,
+          subject: `Profile ready: ${patient.name ?? patient.email}`,
+          html: profileCompletedAdminEmail({
+            patientName: patient.name ?? patient.email ?? "",
+            patientEmail: patient.email ?? "",
+            completionPct: newPct,
+            adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
+          }),
+        });
+      }, "[api/profile] profile completion email failed:");
     }
   }
 

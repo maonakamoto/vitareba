@@ -5,6 +5,7 @@ import styles from "../portal.module.css";
 import bookingStyles from "./bookings.module.css";
 import authStyles from "../../(auth)/auth.module.css";
 import {
+  BOOKING_STATUS,
   BOOKING_STATUS_CONFIG,
   BOOKING_TYPE_CONFIG,
   BOOKING_TYPE_VALUES,
@@ -276,7 +277,7 @@ export default function BookingsPage() {
                     >
                       {s.label}
                     </span>
-                    {b.status === "pending" && (
+                    {b.status === BOOKING_STATUS.pending && (
                       <button
                         type="button"
                         className={bookingStyles.cancelBookingBtn}

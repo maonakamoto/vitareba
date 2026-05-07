@@ -11,7 +11,7 @@ import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
 import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
 import { formatDateShort, formatDateISO, formatDateMonthDay, displayName } from "@/lib/utils/format";
-import { CHECKIN_METRICS, type MetricKey } from "@/lib/config/portal";
+import { CHECKIN_METRICS, CHECKIN_DISPLAY_DAYS, type MetricKey } from "@/lib/config/portal";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
 import Link from "next/link";
 
@@ -34,7 +34,7 @@ export default async function ReportsPage() {
   weekAgo.setDate(weekAgo.getDate() - SIGNAL_CHECKIN_WINDOW_DAYS);
   const weekAgoStr = formatDateISO(weekAgo);
   const thirtyDaysAgo = new Date(now);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - CHECKIN_DISPLAY_DAYS);
   const thirtyDaysAgoStr = formatDateISO(thirtyDaysAgo);
 
   // All queries are independent — run in parallel to minimise page latency

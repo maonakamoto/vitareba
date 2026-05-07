@@ -7,6 +7,7 @@ import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { enqueueAssessmentEmails } from "@/lib/domain/email-queue";
 import { assessmentSaveSchema } from "@/lib/domain/assessment";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function POST(req: Request) {
   const guard = await requireSession();
@@ -46,13 +47,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Failed to save assessment — please try again" }, { status: 500 });
   }
 
-  enqueueAssessmentEmails({
-    userId: session.user.id,
-    overallScore: parsed.data.overallScore,
-    scores: parsed.data.scores,
-    triggeredAt: result.completedAt,
-    isFirstAssessment: priorCount === 0,
-  }).catch((err) => console.error("[email-queue] enqueue failed:", err));
+  runAfterResponse(
+    () => enqueueAssessmentEmails({
+      userId: session.user.id,
+      overallScore: parsed.data.overallScore,
+      scores: parsed.data.scores,
+      triggeredAt: result.completedAt,
+      isFirstAssessment: priorCount === 0,
+    }),
+    "[email-queue] enqueue failed:"
+  );
 
   return NextResponse.json({ success: true, data: result }, { status: 201 });
 }

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { users, profiles } from "@/lib/db/schema";
 import { registerSchema, hashPassword } from "@/lib/domain/auth";
 import { enqueueWelcomeEmails } from "@/lib/domain/email-queue";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -63,8 +64,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Registration failed — please try again" }, { status: 500 });
   }
 
-  enqueueWelcomeEmails({ userId: newUser.id, triggeredAt: new Date() })
-    .catch((err) => console.error("[email-queue] welcome enqueue failed:", err));
+  runAfterResponse(
+    () => enqueueWelcomeEmails({ userId: newUser.id, triggeredAt: new Date() }),
+    "[email-queue] welcome enqueue failed:"
+  );
 
   return NextResponse.json({ success: true }, { status: 201 });
 }

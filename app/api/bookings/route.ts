@@ -15,6 +15,7 @@ import { bookingConfirmedEmail } from "@/lib/email/templates";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS } from "@/lib/config/booking-status";
 import { BOOKING_TYPE_CONFIG, MACHINE_TYPE_CONFIG } from "@/lib/config/booking-status";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function GET() {
   const guard = await requireSession();
@@ -66,15 +67,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Failed to create booking — please try again" }, { status: 500 });
     }
 
-    // Notify patient (fire-and-forget)
-    const patient = await db.query.users
-      .findFirst({ where: eq(users.id, patientId), columns: { name: true, email: true } })
-      .catch(() => null);
-    if (patient?.email) {
+    runAfterResponse(async () => {
+      const patient = await db.query.users.findFirst({
+        where: eq(users.id, patientId),
+        columns: { name: true, email: true },
+      });
+      if (!patient?.email) return;
       const bookingTypeLabel = BOOKING_TYPE_CONFIG[fields.bookingType ?? "consultation"].label;
       const machineLabel = fields.machineType ? MACHINE_TYPE_CONFIG[fields.machineType].label : null;
       const sessionLabel = machineLabel ? `${bookingTypeLabel} — ${machineLabel}` : bookingTypeLabel;
-      sendEmail({
+      await sendEmail({
         to: patient.email,
         subject: `Your ${sessionLabel.toLowerCase()} has been confirmed — ${COMPANY.shortName}`,
         html: bookingConfirmedEmail({
@@ -82,8 +84,8 @@ export async function POST(req: Request) {
           sessionLabel,
           portalUrl: `${PORTAL_URL}${PORTAL_ROUTES.bookings}`,
         }),
-      }).catch(console.error);
-    }
+      });
+    }, "[api/bookings] patient confirmation email failed:");
 
     return NextResponse.json({ success: true, data: booking }, { status: 201 });
   }
@@ -105,30 +107,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Failed to create booking — please try again" }, { status: 500 });
   }
 
-  // Notify admin of new booking request (fire-and-forget — don't block the response)
   const adminEmails = getAdminEmails();
   if (adminEmails.length > 0) {
-    const patient = await db.query.users.findFirst({
-      where: eq(users.id, session.user.id),
-      columns: { name: true, email: true },
-    }).catch(() => null);
     const bookingTypeLabel = BOOKING_TYPE_CONFIG[parsed.data.bookingType].label;
     const machineTypeLabel = parsed.data.machineType
       ? MACHINE_TYPE_CONFIG[parsed.data.machineType].label
       : null;
-    sendEmail({
-      to: adminEmails,
-      subject: `New ${bookingTypeLabel.toLowerCase()} request — ${patient?.name ?? session.user.email}`,
-      html: bookingRequestAdminEmail({
-        patientName: patient?.name ?? "Unknown",
-        patientEmail: patient?.email ?? "",
-        bookingTypeLabel,
-        machineTypeLabel,
-        notes: parsed.data.notes,
-        preferredDate: parsed.data.preferredDate,
-        adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
-      }),
-    }).catch(console.error);
+    runAfterResponse(async () => {
+      const patient = await db.query.users.findFirst({
+        where: eq(users.id, session.user.id),
+        columns: { name: true, email: true },
+      });
+      await sendEmail({
+        to: adminEmails,
+        subject: `New ${bookingTypeLabel.toLowerCase()} request — ${patient?.name ?? session.user.email}`,
+        html: bookingRequestAdminEmail({
+          patientName: patient?.name ?? "Unknown",
+          patientEmail: patient?.email ?? "",
+          bookingTypeLabel,
+          machineTypeLabel,
+          notes: parsed.data.notes,
+          preferredDate: parsed.data.preferredDate,
+          adminUrl: `${PORTAL_URL}${ADMIN_ROUTES.patients}/${session.user.id}`,
+        }),
+      });
+    }, "[api/bookings] admin booking request email failed:");
   }
 
   return NextResponse.json({ success: true, data: booking }, { status: 201 });

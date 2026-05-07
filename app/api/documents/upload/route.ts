@@ -11,6 +11,7 @@ import { sendEmail } from "@/lib/email";
 import { newDocumentEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { eq } from "drizzle-orm";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 const MAX_BYTES = DOCUMENT_MAX_FILE_SIZE_MB * 1024 * 1024;
 
@@ -90,22 +91,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Failed to save document record — please try again" }, { status: 500 });
   }
 
-  // Notify patient — fire-and-forget, never block the response
-  db.query.users
-    .findFirst({ where: eq(users.id, patientId), columns: { name: true, email: true } })
-    .then((patient) => {
-      if (!patient?.email) return;
-      return sendEmail({
-        to: patient.email,
-        subject: `New document shared: ${title.trim()}`,
-        html: newDocumentEmail({
-          patientName: patient.name ?? patient.email,
-          title: title.trim(),
-          portalUrl: PORTAL_URL,
-        }),
-      });
-    })
-    .catch((err) => console.error("[api/documents/upload] notification failed:", err));
+  const trimmedTitle = title.trim();
+
+  // Schedule patient notification after the response so the work is not
+  // dropped when the request lifecycle ends.
+  runAfterResponse(async () => {
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, patientId),
+      columns: { name: true, email: true },
+    });
+    if (!patient?.email) return;
+    await sendEmail({
+      to: patient.email,
+      subject: `New document shared: ${trimmedTitle}`,
+      html: newDocumentEmail({
+        patientName: patient.name ?? patient.email,
+        title: trimmedTitle,
+        portalUrl: PORTAL_URL,
+      }),
+    });
+  }, "[api/documents/upload] notification failed:");
 
   return NextResponse.json({ success: true, data: doc }, { status: 201 });
 }

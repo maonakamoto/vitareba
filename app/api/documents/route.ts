@@ -12,6 +12,7 @@ import { newDocumentEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { DOCUMENT_TITLE_MAX_LENGTH, MIME_TYPE_MAX_LENGTH } from "@/lib/config/portal";
 import { UUID_RE } from "@/lib/utils/validate";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 const createSchema = z.object({
   userId: z.string().uuid(),
@@ -78,22 +79,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Failed to save document — please try again" }, { status: 500 });
   }
 
-  // Notify patient — fire-and-forget, never block the response
-  db.query.users
-    .findFirst({ where: eq(users.id, parsed.data.userId), columns: { name: true, email: true } })
-    .then((patient) => {
-      if (!patient?.email) return;
-      return sendEmail({
-        to: patient.email,
-        subject: `New document shared: ${parsed.data.title}`,
-        html: newDocumentEmail({
-          patientName: patient.name ?? patient.email,
-          title: parsed.data.title,
-          portalUrl: PORTAL_URL,
-        }),
-      });
-    })
-    .catch((err) => console.error("[api/documents] notification failed:", err));
+  // Schedule patient notification after the response so the work is not
+  // dropped when the request lifecycle ends.
+  runAfterResponse(async () => {
+    const patient = await db.query.users.findFirst({
+      where: eq(users.id, parsed.data.userId),
+      columns: { name: true, email: true },
+    });
+    if (!patient?.email) return;
+    await sendEmail({
+      to: patient.email,
+      subject: `New document shared: ${parsed.data.title}`,
+      html: newDocumentEmail({
+        patientName: patient.name ?? patient.email,
+        title: parsed.data.title,
+        portalUrl: PORTAL_URL,
+      }),
+    });
+  }, "[api/documents] notification failed:");
 
   return NextResponse.json({ success: true, data: doc }, { status: 201 });
 }

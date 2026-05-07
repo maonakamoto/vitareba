@@ -12,6 +12,7 @@ import {
   SIGNAL_SORT_ORDER,
   SIGNAL_LABELS,
   SIGNAL_CHECKIN_WINDOW_DAYS,
+  PATIENT_SIGNAL,
   type PatientSignal,
 } from "@/lib/config/admin";
 import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
@@ -188,7 +189,7 @@ export default async function PatientsPage() {
                       <span className={styles.signalBadge} data-signal={p.signal}>
                         {SIGNAL_LABELS[p.signal]}
                       </span>
-                      {(p.signal === "critical" || p.signal === "attention") && (
+                      {(p.signal === PATIENT_SIGNAL.critical || p.signal === PATIENT_SIGNAL.attention) && (
                         <div className={styles.signalReason}>{p.reason}</div>
                       )}
                     </td>

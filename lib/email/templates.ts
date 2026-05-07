@@ -4,6 +4,7 @@ import { PORTAL_URL, COMPANY } from "@/lib/config/company";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { type MetricKey } from "@/lib/config/portal";
 import { PASSWORD_RESET_TOKEN_EXPIRY_MS } from "@/lib/config/auth";
+import { streakMessage } from "@/lib/domain/checkin";
 import {
   COLOR_INK, COLOR_INK2, COLOR_MUTED, COLOR_TEAL, COLOR_GOLD,
   COLOR_OFF, COLOR_LIGHT, COLOR_BORDER, COLOR_WARN, COLOR_DANGER, COLOR_WHITE,
@@ -597,14 +598,9 @@ export function weeklyDigestEmail({
       </tbody>
     </table>` : "";
 
-  const streakSection = streak >= 3 ? (() => {
-    let msg: string;
-    if (streak >= 30) msg = `${streak}-day streak — elite consistency. Your programme can be tuned with precision most patients never reach.`;
-    else if (streak >= 14) msg = `${streak}-day streak — two weeks of real data. Your trend is now meaningful.`;
-    else if (streak >= 7) msg = `${streak}-day streak — a full week mapped.`;
-    else msg = `${streak} days in a row.`;
-    return `<p style="font-size:0.9rem;color:${COLOR_TEAL};font-weight:500;margin-bottom:0.5rem">🔥 ${escapeHtml(msg)}</p>`;
-  })() : "";
+  const streakSection = streak >= 3
+    ? `<p style="font-size:0.9rem;color:${COLOR_TEAL};font-weight:500;margin-bottom:0.5rem">🔥 ${escapeHtml(streakMessage(streak))}</p>`
+    : "";
 
   return layout(`
     <p>Hi ${patientName},</p>

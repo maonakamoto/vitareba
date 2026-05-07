@@ -11,6 +11,7 @@ import { checkinSchema, computeStreak } from "@/lib/domain/checkin";
 import { sendEmail } from "@/lib/email/index";
 import { checkinStreakMilestoneEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
+import { runAfterResponse } from "@/lib/utils/post-response";
 
 export async function GET(req: Request) {
   const guard = await requireSession();
@@ -92,9 +93,9 @@ export async function POST(req: Request) {
         ...metrics,
       });
 
-      // Fire-and-forget streak milestone email — don't block the response
-      detectAndSendStreakMilestone(session.user.id).catch((err) =>
-        console.error("[api/checkin] streak milestone check failed:", err)
+      runAfterResponse(
+        () => detectAndSendStreakMilestone(session.user.id),
+        "[api/checkin] streak milestone check failed:"
       );
     }
   } catch (err) {
