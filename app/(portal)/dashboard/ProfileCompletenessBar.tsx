@@ -5,8 +5,14 @@ import { COMPANY } from "@/lib/config/company";
 import { PROFILE_COMPLETENESS_LOW_PCT, PROFILE_COMPLETENESS_HIGH_PCT } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 
-export function ProfileCompletenessBar({ pct }: { pct: number }) {
+const MAX_SHOWN_FIELDS = 3;
+
+export function ProfileCompletenessBar({ pct, missingFields = [] }: { pct: number; missingFields?: string[] }) {
   if (pct >= 100) return null;
+
+  const shown = missingFields.slice(0, MAX_SHOWN_FIELDS);
+  const remainder = missingFields.length - shown.length;
+
   return (
     <div className={styles.profileBar}>
       <div className={styles.profileBarHeader}>
@@ -29,6 +35,17 @@ export function ProfileCompletenessBar({ pct }: { pct: number }) {
           Complete profile →
         </Link>
       </p>
+      {shown.length > 0 && (
+        <p className={styles.profileBarMissing}>
+          Missing:{" "}
+          {shown.map((f, i) => (
+            <span key={f} className={styles.profileBarMissingField}>
+              {f}{i < shown.length - 1 || remainder > 0 ? "," : ""}
+            </span>
+          ))}
+          {remainder > 0 && <span> and {remainder} more</span>}
+        </p>
+      )}
     </div>
   );
 }

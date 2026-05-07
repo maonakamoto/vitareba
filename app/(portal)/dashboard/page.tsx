@@ -24,7 +24,7 @@ import { ProfileCompletenessBar } from "./ProfileCompletenessBar";
 import { GoalsCard } from "./GoalsCard";
 import { CheckinCard } from "./CheckinCard";
 import { AssessmentSection } from "./AssessmentSection";
-import { computeProfileCompleteness } from "@/lib/domain/profile";
+import { computeProfileCompleteness, getMissingProfileFields } from "@/lib/domain/profile";
 import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { PendingAssessmentSaver } from "./PendingAssessmentSaver";
 import { CheckinMiniTrend } from "./CheckinMiniTrend";
@@ -106,6 +106,7 @@ export default async function DashboardPage() {
   const firstName =
     dbUser?.name?.split(" ")[0] ?? session.user.email?.split("@")[0] ?? "there";
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
+  const missingProfileFields = getMissingProfileFields(profile as Record<string, unknown> | null);
   const checkinStreak = computeStreak(recentCheckins);
   // Streak at risk: consecutive days ending yesterday — shown in the prompt when today isn't logged yet
   const yesterday = new Date(now);
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
 
         <GoalsCard goals={activeGoals} />
 
-        <ProfileCompletenessBar pct={profilePct} />
+        <ProfileCompletenessBar pct={profilePct} missingFields={missingProfileFields} />
 
         <CheckinCard
           hasTodayCheckin={!!todayCheckin}

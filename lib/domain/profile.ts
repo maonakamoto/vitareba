@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {
-  PROFILE_COMPLETION_FIELDS, PROFILE_COMPLETION_THRESHOLD, PROFILE_COMPLETION_LOWER_THRESHOLD,
+  PROFILE_COMPLETION_FIELDS, PROFILE_FIELD_LABELS, PROFILE_COMPLETION_THRESHOLD, PROFILE_COMPLETION_LOWER_THRESHOLD,
   SLEEP_HOURS_MIN, SLEEP_HOURS_MAX, EXERCISE_FREQUENCY_VALUES,
   PATIENT_NOTE_MAX_LENGTH,
   PROFILE_NAME_MAX_LENGTH, PROFILE_PHONE_MAX_LENGTH, PROFILE_DOB_MAX_LENGTH,
@@ -26,6 +26,19 @@ export const profileUpdateSchema = z.object({
   digestOptOut: z.boolean().optional(),
   reminderOptOut: z.boolean().optional(),
 });
+
+/**
+ * Returns the human-readable labels of profile fields that are not yet filled.
+ * Used to surface actionable guidance in the dashboard completeness bar.
+ */
+export function getMissingProfileFields(
+  profile: Record<string, unknown> | null | undefined
+): string[] {
+  if (!profile) return PROFILE_COMPLETION_FIELDS.map((f) => PROFILE_FIELD_LABELS[f]);
+  return PROFILE_COMPLETION_FIELDS
+    .filter((f) => profile[f] == null || profile[f] === "")
+    .map((f) => PROFILE_FIELD_LABELS[f]);
+}
 
 /**
  * Returns a 0–100 integer representing how many of the 10 key clinical

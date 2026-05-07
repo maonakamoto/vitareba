@@ -509,6 +509,16 @@
   text-decoration: underline;
 }
 
+.profileBarMissing {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.profileBarMissingField {
+  margin-right: 4px;
+}
+
 /* ─── Wellbeing trend mini card ──────────────────────────────────────────── */
 
 .trendCardHeader {

@@ -77,6 +77,20 @@ export const PROFILE_COMPLETION_FIELDS = [
   "exerciseFrequency",
 ] as const;
 
+/** Human-readable labels for each profile completion field — used in the dashboard bar */
+export const PROFILE_FIELD_LABELS: Record<(typeof PROFILE_COMPLETION_FIELDS)[number], string> = {
+  dateOfBirth:        "Date of birth",
+  city:               "City",
+  occupation:         "Occupation",
+  mainConcern:        "Main concern",
+  goals:              "Goals",
+  diagnosisHistory:   "Diagnosis history",
+  currentMedications: "Medications",
+  currentSupplements: "Supplements",
+  sleepHoursAvg:      "Sleep average",
+  exerciseFrequency:  "Exercise frequency",
+};
+
 /** Fraction of PROFILE_COMPLETION_FIELDS filled before admin is notified */
 export const PROFILE_COMPLETION_THRESHOLD = 0.7;
 
