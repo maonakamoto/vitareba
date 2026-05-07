@@ -111,10 +111,10 @@ export async function POST(req: Request) {
       });
       await sendEmail({
         to: adminEmails,
-        subject: `New message from ${patient?.name ?? "patient"}: ${parsed.data.subject}`,
+        subject: `New message from ${displayName(patient?.name, patient?.email)}: ${parsed.data.subject}`,
         html: newMessageEmail({
           recipientName: COMPANY.clinicianName,
-          senderName: patient?.name ?? "Patient",
+          senderName: displayName(patient?.name, patient?.email),
           subject: parsed.data.subject,
           portalUrl: `${PORTAL_URL}${ADMIN_ROUTES.messages}/${thread.id}`,
         }),
