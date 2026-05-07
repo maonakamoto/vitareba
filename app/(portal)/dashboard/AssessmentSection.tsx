@@ -7,6 +7,7 @@ import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
 import { formatDateLong, DAY_MS } from "@/lib/utils/format";
 import { COMPANY } from "@/lib/config/company";
+import { OnboardingCard } from "./OnboardingCard";
 
 interface AssessmentSectionProps {
   latestAssessment: AssessmentRow | null | undefined;
@@ -14,6 +15,8 @@ interface AssessmentSectionProps {
   latestBooking: Pick<BookingRow, "status" | "preferredDate"> | null | undefined;
   threadCount: number;
   unreadMessageCount?: number;
+  /** When true the assessment CTA is already shown above — don't duplicate it here. */
+  isNewPatient?: boolean;
 }
 
 function getLowestDimension(scores: Record<string, number>) {
@@ -28,26 +31,12 @@ export function AssessmentSection({
   latestBooking,
   threadCount,
   unreadMessageCount = 0,
+  isNewPatient = false,
 }: AssessmentSectionProps) {
   if (!latestAssessment) {
-    return (
-      <div className={styles.heroCard}>
-        <p className={styles.heroEyebrow}>Start here</p>
-        <p className={styles.heroTitle}>Understand your neurotype in 10 minutes</p>
-        <p className={styles.ctaBody}>
-          The Inflection Edge maps your ADHD profile across five dimensions: Arousal, Divergent Output,
-          Hyperfocus, Volatility, and Environment Design. Your results are the clinical foundation for
-          everything that follows — {COMPANY.clinicianName} reviews them before every consultation.
-        </p>
-        <p className={styles.ctaBodySpaced}>
-          Most patients describe this as the first time they&apos;ve seen their performance pattern
-          explained clearly. Take 10 minutes now.
-        </p>
-        <Link href={PORTAL_ROUTES.assessment} className={`btn-dark ${styles.ctaBtnLarge}`}>
-          Take the Inflection Edge →
-        </Link>
-      </div>
-    );
+    // New patients already see OnboardingCard at the top of the stack.
+    // Patients enrolled in a programme but not yet assessed get the CTA here.
+    return isNewPatient ? null : <OnboardingCard />;
   }
 
   const verdict = getVerdict(latestAssessment.overallScore);

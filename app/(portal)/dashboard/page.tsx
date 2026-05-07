@@ -28,6 +28,7 @@ import { computeProfileCompleteness, getMissingProfileFields } from "@/lib/domai
 import { getUnreadThreadCount } from "@/lib/domain/messages";
 import { PendingAssessmentSaver } from "./PendingAssessmentSaver";
 import { CheckinMiniTrend } from "./CheckinMiniTrend";
+import { OnboardingCard } from "./OnboardingCard";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -103,6 +104,8 @@ export default async function DashboardPage() {
     db.select({ value: count() }).from(users).where(eq(users.role, USER_ROLE.patient)).then((r) => r[0]?.value ?? 0),
   ]);
 
+  const isNewPatient = recentAssessments.length === 0 && !programmeAssignment;
+
   const firstName =
     dbUser?.name?.split(" ")[0] ?? session.user.email?.split("@")[0] ?? "there";
   const profilePct = computeProfileCompleteness(profile as Record<string, unknown> | null);
@@ -124,6 +127,8 @@ export default async function DashboardPage() {
       <p className={shared.pageSub}>Your {COMPANY.shortName} patient portal</p>
 
       <div className={styles.dashStack}>
+        {isNewPatient && <OnboardingCard />}
+
         {programmeAssignment && (
           <ProgrammeCard
             programme={programmeAssignment.programme}
@@ -159,6 +164,7 @@ export default async function DashboardPage() {
           latestBooking={latestBooking}
           threadCount={threadCount}
           unreadMessageCount={unreadMessageCount}
+          isNewPatient={isNewPatient}
         />
       </div>
     </div>
