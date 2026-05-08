@@ -55,9 +55,9 @@ export type BookingRowWithUser = BookingRow & {
   user: { id: string; name: string | null; email: string };
 };
 
-export const BOOKING_STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: string }> = {
-  pending:   { label: "Pending",   color: "var(--warn)",   bg: "var(--warn-12)"   },
-  confirmed: { label: "Confirmed", color: "var(--teal)",   bg: "var(--teal-12)"  },
-  attended:  { label: "Attended",  color: "var(--gold)",   bg: "var(--gold-12)"  },
-  cancelled: { label: "Cancelled", color: "var(--muted)",  bg: "var(--muted-12)" },
+export const BOOKING_STATUS_CONFIG: Record<BookingStatus, { label: string; badgeClass: string }> = {
+  pending:   { label: "Pending",   badgeClass: "booking-status-pending"   },
+  confirmed: { label: "Confirmed", badgeClass: "booking-status-confirmed" },
+  attended:  { label: "Attended",  badgeClass: "booking-status-attended"  },
+  cancelled: { label: "Cancelled", badgeClass: "booking-status-cancelled" },
 };

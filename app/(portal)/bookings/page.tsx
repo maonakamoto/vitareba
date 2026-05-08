@@ -271,10 +271,7 @@ export default function BookingsPage() {
                     </p>
                   </div>
                   <div className={bookingStyles.bookingActions}>
-                    <span
-                      className={bookingStyles.bookingBadge}
-                      style={{ color: s.color, background: s.bg }}
-                    >
+                    <span className={`${bookingStyles.bookingBadge} ${s.badgeClass}`}>
                       {s.label}
                     </span>
                     {b.status === BOOKING_STATUS.pending && (

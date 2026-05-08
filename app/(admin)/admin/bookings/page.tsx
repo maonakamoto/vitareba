@@ -143,7 +143,7 @@ export default function AdminBookingsPage() {
                       {formatDateNumeric(b.createdAt)}
                     </td>
                     <td>
-                      <span className={styles.badge} style={{ color: s.color, background: s.bg }}>
+                      <span className={`${styles.badge} ${s.badgeClass}`}>
                         {s.label}
                       </span>
                     </td>

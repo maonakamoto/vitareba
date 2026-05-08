@@ -26,16 +26,15 @@ describe("BOOKING_STATUS config integrity", () => {
     }
   });
 
-  it("every BOOKING_STATUS_CONFIG entry has label, color and bg fields", () => {
+  it("every BOOKING_STATUS_CONFIG entry has label and badgeClass fields", () => {
     for (const status of BOOKING_STATUS_VALUES) {
       const cfg = BOOKING_STATUS_CONFIG[status as BookingStatus];
       expect(cfg).toHaveProperty("label");
-      expect(cfg).toHaveProperty("color");
-      expect(cfg).toHaveProperty("bg");
+      expect(cfg).toHaveProperty("badgeClass");
       expect(typeof cfg.label).toBe("string");
       expect(cfg.label.length).toBeGreaterThan(0);
-      expect(typeof cfg.color).toBe("string");
-      expect(typeof cfg.bg).toBe("string");
+      expect(typeof cfg.badgeClass).toBe("string");
+      expect(cfg.badgeClass).toMatch(/^booking-status-/);
     }
   });
 

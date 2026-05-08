@@ -121,10 +121,7 @@ export function AssessmentSection({
                 const s =
                   BOOKING_STATUS_CONFIG[latestBooking.status] ?? BOOKING_STATUS_CONFIG.pending;
                 return (
-                  <span
-                    className={styles.bookingStatusBadge}
-                    style={{ color: s.color, background: s.bg }}
-                  >
+                  <span className={`${styles.bookingStatusBadge} ${s.badgeClass}`}>
                     {s.label}
                   </span>
                 );

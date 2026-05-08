@@ -284,6 +284,13 @@ body {
 .pct-warn { color: var(--warn); }
 .pct-bad  { color: var(--danger); }
 
+/* ─── Booking status badge utilities ───────────────────────── */
+/* Use className={s.badgeClass} instead of style={{ color: s.color, background: s.bg }} */
+.booking-status-pending   { color: var(--warn);  background: var(--warn-12);  }
+.booking-status-confirmed { color: var(--teal);  background: var(--teal-12);  }
+.booking-status-attended  { color: var(--gold);  background: var(--gold-12);  }
+.booking-status-cancelled { color: var(--muted); background: var(--muted-12); }
+
 /* ─── Accessibility utilities ──────────────────────────────── */
 /* Visually hidden but available to screen readers */
 .sr-only {
