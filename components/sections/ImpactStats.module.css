@@ -9,7 +9,7 @@
 }
 
 .eyebrowDim {
-  color: rgba(42, 122, 138, 0.7);
+  color: var(--teal-70);
 }
 
 .secTitle {
@@ -41,20 +41,20 @@
 .unit {
   font-family: var(--font-cormorant), serif;
   font-size: 1rem;
-  color: rgba(42, 122, 138, 0.5);
+  color: var(--teal-50);
 }
 
 .label {
   font-size: 0.7rem;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--white-35);
   margin-top: 0.5rem;
   line-height: 1.5;
 }
 
 .source {
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.12);
+  color: var(--white-12);
   margin-top: 0.3rem;
 }
 
@@ -66,7 +66,7 @@
 
 .text p {
   font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--white-40);
   line-height: 1.85;
 }
 

@@ -10,7 +10,7 @@
 
 .legal {
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--white-15);
 }
 
 @media (max-width: 767px) {

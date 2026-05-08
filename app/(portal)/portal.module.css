@@ -8,7 +8,7 @@
 
 .sidebar {
   background: var(--ink);
-  color: #fff;
+  color: var(--white);
   display: flex;
   flex-direction: column;
   padding: 2rem 1.5rem;
@@ -20,7 +20,7 @@
 
 .logoLink {
   text-decoration: none;
-  color: #fff;
+  color: var(--white);
   margin-bottom: 2.5rem;
   display: block;
 }
@@ -38,7 +38,7 @@
   gap: 0.1rem;
   padding-bottom: 0.65rem;
   margin-bottom: 0.65rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid var(--white-7);
 }
 
 .navGroup:last-child {
@@ -53,7 +53,7 @@
   gap: 0.7rem;
   padding: 0.58rem 0.9rem;
   border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--white-55);
   text-decoration: none;
   font-size: 0.82rem;
   letter-spacing: 0.01em;
@@ -63,14 +63,14 @@
 
 .navItem:hover,
 .navItem:focus-visible {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--white-6);
+  color: var(--white-90);
   outline: none;
 }
 
 .navItemActive {
-  background: color-mix(in srgb, var(--teal) 18%, transparent);
-  color: #fff !important;
+  background: var(--teal-18);
+  color: var(--white) !important;
 }
 
 .navItemActive::before {
@@ -138,7 +138,7 @@
   padding: 0 5px;
   border-radius: 9px;
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   font-size: 0.6rem;
   font-weight: 600;
   display: flex;
@@ -158,7 +158,7 @@
   padding: 0 4px;
   border-radius: 8px;
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   font-size: 0.55rem;
   font-weight: 600;
   display: flex;
@@ -178,7 +178,7 @@
 
 .header {
   height: 56px;
-  background: #fff;
+  background: var(--white);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -257,7 +257,7 @@
     right: 0;
     height: 60px;
     background: var(--ink);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--white-8);
     z-index: 100;
     padding: 0 0.25rem;
     padding-bottom: env(safe-area-inset-bottom, 0); /* iOS home indicator */
@@ -272,7 +272,7 @@
   justify-content: center;
   gap: 0.2rem;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.62);
+  color: var(--white-62);
   padding: 0.4rem 0;
   transition: color 0.12s;
   min-height: 44px; /* minimum touch target */
@@ -318,7 +318,7 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.75rem;
@@ -367,7 +367,7 @@
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
   background: var(--ink);
-  color: #fff;
+  color: var(--white);
   border: none;
   border-radius: 4px;
   font-family: var(--font-dm-sans), sans-serif;
@@ -546,7 +546,7 @@
 .errorRetry {
   display: inline-block;
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   border: none;
   border-radius: 6px;
   padding: 0.6rem 1.25rem;

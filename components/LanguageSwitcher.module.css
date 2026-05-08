@@ -41,10 +41,10 @@
   position: absolute;
   top: calc(100% + 0.4rem);
   right: 0;
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   padding: 0.25rem;
   display: flex;
   flex-direction: column;

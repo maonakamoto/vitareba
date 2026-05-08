@@ -7,7 +7,7 @@
   gap: 0.75rem;
   text-align: center;
   padding: 2rem;
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-dm-sans), sans-serif;
 }
 
 .title {

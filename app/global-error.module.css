@@ -28,7 +28,7 @@
 
 .button {
   background: var(--teal, #2a7a8a);
-  color: #fff;
+  color: var(--white);
   border: none;
   border-radius: 6px;
   padding: 0.625rem 1.5rem;

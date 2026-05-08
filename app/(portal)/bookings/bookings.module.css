@@ -1,8 +1,8 @@
 /* ─── Calendly shortcut banner ───────────────────────────────────────────── */
 
 .calendlyBanner {
-  background: color-mix(in srgb, var(--teal) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
+  background: var(--teal-6);
+  border: 1px solid var(--teal-20);
   border-radius: 0.875rem;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -29,8 +29,8 @@
 /* ─── Submission success banner ──────────────────────────────────────────── */
 
 .successBanner {
-  background: color-mix(in srgb, var(--teal) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+  background: var(--teal-8);
+  border: 1px solid var(--teal-25);
   border-radius: 0.75rem;
   padding: 1rem 1.5rem;
   margin-bottom: 1.25rem;
@@ -69,7 +69,7 @@
 
 .typeBtnActive {
   border-color: var(--teal);
-  background: color-mix(in srgb, var(--teal) 10%, transparent);
+  background: var(--teal-10);
   color: var(--teal);
   font-weight: 500;
 }

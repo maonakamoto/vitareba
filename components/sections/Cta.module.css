@@ -8,7 +8,7 @@
   font-size: 0.6rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(42, 122, 138, 0.7);
+  color: var(--teal-70);
   margin-bottom: 0.8rem;
 }
 
@@ -27,7 +27,7 @@
 
 .sub {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--white-35);
   max-width: 34rem;
   margin: 1.2rem auto 2rem;
   line-height: 1.8;
@@ -59,7 +59,7 @@
 }
 
 .btnOutline {
-  border: 1px solid rgba(42, 122, 138, 0.3);
+  border: 1px solid var(--teal-30);
   color: var(--teal);
   background: none;
   padding: 0.8rem 2rem;
@@ -76,12 +76,12 @@
 
 .btnOutline:hover {
   border-color: var(--teal);
-  background: rgba(42, 122, 138, 0.1);
+  background: var(--teal-10);
 }
 
 .note {
   font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--white-15);
   margin-top: 2rem;
 }
 

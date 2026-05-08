@@ -13,7 +13,7 @@
 .card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 1rem;
   padding: 2.5rem 2.25rem;
@@ -103,7 +103,7 @@
   margin-top: 0.75rem;
   padding: 0.85rem 1.5rem;
   background: var(--ink);
-  color: #fff;
+  color: var(--white);
   border: none;
   border-radius: 0;
   font-family: var(--font-dm-sans), sans-serif;

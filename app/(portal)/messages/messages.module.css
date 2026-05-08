@@ -111,8 +111,8 @@
 }
 
 .msgBubbleAdmin {
-  background: color-mix(in srgb, var(--teal) 8%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 20%, transparent);
+  background: var(--teal-8);
+  border: 1px solid var(--teal-20);
 }
 
 .msgBubblePatient {
@@ -156,7 +156,7 @@
 
 .sendBtn {
   background: var(--ink);
-  color: #fff;
+  color: var(--white);
   border: none;
   border-radius: 0.5rem;
   padding: 0.65rem 1.25rem;

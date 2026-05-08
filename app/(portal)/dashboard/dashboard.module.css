@@ -25,7 +25,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--white-55);
   margin-bottom: 0.4rem;
 }
 
@@ -33,7 +33,7 @@
   font-family: var(--font-cormorant), serif;
   font-size: 1.8rem;
   font-weight: 300;
-  color: #fff;
+  color: var(--white);
   line-height: 1.1;
 }
 
@@ -60,7 +60,7 @@
 
 .heroLinkMuted {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.58);
+  color: var(--white-58);
   text-decoration: none;
   letter-spacing: 0.06em;
 }
@@ -129,7 +129,7 @@
 
 /* Warning card: card base + left accent border */
 .cardWarn {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.75rem;
@@ -184,7 +184,7 @@
 
 /* Inline expansion of .card + flex layout */
 .messagesRow {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.75rem;
@@ -207,7 +207,7 @@
 
 /* Inline expansion of .card + flex layout */
 .checkinPrompt {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.75rem;
@@ -260,7 +260,7 @@
   width: 2rem;
   height: 2rem;
   background: var(--teal);
-  color: #fff;
+  color: var(--white);
   border-radius: 50%;
   font-size: 0.85rem;
   flex-shrink: 0;
@@ -421,7 +421,7 @@
   color: var(--warn);
   margin: 0.5rem 0 0;
   padding: 0.5rem 0.75rem;
-  background: color-mix(in srgb, var(--warn) 8%, transparent);
+  background: var(--warn-8);
   border-radius: 0.5rem;
 }
 
@@ -453,7 +453,7 @@
 
 /* Inline expansion of .card with reduced padding */
 .profileBar {
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
   padding: 1.25rem 1.75rem;

@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.97);
+  background: var(--white-97);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
@@ -99,10 +99,10 @@
 /* Inner card that carries the visual styling */
 .megaPanelInner {
   position: relative;
-  background: #fff;
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 0.875rem;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Small decorative arrow pointing up */
@@ -114,7 +114,7 @@
   transform: translateX(-50%) rotate(45deg);
   width: 9px;
   height: 9px;
-  background: #fff;
+  background: var(--white);
   border-left: 1px solid var(--border);
   border-top: 1px solid var(--border);
   border-radius: 2px 0 0 0;
