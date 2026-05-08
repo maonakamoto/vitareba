@@ -5,9 +5,9 @@ import { users, assessmentResults, bookings, dailyCheckins } from "@/lib/db/sche
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import styles from "../../admin.module.css";
-import { scoreColor, getVerdictName } from "@/lib/assessment/data";
+import { scoreClass, getVerdictName } from "@/lib/assessment/data";
 import { computePatientSignal, wellnessAvg, sparkLevel } from "@/lib/domain/signals";
-import { computeProfileCompleteness, profileCompletenessColor } from "@/lib/domain/profile";
+import { computeProfileCompleteness, profileCompletenessClass } from "@/lib/domain/profile";
 import {
   SIGNAL_SORT_ORDER,
   SIGNAL_LABELS,
@@ -229,7 +229,7 @@ export default async function PatientsPage() {
                     <td>
                       {latest ? (
                         <div>
-                          <span className={styles.scoreChip} style={{ color: scoreColor(latest.overallScore) }}>
+                          <span className={`${styles.scoreChip} ${scoreClass(latest.overallScore)}`}>
                             {latest.overallScore}
                           </span>
                           <div className={styles.scoreVerdict}>
@@ -243,7 +243,7 @@ export default async function PatientsPage() {
 
                     {/* Profile completeness */}
                     <td className={styles.cellNowrapSm}>
-                      <span style={{ color: profileCompletenessColor(pct) }}>{pct}%</span>
+                      <span className={profileCompletenessClass(pct)}>{pct}%</span>
                     </td>
 
                     {/* Programme assignment */}

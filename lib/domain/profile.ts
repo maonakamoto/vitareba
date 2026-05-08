@@ -64,3 +64,10 @@ export function profileCompletenessColor(pct: number): string {
   if (pct >= PROFILE_COMPLETION_LOWER_THRESHOLD * 100) return "var(--warn)";
   return "var(--danger)";
 }
+
+/** Global CSS utility class for completeness colouring — use instead of style={{ color: profileCompletenessColor(n) }} */
+export function profileCompletenessClass(pct: number): string {
+  if (pct >= PROFILE_COMPLETION_THRESHOLD * 100) return "pct-good";
+  if (pct >= PROFILE_COMPLETION_LOWER_THRESHOLD * 100) return "pct-warn";
+  return "pct-bad";
+}

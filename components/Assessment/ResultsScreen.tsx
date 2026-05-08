@@ -7,6 +7,7 @@ import {
   getVerdict,
   getInterpretationKey,
   scoreColor,
+  scoreClass,
   type DimensionId,
 } from "@/lib/assessment/data";
 import { COMPANY } from "@/lib/config/company";
@@ -79,7 +80,7 @@ export default function ResultsScreen({
             <div key={dim.id} className={styles.rScoreCard}>
               <div className={styles.rScIcon}>{dim.icon}</div>
               <div className={styles.rScName}>{i18n.dimensions[dim.id] ?? dim.id}</div>
-              <div className={styles.rScN} style={{ color: scoreColor(score) }}>
+              <div className={`${styles.rScN} ${scoreClass(score)}`}>
                 {score}
               </div>
               <div className={styles.rScBar}>
@@ -105,8 +106,7 @@ export default function ResultsScreen({
                   {dim.icon} {i18n.dimensions[dim.id] ?? dim.id}
                 </div>
                 <div
-                  className={styles.rDimScore}
-                  style={{ color: scoreColor(score) }}
+                  className={`${styles.rDimScore} ${scoreClass(score)}`}
                 >
                   {score}
                 </div>

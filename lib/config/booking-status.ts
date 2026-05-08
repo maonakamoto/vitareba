@@ -56,24 +56,8 @@ export type BookingRowWithUser = BookingRow & {
 };
 
 export const BOOKING_STATUS_CONFIG: Record<BookingStatus, { label: string; color: string; bg: string }> = {
-  pending: {
-    label: "Pending",
-    color: "var(--warn)",
-    bg: "color-mix(in srgb, var(--warn) 12%, transparent)",
-  },
-  confirmed: {
-    label: "Confirmed",
-    color: "var(--teal)",
-    bg: "color-mix(in srgb, var(--teal) 12%, transparent)",
-  },
-  attended: {
-    label: "Attended",
-    color: "var(--gold)",
-    bg: "color-mix(in srgb, var(--gold) 12%, transparent)",
-  },
-  cancelled: {
-    label: "Cancelled",
-    color: "var(--muted)",
-    bg: "color-mix(in srgb, var(--muted) 12%, transparent)",
-  },
+  pending:   { label: "Pending",   color: "var(--warn)",   bg: "var(--warn-12)"   },
+  confirmed: { label: "Confirmed", color: "var(--teal)",   bg: "var(--teal-12)"  },
+  attended:  { label: "Attended",  color: "var(--gold)",   bg: "var(--gold-12)"  },
+  cancelled: { label: "Cancelled", color: "var(--muted)",  bg: "var(--muted-12)" },
 };

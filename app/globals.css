@@ -74,6 +74,7 @@
   /* Muted opacity scale */
   --muted-8:  color-mix(in srgb, var(--muted)  8%, transparent);
   --muted-10: color-mix(in srgb, var(--muted) 10%, transparent);
+  --muted-12: color-mix(in srgb, var(--muted) 12%, transparent);
   --muted-18: color-mix(in srgb, var(--muted) 18%, transparent);
 
   /* Extended teal opacity */
@@ -270,6 +271,18 @@ body {
   color: var(--white);
   outline: none;
 }
+
+/* ─── Score colour utilities ───────────────────────────────── */
+/* Use className={scoreClass(n)} instead of style={{ color: scoreColor(n) }} */
+.score-good { color: var(--teal); }
+.score-warn { color: var(--warn); }
+.score-bad  { color: var(--danger); }
+
+/* ─── Profile completeness colour utilities ─────────────────── */
+/* Use className={profileCompletenessClass(pct)} instead of inline style */
+.pct-good { color: var(--teal); }
+.pct-warn { color: var(--warn); }
+.pct-bad  { color: var(--danger); }
 
 /* ─── Accessibility utilities ──────────────────────────────── */
 /* Visually hidden but available to screen readers */

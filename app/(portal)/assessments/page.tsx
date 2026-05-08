@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { assessmentResults } from "@/lib/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
-import { DIMENSIONS, getInterpretation, scoreColor } from "@/lib/assessment/data";
+import { DIMENSIONS, getInterpretation, scoreColor, scoreClass } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { formatDateLong, formatDateMonthDay } from "@/lib/utils/format";
@@ -107,8 +107,7 @@ export default async function AssessmentsPage({
                   </div>
                   <div className={assessStyles.overallBlock}>
                     <span
-                      className={assessStyles.overallScore}
-                      style={{ color: scoreColor(result.overallScore) }}
+                      className={`${assessStyles.overallScore} ${scoreClass(result.overallScore)}`}
                     >
                       {result.overallScore}
                     </span>
@@ -122,10 +121,7 @@ export default async function AssessmentsPage({
                     return (
                       <div key={dim.id} className={assessStyles.dimCell}>
                         <div className={assessStyles.dimIcon}>{dim.icon}</div>
-                        <div
-                          className={assessStyles.dimScore}
-                          style={{ color: scoreColor(score) }}
-                        >
+                        <div className={`${assessStyles.dimScore} ${scoreClass(score)}`}>
                           {score}
                         </div>
                         <div className={assessStyles.dimName}>{dim.name}</div>
@@ -147,10 +143,7 @@ export default async function AssessmentsPage({
                     return (
                       <div key={dim.id} className={assessStyles.interpRow}>
                         <div className={assessStyles.interpMeta}>
-                          <span
-                            className={assessStyles.interpScore}
-                            style={{ color: scoreColor(score) }}
-                          >
+                          <span className={`${assessStyles.interpScore} ${scoreClass(score)}`}>
                             {score}
                           </span>
                           <span className={assessStyles.interpDimName}>{dim.name}</span>

@@ -1,5 +1,5 @@
 import styles from "@/app/(admin)/admin.module.css";
-import { DIMENSIONS, getVerdict, getInterpretation, scoreColor, type AssessmentRow } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, getInterpretation, scoreClass, type AssessmentRow } from "@/lib/assessment/data";
 import { formatDateShort } from "@/lib/utils/format";
 
 export function PatientAssessmentCard({ assessmentResults }: { assessmentResults: AssessmentRow[] }) {
@@ -17,7 +17,7 @@ export function PatientAssessmentCard({ assessmentResults }: { assessmentResults
         return (
           <>
             <div className={styles.assessScoreRow}>
-              <span className={styles.assessScoreBig} style={{ color: scoreColor(result.overallScore) }}>
+              <span className={`${styles.assessScoreBig} ${scoreClass(result.overallScore)}`}>
                 {result.overallScore}
               </span>
               <div>
@@ -34,7 +34,7 @@ export function PatientAssessmentCard({ assessmentResults }: { assessmentResults
                 return (
                   <div key={dim.id} className={styles.assessDimCell}>
                     <div className={styles.assessDimIcon}>{dim.icon}</div>
-                    <div className={styles.assessDimScore} style={{ color: scoreColor(score) }}>{score}</div>
+                    <div className={`${styles.assessDimScore} ${scoreClass(score)}`}>{score}</div>
                     <div className={styles.assessDimName}>{dim.name}</div>
                   </div>
                 );
@@ -45,7 +45,7 @@ export function PatientAssessmentCard({ assessmentResults }: { assessmentResults
                 const score = scores[dim.id] ?? 0;
                 return (
                   <div key={dim.id} className={styles.assessInterpRow}>
-                    <span className={styles.assessInterpScore} style={{ color: scoreColor(score) }}>{score}</span>
+                    <span className={`${styles.assessInterpScore} ${scoreClass(score)}`}>{score}</span>
                     <p className={styles.assessInterpText}>
                       <strong className={styles.assessInterpStrong}>{dim.name}:</strong>{" "}
                       {getInterpretation(dim.id, score)}

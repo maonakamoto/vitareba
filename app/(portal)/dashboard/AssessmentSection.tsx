@@ -1,7 +1,7 @@
 import Link from "next/link";
 import shared from "../portal.module.css";
 import styles from "./dashboard.module.css";
-import { DIMENSIONS, getVerdict, scoreColor, type AssessmentRow } from "@/lib/assessment/data";
+import { DIMENSIONS, getVerdict, scoreClass, type AssessmentRow } from "@/lib/assessment/data";
 import { ASSESSMENT_STALE_DAYS } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { BOOKING_STATUS_CONFIG, type BookingRow } from "@/lib/config/booking-status";
@@ -62,8 +62,7 @@ export function AssessmentSection({
           </div>
           <div className={styles.scoreBlock}>
             <span
-              className={styles.scoreValue}
-              style={{ color: scoreColor(latestAssessment.overallScore) }}
+              className={`${styles.scoreValue} ${scoreClass(latestAssessment.overallScore)}`}
             >
               {latestAssessment.overallScore}
             </span>
@@ -100,8 +99,7 @@ export function AssessmentSection({
               {lowestDim.icon} {lowestDim.name}
             </p>
             <p
-              className={styles.interventionScore}
-              style={{ color: scoreColor(scores[lowestDim.id] ?? 0) }}
+              className={`${styles.interventionScore} ${scoreClass(scores[lowestDim.id] ?? 0)}`}
             >
               {scores[lowestDim.id] ?? 0}
             </p>

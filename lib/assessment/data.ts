@@ -273,6 +273,13 @@ export const scoreColor = (score: number): string => {
   return "var(--danger)";
 };
 
+/** Global CSS utility class for score colouring — use instead of style={{ color: scoreColor(n) }} */
+export const scoreClass = (score: number): string => {
+  if (score >= 60) return "score-good";
+  if (score >= 40) return "score-warn";
+  return "score-bad";
+};
+
 export const VERDICT_TIERS: VerdictTier[] = [
   {
     minScore: 0,

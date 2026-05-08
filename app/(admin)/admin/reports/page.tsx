@@ -9,7 +9,7 @@ import { SIGNAL_LABELS, SIGNAL_COLORS, SIGNAL_SORT_ORDER, SIGNAL_CHECKIN_WINDOW_
 import { USER_ROLE } from "@/lib/config/auth";
 import { PORTAL_ROUTES, ADMIN_ROUTES } from "@/lib/config/routes";
 import { PROGRAMME_CONFIG, PHASE_CONFIG, type ProgrammeKey, type PhaseKey } from "@/lib/config/programmes";
-import { VERDICT_TIERS, getVerdictName, scoreColor } from "@/lib/assessment/data";
+import { VERDICT_TIERS, getVerdictName, scoreClass } from "@/lib/assessment/data";
 import { formatDateShort, formatDateISO, formatDateMonthDay, displayName } from "@/lib/utils/format";
 import { CHECKIN_METRICS, CHECKIN_DISPLAY_DAYS, type MetricKey } from "@/lib/config/portal";
 import { CheckinTrendChart } from "@/components/portal/CheckinTrendChart";
@@ -279,7 +279,7 @@ export default async function ReportsPage() {
               })}
               {avgScore !== null && (
                 <p className={styles.avgNote}>
-                  Population average: <strong style={{ color: scoreColor(avgScore) }}>{avgScore}/100</strong> — {getVerdictName(avgScore)}
+                  Population average: <strong className={scoreClass(avgScore)}>{avgScore}/100</strong> — {getVerdictName(avgScore)}
                 </p>
               )}
             </div>
@@ -343,8 +343,7 @@ export default async function ReportsPage() {
                     </td>
                     <td>
                       <span
-                        className={styles.scoreChipLarge}
-                        style={{ color: scoreColor(a.overallScore) }}
+                        className={`${styles.scoreChipLarge} ${scoreClass(a.overallScore)}`}
                       >
                         {a.overallScore}
                       </span>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styles from "./dashboard.module.css";
-import { profileCompletenessColor } from "@/lib/domain/profile";
+import { profileCompletenessClass } from "@/lib/domain/profile";
 import { COMPANY } from "@/lib/config/company";
 import { PROFILE_COMPLETENESS_LOW_PCT, PROFILE_COMPLETENESS_HIGH_PCT } from "@/lib/config/portal";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
@@ -17,7 +17,7 @@ export function ProfileCompletenessBar({ pct, missingFields = [] }: { pct: numbe
     <div className={styles.profileBar}>
       <div className={styles.profileBarHeader}>
         <p className={styles.profileBarTitle}>Intake profile</p>
-        <span className={styles.profileBarPct} style={{ color: profileCompletenessColor(pct) }}>
+        <span className={`${styles.profileBarPct} ${profileCompletenessClass(pct)}`}>
           {pct}%
         </span>
       </div>
