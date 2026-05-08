@@ -22,7 +22,8 @@ const ADMIN_SESSION = { session: { user: { id: "admin-1", role: "admin" } }, err
 const UNAUTH        = { session: null, error: new Response(null, { status: 401 }) };
 
 const GOAL = { id: "goal-1", patientId: "patient-1", title: "Improve focus", baseline: 40, current: 55, target: 80 };
-const PARAMS = { params: Promise.resolve({ id: "patient-1" }) };
+const VALID_PATIENT_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+const PARAMS = { params: Promise.resolve({ id: VALID_PATIENT_ID }) };
 
 const VALID_BODY = { title: "Improve sleep quality" };
 

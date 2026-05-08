@@ -22,7 +22,8 @@ const PATIENT = {
   profile: null, assessmentResults: [], bookings: [], documents: [], threads: [],
 };
 
-const PARAMS = { params: Promise.resolve({ id: "patient-1" }) };
+const VALID_PATIENT_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+const PARAMS = { params: Promise.resolve({ id: VALID_PATIENT_ID }) };
 
 describe("GET /api/admin/patients/[id]", () => {
   beforeEach(() => {

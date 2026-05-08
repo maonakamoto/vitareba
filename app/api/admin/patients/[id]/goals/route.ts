@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/guards";
-import { serviceUnavailable } from "@/lib/utils/api-response";
+import { serviceUnavailable, badRequest } from "@/lib/utils/api-response";
+import { UUID_RE } from "@/lib/utils/validate";
 import { db } from "@/lib/db";
 import { clinicalGoals } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -15,6 +16,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
   if (guard.error) return guard.error;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid patient id");
 
   let goals;
   try {
@@ -36,6 +38,7 @@ export async function POST(req: Request, { params }: RouteContext) {
   const { session } = guard;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid patient id");
 
   const body = await req.json();
   const parsed = goalCreateSchema.safeParse(body);

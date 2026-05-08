@@ -26,7 +26,8 @@ const ADMIN_SESSION = { session: { user: { id: "admin-1", role: "admin" } }, err
 const UNAUTH        = { session: null, error: new Response(null, { status: 401 }) };
 
 const NOTE = { id: "note-1", patientId: "patient-1", adminId: "admin-1", body: "Patient is progressing well.", admin: { name: "Manuel" } };
-const PARAMS = { params: Promise.resolve({ id: "patient-1" }) };
+const VALID_PATIENT_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+const PARAMS = { params: Promise.resolve({ id: VALID_PATIENT_ID }) };
 
 function makeRequest(body: unknown) {
   return new Request("https://example.com/api/admin/patients/patient-1/notes", {

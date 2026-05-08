@@ -3,7 +3,8 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { eq, desc } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth/guards";
-import { serviceUnavailable } from "@/lib/utils/api-response";
+import { serviceUnavailable, badRequest } from "@/lib/utils/api-response";
+import { UUID_RE } from "@/lib/utils/validate";
 import { db } from "@/lib/db";
 import { users, assessmentResults, bookings, documents, threads, threadMessages } from "@/lib/db/schema";
 
@@ -15,6 +16,7 @@ export async function GET(
   if (guard.error) return guard.error;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid patient id");
 
   let patient;
   try {

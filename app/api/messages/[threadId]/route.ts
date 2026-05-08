@@ -12,7 +12,8 @@ import { ADMIN_ROUTES, PORTAL_ROUTES } from "@/lib/config/routes";
 import { USER_ROLE } from "@/lib/config/auth";
 import { replySchema } from "@/lib/domain/messages";
 import { runAfterResponse } from "@/lib/utils/post-response";
-import { serviceUnavailable } from "@/lib/utils/api-response";
+import { serviceUnavailable, badRequest } from "@/lib/utils/api-response";
+import { UUID_RE } from "@/lib/utils/validate";
 import { displayName } from "@/lib/utils/format";
 
 export async function GET(
@@ -24,6 +25,8 @@ export async function GET(
   const { session } = guard;
 
   const { threadId } = await params;
+  if (!UUID_RE.test(threadId)) return badRequest("Invalid thread id");
+
   let thread;
   try {
     thread = await db.query.threads.findFirst({
@@ -71,6 +74,8 @@ export async function POST(
   const { session } = guard;
 
   const { threadId } = await params;
+  if (!UUID_RE.test(threadId)) return badRequest("Invalid thread id");
+
   let thread;
   try {
     thread = await db.query.threads.findFirst({ where: eq(threads.id, threadId) });

@@ -61,7 +61,8 @@ const BOOKING = {
   preferredDate: null, notes: null, createdAt: new Date("2026-05-07T00:00:00.000Z"),
 };
 
-const PARAMS = { params: Promise.resolve({ id: "booking-1" }) };
+const VALID_BOOKING_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+const PARAMS = { params: Promise.resolve({ id: VALID_BOOKING_ID }) };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

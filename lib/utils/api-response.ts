@@ -7,3 +7,8 @@ export function serviceUnavailable(): NextResponse {
     { status: 500 }
   );
 }
+
+/** Standard 400 response for invalid route params or request bodies. */
+export function badRequest(message: string): NextResponse {
+  return NextResponse.json({ success: false, error: message }, { status: 400 });
+}

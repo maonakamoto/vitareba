@@ -67,7 +67,8 @@ const MESSAGE = {
   body: "Hello", createdAt: new Date("2026-05-07T00:00:00.000Z"), readAt: null,
 };
 
-const PARAMS = { params: Promise.resolve({ threadId: "thread-1" }) };
+const VALID_THREAD_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
+const PARAMS = { params: Promise.resolve({ threadId: VALID_THREAD_ID }) };
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 

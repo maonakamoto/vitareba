@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { requireAdmin, requireSession } from "@/lib/auth/guards";
+import { badRequest } from "@/lib/utils/api-response";
+import { UUID_RE } from "@/lib/utils/validate";
 import { db } from "@/lib/db";
 import { bookings, users } from "@/lib/db/schema";
 import { sendEmail } from "@/lib/email";
@@ -26,6 +28,8 @@ export async function PATCH(
   if (guard.error) return guard.error;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid booking id");
+
   const body = await req.json();
   const parsed = patchSchema.safeParse(body);
   if (!parsed.success) {
@@ -86,6 +90,7 @@ export async function DELETE(
   if (guard.error) return guard.error;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid booking id");
 
   const booking = await db.query.bookings.findFirst({ where: eq(bookings.id, id) });
   if (!booking) {

@@ -11,7 +11,8 @@ import { programmeAssignedEmail } from "@/lib/email/templates";
 import { PORTAL_URL } from "@/lib/config/company";
 import { PROGRAMME_CONFIG, PHASE_CONFIG } from "@/lib/config/programmes";
 import { runAfterResponse } from "@/lib/utils/post-response";
-import { serviceUnavailable } from "@/lib/utils/api-response";
+import { serviceUnavailable, badRequest } from "@/lib/utils/api-response";
+import { UUID_RE } from "@/lib/utils/validate";
 import { displayName } from "@/lib/utils/format";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -21,6 +22,7 @@ export async function GET(_req: Request, { params }: RouteContext) {
   if (guard.error) return guard.error;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid patient id");
 
   let assignment;
   try {
@@ -41,6 +43,7 @@ export async function PATCH(req: Request, { params }: RouteContext) {
   const { session } = guard;
 
   const { id } = await params;
+  if (!UUID_RE.test(id)) return badRequest("Invalid patient id");
 
   const body = await req.json();
   const parsed = programmeUpdateSchema.safeParse(body);
