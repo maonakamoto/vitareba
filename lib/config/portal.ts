@@ -201,3 +201,15 @@ export const ASSESSMENT_GOAL_METRIC_KEY = "overallScore" as const;
 
 /** Human-readable label for ASSESSMENT_GOAL_METRIC_KEY — SSOT for goal metric display */
 export const ASSESSMENT_GOAL_METRIC_LABEL = "Assessment overall score" as const;
+
+/**
+ * Return a short note explaining how a linked metric auto-updates.
+ * Returns null for unrecognised metric keys (no annotation shown).
+ */
+export function goalMetricAutoUpdateNote(metric: string | null | undefined): string | null {
+  if (!metric) return null;
+  if (metric === ASSESSMENT_GOAL_METRIC_KEY) return "auto-updates from your Inflection Edge assessments";
+  if ((CHECKIN_METRICS as readonly { key: string }[]).some((m) => m.key === metric))
+    return "auto-updates from your daily check-ins";
+  return null;
+}

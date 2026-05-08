@@ -51,6 +51,11 @@
   font-weight: 400;
 }
 
+.autoUpdateNote {
+  color: var(--faint);
+  font-size: 0.73rem;
+}
+
 .goalNotes {
   font-size: 0.82rem;
   color: var(--muted);

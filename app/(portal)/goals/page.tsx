@@ -7,7 +7,7 @@ import styles from "../portal.module.css";
 import goalStyles from "./goals.module.css";
 import { PORTAL_ROUTES } from "@/lib/config/routes";
 import { computeGoalProgress, goalProgressLabel } from "@/lib/domain/goals";
-import { CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL } from "@/lib/config/portal";
+import { CHECKIN_METRICS, ASSESSMENT_GOAL_METRIC_KEY, ASSESSMENT_GOAL_METRIC_LABEL, goalMetricAutoUpdateNote } from "@/lib/config/portal";
 import { formatDateLong } from "@/lib/utils/format";
 
 /** Map check-in metric keys + assessment metric to human-readable labels for goal display */
@@ -75,6 +75,7 @@ export default async function GoalsPage() {
                   const pct = computeGoalProgress(goal.baseline, goal.current, goal.target);
                   const hasNumbers = goal.baseline != null || goal.current != null || goal.target != null;
                   const metricLabel = goal.metric ? (METRIC_LABELS[goal.metric] ?? goal.metric) : null;
+                  const autoUpdateNote = goalMetricAutoUpdateNote(goal.metric);
 
                   return (
                     <div key={goal.id} className={`${styles.card} ${goalStyles.goalCard}`}>
@@ -83,6 +84,9 @@ export default async function GoalsPage() {
                       {metricLabel && (
                         <p className={goalStyles.goalMeta}>
                           Linked metric: <span className={goalStyles.goalMetaValue}>{metricLabel}</span>
+                          {autoUpdateNote && (
+                            <span className={goalStyles.autoUpdateNote}> · {autoUpdateNote}</span>
+                          )}
                         </p>
                       )}
 
