@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { put } from "@vercel/blob";
+import { putLocal } from "@/lib/storage";
 import { requireAdmin } from "@/lib/auth/guards";
 import { db } from "@/lib/db";
 import { documents, users } from "@/lib/db/schema";
@@ -66,10 +66,7 @@ export async function POST(req: Request) {
 
   let blob: { url: string };
   try {
-    blob = await put(blobPath, file, {
-      access: "public",
-      contentType: file.type || "application/octet-stream",
-    });
+    blob = await putLocal(blobPath, file);
   } catch (err) {
     console.error("[api/documents/upload] blob upload failed:", err);
     return NextResponse.json({ success: false, error: "File upload failed — please try again" }, { status: 500 });
