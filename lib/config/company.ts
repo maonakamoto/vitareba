@@ -16,7 +16,7 @@ export const COMPANY = {
 export const PORTAL_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://vitareba.ch";
 
 // Public-facing marketing site URL used in SEO metadata, robots.txt, and sitemap
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitareba.vercel.app";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://vitareba.ch";
 
 // Default "from" address for transactional emails — used as fallback when RESEND_FROM is unset.
 // Sending from vitareba.ch requires domain verification in Resend: https://resend.com/domains

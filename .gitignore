@@ -39,6 +39,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local-disk document storage (UPLOADS_DIR default; served by Caddy in prod)
+/uploads
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

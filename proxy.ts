@@ -38,6 +38,11 @@ export default auth((req) => {
   const passThrough = () =>
     NextResponse.next({ request: { headers: req.headers } });
 
+  // Cron routes self-authenticate via the CRON_SECRET bearer (box systemd
+  // timers call them; see fleetcrown scripts/hetzner/install-app-crons.sh) —
+  // bypass the session gate that otherwise covers all of /api.
+  if (pathname.startsWith("/api/cron")) return passThrough();
+
   // ── Portal / admin ─────────────────────────────────────────────────────
   if (PORTAL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
     if (!session) {

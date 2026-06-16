@@ -8,7 +8,7 @@ The platform has two parts:
 1. **Public marketing site** — multilingual (de/en/fr/it), lands at `/de/`, primary CTA is the Inflection Edge self-assessment overlay
 2. **Patient portal + admin panel** — authenticated, database-backed, at `/dashboard` (patients) and `/admin` (Manuel)
 
-**Stack:** Next.js 16 (App Router) · TypeScript strict · Tailwind v4 · Neon PostgreSQL · Drizzle ORM · NextAuth 5 · Resend email · Vercel (hosting + cron + blob storage)
+**Stack:** Next.js 16 (App Router, `standalone` output) · TypeScript strict · Tailwind v4 · self-hosted PostgreSQL (`pg` driver) · Drizzle ORM · NextAuth 5 · Resend email · self-hosted on the Hetzner box ("bitbaum") behind Caddy, served at `vitareba.ch`. Scheduled jobs run via systemd timers / cron on the box; documents are stored on local disk and served by Caddy under `/uploads/*`.
 
 ---
 
@@ -53,7 +53,7 @@ app/
     bookings/             → Booking CRUD
     messages/[threadId]/  → Thread messages + email notification on send
     goals/                → Patient clinical goals (read)
-    documents/            → Document list + upload (Vercel Blob)
+    documents/            → Document list + upload (local-disk storage, lib/storage.ts)
     admin/patients/       → Patient list + detail (admin only)
     admin/patients/[id]/  → Goals, notes, programme assignment (admin only)
     cron/                 → Scheduled jobs (all require CRON_SECRET bearer)
@@ -77,7 +77,7 @@ components/
 lib/
   db/
     schema.ts             → SSOT: all Drizzle table definitions + relations
-    index.ts              → Lazy Drizzle singleton (Neon serverless)
+    index.ts              → Lazy Drizzle singleton (node-postgres `pg` Pool)
   auth/
     index.ts              → NextAuth config (Credentials + Google, DrizzleAdapter)
     guards.ts             → requireSession() / requireAdmin() for API routes
@@ -112,11 +112,11 @@ messages/                 → Translation files: de.json, en.json, fr.json, it.j
 
 ---
 
-## Database Schema (Drizzle + Neon PostgreSQL)
+## Database Schema (Drizzle + self-hosted PostgreSQL)
 
 Tables: `users`, `accounts`, `sessions`, `verificationTokens` (NextAuth), `profiles`, `dailyCheckins` (unique on user_id+date), `assessmentResults`, `bookings`, `documents`, `threads`, `threadMessages` (with `readAt` for unread tracking), `patientNotes`, `programmeAssignments`, `clinicalGoals`, `emailQueue`
 
-**Migrations:** `pnpm db:push` to apply schema changes to Neon. Run after any edits to `lib/db/schema.ts`.
+**Migrations:** `pnpm db:push` to apply schema changes to the self-hosted Postgres. Run after any edits to `lib/db/schema.ts`.
 
 ---
 
@@ -176,7 +176,7 @@ Used in: `/admin/patients` list, `/api/cron/signals` (alerts admin on first `cri
 
 ## Cron Jobs
 
-All routes under `/api/cron/*` require `Authorization: Bearer CRON_SECRET`. Scheduled in `vercel.json`:
+All routes under `/api/cron/*` require `Authorization: Bearer CRON_SECRET`. On the self-hosted box these are triggered by systemd timers / cron entries that curl each route with the bearer token. The canonical schedule list still lives in `vercel.json` (kept as the single source of truth for the schedules — the box's timers mirror it):
 
 | Route | Schedule | Purpose |
 |-------|----------|---------|
@@ -212,7 +212,7 @@ Goals are set by admin per patient (`/api/admin/patients/[id]/goals`). Each goal
 
 ## Document Storage
 
-Documents are stored in Vercel Blob. The `documents.fileUrl` column stores the blob URL. Upload via `/api/documents` (POST with FormData). `DocumentAddForm` handles the upload client-side.
+Documents are stored on the box's local disk via `lib/storage.ts` (`putLocal`/`delLocal`), under `UPLOADS_DIR`, and served by Caddy under `/uploads/*`. The `documents.fileUrl` column stores the root-relative URL (`/uploads/<key>`). Upload via `/api/documents` (POST with FormData). `DocumentAddForm` handles the upload client-side.
 
 ---
 
@@ -403,12 +403,12 @@ VitaReBa and Surf Your Life are separate brands — same founder, different plat
 pnpm dev          # local dev server (localhost:3000)
 pnpm build        # production build — run before every push
 pnpm lint         # eslint
-pnpm db:push      # push schema changes to Neon DB
+pnpm db:push      # push schema changes to the self-hosted Postgres
 pnpm db:generate  # generate migration files
 pnpm db:studio    # Drizzle Studio for DB inspection
 ```
 
-**Before every push:** `pnpm build` must pass locally. Never rely on Vercel to catch TypeScript errors.
+**Before every push:** `pnpm build` must pass locally. The build is your only safety net — there is no remote build step to catch TypeScript errors.
 
 ## Codex CLI Baseline
 
@@ -419,24 +419,16 @@ This repo should assume **OpenAI Codex `rust-v0.128.0` or newer** (released **Ap
 - Prefer explicit sandbox/approval settings over legacy shorthand when documenting or automating agent runs for this repo.
 - If you use the TUI, `0.128.0` adds persisted `/goal` workflows plus `/statusline` and `/title` editing; treat those as optional operator features, not app behavior.
 
-## Deploy Workflow (agentic — do this every push)
+## Deploy Workflow (self-hosted Hetzner box)
 
-After every `git push`, monitor to completion before reporting done:
+Deployment is a pull-and-restart on the box, not a managed platform push. After `git push`, the box pulls the new commit, runs `pnpm build` (Next.js `standalone` output), and the systemd service is restarted. Verify the site is live before reporting done:
 
 ```bash
-prev=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1 | awk '{print $3}')
-while true; do
-  row=$(vercel ls --prod 2>/dev/null | grep orangecat | head -1)
-  url=$(echo "$row" | awk '{print $3}')
-  status=$(echo "$row" | awk '{print $5}')
-  [ "$url" != "$prev" ] && echo "DEPLOY $status: $url"
-  echo "$status" | grep -qE "^Ready$" && echo "✓ live" && break
-  echo "$status" | grep -qiE "Error|Failed|Canceled" && echo "✗ failed — check: vercel logs $url" && break
-  sleep 8
-done
+# Confirm the app responds after a deploy/restart
+curl -sS -o /dev/null -w '%{http_code}\n' https://vitareba.ch/de
 ```
 
-If deployment fails: `vercel logs <url>` → fix → `pnpm build` → push again.
+If it fails: check the service logs on the box (`journalctl -u <vitareba-service> -n 100`), fix, `pnpm build`, push again. Full migration/runbook: `fleetcrown/docs/infrastructure/hetzner-migration.md`.
 
 ---
 
