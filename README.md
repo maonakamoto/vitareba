@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VitaReBa
 
-## Getting Started
+Clinical patient management platform for **VitaReBa GmbH** — a metabolic psychiatry and systemic longevity clinic in Zürich. The platform has two parts:
 
-First, run the development server:
+1. **Public marketing site** — multilingual (de/en/fr/it), with the *Inflection Edge* self-assessment overlay as the primary CTA.
+2. **Patient portal + admin panel** — authenticated and database-backed: patients at `/dashboard`, the clinician at `/admin`.
+
+## Stack
+
+- **Next.js 16** (App Router, `standalone` output) · TypeScript (strict)
+- **Tailwind v4** (tokens in `app/globals.css`, no `tailwind.config.*`)
+- **PostgreSQL** (self-hosted) via **Drizzle ORM** (`pg` driver)
+- **NextAuth 5** (auth) · **Resend** (transactional email)
+- **next-intl** (i18n)
+
+## Hosting
+
+Self-hosted on the Hetzner box ("bitbaum") behind Caddy, served at **https://vitareba.ch**. There is no managed platform — deployment is pull, `pnpm build` (standalone output), and a systemd service restart. Uploaded documents are stored on local disk and served by Caddy under `/uploads/*`. Scheduled `/api/cron/*` jobs run from systemd timers / cron on the box (schedules mirrored from `vercel.json`).
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp env.local.example .env.local   # fill in DATABASE_URL, auth + Resend secrets
+pnpm db:push                      # apply the Drizzle schema to your Postgres
+pnpm dev                          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm dev          # dev server
+pnpm build        # production build (standalone)
+pnpm start        # serve the production build
+pnpm lint         # eslint
+pnpm typecheck    # tsc --noEmit
+pnpm test         # vitest run
+pnpm db:push      # push schema changes to Postgres
+pnpm db:generate  # generate migration files
+pnpm db:studio    # Drizzle Studio
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [`CLAUDE.md`](./CLAUDE.md) for architecture, conventions, and the full design-system rules.

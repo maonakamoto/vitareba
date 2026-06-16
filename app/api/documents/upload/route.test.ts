@@ -18,7 +18,7 @@ const {
 }));
 
 vi.mock("@/lib/auth/guards", () => ({ requireAdmin: mockRequireAdmin }));
-vi.mock("@vercel/blob",       () => ({ put: mockPut }));
+vi.mock("@/lib/storage",      () => ({ putLocal: mockPut }));
 vi.mock("@/lib/email/index",  () => ({ sendEmail: mockSendEmail }));
 vi.mock("@/lib/utils/post-response", () => ({ runAfterResponse: mockRunAfterResponse }));
 
