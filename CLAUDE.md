@@ -406,9 +406,14 @@ pnpm lint         # eslint
 pnpm db:push      # push schema changes to the self-hosted Postgres
 pnpm db:generate  # generate migration files
 pnpm db:studio    # Drizzle Studio for DB inspection
+pnpm verify       # lint + typecheck + test — the pre-done gate (mirrors CI)
 ```
 
-**Before every push:** `pnpm build` must pass locally. The build is your only safety net — there is no remote build step to catch TypeScript errors.
+**Before declaring any change done, run `pnpm verify`.** It runs the same
+hermetic gates as CI (lint + typecheck + the full test suite), so green locally
+means green on the shared branch — don't hand work back for manual smoke-testing
+that `verify` already covers. CI (`.github/workflows/ci.yml`) re-runs the same
+gates plus `build` on every push and PR to `main`.
 
 ## Codex CLI Baseline
 
