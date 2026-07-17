@@ -347,6 +347,15 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   assessmentLeads: many(assessmentLeads),
 }));
 
+// Reverse relation for users.assessmentResults `many`. Without it Drizzle's
+// relational query builder can't infer the FK and throws "not enough
+// information to infer relation users.assessmentResults" — which 500'd every
+// DB-touching cron (signals / check-in-reminder / weekly-digest) silently in
+// prod. Any `many` needs its matching `one` on the other table.
+export const assessmentResultsRelations = relations(assessmentResults, ({ one }) => ({
+  user: one(users, { fields: [assessmentResults.userId], references: [users.id] }),
+}));
+
 export const dailyCheckinsRelations = relations(dailyCheckins, ({ one }) => ({
   user: one(users, { fields: [dailyCheckins.userId], references: [users.id] }),
 }));
