@@ -33,14 +33,11 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Test
-        run: pnpm run test
+      # SSOT: one definition of "verified" (lint + typecheck + test) lives in
+      # package.json `verify`, run identically here and locally. Change the
+      # checks in one place, not two.
+      - name: Verify
+        run: pnpm run verify
 
       - name: Build
         env:
