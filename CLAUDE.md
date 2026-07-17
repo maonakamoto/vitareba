@@ -116,7 +116,12 @@ messages/                 → Translation files: de.json, en.json, fr.json, it.j
 
 Tables: `users`, `accounts`, `sessions`, `verificationTokens` (NextAuth), `profiles`, `dailyCheckins` (unique on user_id+date), `assessmentResults`, `bookings`, `documents`, `threads`, `threadMessages` (with `readAt` for unread tracking), `patientNotes`, `programmeAssignments`, `clinicalGoals`, `emailQueue`
 
-**Migrations:** `pnpm db:push` to apply schema changes to the self-hosted Postgres. Run after any edits to `lib/db/schema.ts`.
+**Migrations (versioned, auto-applied):** after editing `lib/db/schema.ts`, run
+`pnpm db:generate` and COMMIT the new `drizzle/*.sql` — the deploy schema step
+(fleetcrown `scripts/hetzner/apply-schema.sh`) applies pending migrations to
+prod automatically on every deploy (additive-only, transactional; destructive
+diffs abort the deploy for a human). `pnpm db:push` is for local dev DBs only —
+never push schema to prod by hand.
 
 ---
 
