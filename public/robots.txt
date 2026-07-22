@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /.next/
 
-Sitemap: https://vitareba.vercel.app/sitemap.xml
+Sitemap: https://vitareba.ch/sitemap.xml

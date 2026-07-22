@@ -182,7 +182,7 @@ Used in: `/admin/patients` list, `/api/cron/signals` (alerts admin on first `cri
 
 ## Cron Jobs
 
-All routes under `/api/cron/*` require `Authorization: Bearer CRON_SECRET`. On the self-hosted box these are triggered by systemd timers / cron entries that curl each route with the bearer token. The canonical schedule list still lives in `vercel.json` (kept as the single source of truth for the schedules — the box's timers mirror it):
+All routes under `/api/cron/*` require `Authorization: Bearer CRON_SECRET`. On the self-hosted box these are triggered by systemd timers / cron entries that curl each route with the bearer token. The table below is the single source of truth for the schedules — the box's timers mirror it:
 
 | Route | Schedule | Purpose |
 |-------|----------|---------|
